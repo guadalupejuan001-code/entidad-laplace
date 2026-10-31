@@ -347,6 +347,12 @@ async function runIntegral(){
       solver:window.LaplacePDE.resolverLaplaceGrafo});
     const audit=F.auditarUniversoLaplace(W,{asOf});
     integralResult={fusion,field,audit,errors:problems};
+    $('rawF001').textContent=JSON.stringify({
+      schema:'laplace-f001-raw-binary64-v1',as_of:asOf,
+      quote,errors:problems,fusion,laplace_field:field,
+      world_audit:audit,known_source:'prediccion/fusion-temporal.mjs',
+      disclaimer:'Valores raw_diagnostics previos a redondeo; sin evidencia de rentabilidad'
+    },null,2);
     $('integralStatus').dataset.state='success';
     $('integralStatus').textContent='F001 completado con '+
       fusion.horizons.filter(x=>x.price_candidate!==null).length+
@@ -359,6 +365,7 @@ async function runIntegral(){
     $('integralStatus').textContent='No se pudo completar F001: '+error.message+
       '. Verifica Internet y vuelve a intentar.';
     integralResult=null;
+    $('rawF001').textContent='F001 no emitió resultado: '+error.message;
     renderIntegral();
   }finally{
     integralBusy=false;setActionAvailability();
@@ -496,6 +503,7 @@ function forgetEstimate(){
   $('trainingCount').textContent='—';$('testingCount').textContent='—';
   $('modelError').textContent='—';$('baselineError').textContent='—';
   $('modelLabel').textContent='M001 · SIN ANALIZAR';
+  $('rawM001').textContent='Sin análisis válido para este horizonte.';
 }
 async function refresh(){
   const epoch=++refreshEpoch,requested=asset,m=minutes;
@@ -587,6 +595,11 @@ function calculateModel(){
   $('baselineError').textContent=money(analysis.validation.baselineMAE);
   $('modelLabel').textContent=analysis.ready?'M001 · '+analysis.patterns+' PATRONES':
     'SIN PATRONES SUFICIENTES';
+  $('rawM001').textContent=JSON.stringify({
+    schema:'laplace-m001-raw-binary64-v1',asset,
+    model:analysis,source_close_at:new Date(analysis.dataKnownThrough*1000).toISOString(),
+    note:'Datos originales: sin redondeo de pantalla, sin ocultar errores.'
+  },null,2);
   renderSignals();updateLivePreview();return analysis;
 }
 function analyzeAction(){
@@ -619,6 +632,12 @@ function forecastAction(){
     if(!model.ready)throw Error(model.reason);
     const candidate=E.forecast(model,quoteAnchor(last));
     lastForecast=candidate;
+    $('rawM001').textContent=JSON.stringify({
+      schema:'laplace-m001-raw-binary64-v1',
+      model:analysis,forecast:candidate,
+      source:'Coinbase Exchange · OHLCV',
+      no_display_rounding:true
+    },null,2);
     $('estimate').textContent=money(candidate.estimate);
     $('relativeChange').textContent=percent(candidate.relativeChange)+' · '+
       label(minutes)+' · '+model.patterns+' patrones';
