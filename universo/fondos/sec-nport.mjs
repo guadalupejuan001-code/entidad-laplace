@@ -206,6 +206,7 @@ export async function fetchSecText(url,{fetchImpl=fetch,userAgent,
   timeoutMs=12000,maxBytes=4_000_000,now=()=>new Date().toISOString()}={}){
   verifiedAddress(url);
   need(typeof userAgent==='string'&&userAgent.length>=12&&
+    /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(userAgent)&&
     !/^(?:node|laplace|bot|test)(?:\/|\s|$)/i.test(userAgent),
     'SEC_USER_AGENT identificable obligatorio, sin datos inventados');
   const response=await fetchImpl(url,{signal:AbortSignal.timeout(timeoutMs),redirect:'error',
