@@ -1,0 +1,17 @@
+{
+  "schema": "laplace-demonio-financiero-ef004-v1",
+  "status": "abstained",
+  "reason": "insufficient_independent_capture_history",
+  "model_ready": false,
+  "production_activation_allowed": false,
+  "automatic_trading": false,
+  "trajectory": [],
+  "captures_seen": 1,
+  "contiguous_captures": 1,
+  "minimum_captures": 48,
+  "discarded_due_to_gap": 0,
+  "as_of": "2026-10-31T15:27:12.324Z",
+  "note": "Una captura no permite aprender transiciones",
+  "archive_count": 1,
+  "verification": "real_archives_only_not_synthetic"
+}
