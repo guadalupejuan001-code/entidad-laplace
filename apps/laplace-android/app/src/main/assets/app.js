@@ -6,6 +6,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
+const F=window.LaplaceIntegral;
 const STORAGE='laplace-mobile-forecasts-v2';
 const money=v=>Number.isFinite(v)?new Intl.NumberFormat('es-MX',{
   style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
@@ -16,6 +17,7 @@ const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
 const label=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
 let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
+let integralResult=null,integralBusy=false;
 let loading=false,sequence=0,latestTest=null;
 const quotes=new Map(),pending=new Map();
 let log=[];
@@ -37,11 +39,129 @@ function status(message,kind='info'){
   $('activityStatus').textContent=message;
 }
 function show(page){
-  for(const b of document.querySelectorAll('[data-tab]'))
+  
+/* F001 original: sus tres resoluciones se consultan por lotes; el mundo
+ * se lee desde la captura EF002 verificable. La ecuación no sustituye
+ * el candidato y no puede entrenar EF004 sin tiempo independiente.
+ */
+function renderIntegral(){
+  const table=$('integralTable'),modules=$('integralModules'),metrics=$('integralMetrics');
+  if(!table||!modules||!metrics)return;
+  table.replaceChildren();modules.replaceChildren();metrics.replaceChildren();
+  const result=integralResult;
+  if(!result){
+    const p=document.createElement('p');
+    p.textContent='Sin ejecución. Pulsa Consultar y calcular para obtener datos de BTC.';
+    table.appendChild(p);return;
+  }
+  const {fusion,field,audit,errors}=result;
+  const info=[
+    ['Horizontes F001',fusion.horizons.length],
+    ['Con candidatos',fusion.horizons.filter(h=>h.price_candidate!==null).length],
+    ['Operador Lφ=0',field.status],
+    ['Anclas del campo',field.available_candidate_anchors],
+    ['Estados EF002 válidos',audit.valid_at_cut],
+    ['ETF C001',audit.etf_fund_flow_signals+' flujos observados']
+  ];
+  for(const [label,value] of info){
+    const cell=document.createElement('div'),name=document.createElement('span'),
+      number=document.createElement('strong');
+    name.textContent=label;number.textContent=String(value);
+    cell.append(name,number);metrics.appendChild(cell);
+  }
+  for(const row of fusion.horizons){
+    const element=document.createElement('div');element.className='integral-item';
+    const label=document.createElement('strong'),statusText=document.createElement('span'),
+      detail=document.createElement('small');
+    label.textContent=E.HORIZONS.find(h=>h.minutes===row.minutes)?.label??row.minutes+' min';
+    statusText.textContent=row.price_candidate===null?'Sin candidato':
+      money(row.price_candidate);
+    detail.textContent='F001 · '+row.status+' · '+row.analogs+' análogos'+
+      (row.return_pct!==null?' · retorno '+number(row.return_pct)+' %':'');
+    element.append(label,statusText,detail);table.appendChild(element);
+  }
+  const domain=field.status==='calculated'?
+    'Lφ = 0: '+field.available_candidate_anchors+' fronteras experimentales; '+
+      field.interpolated_horizons+' interpolaciones diagnósticas; '+
+      'discrepancia máxima '+Number(field.max_anchor_inconsistency).toExponential(2)+
+      '. El precio central F001 permanece intacto.':
+    'Laplace: '+(field.reason??field.status)+'. No se inventa cálculo.';
+  const groups=[
+    ['F001 multiescala',fusion.horizons.length+' horizontes calculados'],
+    ['M001', 'Análogos históricos en F001; ver error por horizonte'],
+    ['Laplace (ecuación)',domain],
+    ['EF001 / EF002',audit.valid_at_cut+' estados públicos, fecha '+(audit.capture_at??'no disponible')],
+    ['C001 ETF SEC',audit.etf_fund_flow_status+' · '+audit.etf_fund_flow_signals+' señales'],
+    ['EF004', 'Faltan suficientes transiciones independientes para usarlo en Android'],
+    ['U002/U003/U004',audit.domains.length+' dominios conocidos; cobertura no universal'],
+    ['D001/D002 B001 K001 O001','Se conservan en el archivo si la captura los observó; revisar Mundo'],
+    ['X002 / XN01 / XI-Ether','No ejecutados por esta APK; se requiere backend nativo verificable'],
+    ['Datos fallidos',errors.length?errors.join(' · '):'Ninguna consulta de velas falló']
+  ];
+  for(const [title,description] of groups){
+    const row=document.createElement('div');row.className='signal-row';
+    const a=document.createElement('div'),b=document.createElement('strong'),
+      c=document.createElement('small');
+    b.textContent=title;c.textContent=description;a.append(b,c);row.appendChild(a);
+    modules.appendChild(row);
+  }
+}
+async function runIntegral(){
+  if(integralBusy)return;
+  integralBusy=true;$('integralRun').disabled=true;
+  $('integralStatus').textContent='Consultando F001: BTC + 5m/14 días + 1h/45 días + 1d/1000 días.';
+  const tasks=[
+    ...[300,3600,86400].map(granularity=>
+      remote({kind:'history',asset:'BTC-USD',granularity,
+        days:F.HISTORIA_REQUERIDA[granularity].days})),
+    remote({kind:'quote',asset:'BTC-USD'})
+  ];
+  try{
+    const r=await Promise.allSettled(tasks);
+    const problems=[],series={};
+    for(let i=0;i<3;i++){
+      const k=[300,3600,86400][i],entry=r[i];
+      if(entry.status==='fulfilled')
+        series[k]=entry.value.map(x=>[
+          x.time,x.low,x.high,x.open,x.close,x.volume]);
+      else{
+        series[k]=[];
+        problems.push(F.HISTORIA_REQUERIDA[k].days+' días: '+String(entry.reason?.message));
+      }
+    }
+    if(r[3].status!=='fulfilled')
+      throw Error('Ticker BTC no disponible: '+String(r[3].reason?.message));
+    const q=r[3].value,asOf=new Date().toISOString();
+    const quote={asset:'BTC-USD',value:q.price,observed_at:q.time,
+      known_at:new Date(q.receivedAt).toISOString()};
+    const world=W?.states?{at:W.captured_at,
+      universal_state:{states:W.states,snapshot_sha256:W.snapshot_sha256},
+      source_status:W.groups}:null;
+    const fusion=F.fusionTemporal({quote,series,world,asOf});
+    const field=F.aplicarLaplaceAHorizontes(fusion.horizons,{
+      quotePrice:q.price,asset:'BTC-USD',
+      solver:window.LaplacePDE.resolverLaplaceGrafo});
+    const audit=F.auditarUniversoLaplace(W,{asOf});
+    integralResult={fusion,field,audit,errors:problems};
+    $('integralStatus').textContent='F001 completado con '+
+      fusion.horizons.filter(x=>x.price_candidate!==null).length+
+      ' candidatos de '+fusion.horizons.length+' horizontes. Campo Laplace: '+
+      field.status+'. '+problems.length+' fuentes incompletas. No se confundió '+
+      'el archivo mundial con información en vivo.';
+    show('integral');renderIntegral();
+  }catch(error){
+    $('integralStatus').textContent='No se emitió cálculo integral: '+error.message;
+  }finally{
+    integralBusy=false;$('integralRun').disabled=false;
+  }
+}
+
+for(const b of document.querySelectorAll('[data-tab]'))
     b.setAttribute('aria-current',b.dataset.tab===page?'page':'false');
   for(const section of document.querySelectorAll('.tabpage'))
     section.hidden=section.id!==page;
   if(page==='world')renderWorld();
+  if(page==='integral')renderIntegral();
   if(page==='tests'){showTests();renderHistory()}
   if(page==='panel')setTimeout(drawChart,60);
 }
@@ -507,6 +627,7 @@ for(const b of document.querySelectorAll('[data-quote-asset]'))
   b.addEventListener('click',()=>changeAsset(b.dataset.quoteAsset));
 $('asset').addEventListener('change',()=>changeAsset($('asset').value));
 $('refresh').addEventListener('click',refresh);
+$('integralRun').addEventListener('click',runIntegral);
 $('train').addEventListener('click',analyzeAction);
 $('test').addEventListener('click',testAction);
 $('evaluate').addEventListener('click',evaluateAction);
