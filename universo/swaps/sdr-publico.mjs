@@ -21,7 +21,7 @@ function iso(x,field){
 function safeSource(s){
   const u=new URL(s);
   need(u.protocol==='https:'&&HOSTS.has(u.hostname)&&!u.username&&!u.password&&
-    !u.searchParams.has('token')&&!u.searchParams.has('key'),
+    !u.search, // no URL tokens, customer filters or private query parameters
     'SDR debe proceder de fuente pública aprobada');
   return s;
 }
@@ -29,7 +29,8 @@ const FIELDS=new Set(['public_id','execution_at','disseminated_at','asset_class'
   'notional','notional_currency','notional_semantics','clearing',
   'action','version','tenor','price','price_unit']);
 function normalNum(x,{name,min=0,max=1e18}={}){
-  const n=typeof x==='number'?x:typeof x==='string'&&/^(?:0|[1-9]\d*)(?:\.\d+)?$/.test(x)?Number(x):NaN;
+  const numericPattern=min<0?/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/:/^(?:0|[1-9]\d*)(?:\.\d+)?$/;
+  const n=typeof x==='number'?x:typeof x==='string'&&numericPattern.test(x)?Number(x):NaN;
   need(Number.isFinite(n)&&n>=min&&n<=max,name+' inválido');
   return n;
 }
