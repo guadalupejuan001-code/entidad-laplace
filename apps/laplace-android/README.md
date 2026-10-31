@@ -5,6 +5,36 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Versión Android 1.0 — precios y controles visibles
+
+Los tres precios públicos de BTC/USD, ETH/USD y SOL/USD aparecen **arriba del
+triángulo/vórtice**, en tarjetas que también sirven para seleccionar el activo.
+Se consultan mediante el endpoint HTTPS ticker de Coinbase Exchange, con
+fecha de fuente y aviso cuando el precio no está disponible. Si el ticker
+falla y hay velas, la tarjeta activa muestra el último cierre de vela
+etiquetado como histórico (nunca como spot en vivo).
+
+Debajo del precio hay un aviso contextual siempre visible, que explica
+cuando falta conexión, no llegaron velas, hubo un fallo o la prueba terminó.
+El orden sugerido es Actualizar → Entrenar → Proyectar. Probar y Evaluar
+abren la pestaña de pruebas y detallan el error histórico.
+
+El triángulo y vórtice contienen animación SVG/CSS de corriente de datos,
+partículas y pulsación, con respeto a "reducir movimiento" de Android.
+Es una visualización estética, no una representación causal del mercado.
+
+La interfaz y los mensajes se comprobaron con navegador automatizado y
+respuestas públicas simuladas; esto valida la lógica de interacción, no
+afirma que esos precios sintéticos sean cotizaciones actuales. La API nativa
+solo permite los activos fijados en código. Los datos reales dependen del
+acceso a Coinbase desde el dispositivo.
+
+Si Android indica que la nueva APK no puede instalarse encima de una
+compilación de depuración anterior, es posible que las firmas de desarrollo
+no coincidan. En ese caso desinstalar la versión previa (se perderá el
+historial local), e instalar la nueva. No es una versión de Play Store.
+
+---
 ## Funciones reales
 
 - Datos horarios y diarios públicos de Coinbase Exchange (BTC/USD,
