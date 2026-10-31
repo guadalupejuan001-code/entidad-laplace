@@ -69,31 +69,38 @@ export function prepararHistoria(captures,{
       snapshot_sha256:x.snapshot_sha256})),
     never_retrodated:true,scope:'public_capture_snapshots_not_complete_world'};
 }
-export function extraerSeries(panel,{minChanges=2,maxSeries=48}={}){
+export function extraerSeries(panel,{
+  minChanges=2,maxSeries=48,selectionEnd=panel?.snapshots?.length
+}={}){
   need(panel?.schema===EF004_SERIES_SCHEMA,'panel temporal desconocido');
   need(Number.isInteger(maxSeries)&&maxSeries>=1&&maxSeries<=128,
     'presupuesto de series inválido');
-  const snapshots=panel.snapshots,found=new Map(),excluded=[];
-  for(const s of snapshots)for(const [key,row] of s.state){
+  const snapshots=panel.snapshots;
+  need(Number.isInteger(selectionEnd)&&selectionEnd>=2&&selectionEnd<=snapshots.length,
+    'corte de selección de series inválido');
+  const found=new Map(),excluded=[];
+  for(let i=0;i<snapshots.length;i++)for(const [key,row] of snapshots[i].state){
     const obj=found.get(key)??{key,domain:row.domain,variable:row.variable,
-      unit:row.unit,source_url:row.source_url,rows:[]};
-    obj.rows.push({at:s.at,observed_at:row.observed_at,value:row.value});
+      unit:row.unit,source_url:row.source_url,rows:Array(snapshots.length).fill(null)};
+    obj.rows[i]={at:snapshots[i].at,observed_at:row.observed_at,value:row.value};
     found.set(key,obj);
   }
   const eligible=[];
   for(const v of found.values()){
-    if(v.rows.length!==snapshots.length){
-      excluded.push({key:v.key,reason:'incomplete_series',coverage:v.rows.length});continue;
+    const train=v.rows.slice(0,selectionEnd);
+    if(train.some(x=>x===null)){
+      excluded.push({key:v.key,reason:'incomplete_training_series',
+        coverage:train.filter(Boolean).length});continue;
     }
-    const changes=v.rows.reduce((n,x,i)=>i&&
-      (x.value!==v.rows[i-1].value&&x.observed_at!==v.rows[i-1].observed_at)?n+1:n,0);
-    // Una serie trimestral que se repite en cada captura no se considera
-    // un nuevo objetivo intradía: su precio/stock no se actualizó.
+    const changes=train.reduce((n,x,i)=>i&&
+      x.value!==train[i-1].value&&x.observed_at!==train[i-1].observed_at?n+1:n,0);
+    // Selección exclusivamente con registros anteriores al corte de entrenamiento.
+    // NUNCA seleccionar series porque sobreviven a todo el período de prueba.
     if(changes<minChanges){
-      excluded.push({key:v.key,reason:'insufficient_new_observations',changes});continue;
+      excluded.push({key:v.key,reason:'insufficient_training_updates',changes});continue;
     }
-    eligible.push({...v,changes,values:v.rows.map(x=>x.value),
-      observed_times:v.rows.map(x=>x.observed_at)});
+    eligible.push({...v,changes,values:v.rows.map(x=>x?.value??null),
+      observed_times:v.rows.map(x=>x?.observed_at??null)});
   }
   eligible.sort((a,b)=>b.changes-a.changes||a.key.localeCompare(b.key));
   return {eligible:eligible.slice(0,maxSeries),
@@ -101,6 +108,8 @@ export function extraerSeries(panel,{minChanges=2,maxSeries=48}={}){
       key:x.key,reason:'analysis_series_budget'}))],
     total_unique:found.size,total_eligible:eligible.length,
     selected:Math.min(eligible.length,maxSeries),
+    selection_end_index:selectionEnd-1,
+    heldout_not_used_for_selection:true,
     all_raw_observations_retained_in_archives:true,
     no_absent_series_imputed:true};
 }
