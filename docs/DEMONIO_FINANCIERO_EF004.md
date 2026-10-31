@@ -29,7 +29,11 @@ DESPUÉS aplica juntas las actualizaciones. Puede evolucionar de forma
 condicional hasta cuatro pasos de seis horas, con bandas exploratorias
 que no se presentan como probabilidades calibradas.
 
-El ajuste EF004 se realiza con aritmética clásica JavaScript. El estado
+El ajuste EF004 se realiza con aritmética clásica JavaScript. La
+última captura pública puede trasladarse en lotes de hasta 1.024 estados
+al XI/Ether original y verificarse mediante recuperación exacta de bytes.
+Este puente puede procesar capturas mayores en lotes sin materializar
+todos los estados lógicos imaginables. El estado
 y las comprobaciones XI/Ether originales continúan existiendo como
 componentes diferentes; **no** se afirma que XI ejecute la regresión EF004.
 
