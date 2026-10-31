@@ -2,9 +2,14 @@
 
 **Estado**: piloto cuantitativo de cuatro series públicas del Banco de Pagos
 Internacionales (BIS). El código está en una rama de Entidad Laplace.
-No hay confirmación de descarga real en vivo de BIS ni de CI Node en este
-repositorio nuevo; el fallo de arranque GitHub Actions consta en la incidencia
-[#6](https://github.com/guadalupejuan001-code/entidad-laplace/issues/6).
+**Verificación efectiva en GitHub Actions** (31-oct-2026):
+[workflow B001](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319)
+completó 98 pruebas Node (17 B001 + 81 regresiones), todas aprobadas,
+y ejecutó captura pública BIS: **12 señales trimestrales de 4 series,
+4 fuentes observadas, 0 ausentes**, con salida sellada. Esta prueba
+sí valida la conectividad pública de este lote, pero no la precisión predictiva
+ni la cobertura total bancaria mundial. Las corridas antiguas fallidas de GitHub
+Actions quedan documentadas en [incidencia #6](https://github.com/guadalupejuan001-code/entidad-laplace/issues/6).
 
 ## ¿Qué añadimos?
 
@@ -108,10 +113,14 @@ fuente produjo registros públicos validados y no se sobreescriben rutas.
 - 17 casos de contrato cubren CSV SDMX, clave exacta, unidad, trimestre,
   timestamp de conocimiento, confidencialidad, fuentes incompletas,
   consulta concurrente y prohibición de sumar LBS y CBS.
-- Las pruebas de lógica con adaptadores sustitutos no prueban el
-  `npm run test:banca` real ni disponibilidad de BIS.
-- GitHub Actions falla al iniciar en Entidad Laplace (issue #6);
-  no hay prueba Node certificada aún.
+- **Superada**: `npm run test:banca` real, 17/17. También se ejecutaron
+  81 tests de regresión de fondos, swaps, derivados, FINRA, F001 y U003:
+  98/98 sin fallos en [Actions](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319).
+- **Superada**: captura pública BIS del piloto con cuatro fuentes y 12 estados.
+  Sigue pendiente ampliar cobertura, conservar historial y validar releases
+  históricos originales y modelos predictivos.
+- Los runs antiguos de Actions aún requieren revisión de la incidencia #6;
+  el run nuevo prueba que el runner ya inició tareas y ejecutó Node en esta rama.
 - Extender el catálogo más allá de cuatro series, conectar flujos LBS
   ajustados verificados y hacer revisiones BIS punto-en-tiempo.
 - Revisar licencias y términos del BIS antes de redistribuir estadísticas
