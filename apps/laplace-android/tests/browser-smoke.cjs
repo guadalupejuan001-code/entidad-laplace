@@ -108,7 +108,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
     assert.equal(await page.locator('#xn01PUp').innerText(),'0.54');
-    assert.match(await page.locator('#xn01Raw').innerText(),/SIMULATED XI ONLY/);
+    assert.match(await page.locator('#xn01Raw').textContent(),/SIMULATED XI ONLY/);
     await page.locator('#forecast').click();
     await page.waitForFunction(()=>document.querySelector('#estimate').textContent!=='—',{timeout:20000});
     assert.match(await page.locator('#relativeChange').innerText(),/%/);
