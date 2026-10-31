@@ -2,7 +2,7 @@
  * Las lecturas son point-in-time, las escrituras append-only e idempotentes.
  * No entrena modelos ni opera mercados; XI/Ether sigue siendo runtime original.
  */
-import {need,sha,stable,decimal,identifier,sourceURL} from '../input/contrato.mjs';
+import {need,sha,stable,decimal,identifier,sourceURL,validateEvent} from '../input/contrato.mjs';
 import {utcTime} from '../universo/estados.mjs';
 import {normalizarObservacion,observacionI001,observacionU003,
   normalizarCapturaU003,normalizarCoberturasU003,normalizarRelacion,
@@ -186,6 +186,41 @@ export async function importarU003(store,capture){
       prediction_activated:false,automatic_trading:false};
   });
 }
+/* Reproyectar I001 histórico que ya estaba en input_events antes de EF001.
+ * Orden estable por (known_at,event_key), sin reescribir la fuente ni su known_at.
+ * Un presupuesto finito explícito evita prometer un replay infinito.
+ */
+export async function reindexarI001(store,{asOf=new Date().toISOString(),pageSize=250,maxEvents=100000}={}){
+  const cut=time(asOf);
+  need(Number.isInteger(pageSize)&&pageSize>=1&&pageSize<=1000,'pagina invalida');
+  need(Number.isInteger(maxEvents)&&maxEvents>=1&&maxEvents<=1000000,'presupuesto historico invalido');
+  let cursor=null,scanned=0,inserted=0,more=true;
+  while(more&&scanned<maxEvents){
+    const size=Math.min(pageSize,maxEvents-scanned);
+    const params=cursor?[cut,cursor.known_at,cursor.event_key,size]:[cut,size];
+    const query=cursor?
+      'SELECT event,known_at,event_key FROM input_events WHERE known_at<=$1 AND (known_at,event_key)>($2::timestamptz,$3) ORDER BY known_at,event_key LIMIT $4':
+      'SELECT event,known_at,event_key FROM input_events WHERE known_at<=$1 ORDER BY known_at,event_key LIMIT $2';
+    const rows=(await store.db.query(query,params)).rows;
+    if(!rows.length)break;
+    inserted+=await store.transaction(async tx=>{
+      let added=0;
+      for(const row of rows){
+        validateEvent(row.event);
+        added+=Number(await proyectarI001(tx,row.event));
+      }
+      return added;
+    });
+    scanned+=rows.length;
+    const last=rows.at(-1);
+    cursor={known_at:new Date(last.known_at).toISOString(),event_key:last.event_key};
+    more=rows.length===size;
+  }
+  return {as_of:cut,scanned,inserted,complete:!more,
+    source_events_unchanged:true,preserved_original_known_at:true,
+    note:more?'Limite alcanzado: ampliar presupuesto y repetir; no declarar inventario completo':
+      'Todos los eventos I001 hasta el corte fueron visitados'};
+}
 export async function consultarCorte(store,{asOf,limit=4096,domain=null,family=null}={}){
   const cut=time(asOf),budget=Number(limit);
   need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite de consulta 1..4096');
@@ -206,6 +241,12 @@ export async function consultarEstadosDispersos(store,
   {asOf,scenario_id=null,limit=4096}={}){
   const cut=time(asOf),budget=Number(limit);
   need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite disperso invalido');
+  if(scenario_id){
+    ident(scenario_id);
+    const scenario=(await store.db.query('SELECT created_at FROM laplace_fin_scenarios WHERE scenario_id=$1',[scenario_id])).rows[0];
+    need(scenario&&new Date(scenario.created_at).toISOString()<=cut,
+      'escenario inexistente o creado despues del corte');
+  }
   const query='SELECT * FROM (SELECT d.*,ROW_NUMBER() OVER ('+
     'PARTITION BY d.state_key,COALESCE(d.logical_address,\'\') ORDER BY '+
     'CASE WHEN d.scenario_id=$2 THEN 1 ELSE 0 END DESC,d.known_at DESC,d.delta_sha DESC) AS priority '+
