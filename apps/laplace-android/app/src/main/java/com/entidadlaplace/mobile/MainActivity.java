@@ -25,13 +25,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeMap;
+import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * Independiente de REVERSE-PC; WebView sirve solo archivos internos.
  * Entrada de mercado exclusivamente desde endpoint público de Coinbase.
- * La regresión exploratoria AR(1) se ejecuta en engine.js en el dispositivo.
+ * M001 (análisis de análogos) se ejecuta en engine.js sin acceso a cuentas.
  * No hay APIs para cuentas, órdenes o claves privadas.
  */
 public final class MainActivity extends Activity {
@@ -84,19 +86,20 @@ public final class MainActivity extends Activity {
 
     private final class MarketBridge {
         @JavascriptInterface
-        public void fetchCandles(String requestId,String asset,int granularity){
+        public void fetchCandles(String requestId,String asset,int granularity,int days){
+            int expectedDays=granularity==300?14:granularity==3600?50:
+                granularity==86400?300:-1;
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
-               !ASSETS.contains(asset)||
-               (granularity!=3600&&granularity!=86400)){
-                emit(requestId,"Solicitud inválida. Solo activos y periodos permitidos.",null,granularity);
+               !ASSETS.contains(asset)||expectedDays<0||days!=expectedDays){
+                emit(requestId,"Solicitud inválida: fuente o ventana no permitida.",null,granularity);
                 return;
             }
             io.execute(()->{
                 try{
-                    JSONArray candles=fetchCoinbase(asset,granularity);
+                    JSONArray candles=fetchCoinbaseHistory(requestId,asset,granularity,days);
                     emit(requestId,null,candles,granularity);
                 }catch(Exception error){
-                    emit(requestId,error.getMessage(),null,granularity);
+                    emit(requestId,"Histórico: "+error.getMessage(),null,granularity);
                 }
             });
         }
@@ -121,7 +124,7 @@ public final class MainActivity extends Activity {
         conn.setConnectTimeout(14000);
         conn.setReadTimeout(17000);
         conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.1 (public market research)");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/2.0 (public market research)");
         try {
             int code=conn.getResponseCode();
             if(code!=200)throw new IOException("Cotización: HTTP "+code+
@@ -149,35 +152,88 @@ public final class MainActivity extends Activity {
             return result;
         }finally{conn.disconnect();}
     }
-    private static JSONArray fetchCoinbase(String asset,int granularity) throws Exception {
-        final String api="https://api.exchange.coinbase.com/products/"+asset+
-            "/candles?granularity="+granularity;
-        HttpURLConnection conn=(HttpURLConnection)new URL(api).openConnection();
-        conn.setInstanceFollowRedirects(false);
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(14000);
-        conn.setReadTimeout(17000);
-        conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.1 (public market research)");
-        try {
-            int code=conn.getResponseCode();
-            if(code!=200)throw new IOException("Mercado: HTTP "+code+
-                (code==429?" (límite de solicitudes)":""));
-            ByteArrayOutputStream bytes=new ByteArrayOutputStream();
-            try(InputStream input=conn.getInputStream()){
-                byte[] block=new byte[8192];
-                int len;
-                while((len=input.read(block))!=-1){
-                    if(bytes.size()+len>MAX_NETWORK_BYTES)
-                        throw new IOException("Respuesta de datos demasiado grande");
-                    bytes.write(block,0,len);
+    // 14 días de 5m; 50 días de 1h; 300 días de 1d.
+    // Cada consulta a Coinbase tiene una ventana <300 velas. Nunca se inventan
+    // velas faltantes ni se mezcla un activo con otro al cambiar la selección.
+    private JSONArray fetchCoinbaseHistory(String requestId,String asset,
+            int granularity,int days) throws Exception {
+        long end=(System.currentTimeMillis()/1000L/granularity)*granularity;
+        long earliest=end-days*86400L;
+        int total=(int)Math.ceil((end-earliest)/(280.0*granularity));
+        if(total<1||total>20)throw new IOException("Presupuesto de consultas excedido");
+        TreeMap<Long,JSONArray> candles=new TreeMap<>();
+        int count=0;
+        while(end>earliest){
+            long start=Math.max(earliest,end-280L*granularity);
+            JSONArray page=fetchCoinbaseWindow(asset,granularity,start,end);
+            for(int k=0;k<page.length();k++){
+                JSONArray bar=page.optJSONArray(k);
+                if(bar==null||bar.length()<6)continue;
+                long t=bar.optLong(0,-1);
+                // Solo velas cerradas, dentro de la ventana solicitada.
+                if(t>=start&&t<end&&t%granularity==0&&
+                   t+granularity*1L<=System.currentTimeMillis()/1000L){
+                    JSONArray before=candles.putIfAbsent(t,bar);
+                    if(before!=null&&!before.toString().equals(bar.toString()))
+                        throw new IOException("Velas contradictorias desde la fuente");
                 }
             }
-            JSONArray array=new JSONArray(bytes.toString(StandardCharsets.UTF_8.name()));
-            if(array.length()==0)throw new IOException("La fuente devolvió cero velas");
-            if(array.length()>400)throw new IOException("Volumen de datos inesperado");
-            return array;
-        }finally{conn.disconnect();}
+            count++;
+            emitProgress(requestId,count,total);
+            end=start;
+            if(end>earliest)Thread.sleep(130);
+        }
+        if(candles.size()<10)throw new IOException("Historial verificado insuficiente");
+        if(candles.size()>5000)throw new IOException("Exceso de velas recibidas");
+        JSONArray ordered=new JSONArray();
+        for(JSONArray bar:candles.values())ordered.put(bar);
+        return ordered;
+    }
+    private static JSONArray fetchCoinbaseWindow(String asset,int granularity,
+            long from,long to) throws Exception {
+        final String api="https://api.exchange.coinbase.com/products/"+asset+
+          "/candles?granularity="+granularity+
+          "&start="+Instant.ofEpochSecond(from).toString()+
+          "&end="+Instant.ofEpochSecond(to).toString();
+        IOException latest=null;
+        for(int attempt=0;attempt<2;attempt++){
+            HttpURLConnection conn=(HttpURLConnection)new URL(api).openConnection();
+            conn.setInstanceFollowRedirects(false);
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(8000);
+            conn.setReadTimeout(11000);
+            conn.setRequestProperty("Accept","application/json");
+            conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/2.0 (public market research)");
+            try{
+                int code=conn.getResponseCode();
+                if(code==429&&attempt==0){
+                    latest=new IOException("Coinbase HTTP 429: límite de consultas");
+                }else if(code!=200){
+                    throw new IOException("Coinbase HTTP "+code+" (no usar datos inventados)");
+                }else{
+                    ByteArrayOutputStream bytes=new ByteArrayOutputStream();
+                    try(InputStream input=conn.getInputStream()){
+                        byte[] block=new byte[8192];int len;
+                        while((len=input.read(block))!=-1){
+                            if(bytes.size()+len>MAX_NETWORK_BYTES)
+                                throw new IOException("Demasiados bytes del proveedor");
+                            bytes.write(block,0,len);
+                        }
+                    }
+                    JSONArray result=new JSONArray(bytes.toString(StandardCharsets.UTF_8.name()));
+                    if(result.length()>300)throw new IOException("Respuesta inesperada: más de 300 velas");
+                    return result;
+                }
+            }finally{conn.disconnect();}
+            if(latest!=null&&attempt==0)Thread.sleep(1200);
+        }
+        throw latest==null?new IOException("Fuente no disponible"):latest;
+    }
+    private void emitProgress(String requestId,int done,int total){
+        if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+        final String javascript="window.LaplaceMobile&&window.LaplaceMobile.progress("+
+            JSONObject.quote(requestId)+","+done+","+total+")";
+        runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(javascript,null);});
     }
     private void emitQuote(String requestId,String error,JSONObject quote){
         if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
