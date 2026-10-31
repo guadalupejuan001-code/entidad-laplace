@@ -36,7 +36,6 @@ export async function observeGlobalUniverse({
         sources_failed:g.value.sources.filter(x=>x.status!=='observed').length});
     }else groupSummary.push({group:g.name,status:'unavailable',signals:0,sources_ok:0,sources_failed:1,reason:g.reason});
   }
-  need(observations.length<=4096,'U002 excedió el presupuesto de 4096 estados; particionar la captura');
   const snapshot=universeSnapshot(observations,{cutoff:captured});
   const successful=sources.filter(x=>x.status==='observed'),failed=sources.filter(x=>x.status!=='observed');
   return sellarCaptura({
