@@ -151,38 +151,73 @@ window.LaplaceMobile={
   }
 };
 async function refresh(){
-  if(busy)return;busy=true;
-  $('refresh').disabled=true;
+  // Cada consulta queda ligada al activo que la originó. Las respuestas
+  // anteriores NO pueden sobrescribir precios de otro activo.
+  const epoch=++refreshEpoch,requested=asset;
+  busy=true;$('refresh').disabled=true;
+  $('quoteStatus').textContent='CONSULTANDO';
+  document.querySelector('.hero').dataset.mode='fetching';
   updateConnection('CONSULTANDO');
-  $('dataStatus').textContent='Recibiendo velas históricas de Coinbase Exchange…';
-  status('Consultando velas horarias y diarias. No se inventarán precios.');
-  const results=await Promise.allSettled([remoteCandles(1),remoteCandles(24)]);
-  hourly=results[0].status==='fulfilled'?results[0].value:null;
-  daily=results[1].status==='fulfilled'?results[1].value:null;
-  models.clear();lastForecast=null;
-  const good=Number(!!hourly)+Number(!!daily);
-  const best=hourly?.at(-1)??daily?.at(-1);
-  if(best){
-    $('lastPrice').textContent=money(best.close);
-    $('priceTime').textContent='Última vela: '+date(best.time);
-    $('dataStatus').textContent=(hourly?hourly.length+' velas 1 h':'1 h no disponible')+
-      ' · '+(daily?daily.length+' velas diarias':'Diario no disponible');
-    status('Datos observados. Puedes entrenar un modelo temporal local.');
-    updateConnection(good===2?'DATOS LISTOS':'PARCIAL',true);
-    renderSignals();
-    evaluateHistory();
-  } else {
-    const errors=results.map(x=>x.status==='rejected'?x.reason.message:'').filter(Boolean);
-    $('lastPrice').textContent='—';$('priceTime').textContent='Sin datos verificables';
-    $('dataStatus').textContent=errors.join(' · ').slice(0,450);
-    status('No hay cotizaciones: conecta internet y pulsa Actualizar.',true);
-    updateConnection('SIN DATOS');
+  $('dataStatus').textContent='Consultando precios y velas públicas de '+requested+'…';
+  status('Consultando '+requested+'. Los precios aparecerán arriba si la fuente responde.');
+  const assets=Engine.ALLOWED_ASSETS;
+  try{
+    const results=await Promise.allSettled([
+      remoteCandles(1,requested),remoteCandles(24,requested),
+      ...assets.map(symbol=>remoteQuote(symbol))
+    ]);
+    if(epoch!==refreshEpoch||requested!==asset)return;
+    hourly=results[0].status==='fulfilled'?results[0].value:null;
+    daily=results[1].status==='fulfilled'?results[1].value:null;
+    for(let i=0;i<assets.length;i++)
+      if(results[i+2].status==='fulfilled'&&results[i+2].value.asset===assets[i])
+        quotes.set(assets[i],results[i+2].value);
+      else quotes.delete(assets[i]);
+    models.clear();lastForecast=null;
+    const available=Number(Boolean(hourly))+Number(Boolean(daily));
+    const latest=hourly?.at(-1)??daily?.at(-1);
+    const errors=results.slice(0,2).map(x=>
+      x.status==='rejected'?x.reason?.message:'').filter(Boolean);
+    if(latest){
+      $('lastPrice').textContent=money(latest.close);
+      $('priceTime').textContent='Cierre histórico: '+date(latest.time);
+      $('dataStatus').textContent=(hourly?hourly.length+' velas horarias':'Sin velas horarias')+
+        ' · '+(daily?daily.length+' velas diarias':'Sin velas diarias')+
+        (errors.length?' · '+errors.join(' / ').slice(0,160):'');
+      success('Precio de '+requested+' recibido. Selecciona el tiempo y pulsa Entrenar o Proyectar.');
+      updateConnection(available===2?'DATOS LISTOS':'DATOS PARCIALES',true);
+      renderSignals();evaluateHistory();
+    }else{
+      $('lastPrice').textContent='—';
+      $('priceTime').textContent='No se recibió un cierre verificable';
+      $('dataStatus').textContent=(errors.join(' · ')||'Sin velas válidas').slice(0,400);
+      if(quotes.has(requested)){
+        status('Ya puedes ver la cotización de '+requested+' arriba, pero faltan velas para entrenar. '+errors.join(' · '),true);
+        updateConnection('SOLO PRECIO',true);
+      }else{
+        status('No llegaron precios ni velas de '+requested+'. Revisa Internet y toca Actualizar. '+errors.join(' · '),true);
+        updateConnection('SIN DATOS');
+      }
+      renderSignals();
+    }
+    $('estimate').textContent='—';$('relativeChange').textContent='Pulsa Proyectar';
+    $('modelLabel').textContent='SIN ENTRENAR';
+    $('trainingCount').textContent='—';$('testingCount').textContent='—';
+    $('modelError').textContent='—';$('baselineError').textContent='—';
+    renderQuotes();drawChart();
+  }catch(error){
+    if(epoch===refreshEpoch){
+      status('Error en el panel: '+error.message,true);
+      updateConnection('ERROR');
+      renderQuotes();
+    }
+  }finally{
+    if(epoch===refreshEpoch){
+      $('refresh').disabled=false;busy=false;
+      document.querySelector('.hero').dataset.mode='idle';
+      drawChart();
+    }
   }
-  $('estimate').textContent='—';$('relativeChange').textContent='Pulsa Proyectar';
-  $('modelLabel').textContent='SIN ENTRENAR';
-  $('trainingCount').textContent='—';$('testingCount').textContent='—';
-  $('modelError').textContent='—';$('baselineError').textContent='—';
-  $('refresh').disabled=false;busy=false;drawChart();
 }
 function trained(resolution){
   const existing=models.get(resolution);if(existing)return existing;
@@ -202,8 +237,9 @@ function actionTrain(){
   try{
     const model=trained(Engine.selectResolution(hours));
     showModel(model);
-    status('Entrenado con '+model.trainPairs+' pares; '+
+    success('Entrenado con '+model.trainPairs+' pares; '+
       model.holdoutPairs+' casos reservados. Modelo elegido: '+model.description+'.');
+    document.querySelector('.hero').dataset.mode='trained';
     showTests(model);drawChart();
   }catch(error){status(error.message,true)}
 }
@@ -273,6 +309,7 @@ function actionForecast(){
       '. Intervalo no calibrado y sin ventaja predictiva certificada.';
     status('Escenario calculado para '+hourLabel(hours)+
       '. Modelo: '+p.modelName+'. No constituye una recomendación.');
+    document.querySelector('.hero').dataset.mode='forecast';
     saveProjection(p,model);drawChart();
   }catch(error){status(error.message,true)}
 }
@@ -402,8 +439,17 @@ for(const b of document.querySelectorAll('[data-tab]'))
   b.addEventListener('click',()=>activate(b.dataset.tab));
 for(const b of document.querySelectorAll('[data-hours]'))
   b.addEventListener('click',()=>selectHours(b.dataset.hours));
-$('asset').addEventListener('change',()=>{asset=$('asset').value;hourly=null;daily=null;
-  models.clear();lastForecast=null;log=log;refresh()});
+function changeAsset(next){
+  if(!Engine.ALLOWED_ASSETS.includes(next)||asset===next)return;
+  asset=next;$('asset').value=next;
+  hourly=null;daily=null;models.clear();lastForecast=null;
+  $('lastPrice').textContent='—';$('priceTime').textContent='Consultando '+next+'…';
+  $('estimate').textContent='—';$('relativeChange').textContent='Pulsa Proyectar';
+  renderQuotes();refresh();
+}
+$('asset').addEventListener('change',()=>changeAsset($('asset').value));
+for(const button of document.querySelectorAll('[data-quote-asset]'))
+  button.addEventListener('click',()=>changeAsset(button.dataset.quoteAsset));
 $('refresh').addEventListener('click',refresh);
 $('train').addEventListener('click',actionTrain);
 $('test').addEventListener('click',actionTest);
@@ -413,7 +459,7 @@ $('clearHistory').addEventListener('click',()=>{
   log=[];try{localStorage.removeItem(STORAGE)}catch(error){}renderHistory();
 });
 window.addEventListener('resize',drawChart);
-selectHours(1);renderSignals();showWorld();renderHistory();drawChart();
+selectHours(1);renderQuotes();renderSignals();showWorld();renderHistory();drawChart();
 updateConnection('EN ESPERA');
 setTimeout(refresh,200);
 })();
