@@ -52,7 +52,7 @@ test('la app no inventa fuentes: la matemática y los controles están conectado
 });
 test('el archivo F001 empaquetado coincide con el código del repositorio',()=>{
  const root=path.resolve(__dirname,'../../..');
- const strip=s=>s.replace(/\bexport\s+(?=(?:const|function)\s)/g,'');
+ const strip=s=>s.replace(/\bexport\s+(?=(?:const|function|async function)\s)/g,'');
  const bundle=read('fusion-integral.js');
  for(const file of ['prediccion/fusion-temporal.mjs','ecuacion/laplace-financiero.mjs']){
   const code=strip(fs.readFileSync(path.resolve(root,file),'utf8'));

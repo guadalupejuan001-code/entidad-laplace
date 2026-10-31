@@ -165,7 +165,7 @@ function fusionTemporal({quote,series={},world=null,asOf}){
     calculation_policy:'Todas las entradas integradas en un corte; contexto afecta incertidumbre y no predicción central.',
     backtest_certified:false,financial_advantage_demonstrated:false,automatic_trading:false};
 }
-export async function adquirirEnParalelo(collectors,{now=()=>new Date().toISOString()}={}){
+async function adquirirEnParalelo(collectors,{now=()=>new Date().toISOString()}={}){
   const names=['quote','bars_300','bars_3600','bars_86400','world'];
   need(names.every(name=>typeof collectors[name]==='function'),'Faltan recolectores');
   const started=now(),results=await Promise.allSettled(names.map(name=>collectors[name]()));

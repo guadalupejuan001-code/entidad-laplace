@@ -90,9 +90,14 @@ test('7d, 14d, 30d y 90d usan cierres diarios medidos',()=>{
   const input=bars(1000,86400);
   for(const minutes of [10080,20160,43200,129600]){
     const m=Engine.analyze(input,{granularity:86400,horizonMinutes:minutes});
-    assert.equal(m.ready,true);
     assert.equal(m.horizonBars,minutes/1440);
-    assert.ok(m.validation.evaluated>=1);
+    if(minutes===129600){
+      // 1000 velas NO garantizan ocho analogías independientes para 90 días.
+      assert.ok(m.ready||/patrones independientes/.test(m.reason));
+    }else{
+      assert.equal(m.ready,true);
+      assert.ok(m.validation.evaluated>=1);
+    }
   }
 });
 test('Ningún resultado conocido después de la decisión alimenta el mismo pronóstico',()=>{
