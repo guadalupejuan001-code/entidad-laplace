@@ -10,9 +10,9 @@ export const EF001_SCHEMA='laplace-financial-world-ef001-v1';
 export const FINANCIAL_FAMILIES=Object.freeze([
   'I001','P001','U001','U002','U003','U004','O001','D001','D002',
   'C001','B001','K001','M001','F001','V001','E001','E002','E003',
-  'E004','E005','P002','P003','P004','P005','externo'
+  'E004','E005','P002','P003','P004','P005','EF001','X002','externo'
 ]);
-const FAMILIES=new Set(FINANCIAL_FAMILIES);
+// Las familias conocidas son referencias, nunca una lista cerrada de la realidad.
 const STATUS=new Set(['observed','estimated','missing','suppressed','unavailable','unknown']);
 const ACCESS=new Set(['observed','partial','unavailable','restricted','requires_credentials','requires_license','not_connected','unknown']);
 const VALUETYPES=new Set(['exact_decimal','float64_approx','none']);
@@ -26,7 +26,7 @@ const time=(x)=>utcTime(x);
 const maybeTime=x=>x===undefined||x===null?null:time(x);
 const object=(x,name)=>{need(x&&typeof x==='object'&&!Array.isArray(x),name+' debe ser objeto');stable(x);return x};
 const digest=(x,name)=>{need(typeof x==='string'&&SHA.test(x),name+' debe ser SHA256');return x};
-const family=x=>{need(FAMILIES.has(x),'familia financiera desconocida: '+x);return x};
+const family=x=>text(x,'familia',80);
 export const recordSha=body=>sha(stable(body));
 export function normalizarObservacion(f){
   need(f&&typeof f==='object'&&!Array.isArray(f),'observacion EF001 invalida');
