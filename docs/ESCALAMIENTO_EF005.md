@@ -76,6 +76,13 @@ o particionado, no desactivar verificaciones.
 La reconstrucción importa un archivo a la vez, conservando hashes,
 revisiones, known_at y la semántica original.
 
+Los informes de abstención EF004 se nombran por hash de captura y
+versión del código/configuración del modelo. Cuando cambia el criterio
+de evidencia, el informe nuevo no sobreescribe el anterior ni deja
+un reporte anticuado con el requisito previo de 48 capturas como si
+fuera el criterio vigente.
+
+
 ## Configuración opcional de EF004
 
 Sin variables específicas, EF004 analiza todas las series elegibles,
