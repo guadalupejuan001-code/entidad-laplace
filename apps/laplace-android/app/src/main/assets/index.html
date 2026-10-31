@@ -4,7 +4,10 @@
 <meta name="theme-color" content="#07111e"><title>LAPLACE · Android</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
-<script src="engine.js" defer></script><script src="app.js" defer></script>
+<script src="engine.js" defer></script>
+<script src="math-pde.js" defer></script>
+<script src="pde-panel.js" defer></script>
+<script src="app.js" defer></script>
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
@@ -17,6 +20,7 @@
     <button type="button" data-tab="panel" aria-current="page">Panel</button>
     <button type="button" data-tab="signals">Señales</button>
     <button type="button" data-tab="tests">Pruebas</button>
+    <button type="button" data-tab="equation">Ecuación</button>
     <button type="button" data-tab="world">Mundo</button>
   </nav>
 
@@ -177,6 +181,62 @@
       <button id="clearHistory" class="secondary" type="button">Limpiar registro local</button></article>
   </section>
 
+
+  <section id="equation" class="tabpage" hidden>
+    <article class="card pde-intro">
+      <div class="section-head"><div><small class="eyebrow">MATEMÁTICA · LAPLACE PDE</small>
+        <h2>∇²φ = 0</h2></div><span class="outline-tag">V1.1 · REAL</span></div>
+      <p>Resuelve un campo estacionario sujeto a condiciones de frontera. La ecuación se ejecuta <strong>en tu teléfono, sin Internet</strong>. No calcula precios futuros.</p>
+      <div class="pde-math">∂²φ/∂x² + ∂²φ/∂y² = 0</div>
+      <p class="fineprint">Método: diferencias finitas + SOR. Los colores representan valores matemáticos, no órdenes ni flujos de capital.</p>
+    </article>
+    <article class="card">
+      <div class="section-head"><div><small class="eyebrow">CAMPO ARMÓNICO</small><h2>Laboratorio 2D</h2></div><span class="outline-tag">DIRICHLET</span></div>
+      <label class="pde-label" for="pdePreset">Condiciones de frontera</label>
+      <select id="pdePreset" aria-label="Elegir ejemplo o definir fronteras">
+        <option value="custom">Valores de frontera personalizados</option>
+        <option value="linear">Verificación analítica: campo lineal</option>
+        <option value="quadratic">Verificación analítica: x² − y²</option>
+      </select>
+      <div class="pde-fields" id="pdeFields">
+        <label>Izquierda<input id="pdeLeft" type="number" value="0" step="any" inputmode="decimal"></label>
+        <label>Derecha<input id="pdeRight" type="number" value="100" step="any" inputmode="decimal"></label>
+        <label>Arriba<input id="pdeTop" type="number" value="50" step="any" inputmode="decimal"></label>
+        <label>Abajo<input id="pdeBottom" type="number" value="50" step="any" inputmode="decimal"></label>
+      </div>
+      <label class="pde-label" for="pdeSize">Resolución de malla</label>
+      <select id="pdeSize" aria-label="Resolución de la malla">
+        <option value="11">11 × 11</option>
+        <option value="21" selected>21 × 21</option>
+        <option value="31">31 × 31</option>
+        <option value="41">41 × 41</option>
+      </select>
+      <button type="button" id="pdeSolve" class="pde-primary">Resolver ∇²φ = 0</button>
+      <p id="pdeStatus" class="pde-status" role="status" aria-live="polite">Elige los límites y pulsa Resolver.</p>
+      <canvas id="pdeCanvas" class="pde-canvas" height="320" aria-label="Mapa de calor del campo armónico calculado"></canvas>
+      <div class="pde-scale"><span id="pdeMin">Mínimo —</span><span id="pdeMax">Máximo —</span></div>
+      <div class="stats pde-stats">
+        <div><span>Iteraciones SOR</span><strong id="pdeIterations">—</strong></div>
+        <div><span>Residuo máximo |∇²φ|</span><strong id="pdeResidual">—</strong></div>
+        <div><span>Celdas resueltas</span><strong id="pdePoints">—</strong></div>
+        <div><span>Convergencia</span><strong id="pdeConverged">—</strong></div>
+      </div>
+    </article>
+    <article class="card">
+      <div class="section-head"><div><small class="eyebrow">ESTADOS CONECTADOS</small><h2>Laplaciano de grafo</h2></div><span class="outline-tag">Lφ = 0</span></div>
+      <p>Prueba una red A — X — B. A y B son valores conocidos. X es el nodo desconocido. Introduce pesos positivos para resolver su equilibrio ponderado.</p>
+      <div class="pde-fields">
+        <label>Estado A<input type="number" id="graphA" value="0" step="any" inputmode="decimal"></label>
+        <label>Estado B<input type="number" id="graphB" value="100" step="any" inputmode="decimal"></label>
+        <label>Peso A → X<input type="number" id="graphWA" value="1" min="0.001" step="any" inputmode="decimal"></label>
+        <label>Peso B → X<input type="number" id="graphWB" value="1" min="0.001" step="any" inputmode="decimal"></label>
+      </div>
+      <button id="graphSolve" type="button" class="pde-primary secondary">Calcular estado X</button>
+      <div class="pde-result"><small>VALOR ARMÓNICO DE X</small><strong id="graphValue">—</strong></div>
+      <p id="graphStatus" role="status" aria-live="polite" class="pde-status">Introduce nodos y pesos para calcular.</p>
+      <p class="fineprint">La topología y los pesos son supuestos introducidos por ti, no relaciones financieras demostradas. Un valor de equilibrio NO equivale a un pronóstico temporal.</p>
+    </article>
+  </section>
   <section id="world" class="tabpage" hidden>
     <article class="card"><div class="section-head"><div><small class="eyebrow">EF005 · ARCHIVO</small><h2>Estados financieros mundiales</h2></div><span class="outline-tag">SNAPSHOT</span></div>
       <div class="two-metrics world-metrics">

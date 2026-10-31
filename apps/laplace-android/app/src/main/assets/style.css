@@ -211,3 +211,35 @@ footer{text-align:center;color:#6685a3;font-size:10px;letter-spacing:.08em;
   .portal .swirl,.portal .triangle,#streams path,.hero::after{animation:none!important}
   .portal .moving-particles{display:none}
 }
+
+/* LAPLACE 1.1: laboratorio matemático de campo estacionario. */
+#equation strong{color:#daf6ff}
+.pde-math{font-family:Georgia,"Times New Roman",serif;font-size:clamp(19px,5vw,28px);
+  padding:12px;margin:10px 0;background:#091c31;border:1px solid #2b5772;
+  border-radius:9px;color:#a4e8ff;text-align:center;letter-spacing:.025em}
+.pde-label{display:block;font-size:11px;color:#9fc2dd;margin:11px 0 5px}
+.pde-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin:12px 0}
+.pde-fields label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9fb9d2}
+.pde-fields input{width:100%;min-width:0;border-radius:9px;border:1px solid #315471;
+  background:#091b2c;color:#e7f7ff;padding:12px 10px;font:inherit;font-size:14px}
+.pde-fields input:focus-visible{outline:2px solid #6ce8ff;outline-offset:1px}
+.pde-primary{width:100%;min-height:49px;margin-top:13px;border-radius:10px;
+  border:1px solid #53b3e3;background:linear-gradient(135deg,#145d92,#26499e);
+  color:#f4fbff;font-size:13px;font-weight:700;letter-spacing:.02em}
+.pde-primary:active{filter:brightness(1.18)}
+.pde-status{border-left:3px solid #4389bd;padding:8px 10px;color:#b4d8f0!important;
+  font-size:11px!important;background:#0a2133;border-radius:0 8px 8px 0}
+.pde-status[data-state=error]{border-left-color:#f58983;color:#ffc6bd!important}
+.pde-status[data-state=success]{border-left-color:#59ddbd;color:#c2f7e9!important}
+.pde-canvas{display:block;width:100%;height:300px;background:#061626;
+  border:1px solid #294a69;border-radius:10px;margin-top:10px}
+.pde-scale{display:flex;justify-content:space-between;font-size:10px;
+  color:#98b6cc;margin:7px 0}
+.pde-stats{margin-top:14px}
+.pde-result{border:1px solid #2d607c;background:#0a263b;border-radius:12px;
+  padding:17px;text-align:center;margin-top:13px}
+.pde-result small{display:block;letter-spacing:.1em;font-size:10px;color:#8caec7}
+.pde-result strong{display:block;font-variant-numeric:tabular-nums;font-size:30px;
+  font-weight:700;letter-spacing:-.03em;margin:7px}
+@media(max-width:350px){.pde-fields{gap:6px}.pde-fields input{padding:9px 6px}}

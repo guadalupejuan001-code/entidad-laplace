@@ -5,6 +5,24 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Versión Android 1.1 — ecuación de Laplace real en el teléfono
+
+- Nueva pestaña **Ecuación**, que integra el solucionador PDE auténtico de
+  `ecuacion/laplace-pde.mjs` y el de grafos `ecuacion/laplace-grafo.mjs`,
+  empaquetados dentro del APK (JavaScript sin conexión de red).
+- Campo 2D con fronteras personalizadas, mallas 11/21/31/41, heatmap, número de
+  iteraciones, tolerancia y residuo calculado. Dos verificaciones analíticas
+  adicionales: campo lineal y x²-y².
+- Grafo A—X—B con valores y pesos introducidos por el usuario: resuelve el
+  estado intermedio si existe una frontera conocida; **no inventa señales**.
+- Se conservan precios BTC/ETH/SOL, ocho horizontes, vórtice, mundo EF002
+  verificado y modelo AR(1) original en la pestaña Panel.
+- **Importante**: la ecuación ∇²φ=0 es estacionaria. La nueva pestaña no
+  predice un precio ni sustituye EF004 con una fórmula no validada.
+- `versionCode 3`, `versionName 1.1.0-LAPLACE-PDE`. APK de depuración
+  firmada en CI; si la firma difiere de la versión instalada, Android puede
+  exigir desinstalar la anterior (perderá el registro local).
+
 ## Versión Android 1.0 — precios y controles visibles
 
 Los tres precios públicos de BTC/USD, ETH/USD y SOL/USD aparecen **arriba del
