@@ -49,6 +49,25 @@ jobs:
           npm run test:input
       - uses: actions/checkout@v4
         with:
+          ref: laplace-archivo
+          path: deps/archivo
+          persist-credentials: false
+      - name: Informes EF005 con identidad por codigo y sin umbral 48
+        run: |
+          set -euo pipefail
+          node tools/nucleo-demonio.mjs ejecutar deps/archivo/capturas /tmp/ef005-policy > /tmp/ef005-policy-summary.json
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const x=JSON.parse(readFileSync("/tmp/ef005-policy-summary.json","utf8"));
+            assert.equal(x.status,"abstained");
+            assert.equal(x.minimum_captures,null);
+            assert.match(x.saved_path,/status-[a-f0-9]{64}-[a-f0-9]{12}\.json$/);
+            assert.match(x.model_policy_sha256,/^[a-f0-9]{64}$/);
+            assert.equal(x.production_activation_allowed,false);
+          '
+      - uses: actions/checkout@v4
+        with:
           repository: guadalupejuan001-code/mundo-X
           ref: 3d29556eff4d1079c791abab38e203fc209f1722
           path: deps/mundo-X
