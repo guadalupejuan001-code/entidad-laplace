@@ -30,6 +30,9 @@ jobs:
           node --check tests/demonio-ef004.test.mjs
           node --check demonio/evaluacion-ef004.mjs
           node --check tools/nucleo-demonio.mjs
+          node --check demonio/puente-xi-ef004.mjs
+          node --check tools/probar-demonio-xi.mjs
+          node --check tests/demonio-xi-ef004.test.mjs
           node --check tests/demonio-evaluacion-ef004.test.mjs
       - name: Aprendizaje y separacion temporal EF004
         run: npm run test:ef004
@@ -50,6 +53,37 @@ jobs:
             assert.equal(x.no_synthetic_data_used_for_live_cycle,true);
             assert.equal(x.automatic_trading,false);
             assert.equal(x.production_activation_allowed,false);
+          '
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - name: Compilar ejecutor XI/Ether original fijado
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-X rev-parse HEAD)" = 3d29556eff4d1079c791abab38e203fc209f1722
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Probar retención de estados EF004 en runtime XI/Ether original
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+        run: |
+          set -euo pipefail
+          npm run test:ef004
+          node tools/probar-demonio-xi.mjs deps/archivo/capturas ./build-ether/mundo_x_quantum > /tmp/ef004-xi-proof.json
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const p=JSON.parse(readFileSync("/tmp/ef004-xi-proof.json","utf8"));
+            assert.equal(p.roundtrip_verificado,true);
+            assert.ok(p.raw_states>0&&p.projected>0);
+            assert.equal(p.automatic_trading,false);
+            assert.equal(p.forecasts_generated,0);
+            console.log(JSON.stringify({raw:p.raw_states,projected:p.projected,
+              batches:p.batches,materialized:p.total_materialization_bytes,
+              original_ether_verified:p.roundtrip_verificado}));
           '
       - name: Regresiones EF001 EF002 EF003 y V001
         run: |
