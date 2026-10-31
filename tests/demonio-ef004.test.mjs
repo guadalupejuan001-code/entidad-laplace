@@ -41,7 +41,8 @@ test('EF004 un archivo o un snapshot nunca significa aprendizaje mundial',()=>{
   const model=aprenderNucleoEF004(one);
   assert.equal(model.status,'abstained');
   assert.equal(model.reason,'insufficient_independent_capture_history');
-  assert.equal(model.minimum_captures,48);
+  assert.equal(model.minimum_captures,null);
+  assert.ok(model.required_training_pairs>=1);
   assert.equal(model.production_activation_allowed,false);
   assert.deepEqual(model.trajectory,[]);
 });
@@ -150,4 +151,73 @@ test('EF004 un reporte macro trimestral repetido no es un objetivo intradía',()
   assert.ok(selected.excluded.some(x=>x.reason==='insufficient_training_updates'));
   assert.equal(aprenderNucleoEF004(caps).model.selected_series.some(s=>
     s.variable==='CREDIT_Q2'),false);
+});
+
+
+test('EF005 aprende con suficientes transiciones sin esperar un número fijo de 48 capturas',()=>{
+  const caps=synthetic(20);
+  const result=aprenderNucleoEF004(caps);
+  assert.equal(result.status,'experimental_model_frozen');
+  assert.equal(result.consecutive_captures,20);
+  assert.ok(result.model.train_pairs>=6);
+  assert.equal(result.production_activation_allowed,false);
+});
+
+test('EF005 admite más de 2500 capturas sin descartar períodos arbitrariamente',()=>{
+  const caps=[];
+  const times=Array.from({length:2501},(_,i)=>iso(START+6*HOUR*i));
+  for(let i=0;i<times.length;i++){
+    const record={id:'index-'+i,domain:'mercado_global',variable:'index',
+      observed_at:times[i],known_at:times[i],
+      value:1+i/100,unit:'USD',source_url:'https://example.org/market'};
+    caps.push(sellarCaptura({schema:'laplace-universo-global-u003-v4',at:times[i],
+      universal_state:universeSnapshot([record],{cutoff:times[i]}),
+      source_status:[],coverage:{},automatic_trading:false}));
+  }
+  const panel=prepararHistoria(caps);
+  assert.equal(panel.all_captures,2501);
+  assert.equal(panel.contiguous_captures,2501);
+  assert.equal(panel.cadence_hours,6);
+  assert.equal(panel.no_fixed_capture_limit,true);
+});
+
+test('EF005 permite cadencias subhorarias y más de 8 pasos de evolución',()=>{
+  const original=synthetic(24);
+  const caps=original.map((x,i)=>{
+    const at=iso(START+i*HOUR/2);
+    const data=x.universal_state.states.map(row=>({
+      ...row,observed_at:at,known_at:at}));
+    return sellarCaptura({...x,at,universal_state:universeSnapshot(data,{cutoff:at})});
+  });
+  const model=aprenderNucleoEF004(caps,{maxSteps:20});
+  assert.equal(model.status,'experimental_model_frozen');
+  assert.equal(model.cadence_hours,.5);
+  assert.equal(model.cadence_inferred,true);
+  assert.equal(model.trajectory.length,20);
+  assert.equal(Date.parse(model.trajectory[1].target_at)-
+    Date.parse(model.trajectory[0].target_at),30*60*1000);
+});
+
+test('EF005 no limita por código a 16 señales ni seis objetivos',()=>{
+  const caps=[];
+  const K=21,N=42;
+  for(let i=0;i<N;i++){
+    const at=iso(START+i*6*HOUR);
+    const data=Array.from({length:K},(_,k)=>({
+      id:'sector-'+k+'-'+i,domain:'sector_'+k,variable:'price_'+k,
+      observed_at:at,known_at:at,
+      value:100+k+2*Math.sin(i*(.3+k*.04))+i*.02,
+      unit:'USD',source_url:'https://example.org/prices'
+    }));
+    caps.push(sellarCaptura({schema:'laplace-universo-global-u003-v4',at,
+      universal_state:universeSnapshot(data,{cutoff:at}),
+      source_status:[],coverage:{},automatic_trading:false}));
+  }
+  const out=aprenderNucleoEF004(caps,{maxSteps:12});
+  assert.equal(out.status,'experimental_model_frozen');
+  assert.equal(out.model.selected_series.length,K);
+  assert.equal(out.selected_targets,K);
+  assert.equal(out.trajectory.length,12);
+  assert.equal(out.trajectory[0].states.length,K);
+  assert.equal(out.no_hard_capture_series_target_or_horizon_caps,true);
 });
