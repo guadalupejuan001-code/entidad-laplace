@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {Store} from '../input/almacen.mjs';
 import {sha,rawRecord} from '../input/contrato.mjs';
 import {universeSnapshot} from '../universo/estados.mjs';
@@ -317,4 +318,21 @@ test('EF001 puente nativo XI/Ether original valida bytes sin reemplazar runtime'
   assert.equal(out.exact_roundtrip,true);
   assert.equal(out.results[0].materialized_bytes,48);
   assert.equal(out.results[0].active_qubits,0);
+});
+
+
+test('EF001 importa captura U003 original archivada, sin inventar las 563 señales',async()=>{
+  const s=await db();
+  try{
+    const raw=JSON.parse(readFileSync(new URL('../evidencia/continuidad-u003-20261030/captura-integrada.json',import.meta.url),'utf8'));
+    const result=await importarU003(s,raw);
+    assert.equal(raw.universal_state.known_states,563);
+    assert.equal(result.total_observations,563);
+    assert.equal(result.added_observations,563);
+    assert.equal(result.complete_world,false);
+    const asOf=await consultarCorte(s,{asOf:raw.at});
+    assert.ok(asOf.states.length>400);
+    assert.ok(asOf.states.every(x=>new Date(x.known_at).toISOString()<=raw.at));
+    assert.equal(asOf.global_coverage_complete,false);
+  }finally{await s.close()}
 });
