@@ -33,6 +33,24 @@ jobs:
           node --check tests/demonio-evaluacion-ef004.test.mjs
       - name: Aprendizaje y separacion temporal EF004
         run: npm run test:ef004
+      - uses: actions/checkout@v4
+        with:
+          ref: laplace-archivo
+          path: deps/archivo
+          persist-credentials: false
+      - name: Verificar el núcleo contra la historia pública realmente archivada
+        run: |
+          set -euo pipefail
+          node tools/nucleo-demonio.mjs ejecutar deps/archivo/capturas /tmp/ef004-real
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const x=JSON.parse(readFileSync("/tmp/ef004-real/resumen.json","utf8"));
+            assert.ok(x.archive_count>=1);
+            assert.equal(x.no_synthetic_data_used_for_live_cycle,true);
+            assert.equal(x.automatic_trading,false);
+            assert.equal(x.production_activation_allowed,false);
+          '
       - name: Regresiones EF001 EF002 EF003 y V001
         run: |
           set -euo pipefail
