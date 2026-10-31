@@ -18,6 +18,7 @@ const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
 const label=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
 let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
+let xn01Busy=false,xn01Result=null;
 let integralResult=null,integralBusy=false;
 let loading=false,sequence=0,latestTest=null;
 const tickerStream=Live.createTracker();
@@ -52,6 +53,8 @@ function setActionAvailability(){
   $('refresh').disabled=loading;
   $('refresh').textContent=loading?'Consultando datos…':'Actualizar datos';
   $('integralRun').disabled=integralBusy;
+  $('xn01Run').disabled=xn01Busy||asset!=='BTC-USD';
+  $('xn01Run').textContent=xn01Busy?'Ejecutando XI original…':'Calcular dirección nativa XI';
 }
 
 /* WebSocket reception is a separate, explicitly labeled source.
@@ -180,6 +183,54 @@ function toggleLive(){
     $('liveDetail').textContent='No se pudo cambiar el estado de la conexión.';
   }
   updateLiveBanner();updateLivePreview();
+}
+
+
+/* Original native XN01 only: no JavaScript classification.
+ * Closed five-minute bars are mandatory; a live ticker is not a candle.
+ */
+function renderXN01(){
+  const r=xn01Result;
+  for(const id of ['xn01Direction','xn01Confidence','xn01PUp','xn01Support','xn01Prior','xn01Rows'])
+    $(id).textContent='—';
+  $('xn01Raw').textContent='Sin salida nativa todavía.';
+  if(!r)return;
+  $('xn01Direction').textContent=r.direction==='subida'?'SUBIDA ↑':'BAJADA ↓';
+  $('xn01Confidence').textContent=(r.confidence*100).toFixed(2)+' %';
+  $('xn01PUp').textContent=String(r.probability_up);
+  $('xn01Support').textContent=String(r.support);
+  $('xn01Prior').textContent=String(r.prior);
+  $('xn01Rows').textContent=String(r.training_rows);
+  $('xn01Raw').textContent=JSON.stringify({...r,
+    warning:'Confianza interna, no porcentaje de aciertos demostrados',
+    not_reimplemented_in_javascript:true
+  },null,2);
+}
+async function runXN01(){
+  if(xn01Busy)return;
+  xn01Busy=true;setActionAvailability();
+  $('xn01Status').textContent='Recuperando velas cerradas y ejecutando XI/Ether original…';
+  try{
+    if(asset!=='BTC-USD')throw Error('XN01 original sólo BTC mientras no se valide la ruta bursátil.');
+    if(typeof window.LaplaceBridge?.analyzeXN01!=='function')
+      throw Error('Ejecutor original JNI no está disponible; no se inventará confianza.');
+    const rows=historyGranularity===300&&history?.length>=64?history:
+      await remote({kind:'history',asset:'BTC-USD',granularity:300,days:14});
+    const closedAt=rows.at(-1).time+300;
+    if(Date.now()/1000-closedAt>750)
+      throw Error('Las velas de 5 minutos están desactualizadas.');
+    const bars=rows.slice(-240).map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume]);
+    xn01Result=await remote({kind:'xn01',asset:'BTC-USD',bars});
+    renderXN01();
+    $('xn01Status').textContent='XN01 ejecutado en XI/Ether: '+bars.length+
+      ' velas. Estado '+xn01Result.mask+', P(subida) '+xn01Result.probability_up+
+      ', confianza '+xn01Result.confidence+' (no precisión validada).';
+  }catch(e){
+    xn01Result=null;renderXN01();
+    $('xn01Status').textContent='XN01 se abstuvo: '+e.message;
+  }finally{
+    xn01Busy=false;setActionAvailability();
+  }
 }
 
 /* F001 original: sus tres resoluciones se consultan por lotes; el mundo
@@ -393,6 +444,8 @@ function remote(request){
         window.LaplaceBridge.fetchQuote(id,request.asset);
       else if(request.kind==='history')
         window.LaplaceBridge.fetchCandles(id,request.asset,request.granularity,request.days);
+      else if(request.kind==='xn01')
+        window.LaplaceBridge.analyzeXN01(id,request.asset,JSON.stringify(request.bars));
       else throw Error('Solicitud desconocida.');
     }catch(error){
       clearTimeout(timer);pending.delete(id);reject(error);
@@ -413,6 +466,17 @@ window.LaplaceMobile={
            !Number.isFinite(Number(q.receivedAt)))
           throw Error('Cotización numéricamente inválida.');
         p.resolve({...q,price:Number(q.price),receivedAt:Number(q.receivedAt)});
+      }else if(p.kind==='xn01'){
+        const o=response.xn01;
+        if(!o||o.schema!=='laplace-xn01-native-xi-v1'||
+          o.backend!=='XI/Ether · NativeRuntime'||o.asset!=='BTC-USD'||
+          !Number.isFinite(o.confidence)||o.confidence<.5||o.confidence>1||
+          !Number.isFinite(o.probability_up)||o.probability_up<0||o.probability_up>1||
+          !Number.isSafeInteger(o.support)||!Number.isSafeInteger(o.training_rows)||
+          !/^[0-9a-f]{64}$/.test(o.program_sha256)||
+          !/^[0-9a-f]{64}$/.test(o.output_sha256))
+          throw Error('Resultado XI no verificable; no hay confianza ficticia.');
+        p.resolve(o);
       }else{
         const rows=E.candlesFromCoinbase(response.candles,response.granularity);
         p.resolve(rows);
@@ -801,6 +865,9 @@ function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
   asset=next;$('asset').value=next;
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
+  xn01Result=null;renderXN01();
+  $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
+    'XN01 original bursátil no está integrado; BTC sí está disponible.';
   renderQuotes();renderSignals();drawChart();updateLiveBanner();drawLiveChart();updateLivePreview();
   refresh();
 }
@@ -818,6 +885,7 @@ $('train').addEventListener('click',analyzeAction);
 $('test').addEventListener('click',testAction);
 $('evaluate').addEventListener('click',evaluateAction);
 $('forecast').addEventListener('click',forecastAction);
+$('xn01Run').addEventListener('click',runXN01);
 $('worldSearch').addEventListener('input',renderWorldObservations);
 $('clearHistory').addEventListener('click',()=>{
   log=[];persist();renderHistory();
@@ -825,7 +893,7 @@ $('clearHistory').addEventListener('click',()=>{
 });
 window.addEventListener('resize',drawChart);
 $('liveToggle').addEventListener('click',toggleLive);
-useHorizon(15);renderQuotes();renderWorld();renderSignals();
+useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();
 renderHistory();drawChart();connection('SIN CONSULTAR');
 updateLiveBanner();drawLiveChart();updateLivePreview();
 if(window.LaplaceLiveBridge){
@@ -848,7 +916,7 @@ window.setInterval(()=>{
   renderQuotes();updateLivePreview();
 },2500);
 window.LaplaceUIHealth={initialized:true,version:'3.2',tabs:6,
-  actions:['refresh','forecast','train','test','evaluate','integralRun',
+  actions:['refresh','forecast','train','test','evaluate','integralRun','xn01Run',
     'liveToggle','clearHistory','pdeSolve','graphSolve']};
 setTimeout(refresh,200);
 })();
