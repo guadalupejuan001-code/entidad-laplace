@@ -15,7 +15,7 @@ const CBS=['FREQ','L_MEASURE','L_REP_CTY','CBS_BANK_TYPE','CBS_BASIS',
   'L_POSITION','L_INSTR','REM_MATURITY','CURR_TYPE_BOOK',
   'L_CP_SECTOR','L_CP_COUNTRY'];
 const periods=['2025-Q4','2026-Q1'];
-function csv(series,{values=['100.50','110.75'],status=['A','A'],conf=['N','N'],
+function csv(series,{values=['100.50','110.75'],status=['A','A'],conf=['F','F'],
   unit='USD',mult='6',periods_:ps=periods,mod=null,quote=false,
   flow=series.dataset,flowKey=series.key}={}){
   const names=series.kind==='LBS'?LBS:CBS,expected=series.key.split('.');
@@ -87,19 +87,30 @@ test('B001 06: sólo USD en millones; no convertir EUR, porcentajes o multiplier
 });
 test('B001 07: supresiones y OBS_CONF marcados se excluyen y no se vuelven cero',()=>{
   const s=BIS_SERIES[0];
-  const result=parseBisSdmxCSV(csv(s,{values:['','120.125'],conf:['C','N']}),
+  const result=parseBisSdmxCSV(csv(s,{values:['','120.125'],conf:['C','F']}),
     {series:s,knownAt:asOf,sourceUrl:bisSdmxUrl(s)});
   assert.equal(result.observations.length,1);
   assert.equal(result.observations[0].value,120.125);
   assert.equal(result.rejected_periods[0].reason,'missing_or_suppressed');
   assert.ok(!result.observations.some(x=>x.value===0));
 });
-test('B001 08: datos estimados marcados, break fuera de contrato y errores separados',()=>{
+test('B001 08: estimados y ruptura B se conservan marcados, sin inventar flujos',()=>{
   const s=BIS_SERIES[0],p={series:s,knownAt:asOf,sourceUrl:bisSdmxUrl(s)};
   const result=parseBisSdmxCSV(csv(s,{status:['E','B']}),p);
-  assert.equal(result.observations.length,1);
+  assert.equal(result.observations.length,2);
   assert.equal(result.observation_flags[0].estimated,true);
-  assert.equal(result.rejected_periods.length,1);
+  assert.equal(result.observation_flags[1].structural_break,true);
+  assert.equal(result.observation_flags[1].quarter_on_same_basis_as_previous,false);
+  assert.equal(result.rejected_periods.length,0);
+});
+test('B001 08b: OBS_CONF=N/C se protege aunque haya valor numérico',()=>{
+  const s=BIS_SERIES[0],p={series:s,knownAt:asOf,sourceUrl:bisSdmxUrl(s)};
+  const result=parseBisSdmxCSV(csv(s,{conf:['N','C'],values:['500','1000']}),p);
+  assert.equal(result.observations.length,0);
+  assert.ok(result.rejected_periods.every(x=>x.reason==='restricted_or_unverified_confidentiality'));
+  const p2=parseBisSdmxCSV(csv(s,{conf:['F','N'],values:['500','1000']}),p);
+  assert.equal(p2.observations.length,1);
+  assert.equal(p2.observations[0].value,500);
 });
 test('B001 09: no acepta trimestre futuro ni filtración temporal en captura anterior',()=>{
   const s=BIS_SERIES[1],url=bisSdmxUrl(s);
