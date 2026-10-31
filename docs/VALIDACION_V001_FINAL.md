@@ -155,9 +155,14 @@ no constituye precisión demostrada de pronósticos de mercados reales.
 
 ## 6. Límites y trabajo pendiente fuera del ciclo terminado
 
-- Fusionar la cadena completa de PR en `main`, solo después de
-  comprobar los estados de GitHub. La cadena previa era D002 #7 →
-  C001 #8 → B001 #9 → K001 #10. V001 se incorpora sobre ella.
+- **Completado:** la cadena D002 #7 → C001 #8 → B001 #9 → K001 #10
+  y V001 se integró en **`main`** mediante
+  [PR #11](https://github.com/guadalupejuan001-code/entidad-laplace/pull/11),
+  commit `92bbb9ffdf07e9bbe66e5e79f51842dd887dbe5a`. La comparación
+  de árboles Git confirma identidad exacta entre la rama verificada V001
+  y `main`. Las PR apiladas #8-#10 quedaron cerradas como sustituidas,
+  sin perder su código. El [workflow de continuidad en main](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41177456631)
+  terminó correctamente.
 - Unir **vintages históricas reales** de C001/B001/O001/D001/D002/K001
   a decisiones antiguas sin sesgo temporal, preservando revisiones.
 - Conectar reportes que requieren autorización (FINRA API), sources
