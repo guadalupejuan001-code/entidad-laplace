@@ -59,8 +59,8 @@ export function causalHypothesis(h){
 }
 export function universeSnapshot(raw,{cutoff,hypotheses=[]}={}){
   const time=utcTime(cutoff);
-  need(Array.isArray(raw)&&raw.length<=4096,'presupuesto de estados excedido (4096)');
-  need(Array.isArray(hypotheses)&&hypotheses.length<=4096,'presupuesto de relaciones excedido');
+  need(Array.isArray(raw),'observaciones deben ser arreglo');
+  need(Array.isArray(hypotheses),'relaciones deben ser arreglo');
   const all=raw.map(observation),ids=new Set();
   for(const item of all){need(!ids.has(item.id),'id duplicado '+item.id);ids.add(item.id)}
   const states=all.filter(x=>x.known_at<=time&&x.observed_at<=time)
