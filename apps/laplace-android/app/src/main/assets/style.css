@@ -142,3 +142,67 @@ footer{text-align:center;color:#6685a3;font-size:10px;letter-spacing:.08em;
   .actions small{display:none}
   .actions button{min-height:70px}
 }
+
+
+/* LAPLACE móvil: cinta de precios públicos sobre el símbolo decorativo. */
+.status-banner{display:flex;gap:10px;align-items:flex-start;border:1px solid #326381;
+  color:#b7d9f0;background:#0e293e;border-radius:12px;padding:12px 14px;
+  margin:-2px 0 13px;font-size:12px;line-height:1.5}
+.status-banner span:first-child{font-size:17px;color:#75e3ff;flex:0 0 auto;line-height:1.15}
+.status-banner[data-kind=error]{background:#321e28;border-color:#85515c;color:#ffd0c9}
+.status-banner[data-kind=success]{background:#102e30;border-color:#287e74;color:#a5f4e3}
+.quote-console{border-radius:16px;border:1px solid #3e779b;
+  background:linear-gradient(165deg,#102d4b 0%,#0c2036 48%,#0a1728 100%);
+  padding:15px 13px 12px;box-shadow:0 7px 30px #051529b8;overflow:hidden}
+.quote-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 0 12px}
+.quote-head h2{font-size:19px;margin:3px 0 0}
+.quote-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.quote-tile{background:#081b2c;border:1px solid #2b4a66;color:#c6dff2;
+  border-radius:11px;text-align:left;padding:11px 7px 10px;min-width:0;min-height:88px;
+  display:flex;flex-direction:column;justify-content:space-between;gap:7px}
+.quote-tile[aria-pressed=true]{border-color:#65ccff;background:#143e63;
+  box-shadow:0 0 0 1px #57b9ff44,inset 0 0 17px #4aaaff10}
+.quote-tile>span{font-size:10px;font-weight:700;letter-spacing:.04em}
+.quote-tile>strong{font-size:clamp(13px,3.5vw,22px);letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;color:#e6f8ff}
+.quote-tile>small{font-size:9px;color:#95bed6;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.quote-time{display:block;margin-top:10px;font-size:10px;line-height:1.45;
+  color:#acc5db;min-height:13px}
+.quick-guide{font-size:10px;color:#9fb6cc;padding-top:9px;
+  margin-top:9px;border-top:1px solid #2b4a62;letter-spacing:.01em}
+.quick-guide span{color:#76dfff;margin:0 4px}
+.hero{isolation:isolate}
+.hero[data-mode=fetching] .triangle{filter:drop-shadow(0 0 15px #6ae8ff)}
+.hero[data-mode=trained] .triangle{filter:drop-shadow(0 0 11px #6bffa4)}
+.hero[data-mode=forecast] .triangle{filter:drop-shadow(0 0 15px #ab9fff)}
+/* SVG: partículas y líneas viajan hacia el centro. No representan dinero real. */
+#streams path{stroke-dasharray:4 13;animation:dataFlow 2.8s linear infinite;
+  stroke-linecap:round;vector-effect:non-scaling-stroke}
+#streams path:nth-child(2n){animation-duration:3.8s;animation-direction:reverse}
+#streams path:nth-child(3n){animation-duration:2.15s}
+.portal .swirl{animation:rotateVortex 7s linear infinite;
+  filter:drop-shadow(0 0 9px #65e5ff)}
+.portal .triangle{animation:triangleBreath 4s ease-in-out infinite}
+.portal .moving-particles{filter:drop-shadow(0 0 8px #8bfeff)}
+.portal .moving-particles circle{opacity:.96}
+.hero::after{content:"";position:absolute;z-index:0;width:170px;height:170px;
+  border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;opacity:.5;background:radial-gradient(circle,
+  #65adff22 0,#536cff11 38%,transparent 75%);
+  animation:haloBeat 3.5s ease-in-out infinite}
+@keyframes dataFlow{to{stroke-dashoffset:-68}}
+@keyframes triangleBreath{50%{opacity:.73;stroke-width:4}}
+@keyframes haloBeat{50%{opacity:.95;transform:translate(-50%,-50%) scale(1.24)}}
+@media(min-width:740px){
+  #panel>.quote-console{grid-column:1/-1}
+  .quote-tile{min-height:92px;padding:15px}
+}
+@media(max-width:350px){.quote-grid{gap:4px}.quote-tile{padding:9px 5px}
+  .quote-tile>span{font-size:9px}.quote-tile>strong{font-size:13px}}
+@media(prefers-reduced-motion:reduce){
+  .portal .swirl,.portal .triangle,#streams path,.hero::after{animation:none!important}
+  .portal .moving-particles{display:none}
+}
