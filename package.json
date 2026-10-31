@@ -39,7 +39,9 @@
     "banca:b001": "node tools/banca-b001.mjs",
     "test:banca": "node --test tests/banca-b001.test.mjs",
     "blockchain:k001": "node tools/blockchain-k001.mjs",
-    "test:blockchain": "node --test tests/blockchain-k001.test.mjs"
+    "test:blockchain": "node --test tests/blockchain-k001.test.mjs",
+    "validar:v001": "node tools/validar-v001.mjs",
+    "test:v001": "node --test tests/validacion-v001.test.mjs"
   },
   "engines": {
     "node": ">=20"
