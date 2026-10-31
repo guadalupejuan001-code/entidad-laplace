@@ -38,6 +38,7 @@ import java.util.concurrent.Executors;
  */
 public final class MainActivity extends Activity {
     private WebView webView;
+    private CoinbaseLiveFeed liveFeed;
     private final ExecutorService io=Executors.newFixedThreadPool(4);
     private static final Set<String> ASSETS = new HashSet<>(Arrays.asList(
         "BTC-USD","ETH-USD","SOL-USD"
@@ -79,9 +80,45 @@ public final class MainActivity extends Activity {
                 return true;
             }
         });
+        liveFeed=new CoinbaseLiveFeed(this::emitLiveEvent);
         webView.addJavascriptInterface(new MarketBridge(),"LaplaceBridge");
+        webView.addJavascriptInterface(new LiveBridge(),"LaplaceLiveBridge");
         setContentView(webView);
         webView.loadUrl("file:///android_asset/index.html");
+    }
+
+    /**
+     * Dedicated, fixed-endpoint and read-only WebSocket control.
+     * No arbitrary URL, credentials, brokerage account or order methods.
+     */
+    private final class LiveBridge {
+        @JavascriptInterface
+        public void start(){
+            if(liveFeed!=null)liveFeed.start();
+        }
+        @JavascriptInterface
+        public void stop(){
+            if(liveFeed!=null)liveFeed.stop();
+        }
+    }
+
+    private void emitLiveEvent(JSONObject payload){
+        if(payload==null)return;
+        final String js="window.LaplaceMobile&&window.LaplaceMobile.live("+
+            payload.toString()+")";
+        runOnUiThread(()->{
+            if(webView!=null)webView.evaluateJavascript(js,null);
+        });
+    }
+
+    @Override protected void onResume(){
+        super.onResume();
+        if(liveFeed!=null)liveFeed.resume();
+    }
+
+    @Override protected void onPause(){
+        if(liveFeed!=null)liveFeed.pause();
+        super.onPause();
     }
 
     private final class MarketBridge {
@@ -124,7 +161,7 @@ public final class MainActivity extends Activity {
         conn.setConnectTimeout(14000);
         conn.setReadTimeout(17000);
         conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/3.0 (public market research)");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/3.2 (public market research)");
         try {
             int code=conn.getResponseCode();
             if(code!=200)throw new IOException("Cotización: HTTP "+code+
@@ -203,7 +240,7 @@ public final class MainActivity extends Activity {
             conn.setConnectTimeout(8000);
             conn.setReadTimeout(11000);
             conn.setRequestProperty("Accept","application/json");
-            conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/2.0 (public market research)");
+            conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/3.2 (public market research)");
             try{
                 int code=conn.getResponseCode();
                 if(code==429&&attempt==0){
@@ -265,9 +302,14 @@ public final class MainActivity extends Activity {
         }catch(Exception ignored){}
     }
     @Override protected void onDestroy(){
+        if(liveFeed!=null){
+            liveFeed.shutdown();
+            liveFeed=null;
+        }
         io.shutdownNow();
         if(webView!=null){
             webView.removeJavascriptInterface("LaplaceBridge");
+            webView.removeJavascriptInterface("LaplaceLiveBridge");
             webView.loadUrl("about:blank");
             webView.destroy();
             webView=null;

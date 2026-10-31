@@ -5,6 +5,26 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 3.2 — Coinbase WebSocket en vivo
+- Fuente pública: wss://ws-feed.exchange.coinbase.com; canales ticker y
+  heartbeat para BTC-USD, ETH-USD y SOL-USD. Sin credenciales.
+- Precio de la última operación actualizado automáticamente cuando
+  Coinbase publica operaciones. Heartbeat confirma conectividad, no es
+  un precio ni una operación nueva.
+- Cliente nativo OkHttp Android con validación de activo, precio y hora,
+  secuencias monotónicas y reconexión progresiva de 2 a 60 segundos.
+- Una conexión en primer plano; desconexión al minimizar la aplicación,
+  reinicio al volver y botón Activar/Detener para control manual.
+- Ticks agrupados cada 300 ms para no bloquear WebView; curva de
+  los últimos 80 eventos por activo, antigüedad y fuente explícitas.
+- WebSocket muestra el último trade y REST trae velas OHLCV. M001/F001
+  mantienen sus datos históricos cerrados; escenario en vivo (si se
+  entrenó M001) solo reancla el valor actual, sin nuevas predicciones
+  archivadas ni aprendizaje ficticio.
+- Incluye JUnit para el protocolo nativo y Chromium para UI con
+  mensajes de flujo simulados. La prueba de red real depende del equipo.
+- VersionCode 7, versionName 3.2.0-COINBASE-LIVE.
+
 ## Android 3.1 — reparación real de controles y simplificación del panel
 - Resuelto el bug crítico de alcance JavaScript que hacía fallar el arranque
   (`runIntegral is not defined`) y desactivaba otras acciones sin aviso.

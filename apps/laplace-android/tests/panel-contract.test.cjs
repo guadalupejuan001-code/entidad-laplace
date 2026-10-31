@@ -18,6 +18,9 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
   assert.match(html,/5 min/);assert.match(html,/90 d/);
   assert.match(html,/id="notice"/);
   assert.match(html,/ÚLTIMO CIERRE VERIFICADO/);
+  for(const id of ['liveToggle','liveStatus','liveAge','liveCount','liveChart','livePreview'])
+    assert.ok(html.includes('id="'+id+'"'),id);
+  assert.ok(html.includes('src="live-feed.js"'));
   assert.ok(html.includes('id="horizonSelect"'));
   assert.ok(html.indexOf('class="card selector"')<html.indexOf('class="hero"'));
   assert.ok(html.indexOf('class="actions"')<html.indexOf('class="two-metrics"'));
@@ -34,6 +37,9 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(app,/function renderWorldObservations\(\)/);
   assert.match(app,/M001/);
   assert.match(app,/function runIntegral\(\)/);
+  assert.match(app,/function liveMessage\(event\)/);
+  assert.match(app,/LaplaceLiveBridge\.start/);
+  assert.match(app,/function drawLiveChart\(\)/);
   assert.match(app,/window\.LaplaceUIHealth/);
   assert.match(app,/setActionAvailability/);
   assert.match(app,/aplicarLaplaceAHorizontes/);
@@ -62,5 +68,5 @@ test('PDE sigue funcionando sin contaminar M001 ni añadir un 3er puente',()=>{
   assert.match(html,/id="pdeSolve"/);
   assert.match(html,/id="graphSolve"/);
   assert.match(js,/function show\(page\)/);
-  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,2);
+  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,4);
 });

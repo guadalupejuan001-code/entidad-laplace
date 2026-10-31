@@ -7,6 +7,7 @@
 const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
 const F=window.LaplaceIntegral;
+const Live=window.LaplaceLiveMath;
 const STORAGE='laplace-mobile-forecasts-v2';
 const money=v=>Number.isFinite(v)?new Intl.NumberFormat('es-MX',{
   style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
@@ -19,6 +20,8 @@ let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let integralResult=null,integralBusy=false;
 let loading=false,sequence=0,latestTest=null;
+const tickerStream=Live.createTracker();
+let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
 let log=[];
 try{
@@ -50,6 +53,135 @@ function setActionAvailability(){
   $('refresh').textContent=loading?'Consultando datos…':'Actualizar datos';
   $('integralRun').disabled=integralBusy;
 }
+
+/* WebSocket reception is a separate, explicitly labeled source.
+ * Only the last TRADES are streamed: heartbeats never create prices.
+ * F001/M001 use their own closed OHLCV history; WebSocket re-anchors a
+ * read-only preview only when M001 has already been trained.
+ */
+function liveTimeAgo(milliseconds){
+  if(!Number.isFinite(milliseconds))return 'Sin ticks';
+  const seconds=Math.max(0,Math.floor((Date.now()-milliseconds)/1000));
+  if(seconds<2)return 'ahora';
+  if(seconds<60)return 'hace '+seconds+' s';
+  if(seconds<3600)return 'hace '+Math.floor(seconds/60)+' min';
+  return 'hace '+Math.floor(seconds/3600)+' h';
+}
+function updateLiveBanner(){
+  const snap=tickerStream.snapshot(),statuses={
+    live:'WebSocket conectado',connecting:'Conectando a Coinbase',
+    subscribing:'Suscribiendo ticker y heartbeat',
+    retrying:'Reconectando automáticamente',
+    off:'Transmisión detenida',paused:'Conexión pausada'
+  };
+  $('livePulse').dataset.state=snap.status;
+  $('liveStatus').textContent=statuses[snap.status]??'Estado desconocido';
+  $('liveDetail').textContent=snap.message+
+    (snap.status==='retrying'&&snap.retrySeconds?
+      ' · siguiente intento en '+snap.retrySeconds+' s':'');
+  $('liveCount').textContent=snap.updates.toLocaleString('es-MX')+
+    (snap.updates===1?' operación recibida':' operaciones recibidas');
+  const q=tickerStream.quote(asset);
+  const fresh=q&&tickerStream.isFresh(asset);
+  $('liveAge').textContent=q?('Último '+asset.replace('-USD','')+' · '+
+    liveTimeAgo(q.observedAt)+(fresh?' · activo':' · no actualizado')):
+    'Sin operación en vivo de '+asset.replace('-USD','');
+  $('liveToggle').textContent=liveEnabled?'Detener':'Activar';
+  $('liveToggle').setAttribute('aria-pressed',String(liveEnabled));
+}
+function drawLiveChart(){
+  const canvas=$('liveChart'),bounds=canvas.getBoundingClientRect();
+  const width=Math.max(240,Math.round(bounds.width||350)),height=108;
+  const ratio=Math.min(2,window.devicePixelRatio||1);
+  canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  ctx.scale(ratio,ratio);
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle='#071b2a';ctx.fillRect(0,0,width,height);
+  const points=tickerStream.points(asset),values=points.map(p=>p.price);
+  $('liveGraphAsset').textContent=asset.replace('-USD','/USD');
+  $('liveGraphLabel').textContent=points.length?
+    points.length+' operaciones · '+liveTimeAgo(points.at(-1).at):
+    'Aún sin operaciones recibidas';
+  if(!points.length){
+    ctx.fillStyle='#9dbbcc';ctx.font='12px system-ui';ctx.textAlign='center';
+    ctx.fillText('Esperando ticker público de Coinbase',width/2,height/2);
+    return;
+  }
+  const min=Math.min(...values),max=Math.max(...values),delta=Math.max(max-min,max*.00002);
+  const low=min-delta*.2,high=max+delta*.2;
+  const x=i=>10+(width-20)*(i/Math.max(1,points.length-1));
+  const y=v=>10+(height-20)*(high-v)/(high-low);
+  ctx.strokeStyle='#1b4055';ctx.lineWidth=1;
+  for(let i=1;i<=3;i++){
+    const step=height*i/4;ctx.beginPath();ctx.moveTo(10,step);
+    ctx.lineTo(width-10,step);ctx.stroke();
+  }
+  ctx.beginPath();ctx.strokeStyle='#55e5c7';ctx.lineWidth=2;
+  for(let i=0;i<points.length;i++){
+    if(i===0)ctx.moveTo(x(i),y(values[i]));
+    else ctx.lineTo(x(i),y(values[i]));
+  }
+  ctx.stroke();
+  ctx.fillStyle='#b4fff1';ctx.beginPath();
+  ctx.arc(x(points.length-1),y(values.at(-1)),3,0,Math.PI*2);ctx.fill();
+}
+function updateLivePreview(){
+  const previewElement=$('livePreview'),q=tickerStream.quote(asset);
+  if(!liveEnabled||!tickerStream.isFresh(asset)||!q){
+    previewElement.textContent='Sin nuevos ticks válidos para '+asset+'. '+
+      'El historial M001 no se transforma en precios en vivo.';
+    return;
+  }
+  if(!analysis?.ready||analysis.asset!==asset||
+      analysis.horizonMinutes!==minutes||!history){
+    previewElement.textContent='Última operación '+money(q.price)+
+      ' · '+liveTimeAgo(q.observedAt)+
+      '. Analiza M001 para obtener un escenario indicativo con el último precio.';
+    return;
+  }
+  const implied=q.price*Math.exp(analysis.returnLog);
+  previewElement.textContent='Escenario indicativo M001 · '+label(minutes)+': '+
+    money(implied)+' desde '+money(q.price)+
+    '. Usa los mismos patrones históricos, SIN reentrenar y SIN guardar otra predicción.';
+}
+function liveMessage(event){
+  if(!event||typeof event!=='object')return;
+  if(event.type==='status'){
+    tickerStream.statusUpdate(event);
+    updateLiveBanner();renderQuotes();updateLivePreview();
+    if(tickerStream.snapshot().status==='live')connection('WS EN VIVO',true);
+    else if(tickerStream.snapshot().status==='retrying')connection('RECONEXIÓN');
+    return;
+  }
+  if(event.type!=='ticker'||!tickerStream.acceptTicker(event))return;
+  const q=tickerStream.quote(event.asset);
+  quotes.set(event.asset,{...q});
+  const now=Date.now();
+  renderQuotes();updateLiveBanner();
+  if(now-lastLiveUiAt>280){
+    drawLiveChart();updateLivePreview();lastLiveUiAt=now;
+  }
+  if(now-lastLiveSignalsAt>2200&&document.querySelector('#signals')?.hidden===false){
+    renderSignals();lastLiveSignalsAt=now;
+  }
+}
+function toggleLive(){
+  if(!window.LaplaceLiveBridge){
+    $('liveDetail').textContent='WebSocket nativo no disponible: usa Actualizar datos.';
+    return;
+  }
+  liveEnabled=!liveEnabled;
+  try{
+    if(liveEnabled)window.LaplaceLiveBridge.start();
+    else window.LaplaceLiveBridge.stop();
+  }catch(error){
+    liveEnabled=!liveEnabled;
+    $('liveDetail').textContent='No se pudo cambiar el estado de la conexión.';
+  }
+  updateLiveBanner();updateLivePreview();
+}
+
 /* F001 original: sus tres resoluciones se consultan por lotes; el mundo
  * se lee desde la captura EF002 verificable. La ecuación no sustituye
  * el candidato y no puede entrenar EF004 sin tiempo independiente.
@@ -193,26 +325,35 @@ for(const b of document.querySelectorAll('[data-tab]'))
   if(page==='world')renderWorld();
   if(page==='integral')renderIntegral();
   if(page==='tests'){showTests();renderHistory()}
-  if(page==='panel')setTimeout(drawChart,60);
+  if(page==='panel')setTimeout(()=>{drawChart();drawLiveChart();updateLiveBanner();},60);
 }
 function renderQuotes(){
   const short={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
   let found=0;
   for(const code of E.ALLOWED_ASSETS){
-    const q=quotes.get(code),id=short[code],selected=code===asset;
+    const q=quotes.get(code),id=short[code],selected=code===asset,
+      streamFresh=q?.isLive&&tickerStream.isFresh(code);
     const button=document.querySelector('[data-quote-asset="'+code+'"]');
-    if(button){button.classList.toggle('active',selected);
-      button.setAttribute('aria-pressed',String(selected))}
+    if(button){
+      button.classList.toggle('active',selected);
+      button.setAttribute('aria-pressed',String(selected));
+      button.dataset.live=String(Boolean(streamFresh));
+    }
     $('quote'+id).textContent=q?money(q.price):'—';
-    $('quote'+id+'Status').textContent=q?'Ticker público':'Sin conexión actual';
+    $('quote'+id+'Status').textContent=streamFresh?
+      'WEB SOCKET · último trade':
+      q?.isLive?'ÚLTIMA OPERACIÓN · no actualizada':
+      q?'HTTPS · cotización puntual':'Sin cotización';
     if(q)found++;
   }
-  $('quoteStatus').textContent=found+'/3 PRECIOS';
+  $('quoteStatus').textContent=tickerStream.snapshot().status==='live'?
+    'WS CONECTADO · '+found+'/3':'HTTPS · '+found+'/3';
   const q=quotes.get(asset);
   $('quoteTime').textContent=q?
-    asset+' · Coinbase · ticker '+q.time+' · recibido '+date(q.receivedAt/1000)+
-      ' · NO constituye una predicción':
-    'Sin ticker disponible para '+asset+'. No se usarán precios inventados.';
+    asset+' · '+(q.isLive?'WebSocket · última operación':'HTTPS · ticker')+
+      ' · origen '+q.time+' · recibido '+date(q.receivedAt/1000)+
+      ' · NO es una predicción':
+    'Sin ticker disponible para '+asset+'. No se inventaron precios.';
 }
 function useHorizon(value){
   const m=Number(value);
@@ -259,6 +400,7 @@ function remote(request){
   });
 }
 window.LaplaceMobile={
+  live:event=>liveMessage(event),
   receive(id,response){
     const p=pending.get(id);if(!p)return;
     pending.delete(id);clearTimeout(p.timer);
@@ -307,10 +449,15 @@ async function refresh(){
     try{
       const q=await remote({kind:'quote',asset:code});
       if(epoch!==refreshEpoch)return;
-      quotes.set(code,q);renderQuotes();
+      const previous=quotes.get(code);
+      if(!(previous?.isLive&&tickerStream.isFresh(code)))
+        quotes.set(code,q);
+      renderQuotes();
     }catch(error){
       if(epoch!==refreshEpoch)return;
-      quotes.delete(code);renderQuotes();
+      if(!tickerStream.isFresh(code))
+        quotes.delete(code);
+      renderQuotes();
     }
   });
   try{
@@ -376,7 +523,7 @@ function calculateModel(){
   $('baselineError').textContent=money(analysis.validation.baselineMAE);
   $('modelLabel').textContent=analysis.ready?'M001 · '+analysis.patterns+' PATRONES':
     'SIN PATRONES SUFICIENTES';
-  renderSignals();return analysis;
+  renderSignals();updateLivePreview();return analysis;
 }
 function analyzeAction(){
   try{
@@ -654,7 +801,7 @@ function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
   asset=next;$('asset').value=next;
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
-  renderQuotes();renderSignals();drawChart();
+  renderQuotes();renderSignals();drawChart();updateLiveBanner();drawLiveChart();updateLivePreview();
   refresh();
 }
 for(const b of document.querySelectorAll('[data-tab]'))
@@ -677,10 +824,31 @@ $('clearHistory').addEventListener('click',()=>{
   status('Registro local limpiado. No se alteraron datos del proveedor.','success');
 });
 window.addEventListener('resize',drawChart);
+$('liveToggle').addEventListener('click',toggleLive);
 useHorizon(15);renderQuotes();renderWorld();renderSignals();
 renderHistory();drawChart();connection('SIN CONSULTAR');
-window.LaplaceUIHealth={initialized:true,version:'3.1',tabs:6,
-  actions:['refresh','forecast','train','test','evaluate','integralRun','clearHistory',
-    'pdeSolve','graphSolve']};
+updateLiveBanner();drawLiveChart();updateLivePreview();
+if(window.LaplaceLiveBridge){
+  try{window.LaplaceLiveBridge.start();}
+  catch(error){
+    tickerStream.statusUpdate({type:'status',state:'retrying',
+      message:'Error de conexión de stream'});
+    updateLiveBanner();
+  }
+}else{
+  liveEnabled=false;
+  $('liveToggle').disabled=true;
+  tickerStream.statusUpdate({type:'status',state:'off',
+    message:'Streaming solo disponible dentro de la APK Android.'});
+  updateLiveBanner();
+}
+window.setInterval(()=>{
+  updateLiveBanner();
+  if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
+  renderQuotes();updateLivePreview();
+},2500);
+window.LaplaceUIHealth={initialized:true,version:'3.2',tabs:6,
+  actions:['refresh','forecast','train','test','evaluate','integralRun',
+    'liveToggle','clearHistory','pdeSolve','graphSolve']};
 setTimeout(refresh,200);
 })();

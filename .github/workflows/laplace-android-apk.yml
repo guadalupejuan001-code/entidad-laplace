@@ -1,4 +1,4 @@
-name: LAPLACE Android APK independiente - 1 hora a 14 dias
+name: LAPLACE Android - WebSocket público en vivo 3.2
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -51,6 +51,7 @@ jobs:
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
           node --test tests/laplace-financiero.test.mjs
+          node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: Incluir última captura financiera EF002 con verificación de hashes
         run: |
@@ -77,6 +78,10 @@ jobs:
           node --check apps/laplace-android/app/src/main/assets/app.js
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
           node apps/laplace-android/tests/browser-smoke.cjs
+      - name: Probar protocolo WebSocket nativo con JUnit
+        run: |
+          set -euo pipefail
+          gradle -p apps/laplace-android :app:testDebugUnitTest --no-daemon --stacktrace
       - name: Compilar APK de Android con firma de depuración
         run: |
           set -euo pipefail
@@ -92,13 +97,15 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/index.html'
           unzip -Z1 "$APK" | grep -Fx 'assets/world.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/fusion-integral.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/live-feed.js'
+          unzip -Z1 "$APK" | grep -Fx 'classes.dex'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -12
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-1-UI-VERIFICADA
+          name: LAPLACE-ANDROID-V3-2-COINBASE-LIVE
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

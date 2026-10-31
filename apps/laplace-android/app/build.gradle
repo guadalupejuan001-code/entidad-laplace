@@ -6,10 +6,15 @@ android {
         applicationId 'com.entidadlaplace.mobile'
         minSdk 26
         targetSdk 34
-        versionCode 6
-        versionName '3.1.0-UI-REPAIRED'
+        versionCode 7
+        versionName '3.2.0-COINBASE-LIVE'
     }
     buildTypes { release { minifyEnabled false } }
+    dependencies {
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation 'org.json:json:20240303'
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17

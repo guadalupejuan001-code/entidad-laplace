@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE 3.1 · Android</title>
+<meta name="theme-color" content="#07111e"><title>LAPLACE 3.2 · En Vivo</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
 <script src="math-pde.js" defer></script>
 <script src="fusion-integral.js" defer></script>
 <script src="pde-panel.js" defer></script>
+<script src="live-feed.js" defer></script>
 <script src="app.js" defer></script>
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>M001 · F001 · CAMPO 3.1</small></div>
+    <div><h1>LAPLACE</h1><small>M001 · F001 · MERCADO EN VIVO 3.2</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -33,8 +34,20 @@
   <section id="panel" class="tabpage">
     <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
       <div class="quote-head">
-        <div><small class="eyebrow">MERCADOS · COINBASE</small><h2>Precios en USD</h2></div>
+        <div><small class="eyebrow">COINBASE · MERCADO PÚBLICO</small><h2>Precios en USD</h2></div>
         <span id="quoteStatus" class="outline-tag">SIN CONSULTAR</span>
+      </div>
+      <div class="live-control">
+        <div class="live-left">
+          <span class="live-pulse" id="livePulse" aria-hidden="true"></span>
+          <div><strong id="liveStatus" role="status" aria-live="polite">Conectando al mercado…</strong>
+          <small id="liveDetail">Ticker + heartbeat · actualización automática cuando hay operaciones</small></div>
+        </div>
+        <button id="liveToggle" type="button" aria-pressed="true">Detener</button>
+      </div>
+      <div class="live-metadata" aria-label="Medición del flujo">
+        <span id="liveCount">0 actualizaciones</span>
+        <span id="liveAge">Sin operaciones recibidas</span>
       </div>
       <div class="quote-grid">
         <button type="button" class="quote-tile active" data-quote-asset="BTC-USD" aria-pressed="true">
@@ -48,6 +61,14 @@
         </button>
       </div>
       <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
+      <div class="live-sparkline-block">
+        <div class="live-graph-head">
+          <strong>Operaciones recientes <span id="liveGraphAsset">BTC/USD</span></strong>
+          <span id="liveGraphLabel">Esperando ticks reales</span>
+        </div>
+        <canvas id="liveChart" height="108" aria-label="Últimas operaciones recibidas en tiempo real"></canvas>
+      </div>
+      <p id="livePreview" class="live-preview">El precio se actualiza al llegar una operación. El cálculo M001 usa velas cerradas y solo recalcula un escenario indicativo si ya existe un modelo.</p>
       <div class="quick-guide">1. Elige activo y tiempo <span>→</span> 2. Actualiza <span>→</span> 3. Proyecta</div>
     </article>
     <article class="card selector">
@@ -61,7 +82,7 @@
         </select>
         <button id="refresh" class="refresh" type="button">Actualizar datos</button>
       </div>
-      <small id="dataStatus" class="helper">Coinbase Exchange. Precio spot separado de las velas históricas; se indicarán las fechas.</small>
+      <small id="dataStatus" class="helper">Ticker WebSocket en primer plano; velas históricas por HTTPS. El botón Actualizar consulta el historial, no es necesario para seguir los ticks.</small>
     </article>
 
     <article class="card horizons">

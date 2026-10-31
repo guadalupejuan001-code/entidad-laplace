@@ -26,13 +26,24 @@ const mock=[
   "fetchCandles(id,asset,step,days){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:step,candles:candles(asset,step,days)}),15);},",
   "fetchQuote(id,asset){const p=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:180;",
   "setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:p,time:new Date().toISOString(),receivedAt:Date.now(),source:'SIMULACION SOLO PARA TEST'}}),10);}",
+  "};",
+  "let nextSeq=21;",
+  "function simulatedLive(){if(!window.LaplaceMobile)return;",
+  "window.LaplaceMobile.live({type:'status',state:'live',message:'SIMULACIÓN: ticker + heartbeat'});",
+  "for(const asset of ['BTC-USD','ETH-USD','SOL-USD']){",
+  "const time=new Date().toISOString(),price=asset==='BTC-USD'?61502.75:asset==='ETH-USD'?3102.4:181.8;",
+  "window.LaplaceMobile.live({type:'ticker',asset,price,sequence:nextSeq++,time,observedAt:Date.parse(time),receivedAt:Date.now()});",
+  "}}",
+  "window.LaplaceLiveBridge={",
+  "start(){setTimeout(simulatedLive,20);},",
+  "stop(){window.LaplaceMobile.live({type:'status',state:'off',message:'Detenido en test'});}",
   "};})();"
 ].join('\n');
 const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
   '<style>'+read('style.css')+'</style>')
   .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
 const sources=['world.js','engine.js','math-pde.js','fusion-integral.js',
-  'pde-panel.js','app.js'];
+  'pde-panel.js','live-feed.js','app.js'];
 const loaded=removeSources.replace('</body>',
   '<script>'+mock+'</script>'+
   sources.map(name=>'<script>'+read(name).replace(/<\/script>/g,'<\\/script>')+'</script>').join('')+
@@ -58,6 +69,25 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>document.querySelector('#quoteBTC').textContent!=='—'&&
       !document.querySelector('#refresh').disabled,{timeout:25000});
     assert.match(await page.locator('#quoteBTC').innerText(),/61/);
+    await page.waitForFunction(()=>document.querySelector('#liveStatus').textContent==='WebSocket conectado',null,{timeout:10000});
+    assert.match(await page.locator('#liveCount').innerText(),/3 operaciones/);
+    assert.match(await page.locator('#quoteBTCStatus').innerText(),/WEB SOCKET/);
+    assert.match(await page.locator('#quoteETHStatus').innerText(),/WEB SOCKET/);
+    assert.match(await page.locator('#quoteSOLStatus').innerText(),/WEB SOCKET/);
+    assert.match(await page.locator('#liveGraphLabel').innerText(),/operaci/);
+    const prevBTC=await page.locator('#quoteBTC').innerText();
+    await page.evaluate(()=>{
+      window.LaplaceMobile.live({type:'ticker',asset:'BTC-USD',price:999,
+        sequence:1,time:new Date().toISOString(),observedAt:Date.now(),receivedAt:Date.now()});
+    });
+    assert.equal(await page.locator('#quoteBTC').innerText(),prevBTC,
+      'Un ticker desordenado no puede sustituir al precio más reciente');
+    await page.locator('#liveToggle').click();
+    assert.match(await page.locator('#liveStatus').innerText(),/detenida/i);
+    assert.equal(await page.locator('#liveToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('#liveToggle').click();
+    await page.waitForFunction(()=>document.querySelector('#liveStatus').textContent==='WebSocket conectado',null,{timeout:10000});
+    assert.equal(await page.locator('#liveToggle').getAttribute('aria-pressed'),'true');
     assert.equal(await page.locator('#forecast').isDisabled(),false);
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
     await page.locator('#forecast').click();
@@ -121,7 +151,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
       F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
-      jsErrors:errors.length}));
+      stream:true,livePauseResume:true,streamOutOfOrderIgnored:true,jsErrors:errors.length}));
   }finally{
     await browser.close();
   }
