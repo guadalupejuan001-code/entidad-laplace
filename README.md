@@ -6,6 +6,36 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## V001 — Validación final del plan (auditoría completada)
+
+**Último ciclo de la hoja de ruta de datos financieros O001→V001.**
+La ingeniería de validación reproduce y comprueba hashes reales del
+diario M001 y la captura U003, evalúa cada precio con la misma referencia
+de persistencia, verifica `known_at` y prohíbe usar etiquetas o señales
+capturadas después de decidir.
+
+**Resultados reales:** [154/154 tests Node](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176921579).
+En la muestra archivada hubo 15 pronósticos M001, 8 resultados y
+2 aciertos de dirección. El **MAE de M001 fue 529,55 USD**, frente a
+**504,96 USD de persistencia** (skill **−4,87 %**, no ventaja demostrada).
+En un snapshot del 30 de octubre se comprobaron 563 estados U003;
+eso NO incluye automáticamente las posteriores fuentes financieras.
+
+**Estado de producción: NO GO.** F001 usa el mundo solo para ensanchar
+una banda exploratoria y no modifica el precio central. Aún NO existen
+parejas prospectivas congeladas de mundo/no-mundo con historial de
+fuentes disponible al corte. No hay evidencia de beneficio estadístico
+ni trading automático.
+
+```bash
+npm run test:v001
+npm run validar:v001 -- --out=registros/v001/auditoria-final.json
+```
+
+[Informe completo y pendientes](docs/VALIDACION_V001_FINAL.md).
+
+---
+
 ## K001 — Blockchain y DeFi (penúltimo ciclo, verificado)
 
 Cuatro fuentes públicas concurrentes: bloques Bitcoin Esplora, último bloque
