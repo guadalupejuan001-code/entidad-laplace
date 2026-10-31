@@ -36,11 +36,12 @@ import java.util.concurrent.Executors;
  */
 public final class MainActivity extends Activity {
     private WebView webView;
-    private final ExecutorService io=Executors.newFixedThreadPool(2);
+    private final ExecutorService io=Executors.newFixedThreadPool(4);
     private static final Set<String> ASSETS = new HashSet<>(Arrays.asList(
         "BTC-USD","ETH-USD","SOL-USD"
     ));
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
+    private static final int MAX_QUOTE_BYTES=64*1024;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +100,54 @@ public final class MainActivity extends Activity {
                 }
             });
         }
+        @JavascriptInterface
+        public void fetchQuote(String requestId,String asset){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
+               !ASSETS.contains(asset)){
+                emitQuote(requestId,"Activo no permitido.",null);
+                return;
+            }
+            io.execute(()->{
+                try{emitQuote(requestId,null,fetchCoinbaseQuote(asset));}
+                catch(Exception e){emitQuote(requestId,e.getMessage(),null);}
+            });
+        }
+    }
+    private static JSONObject fetchCoinbaseQuote(String asset) throws Exception {
+        final String api="https://api.exchange.coinbase.com/products/"+asset+"/ticker";
+        HttpURLConnection conn=(HttpURLConnection)new URL(api).openConnection();
+        conn.setInstanceFollowRedirects(false);
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(14000);
+        conn.setReadTimeout(17000);
+        conn.setRequestProperty("Accept","application/json");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.0 (public market research)");
+        try {
+            int code=conn.getResponseCode();
+            if(code!=200)throw new IOException("Cotización: HTTP "+code+
+                (code==429?" (límite de solicitudes)":""));
+            ByteArrayOutputStream bytes=new ByteArrayOutputStream();
+            try(InputStream input=conn.getInputStream()){
+                byte[] block=new byte[4096];
+                int len;
+                while((len=input.read(block))!=-1){
+                    if(bytes.size()+len>MAX_QUOTE_BYTES)
+                        throw new IOException("Respuesta de cotización demasiado grande");
+                    bytes.write(block,0,len);
+                }
+            }
+            JSONObject raw=new JSONObject(bytes.toString(StandardCharsets.UTF_8.name()));
+            double price=Double.parseDouble(raw.getString("price"));
+            if(!Double.isFinite(price)||price<=0||price>1e10)
+                throw new IOException("Cotización numéricamente inválida");
+            JSONObject result=new JSONObject();
+            result.put("asset",asset);
+            result.put("price",price);
+            result.put("time",raw.optString("time",""));
+            result.put("receivedAt",System.currentTimeMillis());
+            result.put("source","Coinbase Exchange · ticker público");
+            return result;
+        }finally{conn.disconnect();}
     }
     private static JSONArray fetchCoinbase(String asset,int granularity) throws Exception {
         final String api="https://api.exchange.coinbase.com/products/"+asset+
@@ -129,6 +178,20 @@ public final class MainActivity extends Activity {
             if(array.length()>400)throw new IOException("Volumen de datos inesperado");
             return array;
         }finally{conn.disconnect();}
+    }
+    private void emitQuote(String requestId,String error,JSONObject quote){
+        if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+        try {
+            JSONObject message=new JSONObject();
+            message.put("ok",error==null);
+            if(error==null)message.put("quote",quote);
+            else message.put("error",error);
+            final String js="window.LaplaceMobile&&window.LaplaceMobile.receive("+
+                JSONObject.quote(requestId)+","+message.toString()+")";
+            runOnUiThread(()->{
+                if(webView!=null)webView.evaluateJavascript(js,null);
+            });
+        }catch(Exception ignored){}
     }
     private void emit(String requestId,String error,JSONArray candles,int granularity){
         if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
