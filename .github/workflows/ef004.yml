@@ -28,6 +28,9 @@ jobs:
           node --check demonio/series.mjs
           node --check demonio/finanzas-ef004.mjs
           node --check tests/demonio-ef004.test.mjs
+          node --check demonio/evaluacion-ef004.mjs
+          node --check tools/nucleo-demonio.mjs
+          node --check tests/demonio-evaluacion-ef004.test.mjs
       - name: Aprendizaje y separacion temporal EF004
         run: npm run test:ef004
       - name: Regresiones EF001 EF002 EF003 y V001
