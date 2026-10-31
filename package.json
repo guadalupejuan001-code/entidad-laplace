@@ -35,7 +35,9 @@
     "swaps:d002": "node tools/swaps-d002.mjs",
     "test:swaps": "node --test tests/swaps-d002.test.mjs",
     "fondos:c001": "node tools/fondos-c001.mjs",
-    "test:fondos": "node --test tests/fondos-c001.test.mjs"
+    "test:fondos": "node --test tests/fondos-c001.test.mjs",
+    "banca:b001": "node tools/banca-b001.mjs",
+    "test:banca": "node --test tests/banca-b001.test.mjs"
   },
   "engines": {
     "node": ">=20"
