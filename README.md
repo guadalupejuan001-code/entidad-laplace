@@ -6,6 +6,28 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## B001 — Banca internacional BIS (piloto verificado)
+
+El módulo `universo/banca/` consulta cuatro series trimestrales de
+**LBS/CBS** con metodología y consolidación diferentes. El parser preserva
+unidad USD en millones, población, país, corte temporal y hash de fuente.
+**No suma LBS con CBS ni infiere flujo instantáneo a partir de stocks.**
+
+Prueba GitHub Actions del 31-oct-2026:
+[98/98 tests Node aprobados y 12 estados BIS públicos de cuatro series](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319).
+Esto verifica el piloto, no todo el sistema financiero mundial ni precisión
+predictiva.
+
+```bash
+npm run test:banca
+npm run banca:b001 -- --out=registros/banca/bis.json
+LAPLACE_B001_ENABLED=true node tools/laplace.mjs universo-global-u003
+```
+
+[Documentación B001](docs/BANCA_BIS_B001.md).
+
+---
+
 ## C001 — Flujos públicos de fondos (experimental)
 
 Nuevo módulo separado `universo/fondos/`: extracción de informes SEC
