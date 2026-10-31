@@ -1,0 +1,53 @@
+name: Entidad Laplace B001 - BIS banca internacional
+on:
+  push:
+    branches: [feature/b001-bis-lbs-cbs-20261031]
+  pull_request:
+    paths:
+      - 'universo/banca/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/banca-b001.test.mjs'
+      - 'tools/banca-b001.mjs'
+      - 'docs/BANCA_BIS_B001.md'
+      - 'package.json'
+      - '.github/workflows/b001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bis-b001-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar sintaxis y scripts
+        run: |
+          set -euo pipefail
+          node --check universo/banca/catalogo-bis.mjs
+          node --check universo/banca/bis-sdmx.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/banca-b001.mjs
+          node --check tests/banca-b001.test.mjs
+      - name: B001 y compatibilidad temporal de Laplace
+        run: |
+          set -euo pipefail
+          npm run test:banca
+          npm run test:fondos
+          npm run test:swaps
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Smoke publico BIS, sin alterar resultado unitario
+        continue-on-error: true
+        run: |
+          node tools/banca-b001.mjs --out=/tmp/laplace-b001-bis.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-b001-bis.json"));console.log(JSON.stringify({signals:x.universal_state.known_states,sources:x.source_status.map(s=>({id:s.name,status:s.status,reason:s.reason??null})),not_a_global_total:x.banking_rules.cbs_and_lbs_additive===false}));'
