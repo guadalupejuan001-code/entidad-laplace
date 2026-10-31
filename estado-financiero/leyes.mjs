@@ -35,7 +35,7 @@ export function restarDecimales(a,b){
 }
 export function multiplicarDecimales(a,b){
   const x=dec(a),y=dec(b);
-  need(x.scale+y.scale<=80,'precision multiplicada excedida');
+  need(x.scale+y.scale<=40,'precision multiplicada excedida');
   return str(x.n*y.n,x.scale+y.scale);
 }
 export function dividirDecimales(a,b,{decimales=16}={}){
