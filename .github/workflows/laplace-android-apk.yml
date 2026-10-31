@@ -53,6 +53,21 @@ jobs:
         run: |
           set -euo pipefail
           node apps/laplace-android/prepare-world.mjs world_archive/capturas
+      - name: Verificar que el archivo EF002 contiene estados auténticos
+        run: |
+          node --input-type=module -e '
+            import{readFileSync}from "node:fs";
+            import assert from "node:assert/strict";
+            const src=readFileSync("apps/laplace-android/app/src/main/assets/world.js","utf8");
+            const body=src.replace(/^window.LAPLACE_WORLD = /,"").trim().replace(/;$/,"");
+            const w=JSON.parse(body);
+            assert.equal(w.states_count,w.states.length);
+            assert.ok(w.states_count>0);
+            assert.ok(w.states.every(s=>s.id&&s.known_at&&s.observed_at&&s.source_url));
+            assert.equal(w.forecast_model_uses_world,false);
+            assert.equal(w.automatic_trading,false);
+            console.log("EF002:",w.states_count,"estados,",w.archive_manifests_count,"archivos.");
+          '
       - name: Compilar APK de Android con firma de depuración
         run: |
           set -euo pipefail
@@ -66,13 +81,14 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/pde-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/engine.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/index.html'
+          unzip -Z1 "$APK" | grep -Fx 'assets/world.js'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -12
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-APK-PDE-1-1
+          name: LAPLACE-ANDROID-V2-M001-EF002
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

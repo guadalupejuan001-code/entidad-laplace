@@ -5,6 +5,44 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 2.0 — M001 restaurado, EF002 completo y panel corregido
+
+Elimina el AR(1) simplificado que sustituyó al antiguo motor del precio.
+Se restauró la matemática de análogos históricos de M001, originalmente
+en LaPlaceDIG/seguimiento/modelo.mjs: cinco rasgos reales de impulso (1
+y 3 velas), volatilidad RMS, rango y volumen relativo, distancia
+normalizada, hasta 18 analogías sin solapamiento y retorno logarítmico
+ponderado por 1/(1+distancia). Precio candidato = precio inicial × exp(retorno).
+No se impone un aumento artificial de 1 dólar ni se sustituye el candidato
+por persistencia cuando el test sea desfavorable. El panel muestra los
+errores frente a la referencia para que se vean también los fallos.
+
+**Horizontes**: 15m, 30m, 1h, 4h, 5h, 12h, 24h, 2d, 3d, 7d, 14d.
+Velas de Coinbase 5m (7 días), 1h (50 días) y 1d (300 días),
+obtenidas por ventanas con máximo 280 barras. Verifica velas cerradas,
+huecos, OHLCV y fuente. Si los datos son antiguos o faltan al menos
+ocho patrones independientes, se abstiene de emitir candidato.
+
+**Panel**: cotizaciones spot de BTC/ETH/SOL separadas del último
+cierre histórico; botones Analizar, Probar, Evaluar y Proyectar
+ejecutan operaciones comprobables. Muestra patrones seleccionados,
+validación walk-forward cronológica, errores, fuentes, fechas y registro
+local de candidatos. No confunde pruebas retrospectivas con aciertos futuros.
+
+**Mundo**: EF002 proporciona estados financieros verdaderos, valores,
+unidades, fechas known_at y observed_at, fuentes públicas, grupos y
+capturas verificadas por SHA256. Se pueden filtrar los estados desde
+la APK. La inclusión del contexto mundial no constituye evidencia de
+que EF004 haya aprendido relaciones predictivas: EF004 continúa en
+su infraestructura independiente hasta obtener datos suficientes.
+
+**Ecuación**: conserva ∇²φ=0 y el Laplaciano de grafos como matemáticas
+estacionarias exactas, sin falsear una predicción de mercado.
+
+Android versionCode 4, versionName 2.0.0-M001-EF002.
+Solo investigación: sin trading ni garantía financiera.
+
+
 ## Versión Android 1.1 — ecuación de Laplace real en el teléfono
 
 - Nueva pestaña **Ecuación**, que integra el solucionador PDE auténtico de
