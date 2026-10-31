@@ -48,7 +48,9 @@ jobs:
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
           set -euo pipefail
+          node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
+          node --test tests/laplace-financiero.test.mjs tests/laplace-integral.test.mjs
       - name: Incluir última captura financiera EF002 con verificación de hashes
         run: |
           set -euo pipefail
@@ -82,13 +84,14 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/engine.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/index.html'
           unzip -Z1 "$APK" | grep -Fx 'assets/world.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/fusion-integral.js'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -12
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V2-M001-EF002
+          name: LAPLACE-ANDROID-V3-F001-LAPLACE
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

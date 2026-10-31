@@ -6,6 +6,7 @@
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
 <script src="math-pde.js" defer></script>
+<script src="fusion-integral.js" defer></script>
 <script src="pde-panel.js" defer></script>
 <script src="app.js" defer></script>
 </head><body>
@@ -20,6 +21,7 @@
     <button type="button" data-tab="panel" aria-current="page">Panel</button>
     <button type="button" data-tab="signals">Señales</button>
     <button type="button" data-tab="tests">Pruebas</button>
+    <button type="button" data-tab="integral">Núcleo</button>
     <button type="button" data-tab="world">Mundo</button>
     <button type="button" data-tab="equation">Ecuación</button>
   </nav>
@@ -123,18 +125,23 @@
 
     <article class="card horizons">
       <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>Horizonte del cálculo M001</h2></div><span id="horizonTag" class="outline-tag">1 HORA</span></div>
-      <div id="horizons" class="horizon-grid" role="group" aria-label="Horizonte en minutos">
-        <button type="button" data-minutes="15" class="active" aria-pressed="true">15 min</button>
+      <div id="horizons" class="horizon-grid" role="group" aria-label="Horizontes de 5 minutos hasta 90 días">
+        <button type="button" data-minutes="5" aria-pressed="false">5 min</button>
+        <button type="button" data-minutes="15" aria-pressed="false">15 min</button>
         <button type="button" data-minutes="30" aria-pressed="false">30 min</button>
         <button type="button" data-minutes="60" aria-pressed="false">1 h</button>
+        <button type="button" data-minutes="120" aria-pressed="false">2 h</button>
         <button type="button" data-minutes="240" aria-pressed="false">4 h</button>
         <button type="button" data-minutes="300" aria-pressed="false">5 h</button>
+        <button type="button" data-minutes="480" aria-pressed="false">8 h</button>
         <button type="button" data-minutes="720" aria-pressed="false">12 h</button>
         <button type="button" data-minutes="1440" aria-pressed="false">24 h</button>
-        <button type="button" data-minutes="2880" aria-pressed="false">2 días</button>
-        <button type="button" data-minutes="4320" aria-pressed="false">3 días</button>
-        <button type="button" data-minutes="10080" aria-pressed="false">7 días</button>
-        <button type="button" data-minutes="20160" aria-pressed="false">14 días</button>
+        <button type="button" data-minutes="2880" aria-pressed="false">2 d</button>
+        <button type="button" data-minutes="4320" aria-pressed="false">3 d</button>
+        <button type="button" data-minutes="10080" aria-pressed="false">7 d</button>
+        <button type="button" data-minutes="20160" aria-pressed="false">14 d</button>
+        <button type="button" data-minutes="43200" aria-pressed="false">30 d</button>
+        <button type="button" data-minutes="129600" aria-pressed="false">90 d</button>
       </div>
       <p class="fineprint">M001 recuperado: 5 rasgos observados, hasta 18 análogos independientes, validación cronológica. Si faltan muestras no se fabrica una predicción.</p>
     </article>
@@ -185,6 +192,30 @@
   </section>
 
 
+  <section id="integral" class="tabpage" hidden>
+    <article class="card">
+      <div class="section-head">
+        <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
+          <h2>Núcleo integral de estados</h2></div>
+        <span class="outline-tag">CÁLCULO VERIFICABLE</span>
+      </div>
+      <p>Ejecuta el F001 original con 14 horizontes de BTC, audita el archivo financiero
+      y aplica Lφ = 0 a los retornos logarítmicos. Las fronteras son candidatos
+      experimentales, no precios observados del futuro.</p>
+      <button id="integralRun" class="pde-primary" type="button">Consultar y calcular todo lo disponible</button>
+      <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. La observación mundial EF002 es una captura histórica, no un feed vivo.</p>
+      <div id="integralMetrics" class="stats pde-stats"></div>
+      <div id="integralTable" class="integral-results"></div>
+    </article>
+    <article class="card">
+      <h2>Observaciones y módulos sin simulación</h2>
+      <div id="integralModules" class="signal-rows"></div>
+      <p class="fineprint">El motor F001 procesa los precios reales disponibles.
+      EF004 aprende solo con suficiente historia mundial independiente.
+      X002/XN01 requieren su ejecutor nativo; C001 requiere un reporte SEC capturado.
+      Ninguna señal ausente se convierte en cero ni altera artificialmente el precio.</p>
+    </article>
+  </section>
   <section id="equation" class="tabpage" hidden>
     <article class="card pde-intro">
       <div class="section-head"><div><small class="eyebrow">MATEMÁTICA · LAPLACE PDE</small>

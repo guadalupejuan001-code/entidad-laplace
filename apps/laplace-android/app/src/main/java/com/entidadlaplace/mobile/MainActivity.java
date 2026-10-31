@@ -87,8 +87,8 @@ public final class MainActivity extends Activity {
     private final class MarketBridge {
         @JavascriptInterface
         public void fetchCandles(String requestId,String asset,int granularity,int days){
-            int expectedDays=granularity==300?14:granularity==3600?50:
-                granularity==86400?300:-1;
+            int expectedDays=granularity==300?14:granularity==3600?45:
+                granularity==86400?1000:-1;
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
                !ASSETS.contains(asset)||expectedDays<0||days!=expectedDays){
                 emit(requestId,"Solicitud inválida: fuente o ventana no permitida.",null,granularity);
@@ -124,7 +124,7 @@ public final class MainActivity extends Activity {
         conn.setConnectTimeout(14000);
         conn.setReadTimeout(17000);
         conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/2.0 (public market research)");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/3.0 (public market research)");
         try {
             int code=conn.getResponseCode();
             if(code!=200)throw new IOException("Cotización: HTTP "+code+
@@ -152,7 +152,7 @@ public final class MainActivity extends Activity {
             return result;
         }finally{conn.disconnect();}
     }
-    // 14 días de 5m; 50 días de 1h; 300 días de 1d.
+    // 14 días de 5m; 45 días de 1h; 1000 días de 1d.
     // Cada consulta a Coinbase tiene una ventana <300 velas. Nunca se inventan
     // velas faltantes ni se mezcla un activo con otro al cambiar la selección.
     private JSONArray fetchCoinbaseHistory(String requestId,String asset,

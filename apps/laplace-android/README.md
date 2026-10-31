@@ -5,6 +5,25 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 3.0 — F001 original, 16 horizontes y operador de Laplace
+
+- Recuperación del motor F001 original (14 horizontes de 5 min a 90 días) en
+  el dispositivo mediante un paquete generado de código canónico.
+- Se mantienen adicionalmente los horizontes M001 de 5h y 2 días
+  (16 opciones en el selector), sin sustituir el motor anterior.
+- Datos Coinbase en velas 5m/14 días, 1h/45 días, 1d/1000 días, con
+  ventanas de consulta paginadas, campos OHLCV y faltantes explícitos.
+- Nueva pestaña Núcleo: cálculo simultáneo de los 14 horizontes F001
+  con fecha y fuente, diagnóstico armónico Lφ=0 sobre retornos adimensionales
+  de BTC y auditoría de EF002 con todas las observaciones disponibles.
+- Si hay al menos dos fronteras experimentales, el solucionador de
+  Laplace evalúa el campo entre horizontes. Nunca publica un
+  valor interpolado como pronóstico de precio, ni cambia la predicción central.
+- El campo global de ETF C001 y los estados EF004 no se simulan. X002/XN01
+  son nativos y aún no forman parte de la APK independiente.
+- versionCode 5; versionName 3.0.0-F001-LAPLACE. La APK continúa
+  siendo investigación, no trading ni rentabilidad comprobada.
+
 ## Android 2.0 — M001 restaurado, EF002 completo y panel corregido
 
 Elimina el AR(1) simplificado que sustituyó al antiguo motor del precio.
