@@ -232,7 +232,9 @@ function useHorizon(value){
   if(history&&previous!==E.selectResolution(m)){
     history=null;historyGranularity=null;
     $('lastPrice').textContent='—';
-    $('priceTime').textContent='Selecciona Actualizar para cambiar de resolución';
+    $('priceTime').textContent='Este plazo requiere otra resolución de velas.';
+    $('dataStatus').textContent='Sin datos para el plazo '+label(m)+'. Pulsa Actualizar datos.';
+    $('chartComment').textContent='Historial pendiente para '+label(m)+'.';
     status('Horizonte cambiado. Es necesario consultar velas de '+E.HISTORICAL_CONFIG[E.selectResolution(m)].label+'.');
   }
   renderSignals();drawChart();setActionAvailability();
@@ -329,6 +331,8 @@ async function refresh(){
       ' · '+cfg.days+' días solicitados · del '+date(history[0].time)+
       ' al '+date(last.time+granularity)+
       (age>2.5*granularity?' · datos antiguos':'');
+    $('chartComment').textContent='Historial real cargado: '+history.length+
+      ' velas de '+cfg.label+'. Para ver un candidato selecciona Proyectar precio.';
     if(age>2.5*granularity){
       connection('DATOS ANTIGUOS');
       status('Fuente retrasada: hay velas, pero no son recientes. No emitir candidatos actuales.','error');
@@ -344,6 +348,7 @@ async function refresh(){
       status('Error al cargar historia: '+error.message+
         '. Se conserva vacío; no se fabrica predicción.','error');
       history=null;historyGranularity=null;forgetEstimate();
+      $('chartComment').textContent='No hay datos de mercado para graficar: '+error.message;
       renderSignals();drawChart();
     }
   }finally{
@@ -416,7 +421,9 @@ function forecastAction(){
     saveForecast(candidate,model);
     drawChart();
   }catch(error){lastForecast=null;$('estimate').textContent='—';
-    status('No se emitió un candidato: '+error.message,'error')}
+    $('relativeChange').textContent='Sin candidato válido';
+    $('chartComment').textContent='No se generó proyección: '+error.message;
+    status('No se emitió un candidato: '+error.message,'error');drawChart()}
 }
 function saveForecast(candidate,model){
   const existing=log.find(x=>x.status==='pending'&&x.asset===asset&&

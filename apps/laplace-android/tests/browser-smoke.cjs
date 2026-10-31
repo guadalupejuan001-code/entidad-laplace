@@ -59,6 +59,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
       !document.querySelector('#refresh').disabled,{timeout:25000});
     assert.match(await page.locator('#quoteBTC').innerText(),/61/);
     assert.equal(await page.locator('#forecast').isDisabled(),false);
+    assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
     await page.locator('#forecast').click();
     await page.waitForFunction(()=>document.querySelector('#estimate').textContent!=='—',{timeout:20000});
     assert.match(await page.locator('#relativeChange').innerText(),/%/);
