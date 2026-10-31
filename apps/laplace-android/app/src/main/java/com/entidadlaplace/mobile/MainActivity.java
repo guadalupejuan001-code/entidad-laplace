@@ -121,7 +121,7 @@ public final class MainActivity extends Activity {
         conn.setConnectTimeout(14000);
         conn.setReadTimeout(17000);
         conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.0 (public market research)");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.1 (public market research)");
         try {
             int code=conn.getResponseCode();
             if(code!=200)throw new IOException("Cotización: HTTP "+code+
@@ -158,7 +158,7 @@ public final class MainActivity extends Activity {
         conn.setConnectTimeout(14000);
         conn.setReadTimeout(17000);
         conn.setRequestProperty("Accept","application/json");
-        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/0.9 (public market research)");
+        conn.setRequestProperty("User-Agent","EntidadLaplaceAndroid/1.1 (public market research)");
         try {
             int code=conn.getResponseCode();
             if(code!=200)throw new IOException("Mercado: HTTP "+code+

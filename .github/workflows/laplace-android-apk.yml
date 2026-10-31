@@ -62,13 +62,17 @@ jobs:
           set -euo pipefail
           APK=apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
+          unzip -Z1 "$APK" | grep -Fx 'assets/math-pde.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/pde-panel.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/engine.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/index.html'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -12
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-APK-EF005
+          name: LAPLACE-ANDROID-APK-PDE-1-1
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
