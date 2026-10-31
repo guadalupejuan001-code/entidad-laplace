@@ -6,6 +6,32 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## EF004 — Núcleo del Demonio: aprendizaje y evolución conjunta
+
+Se incorporó un aprendiz de dependencias financieras con retardo que usa
+capturas EF002 verificadas, selecciona relaciones SOLO con entrenamiento,
+compara modelos multivariados frente a persistencia, reserva un test
+cronológico y calcula todos los estados seleccionados de forma simultánea.
+
+El diario separado laplace-modelos registrará abstenciones, pronósticos
+congelados y evaluaciones cuando lleguen datos posteriores. Las rutinas
+se ejecutan tras las capturas públicas, manualmente o por calendario
+de respaldo; nunca operan dinero.
+
+    npm run test:ef004
+    npm run demonio:ciclo -- ejecutar ARCHIVO_EF002 SALIDA [DIARIO_ANTERIOR]
+    npm run demonio:xi -- ARCHIVO_EF002 [MUNDO_X_QUANTUM]
+
+La primera captura contiene 1.051 estados, pero NO ofrece suficientes
+transiciones para aprender: EF004 se abstiene por defecto hasta disponer
+de 48 capturas consecutivas y evaluables. El cálculo estadístico EF004 es
+clásico; XI/Ether original verifica los bytes de los estados mediante
+un puente separado. No existe ventaja predictiva demostrada.
+
+[Arquitectura y límites EF004](docs/DEMONIO_FINANCIERO_EF004.md).
+
+---
+
 ## EF002–EF003 — Archivo mundial persistente y leyes de evolución
 
 EF002 conecta en una misma captura pública U003 los observadores D001, D002,
