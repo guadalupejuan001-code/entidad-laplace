@@ -1,0 +1,133 @@
+name: Importar Entidad Laplace (una sola vez)
+on:
+  push:
+    paths:
+      - .github/workflows/importar-laplace.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  importar:
+    if: github.repository == 'guadalupejuan001-code/entidad-laplace'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout del repositorio nuevo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Importar historial y programas de Laplace
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # LaPlaceDIG es el origen original. La rama D001 contiene sus predecesoras U003/U004, X002, F001, O001.
+          git remote add laplace-origen https://github.com/guadalupejuan001-code/LaPlaceDIG.git
+          git fetch --no-tags laplace-origen             +refs/heads/feature/d001-derivados-perps-opciones-20261031:refs/remotes/laplace-origen/candidato
+          SRC_SHA="$(git rev-parse refs/remotes/laplace-origen/candidato)"
+          test "$SRC_SHA" = "63efe4f6fb00ae1cdb74aad32f259f77d81c13ca"
+
+          # Fusiona ambos historiales sin borrar el README inicial del nuevo repositorio de su historia Git.
+          git merge --allow-unrelated-histories --no-commit --no-ff -X theirs             refs/remotes/laplace-origen/candidato
+
+          # Copias de integración Android: quedan separadas del programa central.
+          git clone --quiet --depth 1 --branch feature/laplace-f001-multiescala-android-20261030             https://github.com/guadalupejuan001-code/REVERSE-PC.git /tmp/laplace-reverse
+          REV_SHA="$(git -C /tmp/laplace-reverse rev-parse HEAD)"
+          test "$REV_SHA" = "311a9623382e8b5e0b87d00fd22c726ef332043a"
+          mkdir -p integraciones/reverse-pc/recursos integraciones/reverse-pc/java
+          cp -a /tmp/laplace-reverse/laplace-android integraciones/reverse-pc/
+          cp -a /tmp/laplace-reverse/reverse-os-android/app/src/main/assets/laplace integraciones/reverse-pc/recursos/
+          cp /tmp/laplace-reverse/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceActivity.java integraciones/reverse-pc/java/
+          cp /tmp/laplace-reverse/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceGlobalCompiler.java integraciones/reverse-pc/java/
+          cp /tmp/laplace-reverse/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceXiCompiler.java integraciones/reverse-pc/java/
+          cp /tmp/laplace-reverse/NEXT_APK_LAPLACE.json integraciones/reverse-pc/
+
+          # Guardar workflows del repositorio anterior, sin lanzar procesos duplicados
+          # ni habilitar operaciones automáticas financieras.
+          mkdir -p procedencia/workflows-originales
+          for job in .github/workflows/*; do
+            test -f "$job" || continue
+            mv "$job" "procedencia/workflows-originales/$(basename "$job")"
+          done
+
+          # La integración de REVERSE-PC queda como adaptador, sin compilar ni afirmar que haya APK nueva.
+          cat > integraciones/reverse-pc/README.md <<'INTEGRACION'
+          # Adaptador de Laplace para REVERSE-PC
+
+          Captura de la rama de integración Android de REVERSE-PC:
+          `feature/laplace-f001-multiescala-android-20261030`,
+          commit `311a9623382e8b5e0b87d00fd22c726ef332043a`.
+
+          `laplace-android/` contiene pruebas, contratos y preparación del puente;
+          `recursos/laplace/` contiene los assets de la aplicación;
+          `java/` contiene los adaptadores del anfitrión Android.
+          Estos archivos **no son una aplicación Android independiente**:
+          requieren su proyecto anfitrión. El repositorio REVERSE-PC no se altera.
+
+          No hay una APK nueva ni órdenes automáticas de trading.
+          INTEGRACION
+
+          cat > MIGRACION.md <<'MIGRACION'
+          # Traslado verificado: Entidad Laplace
+
+          **Repositorio canónico de investigación:** `guadalupejuan001-code/entidad-laplace`.
+          **Origen técnico:** `guadalupejuan001-code/LaPlaceDIG`.
+          **Rama exacta importada:** `feature/d001-derivados-perps-opciones-20261031`,
+          commit `63efe4f6fb00ae1cdb74aad32f259f77d81c13ca`.
+          **Adaptador Android:** `guadalupejuan001-code/REVERSE-PC`,
+          rama `feature/laplace-f001-multiescala-android-20261030`,
+          commit `311a9623382e8b5e0b87d00fd22c726ef332043a`.
+
+          Se preserva la historia de Git de la rama origen mediante un merge de historiales
+          no relacionados, incluyendo sus ancestros. Los originales permanecen disponibles
+          por compatibilidad y trazabilidad; no se han borrado ni reescrito.
+
+          Los workflows antiguos se conservan en `procedencia/workflows-originales/`
+          sin activación automática en el repositorio nuevo. El código de predicción,
+          ingestión, experimentos físicos, pruebas y evidencia queda en la raíz.
+          Las integraciones de REVERSE-PC están bajo `integraciones/reverse-pc/`.
+
+          Los modelos y sus resultados son experimentales: ni cobertura universal,
+          ni precisión predictiva garantizada, ni ejecución de órdenes reales.
+          MIGRACION
+
+          cp README.md /tmp/laplace-original-readme.md
+          {
+            printf '# Entidad Laplace\n\n'
+            printf 'Sistema experimental independiente de estados, señales, evolución temporal y pronósticos.\n\n'
+            printf 'Consulte [MIGRACION.md](MIGRACION.md) para procedencia exacta, límites y adaptador Android.\n\n---\n\n'
+            cat /tmp/laplace-original-readme.md
+          } > README.md
+
+          # CI de verificación no financiera y sin datos privados de terceros.
+          mkdir -p .github/workflows
+          cat > .github/workflows/verificar-entidad-laplace.yml <<'CI'
+          name: Verificar Entidad Laplace
+          on:
+            push:
+            pull_request:
+          permissions:
+            contents: read
+          jobs:
+            pruebas:
+              runs-on: ubuntu-latest
+              timeout-minutes: 15
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-node@v4
+                  with:
+                    node-version: '20'
+                    cache: npm
+                - run: npm ci --ignore-scripts
+                - run: npm run test:fusion
+                - run: npm run test:finra
+                - run: npm run test:finra-o001b
+                - run: npm run test:derivados
+          CI
+
+          git add -A
+          git commit -m "Consolidar Entidad Laplace: historial LaPlaceDIG, F001/U004/O001/D001, pruebas, evidencia y adaptador Android"
+          git push origin HEAD:refs/heads/main
