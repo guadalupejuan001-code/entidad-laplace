@@ -146,6 +146,13 @@ generar fechas ni resultados sintéticos en la prueba final.
 La evidencia se publica como artefacto temporal del workflow; su
 URL puede vencer. Para reproducir, ejecutar el comando anterior.
 
+**Validación nativa completa de cierre:** [GitHub Actions
+#41177189639](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41177189639)
+compiló los ejecutables originales fijados de Mundo X, REVERSE-PC y el
+Laplace temporal, y ejecutó `npm test`: **409 pruebas aprobadas, cero
+fallos y cero omitidos**. Esta cifra corresponde a pruebas de software,
+no constituye precisión demostrada de pronósticos de mercados reales.
+
 ## 6. Límites y trabajo pendiente fuera del ciclo terminado
 
 - Fusionar la cadena completa de PR en `main`, solo después de
