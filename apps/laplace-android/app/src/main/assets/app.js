@@ -33,6 +33,8 @@ function status(text,error=false){
   $('activityStatus').textContent=text;
   $('activityStatus').style.color=error?'#ffc6bd':'#d7efff';
   $('noticeText').textContent=text;
+  $('inlineStatus').textContent=text;
+  $('inlineStatus').dataset.kind=error?'error':'info';
   $('noticeIcon').textContent=error?'!':'◎';
   $('notice').dataset.kind=error?'error':'info';
 }
