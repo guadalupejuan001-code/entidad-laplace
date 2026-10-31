@@ -1,0 +1,55 @@
+name: Entidad Laplace EF002-EF003 - Persistencia y evolucion
+on:
+  push:
+    branches:
+      - feature/ef002-ef004-continuidad-financiera-20261031
+  pull_request:
+    paths:
+      - 'estado-financiero/**'
+      - 'tools/ciclo-financiero.mjs'
+      - 'tests/captura-financiera-ef002.test.mjs'
+      - 'tests/leyes-financieras-ef003.test.mjs'
+      - 'package.json'
+      - '.github/workflows/ef002-ef003.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts-and-persistence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias congeladas
+        run: npm ci --no-audit --no-fund
+      - name: Comprobar sintaxis
+        run: |
+          set -euo pipefail
+          for f in estado-financiero/*.mjs tools/ciclo-financiero.mjs tests/captura-financiera-ef002.test.mjs tests/leyes-financieras-ef003.test.mjs; do node --check "$f"; done
+      - name: Persistencia PGlite y restauracion de capturas
+        run: npm run test:ef002
+      - name: Leyes financieras y escenarios condicionales
+        run: npm run test:ef003
+      - name: Regresiones EF001 + fuente + modelo
+        run: |
+          set -euo pipefail
+          npm run test:ef001
+          npm run test:v001
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs tests/seguimiento.test.mjs
+      - name: Migracion PGlite y catalogo de dominios
+        run: |
+          set -euo pipefail
+          node tools/ciclo-financiero.mjs estado 2026-10-31T00:00:00.000Z /tmp/ef002-database > /tmp/ef002-status.json
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const s=JSON.parse(readFileSync("/tmp/ef002-status.json","utf8"));
+            assert.ok(s.domain_catalog>=48);
+            assert.equal(s.current.known_series,0);
+          '
