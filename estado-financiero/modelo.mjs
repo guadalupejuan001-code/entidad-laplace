@@ -137,11 +137,10 @@ export function normalizarCoberturasU003(capture){
     const count=Number(item.signals??0);
     need(Number.isSafeInteger(count)&&count>=0,'cantidad por fuente invalida');
     const status=availability==='observed'&&count===0?'partial':availability;
-    const body={capture_sha:ref.capture_sha,family:family(
-      String(item.group??'U003').toUpperCase() in {}?'U003':'U003'),
+    const body={capture_sha:ref.capture_sha,family:'U003',
       source_id:text(String(item.name??item.id??'source_'+i),'origen',240),
       availability:status,observed_count:count,known_at:ref.captured_at,
-      reason:item.reason??item.error??null,
+      reason:item.reason==null&&item.error==null?null:String(item.reason??item.error).slice(0,400),
       scope:{group:item.group??null,domain:item.domain??null,provider_status:raw,
         source_url:item.url??null},license_ref:null};
     return {...body,coverage_sha:recordSha(body)};
