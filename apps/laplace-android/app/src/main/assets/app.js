@@ -127,21 +127,21 @@ function drawLiveChart(){
   ctx.arc(x(points.length-1),y(values.at(-1)),3,0,Math.PI*2);ctx.fill();
 }
 function updateLivePreview(){
-  const label=$('livePreview'),q=tickerStream.quote(asset);
+  const previewElement=$('livePreview'),q=tickerStream.quote(asset);
   if(!liveEnabled||!tickerStream.isFresh(asset)||!q){
-    label.textContent='Sin nuevos ticks válidos para '+asset+'. '+
+    previewElement.textContent='Sin nuevos ticks válidos para '+asset+'. '+
       'El historial M001 no se transforma en precios en vivo.';
     return;
   }
   if(!analysis?.ready||analysis.asset!==asset||
       analysis.horizonMinutes!==minutes||!history){
-    label.textContent='Última operación '+money(q.price)+
+    previewElement.textContent='Última operación '+money(q.price)+
       ' · '+liveTimeAgo(q.observedAt)+
       '. Analiza M001 para obtener un escenario indicativo con el último precio.';
     return;
   }
   const implied=q.price*Math.exp(analysis.returnLog);
-  label.textContent='Escenario indicativo M001 · '+label(minutes)+': '+
+  previewElement.textContent='Escenario indicativo M001 · '+label(minutes)+': '+
     money(implied)+' desde '+money(q.price)+
     '. Usa los mismos patrones históricos, SIN reentrenar y SIN guardar otra predicción.';
 }
