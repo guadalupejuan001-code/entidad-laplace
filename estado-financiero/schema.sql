@@ -182,3 +182,10 @@ CREATE OR REPLACE VIEW laplace_fin_relation_index AS
   UNION ALL
   SELECT r.relation_sha,r.from_id,r.to_id,r.relation_kind,r.known_at,
     'EF001'::text AS family FROM laplace_fin_relations r;
+
+-- Inventario de dominios que DEBERIAN modelarse. No son feeds activos.
+CREATE TABLE IF NOT EXISTS laplace_fin_domain_catalog (
+  domain_id text PRIMARY KEY, sector text NOT NULL, availability text NOT NULL,
+  semantic text NOT NULL, modules jsonb NOT NULL, notes text NOT NULL,
+  contract_version text NOT NULL
+);
