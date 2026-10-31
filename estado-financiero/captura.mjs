@@ -5,6 +5,8 @@
 import {readFile,writeFile,mkdir,readdir} from 'node:fs/promises';
 import {join,relative,resolve,dirname,basename} from 'node:path';
 import {gzipSync,gunzipSync} from 'node:zlib';
+import {getHeapStatistics} from 'node:v8';
+import {freemem} from 'node:os';
 import {sha,need,stable} from '../input/contrato.mjs';
 import {utcTime} from '../universo/estados.mjs';
 import {observeWorldU003} from '../universo/global-u003.mjs';
@@ -14,7 +16,16 @@ import {importarU003} from './repositorio.mjs';
 export const EF002_VERSION='laplace-ef002-public-world-capture-v1';
 const APPROVED_GROUPS=['derivatives_d001','swaps_otc_d002','etf_fund_flows_c001',
   'bis_banking_b001','blockchain_defi_k001'];
-const LIMIT_CAPTURE_BYTES=32*1024*1024;
+// Presupuesto de seguridad del proceso, no techo de estados ni de capturas.
+function budgetArchivo(){
+  const env=process.env.LAPLACE_EF002_MAX_ARCHIVE_BYTES;
+  if(env!==undefined){
+    const value=Number(env);
+    need(Number.isSafeInteger(value)&&value>0,'presupuesto de archivo inválido');
+    return value;
+  }
+  return Math.floor(Math.min(getHeapStatistics().heap_size_limit,freemem())/4);
+}
 function credentialsNotInUrls(value){
   if(Array.isArray(value))return value.forEach(credentialsNotInUrls);
   if(!value||typeof value!=='object')return;
@@ -94,7 +105,8 @@ export async function guardarArchivoEF002({capture,summary,directory}){
   need(summary?.capture_sha256===info.capture_sha256&&
     summary?.snapshot_sha256===info.snapshot_sha256,'resumen no coincide con la captura');
   const raw=Buffer.from(JSON.stringify(capture));
-  need(raw.length<=LIMIT_CAPTURE_BYTES,'captura excede limite de archivo EF002');
+  need(raw.length<=budgetArchivo(),
+    'captura excede recursos disponibles de memoria; usar presupuesto mayor o infraestructura con más memoria');
   const compressed=gzipSync(raw,{level:9,mtime:0});
   const day=info.captured_at.slice(0,10).replace(/-/g,'/');
   const key=archiveName(capture);
@@ -129,7 +141,11 @@ export async function leerArchivoEF002(manifestPath){
   const raw=await readFile(payloadPath);
   need(raw.length===manifest.compressed_bytes&&sha(raw)===manifest.archive_sha256,
     'archivo corrupto o modificado');
-  const uncompressed=gunzipSync(raw,{maxOutputLength:LIMIT_CAPTURE_BYTES});
+  need(Number.isSafeInteger(manifest.original_bytes)&&manifest.original_bytes>0,
+    'manifest carece de tamaño original validado');
+  need(manifest.original_bytes<=budgetArchivo(),
+    'archivo no cabe en el presupuesto de memoria del proceso');
+  const uncompressed=gunzipSync(raw,{maxOutputLength:manifest.original_bytes});
   need(uncompressed.length===manifest.original_bytes,'tamaño descomprimido incorrecto');
   const capture=JSON.parse(uncompressed.toString('utf8'));
   const summary=resumirCapturaFinanciera(capture);
@@ -139,34 +155,39 @@ export async function leerArchivoEF002(manifestPath){
     summary.captured_at===manifest.captured_at,'archivo no coincide con manifest');
   return {capture,summary,manifest};
 }
-export async function recuperarArchivosEF002(store,manifests,{maxFiles=10000}={}){
-  need(Array.isArray(manifests)&&manifests.length<=maxFiles,'limite de archivos excedido');
-  const loaded=[];
-  for(const path of manifests)loaded.push(await leerArchivoEF002(path));
-  loaded.sort((a,b)=>a.summary.captured_at.localeCompare(b.summary.captured_at)||
-    a.summary.capture_sha256.localeCompare(b.summary.capture_sha256));
+export async function recuperarArchivosEF002(store,manifests,{maxFiles=null}={}){
+  need(Array.isArray(manifests)&&
+    (maxFiles===null||Number.isSafeInteger(maxFiles)&&maxFiles>=0&&
+      manifests.length<=maxFiles),'presupuesto opcional de archivos excedido');
+  // El archivo usa YYYY/MM/DD/timestamp-SHA, por lo que la ruta normalizada
+  // proporciona orden cronológico sin materializar todos los gzip a la vez.
+  const ordered=[...manifests].sort();
   let inserted=0,duplicates=0,states=0;
-  for(const {capture} of loaded){
+  for(const path of ordered){
+    const {capture}=await leerArchivoEF002(path);
     const result=await importarU003(store,capture);
     inserted+=result.added_observations;
     duplicates+=Number(!result.created_capture);
     states+=result.total_observations;
   }
-  return {archives_checked:loaded.length,imported_new_states:inserted,
+  return {archives_checked:ordered.length,imported_new_states:inserted,
     duplicate_captures:duplicates,states_encountered:states,
+    serial_restore_without_loading_all_archives:true,
+    no_fixed_file_count_cap:true,
     exact_known_at_preserved:true,missing_is_not_zero:true,automatic_trading:false};
 }
-export async function descubrirManifiestosEF002(directory,{maxFiles=10000}={}){
-  const root=resolve(directory),found=[];
-  async function visit(dir,depth){
-    need(depth<=5,'arbol de archivos demasiado profundo');
+export async function descubrirManifiestosEF002(directory,{maxFiles=null}={}){
+  need(maxFiles===null||(Number.isSafeInteger(maxFiles)&&maxFiles>=0),
+    'presupuesto de archivos opcional inválido');
+  const root=resolve(directory),found=[],pending=[root];
+  while(pending.length){
+    const dir=pending.pop();
     for(const e of await readdir(dir,{withFileTypes:true})){
       if(e.isSymbolicLink())throw Error('simbolos de archivo no admitidos');
-      if(e.isDirectory())await visit(join(dir,e.name),depth+1);
+      if(e.isDirectory())pending.push(join(dir,e.name));
       else if(e.isFile()&&e.name.endsWith('.manifest.json'))found.push(join(dir,e.name));
-      need(found.length<=maxFiles,'presupuesto de archivos excedido');
+      need(maxFiles===null||found.length<=maxFiles,'presupuesto opcional de archivos excedido');
     }
   }
-  await visit(root,0);
   return found.sort();
 }
