@@ -3,10 +3,10 @@
 **Estado**: piloto cuantitativo de cuatro series públicas del Banco de Pagos
 Internacionales (BIS). El código está en una rama de Entidad Laplace.
 **Verificación efectiva en GitHub Actions** (31-oct-2026):
-[workflow B001](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319)
-completó 98 pruebas Node (17 B001 + 81 regresiones), todas aprobadas,
-y ejecutó captura pública BIS: **12 señales trimestrales de 4 series,
-4 fuentes observadas, 0 ausentes**, con salida sellada. Esta prueba
+[workflow B001](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175476309)
+completó **99 pruebas Node** (18 B001 + 81 regresiones), todas aprobadas,
+y ejecutó captura pública BIS: **32 señales trimestrales, 8 por serie,
+4 fuentes observadas, 0 ausentes, último trimestre 2026-Q2**, con salida sellada. Esta prueba
 sí valida la conectividad pública de este lote, pero no la precisión predictiva
 ni la cobertura total bancaria mundial. Las corridas antiguas fallidas de GitHub
 Actions quedan documentadas en [incidencia #6](https://github.com/guadalupejuan001-code/entidad-laplace/issues/6).
@@ -64,8 +64,11 @@ Se exige:
 - `TIME_PERIOD` trimestre válido, cero filas duplicadas, stock no negativo,
   `UNIT_MULT=6` y `UNIT_MEASURE=USD`;
 - un límite por fuente de 2 MiB y 64 filas y límite de tiempo;
-- valores ausentes, confidenciales y estados no comparables **excluidos y
-  registrados**, nunca sustituidos por cero;
+- valores ausentes y estados **OBS_CONF=N/C restringidos** excluidos, nunca
+  sustituidos por cero; solo se publican `OBS_CONF=F` (libres).
+  `OBS_STATUS=B` indica ruptura metodológica: se conserva el stock público
+  con `structural_break=true` y, si está disponible, el valor pre-break;
+  nunca se calcula un flujo entre periodos de metodologías diferentes;
 - observación con `observed_at` correspondiente al **final de trimestre**,
   pero `known_at` correspondiente al **momento de descarga por Laplace**;
 - SHA-256, ID de serie, unidad, país, sector/clave, descripción, fuente, estado
@@ -110,13 +113,14 @@ fuente produjo registros públicos validados y no se sobreescriben rutas.
 
 ## Tests y pendientes antes de cerrar B001
 
-- 17 casos de contrato cubren CSV SDMX, clave exacta, unidad, trimestre,
+- 18 casos de contrato cubren CSV SDMX, clave exacta, unidad, trimestre,
   timestamp de conocimiento, confidencialidad, fuentes incompletas,
   consulta concurrente y prohibición de sumar LBS y CBS.
-- **Superada**: `npm run test:banca` real, 17/17. También se ejecutaron
+- **Superada**: `npm run test:banca` real, 18/18. También se ejecutaron
   81 tests de regresión de fondos, swaps, derivados, FINRA, F001 y U003:
-  98/98 sin fallos en [Actions](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319).
-- **Superada**: captura pública BIS del piloto con cuatro fuentes y 12 estados.
+  **99/99 sin fallos** en [Actions](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175476309).
+- **Superada**: captura pública BIS del piloto con cuatro fuentes y 32 estados,
+  último trimestre 2026-Q2, sin observaciones censuradas promovidas.
   Sigue pendiente ampliar cobertura, conservar historial y validar releases
   históricos originales y modelos predictivos.
 - Los runs antiguos de Actions aún requieren revisión de la incidencia #6;
