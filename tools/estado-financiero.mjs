@@ -8,7 +8,7 @@ import {resolve} from 'node:path';
 import {Store} from '../input/almacen.mjs';
 import {consultarCatalogo} from '../estado-financiero/catalogo-mundial.mjs';
 import {prepararLotesXI,compilarLotesXI,probarLotesXI} from '../estado-financiero/puente-xi.mjs';
-import {importarU003,consultarCorte,consultarEstadosDispersos,coberturaCorte}
+import {importarU003,reindexarI001,consultarCorte,consultarEstadosDispersos,coberturaCorte}
   from '../estado-financiero/repositorio.mjs';
 
 const args=process.argv.slice(2);
@@ -18,13 +18,14 @@ const usage='Comandos: node tools/estado-financiero.mjs migrar [DIRECTORIO_BD]'+
   '\n  disperso FECHA_UTC [DIRECTORIO_BD] [ESCENARIO_SHA]'+
   '\n  cobertura FECHA_UTC [DIRECTORIO_BD]'+
   '\n  mapa [DIRECTORIO_BD]'+
+  '\n  reindexar-i001 [DIRECTORIO_BD]'+
   '\n  xi FECHA_UTC [DIRECTORIO_BD] [BINARIO_XI_ORIGINAL]'+
   '\nBD por defecto: registros/input/postgres (la misma base del modulo I001).'+
   '\nDetener I001 antes de usar PGlite local; con PostgreSQL servidor usar su cliente habilitado.';
 const mode=args.shift();
 if(!mode||mode==='--help'||mode==='--ayuda'){console.log(usage);process.exit(0)}
 const needsPath=mode==='importar-u003'||['corte','disperso','cobertura','xi'].includes(mode);
-if(!['migrar','importar-u003','corte','disperso','cobertura','mapa','xi'].includes(mode)||
+if(!['migrar','reindexar-i001','importar-u003','corte','disperso','cobertura','mapa','xi'].includes(mode)||
   needsPath&&!args.length){console.error(usage);process.exitCode=2}
 else{
   const first=needsPath?args.shift():null;
@@ -40,6 +41,8 @@ else{
       if(mode==='migrar'){
         result={schema:'EF001',status:'migrated_or_already_present',storage:dir,
           existing_i001_retained:true,no_tables_dropped:true};
+      }else if(mode==='reindexar-i001'){
+        result=await reindexarI001(store);
       }else if(mode==='importar-u003'){
         const raw=await readFile(resolve(first));
         if(raw.length>32*1024*1024)throw Error('Captura excede 32 MiB');
