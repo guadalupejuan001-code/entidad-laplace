@@ -6,6 +6,29 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## K001 — Blockchain y DeFi (penúltimo ciclo, verificado)
+
+Cuatro fuentes públicas concurrentes: bloques Bitcoin Esplora, último bloque
+Ethereum `finalized`, TVL DeFiLlama (Ethereum/Arbitrum/Base) y suministro
+USDT/USDC por emisor. Las dos patas de un bridge no se cuentan como
+creación de capital; las identidades privadas NO se investigan.
+
+**GitHub Actions:** [119/119 pruebas Node y 16 señales reales de 4/4 fuentes](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176213081).
+Las métricas son stocks/resúmenes públicos, no entradas netas de capital
+ni un predictor financiero validado.
+
+```bash
+npm run test:blockchain
+npm run blockchain:k001 -- --out=registros/k001/primera-captura.json
+LAPLACE_K001_ENABLED=true node tools/laplace.mjs universo-global-u003
+```
+
+[Documentación técnica K001](docs/BLOCKCHAIN_DEFI_K001.md).
+
+**Siguiente y último ciclo del plan: V001 — validación predictiva.**
+
+---
+
 ## B001 — Banca internacional BIS (piloto verificado)
 
 El módulo `universo/banca/` consulta cuatro series trimestrales de
@@ -42,8 +65,9 @@ npm run test:fondos
 SEC_USER_AGENT="Organizacion contacto@dominio.org" npm run fondos:c001 -- --out=registros/etf/c001.json
 ```
 
-C001 y D002 requieren validación de Node y fuentes reales en este nuevo
-repositorio: GitHub Actions permanece afectado por la incidencia #6.
+C001 y D002 ya superaron pruebas Node en la rama de integración. D002
+capturó 150 señales de la CFTC; la descarga SEC real de C001 sigue pendiente.
+La incidencia histórica de Actions #6 no impide las ejecuciones actuales.
 [Diseño y límites de C001](docs/ETF_FONDOS_C001.md).
 [Swaps públicos D002](docs/SWAPS_OTC_D002.md).
 
