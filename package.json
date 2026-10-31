@@ -37,7 +37,9 @@
     "fondos:c001": "node tools/fondos-c001.mjs",
     "test:fondos": "node --test tests/fondos-c001.test.mjs",
     "banca:b001": "node tools/banca-b001.mjs",
-    "test:banca": "node --test tests/banca-b001.test.mjs"
+    "test:banca": "node --test tests/banca-b001.test.mjs",
+    "blockchain:k001": "node tools/blockchain-k001.mjs",
+    "test:blockchain": "node --test tests/blockchain-k001.test.mjs"
   },
   "engines": {
     "node": ">=20"
