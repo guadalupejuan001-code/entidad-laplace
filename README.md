@@ -6,6 +6,27 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## EF001 — Base de estados del sistema financiero mundial
+
+Nuevo esquema bitemporal aditivo en PostgreSQL/PGlite: observaciones exactas y
+aproximadas, versiones institucionales P001, relaciones, 48 dominios de alcance,
+cobertura y licencias, reglas XI/Ether, deltas dispersos, escenarios y
+pronósticos sellados con evaluación posterior. I001 ahora proyecta hechos
+numéricos en la MISMA transacción, sin borrar la base anterior.
+
+La CLI importa capturas mundiales U003 verificadas, reconstruye cortes
+históricos, muestra faltantes y compila lotes hacia el runtime XI/Ether
+original sin materializar 2^60 celdas.
+
+    npm run test:ef001
+    npm run estado:financiero -- migrar
+    npm run estado:financiero -- mapa
+
+[Arquitectura, tablas, contratos y límites](docs/ESTADO_FINANCIERO_EF001.md).
+**Una estructura capaz de representar un dominio no acredita que sus datos
+privados o completos se hayan conseguido**, ni concede ventaja predictiva.
+
+---
 ## V001 — Validación final del plan (auditoría completada)
 
 **Último ciclo de la hoja de ruta de datos financieros O001→V001.**
