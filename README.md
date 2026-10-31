@@ -6,6 +6,105 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## V001 — Validación final del plan (auditoría completada)
+
+**Último ciclo de la hoja de ruta de datos financieros O001→V001.**
+La ingeniería de validación reproduce y comprueba hashes reales del
+diario M001 y la captura U003, evalúa cada precio con la misma referencia
+de persistencia, verifica `known_at` y prohíbe usar etiquetas o señales
+capturadas después de decidir.
+
+**Resultados reales:** [154/154 tests del contrato V001 y regresiones](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176921579),
+y [409/409 pruebas completas con XI/Ether y REVERSE-PC compilados](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41177189639),
+**0 fallos, 0 omitidas**.
+En la muestra archivada hubo 15 pronósticos M001, 8 resultados y
+2 aciertos de dirección. El **MAE de M001 fue 529,55 USD**, frente a
+**504,96 USD de persistencia** (skill **−4,87 %**, no ventaja demostrada).
+En un snapshot del 30 de octubre se comprobaron 563 estados U003;
+eso NO incluye automáticamente las posteriores fuentes financieras.
+
+**Estado de producción: NO GO.** F001 usa el mundo solo para ensanchar
+una banda exploratoria y no modifica el precio central. Aún NO existen
+parejas prospectivas congeladas de mundo/no-mundo con historial de
+fuentes disponible al corte. No hay evidencia de beneficio estadístico
+ni trading automático.
+
+```bash
+npm run test:v001
+npm run validar:v001 -- --out=registros/v001/auditoria-final.json
+```
+
+[Informe completo y pendientes](docs/VALIDACION_V001_FINAL.md).
+
+---
+
+## K001 — Blockchain y DeFi (penúltimo ciclo, verificado)
+
+Cuatro fuentes públicas concurrentes: bloques Bitcoin Esplora, último bloque
+Ethereum `finalized`, TVL DeFiLlama (Ethereum/Arbitrum/Base) y suministro
+USDT/USDC por emisor. Las dos patas de un bridge no se cuentan como
+creación de capital; las identidades privadas NO se investigan.
+
+**GitHub Actions:** [119/119 pruebas Node y 16 señales reales de 4/4 fuentes](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176213081).
+Las métricas son stocks/resúmenes públicos, no entradas netas de capital
+ni un predictor financiero validado.
+
+```bash
+npm run test:blockchain
+npm run blockchain:k001 -- --out=registros/k001/primera-captura.json
+LAPLACE_K001_ENABLED=true node tools/laplace.mjs universo-global-u003
+```
+
+[Documentación técnica K001](docs/BLOCKCHAIN_DEFI_K001.md).
+
+**Siguiente y último ciclo del plan: V001 — validación predictiva.**
+
+---
+
+## B001 — Banca internacional BIS (piloto verificado)
+
+El módulo `universo/banca/` consulta cuatro series trimestrales de
+**LBS/CBS** con metodología y consolidación diferentes. El parser preserva
+unidad USD en millones, población, país, corte temporal y hash de fuente.
+**No suma LBS con CBS ni infiere flujo instantáneo a partir de stocks.**
+
+Prueba GitHub Actions del 31-oct-2026:
+[99/99 tests Node aprobados y 32 estados BIS públicos de cuatro series](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175476309).
+Esto verifica el piloto, no todo el sistema financiero mundial ni precisión
+predictiva.
+
+```bash
+npm run test:banca
+npm run banca:b001 -- --out=registros/banca/bis.json
+LAPLACE_B001_ENABLED=true node tools/laplace.mjs universo-global-u003
+```
+
+[Documentación B001](docs/BANCA_BIS_B001.md).
+
+---
+
+## C001 — Flujos públicos de fondos (experimental)
+
+Nuevo módulo separado `universo/fondos/`: extracción de informes SEC
+NPORT-P/NPORT-P/A de SPY y SPYM, sumas exactas en centavos y
+`known_at` para capturas reproducibles. No confundir flujos N-PORT con
+creaciones diarias de ETF ni con variaciones de precio. IBIT utiliza
+10-Q/10-K y queda pendiente de un adaptador específico.
+
+```bash
+npm run test:fondos
+# Solo con un User-Agent SEC identificable y contacto real en el entorno:
+SEC_USER_AGENT="Organizacion contacto@dominio.org" npm run fondos:c001 -- --out=registros/etf/c001.json
+```
+
+C001 y D002 ya superaron pruebas Node en la rama de integración. D002
+capturó 150 señales de la CFTC; la descarga SEC real de C001 sigue pendiente.
+La incidencia histórica de Actions #6 no impide las ejecuciones actuales.
+[Diseño y límites de C001](docs/ETF_FONDOS_C001.md).
+[Swaps públicos D002](docs/SWAPS_OTC_D002.md).
+
+---
+
 # LaPlaceDIG
 
 ## X002 — entrenamiento y recalibración verificables

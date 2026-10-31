@@ -1,0 +1,54 @@
+name: Entidad Laplace C001 - ETF y flujos SEC
+on:
+  push:
+    branches: [feature/c001-etf-flujos-sec-nport-20261031]
+  pull_request:
+    paths:
+      - 'universo/fondos/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/fondos-c001.test.mjs'
+      - 'tools/fondos-c001.mjs'
+      - 'package.json'
+      - '.github/workflows/c001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  c001-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias fijadas del repositorio
+        run: npm ci --no-audit --no-fund
+      - name: Validar sintaxis
+        run: |
+          set -euo pipefail
+          node --check universo/fondos/catalogo.mjs
+          node --check universo/fondos/sec-nport.mjs
+          node --check universo/fondos/global.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/fondos-c001.mjs
+          node --check tests/fondos-c001.test.mjs
+      - name: SEC N-PORT C001 y pruebas de compatibilidad
+        run: |
+          set -euo pipefail
+          npm run test:fondos
+          npm run test:swaps
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Ausencia de contacto SEC debe fallar sin hacer una solicitud
+        run: |
+          set -euo pipefail
+          unset SEC_USER_AGENT
+          if node tools/fondos-c001.mjs --out=/tmp/c001-no-agent.json; then
+            echo 'C001 no debe guardar archivo sin User-Agent identificable' >&2
+            exit 1
+          fi
+          test ! -e /tmp/c001-no-agent.json

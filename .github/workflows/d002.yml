@@ -1,0 +1,55 @@
+name: Entidad Laplace D002 - swaps OTC publicos
+on:
+  push:
+    branches:
+      - feature/d002-cftc-swaps-otc-20261031
+    paths:
+      - 'universo/swaps/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/swaps-d002.test.mjs'
+      - 'tools/swaps-d002.mjs'
+      - '.github/workflows/d002.yml'
+      - 'package.json'
+  pull_request:
+    paths:
+      - 'universo/swaps/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/swaps-d002.test.mjs'
+      - 'tools/swaps-d002.mjs'
+      - '.github/workflows/d002.yml'
+      - 'package.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validar-d002:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Dependencias fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis de D002
+        run: |
+          set -euo pipefail
+          node --check universo/swaps/cftc-semanal.mjs
+          node --check universo/swaps/sdr-publico.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/swaps-d002.mjs
+      - name: Pruebas D002 y retrocompatibilidad
+        run: |
+          set -euo pipefail
+          npm run test:swaps
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Smoke de tres paginas CFTC (no falla por bloqueo de red)
+        continue-on-error: true
+        run: |
+          node tools/swaps-d002.mjs --out=/tmp/laplace-d002-cftc.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-d002-cftc.json"));console.log(JSON.stringify({signals:x.universal_state.known_states,coverage:x.cftc_weekly_coverage,automatic_trading:x.automatic_trading}));'

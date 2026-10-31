@@ -1,0 +1,71 @@
+name: Entidad Laplace V001 - auditoria final as-of
+on:
+  push:
+    branches:
+      - feature/v001-validacion-final-20261031
+  pull_request:
+    paths:
+      - 'validacion/**'
+      - 'tests/validacion-v001.test.mjs'
+      - 'tools/validar-v001.mjs'
+      - 'docs/VALIDACION_V001_FINAL.md'
+      - 'package.json'
+      - '.github/workflows/v001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  auditoria-v001:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias verificadas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis y contratos
+        run: |
+          set -euo pipefail
+          for f in validacion/*.mjs tools/validar-v001.mjs tests/validacion-v001.test.mjs; do node --check "$f"; done
+      - name: V001 evidencia real y regresiones financieras
+        run: |
+          set -euo pipefail
+          npm run test:v001
+          npm run test:seguimiento
+          npm run test:blockchain
+          npm run test:banca
+          npm run test:fondos
+          npm run test:swaps
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Replay obligatorio del diario M001 y captura U003 original
+        run: |
+          set -euo pipefail
+          node tools/validar-v001.mjs --out=/tmp/laplace-v001-audit.json
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const x=JSON.parse(readFileSync("/tmp/laplace-v001-audit.json","utf8"));
+            assert.equal(x.gate.result,"NO_GO_MODEL_PRODUCTION");
+            assert.equal(x.m001.summary_matches_archive,true);
+            assert.equal(x.world_price_ablation.status,"no_frozen_world_forecasts");
+            assert.equal(x.gate.automated_trading_allowed,false);
+            console.log(JSON.stringify({gate:x.gate.result,emitted:x.m001.evaluation.emitted,
+              outcomes:x.m001.evaluation.evaluated,
+              world_states:x.u003_historical.known_states,
+              world_ablation:x.world_price_ablation.status,
+              skill:x.m001.evaluation.pooled_descriptive_only?.mae_skill_vs_persistence??null}));
+          '
+      - name: Publicar evidencia de auditoria de este run
+        uses: actions/upload-artifact@v4
+        with:
+          name: laplace-v001-auditoria
+          path: /tmp/laplace-v001-audit.json
+          retention-days: 30

@@ -1,0 +1,42 @@
+name: V001 diagnostico suite completa opcional
+on:
+  push:
+    branches: [feature/v001-validacion-final-20261031]
+  pull_request:
+    paths:
+      - 'validacion/**'
+      - 'tests/**'
+      - 'package.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  full-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --no-audit --no-fund
+      - name: Suite completa (diagnostica binarios nativos externos)
+        id: suite
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          npm test 2>&1 | tee /tmp/v001-full-test.log
+      - name: Informar estado real sin ocultar fallo de binarios externos
+        if: always()
+        run: |
+          echo "npm test outcome: ${{ steps.suite.outcome }}"
+          echo "npm test conclusion: ${{ steps.suite.conclusion }}"
+          if test -f /tmp/v001-full-test.log; then
+            tail -n 25 /tmp/v001-full-test.log
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v001-complete-suite-diagnostic
+          path: /tmp/v001-full-test.log
+          retention-days: 30

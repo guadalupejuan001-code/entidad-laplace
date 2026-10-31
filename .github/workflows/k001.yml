@@ -1,0 +1,58 @@
+name: Entidad Laplace K001 - Blockchain y DeFi
+on:
+  push:
+    branches: [feature/k001-blockchain-defi-20261031]
+  pull_request:
+    paths:
+      - 'universo/cripto/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/blockchain-k001.test.mjs'
+      - 'tools/blockchain-k001.mjs'
+      - 'package.json'
+      - '.github/workflows/k001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-blockchain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis y contratos
+        run: |
+          set -euo pipefail
+          for f in universo/cripto/*.mjs; do node --check "$f"; done
+          node --check universo/global-u003.mjs
+          node --check tools/blockchain-k001.mjs
+          node --check tests/blockchain-k001.test.mjs
+      - name: Pruebas K001 y regresiones
+        run: |
+          set -euo pipefail
+          npm run test:blockchain
+          npm run test:banca
+          npm run test:fondos
+          npm run test:swaps
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: CLI ayuda sin capturar cuentas privadas
+        run: |
+          set -euo pipefail
+          node tools/blockchain-k001.mjs --help
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const src=readFileSync("universo/global-u003.mjs","utf8");assert.match(src,/if\(includeBlockchainDeFi\)/);assert.match(src,/LAPLACE_K001_ENABLED/);'
+      - name: Smoke real de fuentes públicas (restricciones de acceso no bloquean contratos)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node tools/blockchain-k001.mjs --out=/tmp/laplace-k001-public.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-k001-public.json"));console.log(JSON.stringify({signals:x.universal_state.known_states,observed_sources:x.coverage.observed_sources,missing_sources:x.coverage.missing_sources,sources:x.source_status.map(s=>({name:s.name,status:s.status,error:s.error??null}))}));'

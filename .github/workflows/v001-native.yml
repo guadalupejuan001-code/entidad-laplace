@@ -1,0 +1,95 @@
+name: V001 native pinned integration XI Ether REVERSE
+on:
+  push:
+    branches: [feature/v001-validacion-final-20261031]
+    paths:
+      - '.github/workflows/v001-native.yml'
+      - 'validacion/**'
+      - 'native/**'
+      - 'tests/**'
+      - 'package.json'
+  pull_request:
+    paths:
+      - '.github/workflows/v001-native.yml'
+      - 'validacion/**'
+      - 'native/**'
+      - 'tests/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-full-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Comprobar revisiones y dependencias
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-X rev-parse HEAD)" = 3d29556eff4d1079c791abab38e203fc209f1722
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          npm ci --no-audit --no-fund
+      - name: Compilar mundo_x_quantum de Mundo X fijado
+        run: |
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Compilar REVERSE-PC original con Ether fijado
+        run: |
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Compilar ejecutor temporal Laplace
+        run: |
+          cmake -S native -B build-laplace -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-laplace --target laplace_temporal --parallel 2
+      - name: Suite Node completa con nativos reales
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+          LAPLACE_TEMPORAL: ./build-laplace/laplace_temporal
+        run: |
+          set -euo pipefail
+          npm test 2>&1 | tee /tmp/v001-native-tests.log
+      - name: Verificar que se ejecutaron pruebas nativas y no hubo fallos
+        run: |
+          set -euo pipefail
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const t=readFileSync("/tmp/v001-native-tests.log","utf8");
+            const tests=Number(/# tests (\d+)/.exec(t)?.[1]);
+            const pass=Number(/# pass (\d+)/.exec(t)?.[1]);
+            const skipped=Number(/# skipped (\d+)/.exec(t)?.[1]);
+            const fail=Number(/# fail (\d+)/.exec(t)?.[1]);
+            assert.equal(fail,0);
+            assert.ok(tests>=400 && pass>340,"Native test coverage did not increase");
+            console.log(JSON.stringify({tests,pass,skipped,fail,all_native_tests_checked:skipped===0}));
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v001-native-full-suite-log
+          path: /tmp/v001-native-tests.log
+          retention-days: 30
+          if-no-files-found: warn
