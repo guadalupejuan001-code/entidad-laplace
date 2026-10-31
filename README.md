@@ -9,6 +9,10 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 ## V001 — Validación final del plan (auditoría completada)
 
 **Último ciclo de la hoja de ruta de datos financieros O001→V001.**
+Los módulos D002/C001/B001/K001/V001 fueron incorporados a **main** en
+[PR #11](https://github.com/guadalupejuan001-code/entidad-laplace/pull/11)
+(commit `92bbb9ffdf07e9bbe66e5e79f51842dd887dbe5a`), con identidad de
+árboles verificada y [continuidad en main aprobada](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41177456631).
 La ingeniería de validación reproduce y comprueba hashes reales del
 diario M001 y la captura U003, evalúa cada precio con la misma referencia
 de persistencia, verifica `known_at` y prohíbe usar etiquetas o señales
