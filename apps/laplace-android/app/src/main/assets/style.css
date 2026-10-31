@@ -276,3 +276,20 @@ main{padding-bottom:90px}
   .quote-tile strong{font-size:13px}
   .tabs{top:64px}
 }
+
+/* Núcleo v3: 14 horizontes F001, 16 seleccionables, campo e inventario. */
+.integral-results{display:grid;gap:6px;margin-top:13px;max-height:560px;
+ overflow:auto;padding:2px}
+.integral-item{display:grid;grid-template-columns:100px minmax(0,1fr);
+ align-items:baseline;gap:5px;border:1px solid #31506b;border-radius:9px;
+ background:linear-gradient(130deg,#0a2133,#0e283f);
+ padding:11px 12px}
+.integral-item strong{font-size:12px;color:#c8ecfa}
+.integral-item span{font-size:15px;font-weight:700;text-align:right;
+ font-variant-numeric:tabular-nums;color:#7be4f6}
+.integral-item small{grid-column:1/-1;color:#9bb5c8;font-size:10px;
+ overflow-wrap:anywhere}
+#integral .stats strong{font-size:13px}
+#integralModules .signal-row{grid-template-columns:1fr}
+#integralModules .signal-row small{line-height:1.5}
+@media(max-width:375px){.integral-item{grid-template-columns:74px minmax(0,1fr)}}
