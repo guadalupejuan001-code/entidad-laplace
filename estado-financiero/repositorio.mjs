@@ -221,7 +221,7 @@ export async function reindexarI001(store,{asOf=new Date().toISOString(),pageSiz
     note:more?'Limite alcanzado: ampliar presupuesto y repetir; no declarar inventario completo':
       'Todos los eventos I001 hasta el corte fueron visitados'};
 }
-// No mezclar dos monedas, poblaciones BIS o mercados distintos aunque usen igual fuente.
+// No mezclar monedas, poblaciones BIS ni contratos aunque compartan fuente.
 const SERIES_DIMENSIONS="family,domain,subject_id,variable,source_id,unit,"+
   "COALESCE(population_id,''),COALESCE(currency,''),"+
   "COALESCE(instrument_id,''),COALESCE(market_id,''),"+
@@ -232,106 +232,8 @@ export async function consultarPaginaCorte(store,{asOf,limit=1024,offset=0,
   need(Number.isInteger(limit)&&limit>0&&limit<=1024,'pagina limite 1..1024');
   need(Number.isInteger(offset)&&offset>=0&&offset<=1000000,'paginacion fuera de presupuesto');
   let where='',params=[cut,limit+1,offset];
-  if(domain){where+=' AND domain=
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite de consulta 1..4096');
-  const params=[cut,budget+1];let where='';
   if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
   if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
-  const query='SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
-    'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
-    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC LIMIT $2';
-  const rows=(await store.db.query(query,params)).rows;
-  need(rows.length<=budget,'corte excede presupuesto; dividir por familia/dominio');
-  return {as_of:cut,known_series:rows.length,states:rows,
-    temporal_policy:'observed_at_and_known_at_at_or_before_cutoff',
-    different_sources_not_summed:true,global_coverage_complete:false,
-    prediction_activated:false};
-}
-export async function consultarEstadosDispersos(store,
-  {asOf,scenario_id=null,limit=4096}={}){
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite disperso invalido');
-  if(scenario_id){
-    ident(scenario_id);
-    const scenario=(await store.db.query('SELECT created_at FROM laplace_fin_scenarios WHERE scenario_id=$1',[scenario_id])).rows[0];
-    need(scenario&&new Date(scenario.created_at).toISOString()<=cut,
-      'escenario inexistente o creado despues del corte');
-  }
-  const query='SELECT * FROM (SELECT d.*,ROW_NUMBER() OVER ('+
-    'PARTITION BY d.state_key,COALESCE(d.logical_address,\'\') ORDER BY '+
-    'CASE WHEN d.scenario_id=$2 THEN 1 ELSE 0 END DESC,d.known_at DESC,d.delta_sha DESC) AS priority '+
-    'FROM laplace_fin_sparse_deltas d WHERE d.known_at<=$1 AND d.observed_at<=$1 '+
-    'AND (d.scenario_id IS NULL OR d.scenario_id=$2)) q '+
-    'WHERE priority=1 ORDER BY state_key,logical_address LIMIT $3';
-  const rows=(await store.db.query(query,[cut,scenario_id,budget+1])).rows;
-  need(rows.length<=budget,'estado disperso excede presupuesto de materializacion');
-  return {as_of:cut,scenario_id,materialized_entries:rows.length,
-    states:rows.map(({priority,...r})=>r),
-    representation:'sparse_overrides_no_dense_state',
-    full_space_materialized:false,physical_qubits_allocated:0};
-}
-export async function coberturaCorte(store,{asOf,limit=4096}={}){
-  const cut=time(asOf);need(Number.isInteger(limit)&&limit>=1&&limit<=MAX_BUDGET,'limite invalido');
-  const rows=(await store.db.query('SELECT DISTINCT ON (family,source_id) * FROM laplace_fin_coverage '+
-    'WHERE known_at<=$1 ORDER BY family,source_id,known_at DESC,coverage_sha DESC LIMIT $2',
-    [cut,limit+1])).rows;
-  need(rows.length<=limit,'cobertura extensa; paginar');
-  return {as_of:cut,sources:rows,complete_world:false,
-    available:rows.filter(x=>x.availability==='observed').length,
-    restricted_or_missing:rows.filter(x=>x.availability!=='observed').length};
-}
-+(params.length+1);params.push(ident(domain))}
-  if(family){where+=' AND family=
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite de consulta 1..4096');
-  const params=[cut,budget+1];let where='';
-  if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
-  if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
-  const query='SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
-    'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
-    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC LIMIT $2';
-  const rows=(await store.db.query(query,params)).rows;
-  need(rows.length<=budget,'corte excede presupuesto; dividir por familia/dominio');
-  return {as_of:cut,known_series:rows.length,states:rows,
-    temporal_policy:'observed_at_and_known_at_at_or_before_cutoff',
-    different_sources_not_summed:true,global_coverage_complete:false,
-    prediction_activated:false};
-}
-export async function consultarEstadosDispersos(store,
-  {asOf,scenario_id=null,limit=4096}={}){
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite disperso invalido');
-  if(scenario_id){
-    ident(scenario_id);
-    const scenario=(await store.db.query('SELECT created_at FROM laplace_fin_scenarios WHERE scenario_id=$1',[scenario_id])).rows[0];
-    need(scenario&&new Date(scenario.created_at).toISOString()<=cut,
-      'escenario inexistente o creado despues del corte');
-  }
-  const query='SELECT * FROM (SELECT d.*,ROW_NUMBER() OVER ('+
-    'PARTITION BY d.state_key,COALESCE(d.logical_address,\'\') ORDER BY '+
-    'CASE WHEN d.scenario_id=$2 THEN 1 ELSE 0 END DESC,d.known_at DESC,d.delta_sha DESC) AS priority '+
-    'FROM laplace_fin_sparse_deltas d WHERE d.known_at<=$1 AND d.observed_at<=$1 '+
-    'AND (d.scenario_id IS NULL OR d.scenario_id=$2)) q '+
-    'WHERE priority=1 ORDER BY state_key,logical_address LIMIT $3';
-  const rows=(await store.db.query(query,[cut,scenario_id,budget+1])).rows;
-  need(rows.length<=budget,'estado disperso excede presupuesto de materializacion');
-  return {as_of:cut,scenario_id,materialized_entries:rows.length,
-    states:rows.map(({priority,...r})=>r),
-    representation:'sparse_overrides_no_dense_state',
-    full_space_materialized:false,physical_qubits_allocated:0};
-}
-export async function coberturaCorte(store,{asOf,limit=4096}={}){
-  const cut=time(asOf);need(Number.isInteger(limit)&&limit>=1&&limit<=MAX_BUDGET,'limite invalido');
-  const rows=(await store.db.query('SELECT DISTINCT ON (family,source_id) * FROM laplace_fin_coverage '+
-    'WHERE known_at<=$1 ORDER BY family,source_id,known_at DESC,coverage_sha DESC LIMIT $2',
-    [cut,limit+1])).rows;
-  need(rows.length<=limit,'cobertura extensa; paginar');
-  return {as_of:cut,sources:rows,complete_world:false,
-    available:rows.filter(x=>x.availability==='observed').length,
-    restricted_or_missing:rows.filter(x=>x.availability!=='observed').length};
-}
-+(params.length+1);params.push(ident(family))}
   const query='SELECT * FROM (SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
     'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
     ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC) latest '+
