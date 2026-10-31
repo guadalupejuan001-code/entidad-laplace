@@ -20,6 +20,7 @@ original sin materializar 2^60 celdas.
 
     npm run test:ef001
     npm run estado:financiero -- migrar
+    npm run estado:financiero -- reindexar-i001
     npm run estado:financiero -- mapa
 
 [Arquitectura, tablas, contratos y límites](docs/ESTADO_FINANCIERO_EF001.md).
