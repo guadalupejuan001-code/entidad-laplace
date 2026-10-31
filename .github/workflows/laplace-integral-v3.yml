@@ -1,0 +1,37 @@
+name: Laplace V3 - operador integral con pruebas reales
+on:
+  push:
+    branches: [main, 'feature/laplace-v3-campo-global-f001-20261031']
+    paths:
+      - 'ecuacion/laplace-financiero.mjs'
+      - 'nucleo/laplace-integral.mjs'
+      - 'tests/laplace-financiero.test.mjs'
+      - 'tests/laplace-integral.test.mjs'
+      - 'tools/calcular-integral.mjs'
+      - '.github/workflows/laplace-integral-v3.yml'
+  pull_request:
+    paths:
+      - 'ecuacion/laplace-financiero.mjs'
+      - 'nucleo/laplace-integral.mjs'
+      - 'tests/laplace-financiero.test.mjs'
+      - 'tests/laplace-integral.test.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  calculo-evidencia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Preparar dependencias fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar ecuación y motor integral
+        run: |
+          node --check ecuacion/laplace-financiero.mjs
+          node --check nucleo/laplace-integral.mjs
+          node --check tools/calcular-integral.mjs
+          node --test tests/laplace-financiero.test.mjs tests/laplace-integral.test.mjs

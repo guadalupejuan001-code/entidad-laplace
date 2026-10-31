@@ -8,18 +8,20 @@
 (function(root){
 'use strict';
 const HORIZONS=Object.freeze([
-  {minutes:15,label:'15 min'}, {minutes:30,label:'30 min'},
-  {minutes:60,label:'1 hora'}, {minutes:240,label:'4 horas'},
-  {minutes:300,label:'5 horas'}, {minutes:720,label:'12 horas'},
-  {minutes:1440,label:'24 horas'}, {minutes:2880,label:'2 días'},
-  {minutes:4320,label:'3 días'}, {minutes:10080,label:'7 días'},
-  {minutes:20160,label:'14 días'}
+  {minutes:5,label:'5 min'}, {minutes:15,label:'15 min'},
+  {minutes:30,label:'30 min'},{minutes:60,label:'1 hora'},
+  {minutes:120,label:'2 horas'},{minutes:240,label:'4 horas'},
+  {minutes:300,label:'5 horas'},{minutes:480,label:'8 horas'},
+  {minutes:720,label:'12 horas'},{minutes:1440,label:'24 horas'},
+  {minutes:2880,label:'2 días'},{minutes:4320,label:'3 días'},
+  {minutes:10080,label:'7 días'},{minutes:20160,label:'14 días'},
+  {minutes:43200,label:'30 días'},{minutes:129600,label:'90 días'}
 ]);
 const ALLOWED_ASSETS=Object.freeze(['BTC-USD','ETH-USD','SOL-USD']);
 const HISTORICAL_CONFIG=Object.freeze({
   300:Object.freeze({days:14,label:'5 min',expectedMax:4032}),
-  3600:Object.freeze({days:50,label:'1 hora',expectedMax:1200}),
-  86400:Object.freeze({days:300,label:'1 día',expectedMax:300})
+  3600:Object.freeze({days:45,label:'1 hora',expectedMax:1080}),
+  86400:Object.freeze({days:1000,label:'1 día',expectedMax:1000})
 });
 const SCALES=Object.freeze([.007,.004,.004,.006,1.5]);
 const MAX_ANALOGS=18,MIN_ANALOGS=8,FEATURE_BARS=6;
@@ -28,7 +30,7 @@ const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
 function selectResolution(minutes){
   check(HORIZONS.some(h=>h.minutes===minutes),'Horizonte no admitido.');
-  return minutes<=240?300:minutes<=1440?3600:86400;
+  return minutes<=120?300:minutes<=4320?3600:86400;
 }
 function quantile(a,q){
   if(!a.length)return null;

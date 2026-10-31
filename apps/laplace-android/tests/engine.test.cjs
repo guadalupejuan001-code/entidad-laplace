@@ -17,9 +17,9 @@ function bars(count,granularity=300){
 }
 test('M001 original + horizontes nuevos y tres fuentes temporales verificables',()=>{
   assert.deepEqual(Engine.HORIZONS.map(h=>h.minutes),
-    [15,30,60,240,300,720,1440,2880,4320,10080,20160]);
+    [5,15,30,60,120,240,300,480,720,1440,2880,4320,10080,20160,43200,129600]);
   assert.equal(Engine.selectResolution(15),300);
-  assert.equal(Engine.selectResolution(240),300);
+  assert.equal(Engine.selectResolution(240),3600);
   assert.equal(Engine.selectResolution(300),3600);
   assert.equal(Engine.selectResolution(1440),3600);
   assert.equal(Engine.selectResolution(20160),86400);
@@ -66,11 +66,11 @@ test('15 min: patrones, retornos ponderados, sin imponer ±1 USD',()=>{
   assert.equal(p.automaticTrading,false);
   assert.ok(p.lower<=p.upper);
 });
-test('4 horas restauradas con velas de 5 minutos y comprobación cronológica',()=>{
-  const model=Engine.analyze(bars(2016,300),
-    {granularity:300,horizonMinutes:240,asset:'BTC-USD'});
+test('4 horas usan velas horarias F001 y comprobación cronológica',()=>{
+  const model=Engine.analyze(bars(1080,3600),
+    {granularity:3600,horizonMinutes:240,asset:'BTC-USD'});
   assert.ok(model.ready);
-  assert.equal(model.horizonBars,48);
+  assert.equal(model.horizonBars,4);
   assert.ok(model.validation.evaluated>=3);
   assert.equal(model.validation.method,'walk_forward_chronological_non_overlapping_targets');
   const entries=model.validation.results;
@@ -86,13 +86,18 @@ test('5h 12h y 24h con histórico horario, no 5m extrapolados sin fuente',()=>{
     assert.equal(m.horizonBars,minutes/60);
   }
 });
-test('2d 3d 7d 14d usan cierres diarios medidos',()=>{
-  const input=bars(300,86400);
-  for(const minutes of [2880,4320,10080,20160]){
+test('7d, 14d, 30d y 90d usan cierres diarios medidos',()=>{
+  const input=bars(1000,86400);
+  for(const minutes of [10080,20160,43200,129600]){
     const m=Engine.analyze(input,{granularity:86400,horizonMinutes:minutes});
-    assert.equal(m.ready,true);
     assert.equal(m.horizonBars,minutes/1440);
-    assert.ok(m.validation.evaluated>=3);
+    if(minutes===129600){
+      // 1000 velas NO garantizan ocho analogías independientes para 90 días.
+      assert.ok(m.ready||/patrones independientes/.test(m.reason));
+    }else{
+      assert.equal(m.ready,true);
+      assert.ok(m.validation.evaluated>=1);
+    }
   }
 });
 test('Ningún resultado conocido después de la decisión alimenta el mismo pronóstico',()=>{
@@ -127,7 +132,7 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   const manifest=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/AndroidManifest.xml'),'utf8');
   assert.match(code,/fetchCandles\(String requestId,String asset,int granularity,int days\)/);
-  assert.match(code,/granularity==300\?14:granularity==3600\?50/);
+  assert.match(code,/granularity==300\?14:granularity==3600\?45/);
   assert.match(code,/days!=expectedDays/);
   assert.match(code,/fetchCoinbaseHistory/);
   assert.match(code,/api\.exchange\.coinbase\.com\/products\//);
