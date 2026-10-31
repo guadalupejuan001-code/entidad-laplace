@@ -112,7 +112,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('#forecast').click();
     await page.waitForFunction(()=>document.querySelector('#estimate').textContent!=='—',{timeout:20000});
     assert.match(await page.locator('#relativeChange').innerText(),/%/);
-    assert.match(await page.locator('#rawM001').innerText(),/returnLog/);
+    assert.match(await page.locator('#rawM001').textContent(),/returnLog/);
     await page.locator('#train').click();
     assert.match(await page.locator('#noticeText').innerText(),/M001|patrones/i);
     await page.locator('#test').click();
@@ -148,7 +148,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     },{timeout:90000});
     assert.match(await page.locator('#integralStatus').innerText(),/F001 completado/);
     assert.equal(await page.locator('.integral-item').count(),14);
-    assert.match(await page.locator('#rawF001').innerText(),/price_candidate_unrounded/);
+    assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
     await page.locator('[data-tab="tests"]').click();
     await page.locator('#clearHistory').click();
