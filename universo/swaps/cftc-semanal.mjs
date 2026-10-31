@@ -142,6 +142,8 @@ export function parseCftcWeeklyHtml(html,{kind,knownAt,sourceUrl=CFTC_TABLES[kin
   }
   return {schema:CFTC_D002_SCHEMA,kind,observations,
     week_dates:dates,latest_week:latest,received_at:at,source_url:sourceUrl,
+    reference_age_days:Number(((Date.parse(at)-Date.parse(latest+'T00:00:00.000Z'))/86400000).toFixed(2)),
+    reference_status:Date.parse(at)-Date.parse(latest+'T00:00:00.000Z')>21*86400000?'lagging_weekly_page':'observed_recent_period',
     body_sha256:sha256(html),metric:CFTC_TABLES[kind].meaning,
     observed_sources:1,raw_counterparties:false,financial_edge_demonstrated:false,
     historical_publication_time_certified:false,
@@ -182,7 +184,8 @@ export async function observeCftcWeekly({fetchImpl=fetch,now=()=>new Date().toIS
       return {kind,report,source:{name:'CFTC-'+kind,status:'observed',
         url,received_at:report.received_at,latest_week:report.latest_week,
         count:report.observations.length,body_sha256:report.body_sha256,
-        unit:CFTC_TABLES[kind].unit}};
+        unit:CFTC_TABLES[kind].unit,reference_age_days:report.reference_age_days,
+        reference_status:report.reference_status}};
     }catch(error){
       return {kind,report:null,source:{name:'CFTC-'+kind,status:'unavailable',url,
         received_at:utcTime(now()),count:0,reason:String(error.message).slice(0,200),
