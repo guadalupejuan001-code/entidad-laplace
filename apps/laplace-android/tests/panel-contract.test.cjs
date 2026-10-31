@@ -18,6 +18,9 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
   assert.match(html,/5 min/);assert.match(html,/90 d/);
   assert.match(html,/id="notice"/);
   assert.match(html,/ÚLTIMO CIERRE VERIFICADO/);
+  assert.ok(html.includes('id="horizonSelect"'));
+  assert.ok(html.indexOf('class="card selector"')<html.indexOf('class="hero"'));
+  assert.ok(html.indexOf('class="actions"')<html.indexOf('class="two-metrics"'));
 });
 test('La UI separa ticker, velas, referencia y candidato; no simula datos mundiales',()=>{
   const app=read('app.js'),world=fs.readFileSync(path.resolve(__dirname,'../prepare-world.mjs'),'utf8');
@@ -31,6 +34,8 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(app,/function renderWorldObservations\(\)/);
   assert.match(app,/M001/);
   assert.match(app,/function runIntegral\(\)/);
+  assert.match(app,/window\.LaplaceUIHealth/);
+  assert.match(app,/setActionAvailability/);
   assert.match(app,/aplicarLaplaceAHorizontes/);
   assert.match(app,/Sin ticker disponible/);
   assert.match(app,/no se fabrica predicción/i);
