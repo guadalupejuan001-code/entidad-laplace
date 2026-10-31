@@ -7,6 +7,8 @@ import {normalize} from './normalizar.mjs';
 import {narrativeEvent,aliasesFromRegistry} from './nlp.mjs';
 import {Registry} from '../pulso/registro.mjs';
 import {auditAssertions} from './auditoria.mjs';
+import {proyectarI001} from '../estado-financiero/repositorio.mjs';
+import {sembrarCatalogo} from '../estado-financiero/catalogo-mundial.mjs';
 
 export class SemanticConflict extends Error{}
 export class Store{
@@ -36,6 +38,9 @@ export class Store{
     const schema=await readFile(new URL('./schema.sql',import.meta.url),'utf8');
     // Separate statements also work with prepared-query clients.
     for(const sql of schema.split(';').filter(x=>x.trim()))await this.db.query(sql);
+    const financial=await readFile(new URL('../estado-financiero/schema.sql',import.meta.url),'utf8');
+    for(const sql of financial.split(';').filter(x=>x.trim()))await this.db.query(sql);
+    await sembrarCatalogo(this.db);
     if(timescale)await this.db.query("SELECT create_hypertable('input_events','known_at',if_not_exists => TRUE)");
     return {engine:this.embedded?'embedded_postgresql':'postgresql',timescale};
   }
@@ -64,6 +69,8 @@ export class Store{
     }
     await tx.query('INSERT INTO input_events(known_at,event_key,type,subject,source_id,event_time,event) VALUES($1,$2,$3,$4,$5,$6,$7::jsonb)',
       [e.known_at,e.event_key,e.type,e.subject,e.source_id,e.event_time,JSON.stringify(e)]);
+    // EF001 forma parte de la misma transaccion: nunca proyectar un evento no admitido.
+    await proyectarI001(tx,e);
     await this.enqueue(tx,'clean:'+e.event_key,'clean',e.stream_key,e);
     if(e.type==='document')await this.enqueue(tx,'nlp:'+e.event_key,'documents',e.stream_key,e);
     if(e.type==='chain_block'){
