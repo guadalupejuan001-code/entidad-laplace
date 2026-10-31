@@ -4,6 +4,8 @@ import {Store} from '../input/almacen.mjs';
 import {sha,rawRecord} from '../input/contrato.mjs';
 import {universeSnapshot} from '../universo/estados.mjs';
 import {sellarCaptura} from '../universo/integridad.mjs';
+import {prepararLotesXI,compilarLotesXI,probarLotesXI} from '../estado-financiero/puente-xi.mjs';
+import {WORLD_DOMAIN_CATALOG,consultarCatalogo} from '../estado-financiero/catalogo-mundial.mjs';
 import {normalizarObservacion,normalizarDelta,normalizarCapturaU003,
   normalizarPronostico} from '../estado-financiero/modelo.mjs';
 import {guardarObservacion,importarU003,consultarCorte,coberturaCorte,
@@ -262,4 +264,57 @@ test('EF001 nunca trunca silenciosamente un corte ni inventa ceros',async()=>{
       /corte excede presupuesto/);
     assert.equal((await consultarCorte(s,{asOf:T2,limit:3})).known_series,3);
   }finally{await s.close()}
+});
+
+
+test('EF001 catalogo mundial: no fabrica fuentes, son contratos para todos los sectores',async()=>{
+  const s=await db();
+  try{
+    const catalog=await consultarCatalogo(s.db);
+    assert.equal(catalog.desired_domains,WORLD_DOMAIN_CATALOG.length);
+    assert.ok(catalog.desired_domains>=40);
+    assert.ok(catalog.domains.some(x=>x.domain_id==='mercados_L3_ordenes'));
+    assert.ok(catalog.domains.some(x=>x.domain_id==='flujos_privados_anonimos'));
+    assert.ok(catalog.domains.some(x=>x.domain_id==='meteorologia_desastres'));
+    assert.equal(catalog.full_world_captured,false);
+    assert.equal((await s.db.query('SELECT count(*)::int AS n FROM laplace_fin_observations')).rows[0].n,0);
+    await s.migrate();
+    assert.equal((await consultarCatalogo(s.db)).desired_domains,catalog.desired_domains);
+  }finally{await s.close()}
+});
+
+test('EF001 puente XI no pierde decimales host, etiqueta aproximaciones y excluye excesos',()=>{
+  const cases=[
+    normalizarObservacion(obs({value_text:'12.125',source_record_id:'valid'})),
+    normalizarObservacion(obs({family:'U003',value_text:'0.123456789',
+      value_kind:'float64_approx',unit:'ratio',source_record_id:'float'})),
+    normalizarObservacion(obs({source_record_id:'big',value_text:'99999999999999999999999999999999'})),
+    normalizarObservacion(obs({source_record_id:'missing',value_status:'missing',
+      value_kind:'none',value_text:null,missing_reason:'restricted'}))
+  ];
+  const projection=prepararLotesXI(cases,{cutoff:T2,batchSize:1});
+  assert.equal(projection.imported,2);
+  assert.equal(projection.excluded.length,2);
+  assert.equal(projection.batches.length,2);
+  assert.equal(projection.batches[0].states[0].value,1212500000);
+  assert.equal(projection.dictionary[0].original_value_text,'12.125');
+  assert.equal(projection.dictionary[0].encoding,'exact_integer_scaled_1e8');
+  assert.equal(projection.dictionary[1].estimated_precision_not_improved,true);
+  assert.equal(projection.materializes_full_world,false);
+  const compiled=compilarLotesXI(projection);
+  assert.equal(compiled.length,2);
+  assert.ok(compiled.every(x=>x.materialized_bytes<=32784));
+  assert.ok(compiled.every(x=>x.xi_program.includes('mem_materialize')));
+  assert.throws(()=>prepararLotesXI(cases,{cutoff:T2,batchSize:2048}),
+    /excede 1024/);
+});
+
+test('EF001 puente nativo XI/Ether original valida bytes sin reemplazar runtime',
+  {skip:!process.env.MUNDO_X_QUANTUM},()=>{
+  const row=normalizarObservacion(obs({value_text:'0.015',source_record_id:'tiny'}));
+  const p=prepararLotesXI([row],{cutoff:T2});
+  const out=probarLotesXI(process.env.MUNDO_X_QUANTUM,p);
+  assert.equal(out.exact_roundtrip,true);
+  assert.equal(out.results[0].materialized_bytes,48);
+  assert.equal(out.results[0].active_qubits,0);
 });
