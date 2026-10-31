@@ -53,7 +53,7 @@ test('rechaza falta de fronteras y restricciones de grafo',()=>{
     nodes:[{id:'A',value:null},{id:'B',value:null}],
     edges:[{from:'A',to:'B',weight:1}]}),/sin frontera/);
 });
-test('UI funcional enlaza pestaña, controles, visualizacion y libreria sin cambiar AR1',()=>{
+test('UI funcional enlaza pestaña, controles, visualizacion y libreria sin cambiar M001',()=>{
   const html=read('index.html'),panel=read('pde-panel.js'),engine=read('engine.js');
   const app=read('app.js');
   assert.match(html,/data-tab="equation"/);
@@ -71,14 +71,14 @@ test('UI funcional enlaza pestaña, controles, visualizacion y libreria sin camb
   assert.match(app,/function refresh\(/);
   assert.ok(html.includes('data-tab="panel"'));
   assert.ok(html.includes('data-quote-asset="BTC-USD"'));
-  assert.ok(html.includes('data-hours="336"'));
+  assert.ok(html.includes('data-minutes="20160"'));
 });
 test('APK tiene versionCode incrementado y sin permisos adicionales',()=>{
   const gradle=fs.readFileSync(path.resolve(__dirname,'../app/build.gradle'),'utf8');
   const java=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/java/com/entidadlaplace/mobile/MainActivity.java'),'utf8');
-  assert.match(gradle,/versionCode 3/);
-  assert.match(gradle,/versionName '1\.1\.0-LAPLACE-PDE'/);
+  assert.match(gradle,/versionCode 4/);
+  assert.match(gradle,/versionName '2\\.0\\.0-M001-EF002'/);
   assert.equal((java.match(/@JavascriptInterface/g)||[]).length,2);
   assert.ok(!read('pde-panel.js').includes('LaplaceBridge'));
 });
