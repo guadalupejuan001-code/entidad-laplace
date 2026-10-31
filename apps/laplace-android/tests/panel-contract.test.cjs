@@ -18,6 +18,8 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
   assert.match(html,/5 min/);assert.match(html,/90 d/);
   assert.match(html,/id="notice"/);
   assert.match(html,/ÚLTIMO CIERRE VERIFICADO/);
+  for(const id of ['xn01Run','xn01Raw','xn01Confidence','xn01PUp','xn01Prior','xn01Rows','rawM001','rawF001'])
+    assert.ok(html.includes('id="'+id+'"'),id);
   for(const id of ['liveToggle','liveStatus','liveAge','liveCount','liveChart','livePreview'])
     assert.ok(html.includes('id="'+id+'"'),id);
   assert.ok(html.includes('src="live-feed.js"'));
@@ -37,6 +39,8 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(app,/function renderWorldObservations\(\)/);
   assert.match(app,/M001/);
   assert.match(app,/function runIntegral\(\)/);
+  assert.match(app,/async function runXN01\(\)/);
+  assert.match(app,/LaplaceBridge\.analyzeXN01/);
   assert.match(app,/function liveMessage\(event\)/);
   assert.match(app,/LaplaceLiveBridge\.start/);
   assert.match(app,/function drawLiveChart\(\)/);
@@ -54,7 +58,7 @@ test('Vórtice animado mantiene acceso reducido',()=>{
   const html=read('index.html'),css=read('style.css');
   assert.match(html,/class="swirl"/);
   assert.match(html,/class="moving-particles"/);
-  assert.equal((html.match(/<animateMotion /g)||[]).length,4);
+  assert.equal((html.match(/<animateMotion /g)||[]).length,5);
   assert.match(css,/@keyframes dataFlow/);
   assert.match(css,/@keyframes rotateVortex/);
   assert.match(css,/prefers-reduced-motion:reduce/);
