@@ -37,3 +37,13 @@ test('EF004 prueba de memoria XI/Ether REAL para un lote mínimo',
   assert.equal(p.checks[0].active_qubits,0);
   assert.equal(p.forecasts_generated,0);
 });
+
+
+test('EF005 sin límite mundial 4096: 4101 observaciones se particionan para XI original',()=>{
+  const c=capture(4101),p=prepararMemoriaNativaEF004(c);
+  assert.equal(p.raw_states,4101);
+  assert.equal(p.projected,4101);
+  assert.equal(p.batches.length,5);
+  assert.equal(p.batches.reduce((n,b)=>n+b.records,0),4101);
+  assert.ok(p.batches.every(x=>x.materialized_bytes<=32784));
+});
