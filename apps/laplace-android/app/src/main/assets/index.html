@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE · Android</title>
+<meta name="theme-color" content="#07111e"><title>LAPLACE 2.0 · M001 / EF002</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -11,7 +11,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>ENTIDAD · ANDROID</small></div>
+    <div><h1>LAPLACE</h1><small>M001 · EF002 · ANDROID 2.0</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -20,13 +20,13 @@
     <button type="button" data-tab="panel" aria-current="page">Panel</button>
     <button type="button" data-tab="signals">Señales</button>
     <button type="button" data-tab="tests">Pruebas</button>
-    <button type="button" data-tab="equation">Ecuación</button>
     <button type="button" data-tab="world">Mundo</button>
+    <button type="button" data-tab="equation">Ecuación</button>
   </nav>
 
   <div id="notice" class="status-banner" role="status" aria-live="polite">
     <span id="noticeIcon" aria-hidden="true">◎</span>
-    <span id="noticeText">Consulta precios públicos. Después selecciona un horizonte, entrena y proyecta.</span>
+    <span id="noticeText">Selecciona activo y horizonte, pulsa Actualizar, luego Analizar y Proyectar. Se usan análogos M001, no AR(1).</span>
   </div>
   <section id="panel" class="tabpage">
     <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
@@ -46,10 +46,10 @@
         </button>
       </div>
       <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
-      <div class="quick-guide">1. Actualizar <span>→</span> 2. Entrenar <span>→</span> 3. Proyectar</div>
+      <div class="quick-guide">1. Seleccionar <span>→</span> 2. Actualizar <span>→</span> 3. Analizar <span>→</span> 4. Proyectar</div>
     </article>
     <div class="hero">
-      <div class="hero-caption"><span class="eyebrow">NÚCLEO VISUAL</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
+      <div class="hero-caption"><span class="eyebrow">IDENTIDAD VISUAL · NO ES LA PREDICCIÓN</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
       <svg class="portal" viewBox="0 0 640 310" role="img" aria-label="Ojo triangular con vórtice central y corrientes de datos">
       <defs>
         <radialGradient id="halo"><stop stop-color="#527fff" stop-opacity=".35"/><stop offset=".48" stop-color="#25aaff" stop-opacity=".10"/><stop offset="1" stop-color="#08162c" stop-opacity="0"/></radialGradient>
@@ -94,15 +94,15 @@
         <circle r="3.4"><animateMotion dur="2.6s" repeatCount="indefinite" path="M478 310 Q430 236 357 193 T320 160"/></circle>
       </g>
       </svg>
-      <div class="hero-sub"><span>DATOS <b>→</b> ESTADOS <b>→</b> EVOLUCIÓN</span><span class="research">ANIMACIÓN ILUSTRATIVA · NO CÁLCULO FÍSICO</span></div>
+      <div class="hero-sub"><span>DATOS <b>→</b> M001 <b>→</b> ESCENARIO</span><span class="research">ANIMACIÓN ILUSTRATIVA · NO CÁLCULO FÍSICO</span></div>
     </div>
 
     <div class="two-metrics">
       <article class="metric">
-        <small>ÚLTIMO CIERRE DE VELA</small><strong id="lastPrice">—</strong>
+        <small>ÚLTIMO CIERRE VERIFICADO</small><strong id="lastPrice">—</strong>
         <span id="priceTime">Sin lectura pública</span>
       </article>
-      <article class="metric"><small>ESTIMACIÓN EXPERIMENTAL</small>
+      <article class="metric"><small>CANDIDATO M001 · NO VALIDADO</small>
         <strong id="estimate">—</strong><span id="relativeChange">Sin modelo</span>
       </article>
     </div>
@@ -118,66 +118,69 @@
         </select>
         <button id="refresh" class="refresh" type="button">↻ Actualizar</button>
       </div>
-      <small id="dataStatus" class="helper">Fuente pública: Coinbase Exchange. Sin conexión todavía.</small>
+      <small id="dataStatus" class="helper">Coinbase Exchange. Precio spot separado de las velas históricas; se indicarán las fechas.</small>
     </article>
 
     <article class="card horizons">
-      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>Horizonte de predicción</h2></div><span id="horizonTag" class="outline-tag">1 HORA</span></div>
-      <div id="horizons" class="horizon-grid" role="group" aria-label="Elegir duración de la proyección">
-        <button type="button" data-hours="1" class="active" aria-pressed="true">1 h</button>
-        <button type="button" data-hours="5" aria-pressed="false">5 h</button>
-        <button type="button" data-hours="12" aria-pressed="false">12 h</button>
-        <button type="button" data-hours="24" aria-pressed="false">24 h</button>
-        <button type="button" data-hours="48" aria-pressed="false">2 días</button>
-        <button type="button" data-hours="72" aria-pressed="false">3 días</button>
-        <button type="button" data-hours="168" aria-pressed="false">7 días</button>
-        <button type="button" data-hours="336" aria-pressed="false">14 días</button>
+      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>Horizonte del cálculo M001</h2></div><span id="horizonTag" class="outline-tag">1 HORA</span></div>
+      <div id="horizons" class="horizon-grid" role="group" aria-label="Horizonte en minutos">
+        <button type="button" data-minutes="15" class="active" aria-pressed="true">15 min</button>
+        <button type="button" data-minutes="30" aria-pressed="false">30 min</button>
+        <button type="button" data-minutes="60" aria-pressed="false">1 h</button>
+        <button type="button" data-minutes="240" aria-pressed="false">4 h</button>
+        <button type="button" data-minutes="300" aria-pressed="false">5 h</button>
+        <button type="button" data-minutes="720" aria-pressed="false">12 h</button>
+        <button type="button" data-minutes="1440" aria-pressed="false">24 h</button>
+        <button type="button" data-minutes="2880" aria-pressed="false">2 días</button>
+        <button type="button" data-minutes="4320" aria-pressed="false">3 días</button>
+        <button type="button" data-minutes="10080" aria-pressed="false">7 días</button>
+        <button type="button" data-minutes="20160" aria-pressed="false">14 días</button>
       </div>
-      <p class="fineprint">Proyección de laboratorio, no una predicción financiera validada. Las bandas son exploratorias.</p>
+      <p class="fineprint">M001 recuperado: 5 rasgos observados, hasta 18 análogos independientes, validación cronológica. Si faltan muestras no se fabrica una predicción.</p>
     </article>
 
     <div class="actions">
-      <button id="train" type="button"><span class="action-icon">◎</span><b>Entrenar</b><small>Ajustar modelo</small></button>
-      <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Test temporal</small></button>
-      <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Medir error</small></button>
-      <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar</b><small>1 h → 14 días</small></button>
+      <button id="train" type="button"><span class="action-icon">◎</span><b>Analizar</b><small>18 análogos M001</small></button>
+      <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Test histórico</small></button>
+      <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Resultados reales</small></button>
+      <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar</b><small>Candidato M001</small></button>
     </div>
 
     <p id="inlineStatus" class="action-feedback" role="status" aria-live="polite">Selecciona el activo, pulsa Actualizar y elige una acción.</p>
 
     <article class="card chart-card">
-      <div class="section-head"><div><small class="eyebrow">EVOLUCIÓN</small><h2>Historia y proyección</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
-      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios históricos y escenario proyectado"></canvas>
+      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
+      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
       <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
-      <p id="chartComment" class="helper">La gráfica se construirá después de obtener datos reales.</p>
+      <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
     </article>
 
     <article class="card audit-card">
       <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
       <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
       <div class="stats">
-        <div><span>Velas de entrenamiento</span><strong id="trainingCount">—</strong></div>
-        <div><span>Pruebas reservadas</span><strong id="testingCount">—</strong></div>
-        <div><span>Error absoluto del modelo</span><strong id="modelError">—</strong></div>
+        <div><span>Patrones históricos usados</span><strong id="trainingCount">—</strong></div>
+        <div><span>Casos retrospectivos válidos</span><strong id="testingCount">—</strong></div>
+        <div><span>MAE M001 (USD)</span><strong id="modelError">—</strong></div>
         <div><span>Referencia de persistencia</span><strong id="baselineError">—</strong></div>
       </div>
-      <p class="fineprint">Aprendizaje AR(1) regularizado en el teléfono, independiente del motor global EF005. Sin órdenes de compraventa.</p>
+      <p class="fineprint">M001 calcula análogos de mercado sin imponer un movimiento mínimo ni sustituir el resultado por persistencia. EF004 y los datos mundiales se muestran separados mientras no tengan validación temporal suficiente. Sin trading.</p>
     </article>
   </section>
 
   <section id="signals" class="tabpage" hidden>
-    <article class="card"><div class="section-head"><div><small class="eyebrow">OBSERVACIÓN</small><h2>Entradas móviles</h2></div><span class="outline-tag">PÚBLICAS</span></div>
-      <p>Las señales móviles son velas horarias y diarias del activo seleccionado. El resto del sistema mundial pertenece al archivo EF005 y no se presenta como entrada del modelo local.</p>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">M001 · OBSERVACIÓN</small><h2>Datos y rasgos utilizados</h2></div><span class="outline-tag">PÚBLICAS</span></div>
+      <p>Precio, velas OHLCV, impulso a una y tres velas, volatilidad, rango y volumen relativo. La fecha y la resolución se muestran cuando existe una captura verificable.</p>
       <div id="signalRows" class="signal-rows"></div>
     </article>
-    <article class="card"><h2>Integridad y limitaciones</h2><p>Las cotizaciones se descargan desde Coinbase Exchange por HTTPS. La aplicación no solicita acceso a cuentas, claves privadas ni permisos para operar dinero.</p></article>
+    <article class="card"><h2>Integridad y limitaciones</h2><p>Coinbase Exchange por HTTPS y ventanas cronológicas de 5 minutos, 1 hora o 1 día. No se rellenan huecos con ceros. Los estados EF002 se exhiben con procedencia; no se afirman como factores causales del candidato M001.</p></article>
   </section>
 
   <section id="tests" class="tabpage" hidden>
-    <article class="card"><div class="section-head"><div><small class="eyebrow">PRUEBA TEMPORAL</small><h2>Diagnóstico del modelo</h2></div><span class="outline-tag">RETROSPECTIVO</span></div>
-      <div id="testResults"><p>Entrena el modelo para generar pruebas fuera del tramo de ajuste.</p></div>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">M001 · VALIDACIÓN</small><h2>Pruebas retrospectivas</h2></div><span class="outline-tag">RETROSPECTIVO</span></div>
+      <div id="testResults"><p>Actualiza las velas y pulsa Probar. Se usarán resultados históricos posteriores a cada decisión.</p></div>
     </article>
-    <article class="card"><h2>Registro local</h2><p>Las proyecciones quedan guardadas en este dispositivo. El resultado futuro solo se comprobará cuando existan nuevas observaciones correspondientes al objetivo.</p><div id="history" class="history"></div>
+    <article class="card"><h2>Registro local</h2><p>Los candidatos emitidos se guardan en el dispositivo. Solo se evalúan cuando llegan nuevas velas cerradas del intervalo de su objetivo. Los registros nunca se convierten en aciertos ficticios.</p><div id="history" class="history"></div>
       <button id="clearHistory" class="secondary" type="button">Limpiar registro local</button></article>
   </section>
 
@@ -238,14 +241,23 @@
     </article>
   </section>
   <section id="world" class="tabpage" hidden>
-    <article class="card"><div class="section-head"><div><small class="eyebrow">EF005 · ARCHIVO</small><h2>Estados financieros mundiales</h2></div><span class="outline-tag">SNAPSHOT</span></div>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">EF002 · EF005</small><h2>Estados reales y procedencia</h2></div><span class="outline-tag">SNAPSHOT</span></div>
       <div class="two-metrics world-metrics">
         <div class="metric"><small>ESTADOS ARCHIVADOS</small><strong id="worldStates">—</strong></div>
         <div class="metric"><small>DOMINIOS</small><strong id="worldDomains">—</strong></div>
       </div>
       <p id="worldTime" class="helper">Archivo no integrado.</p>
+      <div id="worldHistory" class="world-history"></div>
+      <div class="stats world-kpis">
+        <div><span>Fuentes observadas</span><strong id="worldSourceCount">—</strong></div>
+        <div><span>Capturas históricas</span><strong id="worldCaptureCount">—</strong></div>
+      </div>
+      <label class="pde-label" for="worldSearch">Buscar estados por dominio, variable o ID</label>
+      <input id="worldSearch" type="search" placeholder="BTC, empleo, tasas, volumen..." aria-label="Filtrar estados financieros">
+      <p id="worldMatches" class="helper">Sin estados cargados.</p>
+      <div id="worldObservations" class="world-observations"></div>
       <div id="worldGroups" class="group-list"></div>
-      <p class="fineprint">Captura pública verificada durante la compilación, no necesariamente en vivo. El núcleo financiero de servidor aprende y registra estados por separado; no se ejecuta una copia falsa de EF005 dentro de la APK.</p>
+      <p class="fineprint">Archivo EF002 verificado y fechado, NO lectura mundial en tiempo real. Los datos nuevos se presentan de forma verificable. EF004 no se considera entrenado sin suficientes transiciones independientes; no se inventa su resultado.</p>
       <a href="https://github.com/guadalupejuan001-code/entidad-laplace" class="external">Consultar repositorio de Laplace</a>
     </article>
   </section>
