@@ -6,6 +6,21 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## EF005 — Laplace sin topes artificiales
+
+EF005 elimina los límites fijos de 4.096 estados, 48 capturas, 2.500 archivos,
+16 señales, seis objetivos y cuatro pasos. La memoria XI/Ether sigue procesando
+lotes físicos independientes, pero el número global de estados se maneja
+mediante partición. EF004 aprende cuando los datos proporcionan evidencia
+mínima, usa cadencia detectada automáticamente y permite horizontes mayores.
+
+    npm run test:ef004
+    node --test tests/ef005-scale.test.mjs tests/universo.test.mjs
+
+[Documentación EF005: alcance y límites de recursos](docs/ESCALAMIENTO_EF005.md).
+
+---
+
 ## EF004 — Núcleo del Demonio: aprendizaje y evolución conjunta
 
 Se incorporó un aprendiz de dependencias financieras con retardo que usa
@@ -23,8 +38,8 @@ de respaldo; nunca operan dinero.
     npm run demonio:xi -- ARCHIVO_EF002 [MUNDO_X_QUANTUM]
 
 La primera captura contiene 1.051 estados, pero NO ofrece suficientes
-transiciones para aprender: EF004 se abstiene por defecto hasta disponer
-de 48 capturas consecutivas y evaluables. El cálculo estadístico EF004 es
+transiciones para aprender: EF005 se abstiene hasta reunir muestras de
+entrenamiento, validación y prueba suficientes, sin un número fijo de capturas. El cálculo estadístico EF004 es
 clásico; XI/Ether original verifica los bytes de los estados mediante
 un puente separado. No existe ventaja predictiva demostrada.
 
@@ -239,7 +254,7 @@ LAPLACE incorpora una malla mundial extensible de señales observables: mercados
 regionales, divisas, bonos/crédito, materias primas, grandes acciones, cripto,
 macro de varias economías, 40 celdas meteorológicas mundiales, actividad sísmica
 por sectores y geomagnetismo. El presupuesto nominal inicial es de **369 estados**
-por captura y permanece bajo el contrato de 4096 estados.
+por captura; EF005 suprimió ese límite global y conserva lotes XI seguros.
 
 Cada señal conserva fuente HTTPS, `observed_at` y `known_at`. La captura puede
 materializarse exactamente en **Inverse Ether Memory mediante XI**; esto no crea
@@ -264,7 +279,7 @@ Abre http://127.0.0.1:4179 en el mismo equipo y pulsa «Actualizar lectura». Pr
 
 ## U001 — Observatorio universal de estados y causas hipoteticas
 
-Nueva capa transversal para registrar mediciones de **cualquier dominio** con marcas de ocurrencia y disponibilidad, memoria compacta (hasta 4096 estados por consulta), conteos historicos y relaciones de precedencia/hipotesis. Adaptador BTC: conserva I015 de quince minutos y mide libro de ordenes, trades y precios relacionados en Coinbase, mas indice geomagnetico Kp de NOAA como dominio fisico separado (sin atribuir causalidad al mercado). La prediccion no se recalibra automaticamente con esos datos; sin validacion temporal son observaciones, no causas demostradas.
+Nueva capa transversal para registrar mediciones de **cualquier dominio** con marcas de ocurrencia y disponibilidad, memoria compacta (consultas completas o paginadas sin tope global fijo), conteos historicos y relaciones de precedencia/hipotesis. Adaptador BTC: conserva I015 de quince minutos y mide libro de ordenes, trades y precios relacionados en Coinbase, mas indice geomagnetico Kp de NOAA como dominio fisico separado (sin atribuir causalidad al mercado). La prediccion no se recalibra automaticamente con esos datos; sin validacion temporal son observaciones, no causas demostradas.
 
 Comandos: `node tools/laplace.mjs universo-btc-15m` y `node tools/laplace.mjs universo-corte estados.json CORTE_UTC`. [Arquitectura, limites y pruebas](docs/UNIVERSO_U001.md). No equivale a observar el universo entero.
 
