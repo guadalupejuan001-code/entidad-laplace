@@ -52,7 +52,9 @@
     "test:ef004": "node --test tests/demonio-ef004.test.mjs tests/demonio-evaluacion-ef004.test.mjs tests/demonio-xi-ef004.test.mjs",
     "test:demonio": "node --test tests/demonio-ef004.test.mjs tests/demonio-evaluacion-ef004.test.mjs tests/demonio-xi-ef004.test.mjs",
     "demonio:ciclo": "node tools/nucleo-demonio.mjs",
-    "demonio:xi": "node tools/probar-demonio-xi.mjs"
+    "demonio:xi": "node tools/probar-demonio-xi.mjs",
+    "test:laplace-pde": "node --test tests/ecuacion-laplace*.test.mjs",
+    "ecuacion:laplace": "node tools/ecuacion-laplace.mjs"
   },
   "engines": {
     "node": ">=20"

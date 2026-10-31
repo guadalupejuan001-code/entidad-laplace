@@ -1,5 +1,21 @@
 # Entidad Laplace
 
+## Ecuación de Laplace — PDE auténtica (propuesta)
+
+Núcleo matemático de Laplace: ∇²φ=0, diferencias finitas/Dirichlet y
+Laplaciano ponderado de grafos. Se validó con soluciones analíticas.
+No sustituye el motor EF004 ni produce por sí mismo un pronóstico:
+la ecuación es estacionaria y requiere relaciones y fronteras justificadas.
+
+    npm run test:laplace-pde
+    npm run ecuacion:laplace -- demo
+    npm run ecuacion:laplace -- demo-grafo
+
+[Documentación de la ecuación y su alcance](docs/ECUACION_LAPLACE_PDE.md).
+
+---
+
+
 Repositorio independiente del programa experimental Laplace: estados, señales, evolución temporal, cálculo y comprobación de pronósticos.
 
 **Estado:** investigación y desarrollo; los modelos financieros no garantizan precisión ni beneficios. Consulte [MIGRACION.md](MIGRACION.md) para conocer la procedencia de cada componente.
