@@ -181,6 +181,12 @@ test('D002 11: Notional masked no inventa valor; cancelación elimina y correcci
   assert.equal(corrected.observations.length,0);
   assert.equal(corrected.pending[0].reason,'correction_requires_reconciled_prior_snapshot');
 });
+test('D002 11b: tasas de swap negativas válidas y URL con secretos rechazada',()=>{
+  const r=parsePublicSdrRecord(sdr({price:'-0.25'}),{receivedAt:now,sourceUrl:source});
+  assert.equal(r.price,-0.25);
+  assert.throws(()=>parsePublicSdrRecord(sdr(),{receivedAt:now,
+    sourceUrl:source+'?token=PRIVATE'}),/aprobada/);
+});
 test('D002 12: precio y diseminación posterior al corte rechazados',()=>{
   assert.throws(()=>parsePublicSdrRecord(sdr({
     disseminated_at:'2026-11-01T15:00:00.000Z'}),{
