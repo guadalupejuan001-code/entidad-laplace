@@ -20,7 +20,7 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
   assert.match(html,/ÚLTIMO CIERRE VERIFICADO/);
 });
 test('La UI separa ticker, velas, referencia y candidato; no simula datos mundiales',()=>{
-  const app=read('app.js'),world=fs.readFileSync(path.resolve(__dirname,'../../prepare-world.mjs'),'utf8');
+  const app=read('app.js'),world=fs.readFileSync(path.resolve(__dirname,'../prepare-world.mjs'),'utf8');
   assert.match(app,/function refresh\(\)/);
   assert.match(app,/const epoch=\+\+refreshEpoch,requested=asset,m=minutes/);
   assert.match(app,/epoch!==refreshEpoch\|\|requested!==asset\|\|m!==minutes/);
