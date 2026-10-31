@@ -42,6 +42,23 @@ jobs:
           npm run test:v001
           npm run test:fusion
           node --test tests/global-u003.test.mjs tests/seguimiento.test.mjs
+      - name: Recuperar runtime original XI/Ether fijado por commit
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - name: Compilar motor XI/Ether original
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-X rev-parse HEAD)" = 3d29556eff4d1079c791abab38e203fc209f1722
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Proyeccion EF001 en XI/Ether original
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+        run: npm run test:ef001
       - name: Migracion real repetible sin cambiar entrada existente
         run: |
           set -euo pipefail
