@@ -4,6 +4,13 @@
 auditoría final). No se trata de una billetera, exchange, robot de
 negociación, sistema de desanonimización ni acceso a dinero privado.
 
+**Validación verificada en GitHub Actions (31-oct-2026):**
+[119/119 pruebas Node aprobadas](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176213081)
+(20 K001 y 99 regresiones). La captura pública real devolvió **16 señales**:
+Bitcoin 5, Ethereum 6, TVL por cadena 3 y stablecoins 2; **4/4 fuentes
+observadas**, ninguna ausente. Esta captura valida la conectividad de
+esos endpoints, no cobertura DeFi mundial ni precisión financiera.
+
 ## Módulos implementados
 
 | Submódulo | Fuente pública | Métricas | Qué no representa |
