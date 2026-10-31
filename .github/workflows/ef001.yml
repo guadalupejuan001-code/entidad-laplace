@@ -1,0 +1,50 @@
+name: Entidad Laplace EF001 - Estado financiero mundial
+on:
+  push:
+    branches: [feature/ef001-mundo-financiero-estados-20261031]
+  pull_request:
+    paths:
+      - 'estado-financiero/**'
+      - 'input/**'
+      - 'tests/estado-financiero.test.mjs'
+      - 'package.json'
+      - '.github/workflows/ef001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  financial-world-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias congeladas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis de EF001 e integracion I001
+        run: |
+          set -euo pipefail
+          node --check input/almacen.mjs
+          node --check estado-financiero/modelo.mjs
+          node --check estado-financiero/repositorio.mjs
+          node --check tools/estado-financiero.mjs
+          node --check tests/estado-financiero.test.mjs
+      - name: Contrato temporal y PGlite real
+        run: npm run test:ef001
+      - name: Regresiones de entrada y prediccion
+        run: |
+          set -euo pipefail
+          npm run test:input
+          npm run test:v001
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs tests/seguimiento.test.mjs
+      - name: Migracion real repetible sin cambiar entrada existente
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ef001-audit
+          node tools/estado-financiero.mjs migrar /tmp/ef001-audit/db
+          node tools/estado-financiero.mjs migrar /tmp/ef001-audit/db
