@@ -92,5 +92,7 @@ test('Android WebView sólo permite la fuente pública y no pide permisos financ
   assert.ok(!manifest.includes('android.permission.CAMERA'));
   assert.ok(!manifest.includes('android.permission.RECORD_AUDIO'));
   assert.ok(manifest.includes('android.permission.INTERNET'));
-  assert.equal((main.match(/@JavascriptInterface/g)||[]).length,1);
+  assert.equal((main.match(/@JavascriptInterface/g)||[]).length,2);
+  assert.match(main,/fetchQuote/);
+  assert.match(main,/api\.exchange\.coinbase\.com\/products\//);
 });
