@@ -31,7 +31,9 @@
     "finra:o001b": "node tools/finra-o001b.mjs",
     "test:finra-o001b": "node --test tests/finra-o001b.test.mjs",
     "derivados:d001": "node tools/derivados-d001.mjs",
-    "test:derivados": "node --test tests/derivados-d001.test.mjs"
+    "test:derivados": "node --test tests/derivados-d001.test.mjs",
+    "swaps:d002": "node tools/swaps-d002.mjs",
+    "test:swaps": "node --test tests/swaps-d002.test.mjs"
   },
   "engines": {
     "node": ">=20"
