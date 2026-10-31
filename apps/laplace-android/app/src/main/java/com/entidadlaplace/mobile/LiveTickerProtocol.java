@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,8 +17,8 @@ import java.util.Set;
  */
 public final class LiveTickerProtocol {
     public static final String ENDPOINT="wss://ws-feed.exchange.coinbase.com";
-    public static final Set<String> PRODUCTS = new HashSet<>(Arrays.asList(
-        "BTC-USD","ETH-USD","SOL-USD"));
+    public static final Set<String> PRODUCTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+        "BTC-USD","ETH-USD","SOL-USD")));
     private LiveTickerProtocol(){}
 
     public static String subscription() throws JSONException {

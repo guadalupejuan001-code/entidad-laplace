@@ -27,6 +27,7 @@ function createTracker(){
     if(!finite(price)||price<=0||price>1e10||
       !Number.isSafeInteger(seq)||seq<0||
       !Number.isFinite(observed)||!Number.isFinite(received)||
+      !Number.isFinite(Number(data.observedAt))||
       observed>now+30_000||received>now+30_000||
       now-observed>600_000||now-received>60_000||
       Math.abs(observed-Number(data.observedAt))>1500)return false;

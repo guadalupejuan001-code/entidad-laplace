@@ -37,7 +37,7 @@ public final class CoinbaseLiveFeed {
     private final Map<String,Long> lastSeq=new HashMap<>();
     private WebSocket socket;
     private ScheduledFuture<?> retry;
-    private long lastReceivedAt=0L;
+    private long lastReceivedAt=0L,connectionStartedAt=0L;
     private int generation=0,attempts=0;
     private boolean userEnabled=true,foreground=false,closed=false,subscribed=false;
     private String state="paused";
@@ -110,6 +110,7 @@ public final class CoinbaseLiveFeed {
         int session=++generation;
         subscribed=false;
         lastReceivedAt=0L;
+        connectionStartedAt=System.currentTimeMillis();
         awaiting.clear();
         lastSeq.clear();
         state="connecting";
@@ -224,8 +225,11 @@ public final class CoinbaseLiveFeed {
 
     private void watchdog(){
         synchronized(mutex){
-            if(!closed&&userEnabled&&foreground&&socket!=null&&
-                lastReceivedAt>0&&System.currentTimeMillis()-lastReceivedAt>INACTIVE_MS)
+            if(closed||!userEnabled||!foreground||socket==null)return;
+            final long now=System.currentTimeMillis();
+            if(!subscribed&&connectionStartedAt>0&&now-connectionStartedAt>25_000L)
+                failLocked(generation,"No se confirmó la suscripción de Coinbase");
+            else if(subscribed&&lastReceivedAt>0&&now-lastReceivedAt>INACTIVE_MS)
                 failLocked(generation,"Sin latidos de Coinbase; enlace posiblemente perdido");
         }
     }
