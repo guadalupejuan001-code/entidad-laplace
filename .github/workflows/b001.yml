@@ -50,4 +50,4 @@ jobs:
         continue-on-error: true
         run: |
           node tools/banca-b001.mjs --out=/tmp/laplace-b001-bis.json
-          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-b001-bis.json"));console.log(JSON.stringify({signals:x.universal_state.known_states,sources:x.source_status.map(s=>({id:s.name,status:s.status,reason:s.reason??null})),not_a_global_total:x.banking_rules.cbs_and_lbs_additive===false}));'
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-b001-bis.json"));console.log(JSON.stringify({signals:x.universal_state.known_states,sources:x.source_status.map(s=>({id:s.name,status:s.status,latest_period:s.latest_period??null,source_url:s.url,rejected_periods:s.rejected_periods?.length??0,reason:s.reason??null})),not_a_global_total:x.banking_rules.cbs_and_lbs_additive===false}));'
