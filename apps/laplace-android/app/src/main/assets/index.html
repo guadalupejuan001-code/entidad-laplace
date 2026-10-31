@@ -20,7 +20,30 @@
     <button type="button" data-tab="world">Mundo</button>
   </nav>
 
+  <div id="notice" class="status-banner" role="status" aria-live="polite">
+    <span id="noticeIcon" aria-hidden="true">◎</span>
+    <span id="noticeText">Consulta precios públicos. Después selecciona un horizonte, entrena y proyecta.</span>
+  </div>
   <section id="panel" class="tabpage">
+    <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
+      <div class="quote-head">
+        <div><small class="eyebrow">MERCADOS · COINBASE</small><h2>Precios en USD</h2></div>
+        <span id="quoteStatus" class="outline-tag">SIN CONSULTAR</span>
+      </div>
+      <div class="quote-grid">
+        <button type="button" class="quote-tile active" data-quote-asset="BTC-USD" aria-pressed="true">
+          <span>BTC / USD</span><strong id="quoteBTC">—</strong><small id="quoteBTCStatus">Sin cotización</small>
+        </button>
+        <button type="button" class="quote-tile" data-quote-asset="ETH-USD" aria-pressed="false">
+          <span>ETH / USD</span><strong id="quoteETH">—</strong><small id="quoteETHStatus">Sin cotización</small>
+        </button>
+        <button type="button" class="quote-tile" data-quote-asset="SOL-USD" aria-pressed="false">
+          <span>SOL / USD</span><strong id="quoteSOL">—</strong><small id="quoteSOLStatus">Sin cotización</small>
+        </button>
+      </div>
+      <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
+      <div class="quick-guide">1. Actualizar <span>→</span> 2. Entrenar <span>→</span> 3. Proyectar</div>
+    </article>
     <div class="hero">
       <div class="hero-caption"><span class="eyebrow">NÚCLEO VISUAL</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
       <svg class="portal" viewBox="0 0 640 310" role="img" aria-label="Ojo triangular con vórtice central y corrientes de datos">
@@ -60,13 +83,19 @@
       </g>
       <text x="20" y="150" class="svg-label">SEÑALES</text>
       <text x="530" y="150" class="svg-label">ESTADOS</text>
+      <g class="moving-particles" aria-hidden="true" fill="#9feeff">
+        <circle r="3.8"><animateMotion dur="2.1s" repeatCount="indefinite" path="M0 145 Q145 151 269 144 T320 160"/></circle>
+        <circle r="3.4"><animateMotion dur="2.8s" repeatCount="indefinite" path="M630 78 Q470 98 373 137 T320 160"/></circle>
+        <circle r="3.3"><animateMotion dur="3.4s" repeatCount="indefinite" path="M190 0 Q214 76 283 125 T320 160"/></circle>
+        <circle r="3.4"><animateMotion dur="2.6s" repeatCount="indefinite" path="M478 310 Q430 236 357 193 T320 160"/></circle>
+      </g>
       </svg>
-      <div class="hero-sub"><span>DATOS <b>→</b> ESTADOS <b>→</b> EVOLUCIÓN</span><span class="research">LABORATORIO EXPERIMENTAL</span></div>
+      <div class="hero-sub"><span>DATOS <b>→</b> ESTADOS <b>→</b> EVOLUCIÓN</span><span class="research">ANIMACIÓN ILUSTRATIVA · NO CÁLCULO FÍSICO</span></div>
     </div>
 
     <div class="two-metrics">
       <article class="metric">
-        <small>PRECIO OBSERVADO</small><strong id="lastPrice">—</strong>
+        <small>ÚLTIMO CIERRE DE VELA</small><strong id="lastPrice">—</strong>
         <span id="priceTime">Sin lectura pública</span>
       </article>
       <article class="metric"><small>ESTIMACIÓN EXPERIMENTAL</small>
