@@ -20,6 +20,7 @@ import {observeDerivatives} from './derivados/global.mjs';
 import {observeCftcWeekly} from './swaps/cftc-semanal.mjs';
 import {observeEtfNport} from './fondos/global.mjs';
 import {observeBisBanking} from './banca/bis-sdmx.mjs';
+import {observeBlockchainDeFi} from './cripto/global-k001.mjs';
 
 export const U003_VERSION='laplace-universo-global-u003-v4';
 const need=(c,m)=>{if(!c)throw Error(m)};
@@ -35,7 +36,8 @@ export async function observeWorldU003({
   includeDerivatives=process.env.LAPLACE_D001_ENABLED==='true',
   includeOtcSwaps=process.env.LAPLACE_D002_ENABLED==='true',
   includeEtfFunds=process.env.LAPLACE_C001_ENABLED==='true',
-  includeBanking=process.env.LAPLACE_B001_ENABLED==='true'
+  includeBanking=process.env.LAPLACE_B001_ENABLED==='true',
+  includeBlockchainDeFi=process.env.LAPLACE_K001_ENABLED==='true'
 }={}){
   const jobs=[
     ['regional_markets',()=>fetchRegionalMarkets({fetchImpl,now,timeoutMs})],
@@ -57,6 +59,16 @@ export async function observeWorldU003({
           project_modules:capture.project_modules}};
     }]
   ];
+  // K001 es observación pública OPT-IN: no lee direcciones ni desanonimiza
+  // usuarios. TVL y supply son stocks/estimaciones, NO flujos netos.
+  if(includeBlockchainDeFi)jobs.push(['blockchain_defi_k001',async()=>{
+    const report=await observeBlockchainDeFi({fetchImpl,now,timeoutMs});
+    return {observations:report.observations,sources:report.sources,
+      blockchain_metadata:{coverage:report.coverage,metadata:report.metadata,
+        rules:report.rules,live_bridge_feed_connected:false,
+        true_global_capital_flows_measured:false,
+        prediction_inputs_enabled:false,automatic_trading:false}};
+  }]);
   // B001 agrega SOLO series BIS trimestrales oficiales. LBS y CBS tienen
   // poblaciones distintas y nunca se suman ni se convierte stock en flujo.
   if(includeBanking)jobs.push(['bis_banking_b001',async()=>{
@@ -127,7 +139,7 @@ export async function observeWorldU003({
   }))]);
   const captured=utcTime(now());
   const observations=[...base.universal_state.states],sources=[...base.source_status.map(x=>({...x,group:'u002_base'}))],groups=[],contracts=[],vintages=[],alerts=[];
-  let geoCoverage=null,capitalMetadata=null,finraWeeklyMetadata=null,finraMonthlyMetadata=null,derivativesMetadata=null,swapsMetadata=null,etfMetadata=null,bankingMetadata=null;
+  let geoCoverage=null,capitalMetadata=null,finraWeeklyMetadata=null,finraMonthlyMetadata=null,derivativesMetadata=null,swapsMetadata=null,etfMetadata=null,bankingMetadata=null,blockchainMetadata=null;
   for(const g of settled){
     if(g.status==='fulfilled'){
       observations.push(...g.value.observations);
@@ -139,6 +151,7 @@ export async function observeWorldU003({
       if(g.name==='swaps_otc_d002')swapsMetadata=g.value.swaps_metadata??null;
       if(g.name==='etf_fund_flows_c001')etfMetadata=g.value.etf_metadata??null;
       if(g.name==='bis_banking_b001')bankingMetadata=g.value.banking_metadata??null;
+      if(g.name==='blockchain_defi_k001')blockchainMetadata=g.value.blockchain_metadata??null;
       if(g.name==='finra_ats_otc_weekly')finraWeeklyMetadata=g.value.finra_weekly_metadata??null;
       if(g.name==='finra_ats_otc_monthly_blocks')finraMonthlyMetadata=g.value.finra_monthly_metadata??null;
       sources.push(...g.value.sources.map(x=>({...x,group:g.name})));
@@ -168,6 +181,7 @@ export async function observeWorldU003({
     capital_u004:capitalMetadata,derivatives_d001:derivativesMetadata,
     swaps_otc_d002:swapsMetadata,etf_fund_flows_c001:etfMetadata,
     bis_banking_b001:bankingMetadata,
+    blockchain_defi_k001:blockchainMetadata,
     finra_weekly:finraWeeklyMetadata,finra_monthly_blocks:finraMonthlyMetadata,
     availability_policy:{
       known_at:'momento_de_captura_o_primera_observacion_por_laplace',
