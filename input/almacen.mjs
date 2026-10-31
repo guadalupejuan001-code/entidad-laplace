@@ -8,6 +8,7 @@ import {narrativeEvent,aliasesFromRegistry} from './nlp.mjs';
 import {Registry} from '../pulso/registro.mjs';
 import {auditAssertions} from './auditoria.mjs';
 import {proyectarI001} from '../estado-financiero/repositorio.mjs';
+import {sembrarCatalogo} from '../estado-financiero/catalogo-mundial.mjs';
 
 export class SemanticConflict extends Error{}
 export class Store{
@@ -39,6 +40,7 @@ export class Store{
     for(const sql of schema.split(';').filter(x=>x.trim()))await this.db.query(sql);
     const financial=await readFile(new URL('../estado-financiero/schema.sql',import.meta.url),'utf8');
     for(const sql of financial.split(';').filter(x=>x.trim()))await this.db.query(sql);
+    await sembrarCatalogo(this.db);
     if(timescale)await this.db.query("SELECT create_hypertable('input_events','known_at',if_not_exists => TRUE)");
     return {engine:this.embedded?'embedded_postgresql':'postgresql',timescale};
   }
