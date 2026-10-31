@@ -144,6 +144,11 @@ footer{text-align:center;color:#6685a3;font-size:10px;letter-spacing:.08em;
 }
 
 
+/* El resultado de cada botón también aparece inmediatamente debajo de las acciones. */
+.action-feedback{margin:-4px 0 1px;border-left:3px solid #42b7e1;background:#102638;
+  border-radius:0 8px 8px 0;padding:10px 13px;color:#bce5fa;font-size:11px;line-height:1.5}
+.action-feedback[data-kind=error]{border-left-color:#ff8e87;background:#301e2c;color:#ffd2c8}
+@media(min-width:740px){#panel>.action-feedback{grid-column:1/-1}}
 /* LAPLACE móvil: cinta de precios públicos sobre el símbolo decorativo. */
 .status-banner{display:flex;gap:10px;align-items:flex-start;border:1px solid #326381;
   color:#b7d9f0;background:#0e293e;border-radius:12px;padding:12px 14px;
