@@ -14,7 +14,9 @@ diario M001 y la captura U003, evalúa cada precio con la misma referencia
 de persistencia, verifica `known_at` y prohíbe usar etiquetas o señales
 capturadas después de decidir.
 
-**Resultados reales:** [154/154 tests Node](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176921579).
+**Resultados reales:** [154/154 tests del contrato V001 y regresiones](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41176921579),
+y [409/409 pruebas completas con XI/Ether y REVERSE-PC compilados](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41177189639),
+**0 fallos, 0 omitidas**.
 En la muestra archivada hubo 15 pronósticos M001, 8 resultados y
 2 aciertos de dirección. El **MAE de M001 fue 529,55 USD**, frente a
 **504,96 USD de persistencia** (skill **−4,87 %**, no ventaja demostrada).
