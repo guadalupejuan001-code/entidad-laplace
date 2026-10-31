@@ -1,0 +1,43 @@
+name: Entidad Laplace - ecuacion de Laplace (PDE y grafo)
+on:
+  push:
+    branches: [main, 'feature/laplace-pde-20261031']
+    paths:
+      - 'ecuacion/**'
+      - 'tests/ecuacion-laplace*.test.mjs'
+      - 'tools/ecuacion-laplace.mjs'
+      - '.github/workflows/laplace-pde.yml'
+      - 'package.json'
+  pull_request:
+    paths:
+      - 'ecuacion/**'
+      - 'tests/ecuacion-laplace*.test.mjs'
+      - 'tools/ecuacion-laplace.mjs'
+      - '.github/workflows/laplace-pde.yml'
+      - 'package.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verificar-ecuacion-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Solver analitico y casos de abstencion
+        run: node --test tests/ecuacion-laplace*.test.mjs
+      - name: Resolver la PDE real y verificar convergencia
+        run: |
+          node tools/ecuacion-laplace.mjs demo > /tmp/pde.json
+          node tools/ecuacion-laplace.mjs demo-grafo > /tmp/grafo.json
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            for (const name of ["pde", "grafo"]) {
+              const x = JSON.parse(readFileSync("/tmp/" + name + ".json", "utf8"));
+              if (!x.converged || x.forecasts_future !== false ||
+                  x.automatic_trading !== false) throw Error("Contrato PDE inválido");
+            }
+          '
