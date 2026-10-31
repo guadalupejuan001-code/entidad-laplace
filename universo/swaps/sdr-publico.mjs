@@ -57,11 +57,13 @@ export function parsePublicSdrRecord(raw,{receivedAt,sourceUrl}={}){
   if(raw.notional===null||raw.notional===undefined){
     need(['masked','unknown'].includes(raw.notional_semantics),
       'SDR notional ausente sin política de ocultación');
-  }else normalNum(raw.notional,{name:'notional',max:1e16});
+  }
+  const parsedNotional=raw.notional===null||raw.notional===undefined?null:
+    normalNum(raw.notional,{name:'notional',max:1e16});
   if(raw.tenor!==null&&raw.tenor!==undefined)
     need(typeof raw.tenor==='string'&&/^[A-Za-z0-9 _./+-]{1,32}$/.test(raw.tenor),
       'SDR tenor no permitido');
-  if(raw.price!==null&&raw.price!==undefined)
+  const parsedPrice=raw.price===null||raw.price===undefined?null:
     normalNum(raw.price,{name:'price',min:-1e15,max:1e15});
   if(raw.price_unit!==null&&raw.price_unit!==undefined)
     need(typeof raw.price_unit==='string'&&/^[A-Za-z0-9_.:/-]{2,32}$/.test(raw.price_unit),
@@ -71,10 +73,10 @@ export function parsePublicSdrRecord(raw,{receivedAt,sourceUrl}={}){
     execution_at:when,disseminated_at:published,
     asset_class:raw.asset_class,action:raw.action,version:raw.version,
     clearing:raw.clearing,source_url:sourceUrl,
-    notional_public:raw.notional??null,
+    notional_public:parsedNotional,
     notional_semantics:raw.notional_semantics,
     notional_currency:raw.notional_currency,
-    tenor:raw.tenor??null,price:raw.price??null,price_unit:raw.price_unit??null,
+    tenor:raw.tenor??null,price:parsedPrice,price_unit:raw.price_unit??null,
     counterparties_identified:false,notional_is_true_exact_amount:false};
 }
 export function ingestPublicSdrRows(rows,{receivedAt,sourceUrl,maxRows=256}={}){
