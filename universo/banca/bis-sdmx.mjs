@@ -76,11 +76,12 @@ export function parseBisSdmxCSV(raw,{series,knownAt,sourceUrl}={}){
     header=rows.shift().map((x,i)=>i===0?x.replace(/^\uFEFF/,''):x);
   need(new Set(header).size===header.length,'BIS columnas duplicadas');
   const get=(r,name)=>r[header.indexOf(name)];
-  const dims=dimName(series),needCols=[...dims,'TIME_PERIOD','OBS_VALUE','UNIT_MEASURE','UNIT_MULT'];
+  const dims=dimName(series),needCols=[...dims,'TIME_PERIOD','OBS_VALUE','UNIT_MEASURE','UNIT_MULT',
+    'OBS_STATUS','OBS_CONF'];
   need(needCols.every(x=>header.includes(x)),'BIS encabezado SDMX sin columnas esperadas');
   const expected=series.key.split('.');
   need(expected.length===dims.length,'BIS metadata clave de serie inconsistente');
-  const optional=['OBS_STATUS','OBS_CONF','DATAFLOW','SERIES_KEY'];
+  const optional=['DATAFLOW','SERIES_KEY','OBS_PRE_BREAK'];
   const rejected=[],observations=[],flags=[],seen=new Set();
   for(const [ix,row] of rows.entries()){
     need(row.length===header.length,'BIS fila CSV cortada (índice '+ix+')');
@@ -99,11 +100,14 @@ export function parseBisSdmxCSV(raw,{series,knownAt,sourceUrl}={}){
     const period=get(row,'TIME_PERIOD'),reference=quarterEnd(period);
     need(!seen.has(period),'BIS periodo trimestral duplicado');seen.add(period);
     need(reference<=known,'BIS periodo de referencia posterior a la captura');
-    const status=header.includes('OBS_STATUS')?get(row,'OBS_STATUS'):'';
-    const conf=header.includes('OBS_CONF')?get(row,'OBS_CONF'):'';
+    const status=get(row,'OBS_STATUS');
+    const conf=get(row,'OBS_CONF');
     const amount=safeAmount(get(row,'OBS_VALUE'));
-    if(amount===null||!['','A','E'].includes(status)||!['','N','F'].includes(conf)){
+    // En BIS: OBS_STATUS=B es un valor POST-break publicable, pero no comparable
+    // con el periodo anterior sin el pre-break. OBS_CONF=N/C no es público.
+    if(amount===null||!['A','B','E'].includes(status)||conf!=='F'){
       rejected.push({period,reason:amount===null?'missing_or_suppressed':
+        conf!=='F'?'restricted_or_unverified_confidentiality':
         'flag_outside_approved_public_states',status,confidentiality:conf});
       continue;
     }
@@ -115,8 +119,15 @@ export function parseBisSdmxCSV(raw,{series,knownAt,sourceUrl}={}){
       observed_at:reference,known_at:known,source_url:sourceUrl
     });
     observations.push(item);
-    flags.push({period,status:status||'unspecified',confidentiality:conf||'unspecified',
-      estimated:status==='E'});
+    const preBreakValue=header.includes('OBS_PRE_BREAK')?get(row,'OBS_PRE_BREAK'):null;
+    // Un pre-break numérico puede servir a futuros análisis de revisiones,
+    // pero jamás entra automáticamente como segunda posición monetaria.
+    const preBreak=preBreakValue!==null&&preBreakValue!==''?
+      safeAmount(preBreakValue):null;
+    flags.push({period,status,confidentiality:conf,
+      estimated:status==='E',structural_break:status==='B',
+      pre_break_value_million_usd:status==='B'?preBreak:null,
+      quarter_on_same_basis_as_previous:status!=='B'});
   }
   need(observations.length>0||rejected.length>0,'BIS sin periodos reconocibles');
   observations.sort((a,b)=>a.observed_at.localeCompare(b.observed_at));
