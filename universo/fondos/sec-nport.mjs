@@ -203,7 +203,7 @@ export function parsePublicNport(xml,{fund,filing,knownAt,sourceUrl}={}){
   };
 }
 export async function fetchSecText(url,{fetchImpl=fetch,userAgent,
-  timeoutMs=12000,maxBytes=4_000_000}={}){
+  timeoutMs=12000,maxBytes=4_000_000,now=()=>new Date().toISOString()}={}){
   verifiedAddress(url);
   need(typeof userAgent==='string'&&userAgent.length>=12&&
     !/^(?:node|laplace|bot|test)(?:\/|\s|$)/i.test(userAgent),
@@ -217,7 +217,7 @@ export async function fetchSecText(url,{fetchImpl=fetch,userAgent,
   if(!response.body?.getReader){
     const raw=await response.text();
     need(Buffer.byteLength(raw)<=maxBytes,'SEC respuesta excesiva');
-    return {raw,sha256:hash(raw),received_at:new Date().toISOString(),url};
+    return {raw,sha256:hash(raw),received_at:utcTime(now()),url};
   }
   const reader=response.body.getReader(),buffers=[];let bytes=0;
   try{for(;;){
@@ -226,5 +226,5 @@ export async function fetchSecText(url,{fetchImpl=fetch,userAgent,
     buffers.push(Buffer.from(p.value));
   }}catch(error){await reader.cancel().catch(()=>{});throw error}
   const raw=Buffer.concat(buffers).toString('utf8');
-  return {raw,sha256:hash(raw),received_at:new Date().toISOString(),url};
+  return {raw,sha256:hash(raw),received_at:utcTime(now()),url};
 }
