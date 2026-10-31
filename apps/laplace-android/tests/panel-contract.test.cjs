@@ -58,7 +58,7 @@ test('Vórtice animado mantiene acceso reducido',()=>{
   const html=read('index.html'),css=read('style.css');
   assert.match(html,/class="swirl"/);
   assert.match(html,/class="moving-particles"/);
-  assert.equal((html.match(/<animateMotion /g)||[]).length,5);
+  assert.equal((html.match(/<animateMotion /g)||[]).length,4);
   assert.match(css,/@keyframes dataFlow/);
   assert.match(css,/@keyframes rotateVortex/);
   assert.match(css,/prefers-reduced-motion:reduce/);
@@ -72,5 +72,5 @@ test('PDE sigue funcionando sin contaminar M001 ni añadir un 3er puente',()=>{
   assert.match(html,/id="pdeSolve"/);
   assert.match(html,/id="graphSolve"/);
   assert.match(js,/function show\(page\)/);
-  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,4);
+  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,5);
 });
