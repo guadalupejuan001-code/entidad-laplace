@@ -1,4 +1,4 @@
-name: LAPLACE Android - WebSocket público en vivo 3.2
+name: LAPLACE Android 3.3 - XN01 nativo original y pronósticos crudos
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -91,19 +91,21 @@ jobs:
           node --check apps/laplace-android/app/src/main/assets/app.js
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
           node apps/laplace-android/tests/browser-smoke.cjs
-      - name: Probar protocolo WebSocket nativo con JUnit
-        run: |
-          set -euo pipefail
-          gradle -p apps/laplace-android :app:testDebugUnitTest --no-daemon --stacktrace
       - name: Verificar ejecutor XI auténtico, paridad de plantilla y overlay Ether
         run: |
           set -euo pipefail
           test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
           test "$(git -C deps/reverse-pc rev-parse HEAD)" = 45f7230bb6383f383c3bbea543f6199563f7cd32
           cmp apps/laplace-android/app/src/main/assets/xn01-native.xi deps/reverse-pc/reverse-os-android/app/src/main/assets/laplace/x001-native.xi
+          sed 's/package com.reversepc.os;/package com.entidadlaplace.mobile;/' deps/reverse-pc/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceXiCompiler.java > /tmp/LaplaceXiCompiler-pin.java
+          cmp /tmp/LaplaceXiCompiler-pin.java apps/laplace-android/app/src/main/java/com/entidadlaplace/mobile/LaplaceXiCompiler.java
           python3 deps/reverse-pc/scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
           test -f build/ether-compat/mundo_x/quantum_runtime.hpp
           test -f apps/laplace-android/app/src/main/cpp/native_xn01_jni.cpp
+      - name: Probar protocolo WebSocket nativo con JUnit
+        run: |
+          set -euo pipefail
+          gradle -p apps/laplace-android :app:testDebugUnitTest --no-daemon --stacktrace
       - name: Compilar APK de Android con firma de depuración
         run: |
           set -euo pipefail
@@ -122,6 +124,7 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/live-feed.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/liblaplace_xi.so'
+          unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
           unzip -Z1 "$APK" | grep -Fx 'classes.dex'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
@@ -129,7 +132,7 @@ jobs:
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-3-XN01-NATIVE-RAW
+          name: LAPLACE-ANDROID-V3-3-XN01-RAW
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
