@@ -1,0 +1,38 @@
+name: Entidad Laplace EF004 - Nucleo de aprendizaje de estados
+on:
+  push:
+    branches: [feature/ef004-demonio-evolucion-conjunta-20261031]
+  pull_request:
+    paths:
+      - 'demonio/**'
+      - 'tests/demonio-ef004.test.mjs'
+      - 'package.json'
+      - '.github/workflows/ef004.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  model-and-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Dependencias de Entidad Laplace
+        run: npm ci --no-audit --no-fund
+      - name: Verificar sintaxis y contratos
+        run: |
+          set -euo pipefail
+          node --check demonio/series.mjs
+          node --check demonio/finanzas-ef004.mjs
+          node --check tests/demonio-ef004.test.mjs
+      - name: Aprendizaje y separacion temporal EF004
+        run: npm run test:ef004
+      - name: Regresiones EF001 EF002 EF003 y V001
+        run: |
+          set -euo pipefail
+          npm run test:financiero
+          npm run test:v001
+          npm run test:fusion
