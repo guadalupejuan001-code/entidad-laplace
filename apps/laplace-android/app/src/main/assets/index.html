@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE 2.0 · M001 / EF002</title>
+<meta name="theme-color" content="#07111e"><title>LAPLACE 3.1 · Android</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -12,23 +12,23 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>M001 · EF002 · ANDROID 2.0</small></div>
+    <div><h1>LAPLACE</h1><small>M001 · F001 · CAMPO 3.1</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
 <main>
   <nav class="tabs" aria-label="Secciones de Laplace">
-    <button type="button" data-tab="panel" aria-current="page">Panel</button>
+    <button type="button" data-tab="panel" aria-current="page">Mercado</button>
     <button type="button" data-tab="signals">Señales</button>
     <button type="button" data-tab="tests">Pruebas</button>
-    <button type="button" data-tab="integral">Núcleo</button>
-    <button type="button" data-tab="world">Mundo</button>
+    <button type="button" data-tab="integral">F001 · BTC</button>
+    <button type="button" data-tab="world">Datos</button>
     <button type="button" data-tab="equation">Ecuación</button>
   </nav>
 
   <div id="notice" class="status-banner" role="status" aria-live="polite">
     <span id="noticeIcon" aria-hidden="true">◎</span>
-    <span id="noticeText">Selecciona activo y horizonte, pulsa Actualizar, luego Analizar y Proyectar. Se usan análogos M001, no AR(1).</span>
+    <span id="noticeText">Selecciona un activo y un plazo. Actualiza los datos y pulsa Proyectar. Los cálculos históricos son experimentales.</span>
   </div>
   <section id="panel" class="tabpage">
     <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
@@ -48,7 +48,103 @@
         </button>
       </div>
       <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
-      <div class="quick-guide">1. Seleccionar <span>→</span> 2. Actualizar <span>→</span> 3. Analizar <span>→</span> 4. Proyectar</div>
+      <div class="quick-guide">1. Elige activo y tiempo <span>→</span> 2. Actualiza <span>→</span> 3. Proyecta</div>
+    </article>
+    <article class="card selector">
+      <div class="section-head"><div><small class="eyebrow">ACTIVO</small><h2>Mercado de referencia</h2></div><span class="outline-tag">SPOT · USD</span></div>
+      <div class="asset-row">
+        <label for="asset" class="sr-only">Activo</label>
+        <select id="asset" aria-label="Activo">
+          <option value="BTC-USD">Bitcoin · BTC/USD</option>
+          <option value="ETH-USD">Ethereum · ETH/USD</option>
+          <option value="SOL-USD">Solana · SOL/USD</option>
+        </select>
+        <button id="refresh" class="refresh" type="button">Actualizar datos</button>
+      </div>
+      <small id="dataStatus" class="helper">Coinbase Exchange. Precio spot separado de las velas históricas; se indicarán las fechas.</small>
+    </article>
+
+    <article class="card horizons">
+      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>¿Para cuándo quieres calcular?</h2></div><span id="horizonTag" class="outline-tag">15 MIN</span></div>
+      <label class="sr-only" for="horizonSelect">Horizonte de cálculo</label>
+      <select id="horizonSelect" aria-label="Horizonte de cálculo">
+        <option value="5">5 minutos</option>
+        <option value="15" selected>15 minutos</option>
+        <option value="30">30 minutos</option>
+        <option value="60">1 hora</option>
+        <option value="120">2 horas</option>
+        <option value="240">4 horas</option>
+        <option value="300">5 horas</option>
+        <option value="480">8 horas</option>
+        <option value="720">12 horas</option>
+        <option value="1440">24 horas</option>
+        <option value="2880">2 días</option>
+        <option value="4320">3 días</option>
+        <option value="10080">7 días</option>
+        <option value="20160">14 días</option>
+        <option value="43200">30 días</option>
+        <option value="129600">90 días</option>
+      </select>
+      <details class="horizon-details">
+        <summary>Ver todos los plazos</summary>
+      <div id="horizons" class="horizon-grid" role="group" aria-label="Horizontes de 5 minutos hasta 90 días">
+        <button type="button" data-minutes="5" aria-pressed="false">5 min</button>
+        <button type="button" data-minutes="15" aria-pressed="false">15 min</button>
+        <button type="button" data-minutes="30" aria-pressed="false">30 min</button>
+        <button type="button" data-minutes="60" aria-pressed="false">1 h</button>
+        <button type="button" data-minutes="120" aria-pressed="false">2 h</button>
+        <button type="button" data-minutes="240" aria-pressed="false">4 h</button>
+        <button type="button" data-minutes="300" aria-pressed="false">5 h</button>
+        <button type="button" data-minutes="480" aria-pressed="false">8 h</button>
+        <button type="button" data-minutes="720" aria-pressed="false">12 h</button>
+        <button type="button" data-minutes="1440" aria-pressed="false">24 h</button>
+        <button type="button" data-minutes="2880" aria-pressed="false">2 d</button>
+        <button type="button" data-minutes="4320" aria-pressed="false">3 d</button>
+        <button type="button" data-minutes="10080" aria-pressed="false">7 d</button>
+        <button type="button" data-minutes="20160" aria-pressed="false">14 d</button>
+        <button type="button" data-minutes="43200" aria-pressed="false">30 d</button>
+        <button type="button" data-minutes="129600" aria-pressed="false">90 d</button>
+      </div>
+      </details>
+      <p class="fineprint">M001 usa patrones históricos. Plazos muy largos pueden mostrar «sin datos suficientes» en vez de una cifra inventada.</p>
+    </article>
+
+    <div class="actions">
+      <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar precio</b><small>Calcular candidato M001</small></button>
+      <button id="train" type="button"><span class="action-icon">◎</span><b>Analizar</b><small>Ver patrones</small></button>
+      <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Histórico</small></button>
+      <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Errores</small></button>
+    </div>
+
+    <p id="inlineStatus" class="action-feedback" role="status" aria-live="polite">Los controles se activarán cuando lleguen datos verificables.</p>
+
+    <div class="two-metrics">
+      <article class="metric">
+        <small>ÚLTIMO CIERRE VERIFICADO</small><strong id="lastPrice">—</strong>
+        <span id="priceTime">Sin lectura pública</span>
+      </article>
+      <article class="metric"><small>CANDIDATO M001 · NO VALIDADO</small>
+        <strong id="estimate">—</strong><span id="relativeChange">Sin modelo</span>
+      </article>
+    </div>
+
+    <article class="card chart-card">
+      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
+      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
+      <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
+      <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
+    </article>
+
+    <article class="card audit-card">
+      <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
+      <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
+      <div class="stats">
+        <div><span>Patrones históricos usados</span><strong id="trainingCount">—</strong></div>
+        <div><span>Casos retrospectivos válidos</span><strong id="testingCount">—</strong></div>
+        <div><span>MAE M001 (USD)</span><strong id="modelError">—</strong></div>
+        <div><span>Referencia de persistencia</span><strong id="baselineError">—</strong></div>
+      </div>
+      <p class="fineprint">M001 calcula análogos de mercado sin imponer un movimiento mínimo ni sustituir el resultado por persistencia. EF004 y los datos mundiales se muestran separados mientras no tengan validación temporal suficiente. Sin trading.</p>
     </article>
     <div class="hero">
       <div class="hero-caption"><span class="eyebrow">IDENTIDAD VISUAL · NO ES LA PREDICCIÓN</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
@@ -99,80 +195,6 @@
       <div class="hero-sub"><span>DATOS <b>→</b> M001 <b>→</b> ESCENARIO</span><span class="research">ANIMACIÓN ILUSTRATIVA · NO CÁLCULO FÍSICO</span></div>
     </div>
 
-    <div class="two-metrics">
-      <article class="metric">
-        <small>ÚLTIMO CIERRE VERIFICADO</small><strong id="lastPrice">—</strong>
-        <span id="priceTime">Sin lectura pública</span>
-      </article>
-      <article class="metric"><small>CANDIDATO M001 · NO VALIDADO</small>
-        <strong id="estimate">—</strong><span id="relativeChange">Sin modelo</span>
-      </article>
-    </div>
-
-    <article class="card selector">
-      <div class="section-head"><div><small class="eyebrow">ACTIVO</small><h2>Mercado de referencia</h2></div><span class="outline-tag">SPOT · USD</span></div>
-      <div class="asset-row">
-        <label for="asset" class="sr-only">Activo</label>
-        <select id="asset" aria-label="Activo">
-          <option value="BTC-USD">Bitcoin · BTC/USD</option>
-          <option value="ETH-USD">Ethereum · ETH/USD</option>
-          <option value="SOL-USD">Solana · SOL/USD</option>
-        </select>
-        <button id="refresh" class="refresh" type="button">↻ Actualizar</button>
-      </div>
-      <small id="dataStatus" class="helper">Coinbase Exchange. Precio spot separado de las velas históricas; se indicarán las fechas.</small>
-    </article>
-
-    <article class="card horizons">
-      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>Horizonte del cálculo M001</h2></div><span id="horizonTag" class="outline-tag">1 HORA</span></div>
-      <div id="horizons" class="horizon-grid" role="group" aria-label="Horizontes de 5 minutos hasta 90 días">
-        <button type="button" data-minutes="5" aria-pressed="false">5 min</button>
-        <button type="button" data-minutes="15" aria-pressed="false">15 min</button>
-        <button type="button" data-minutes="30" aria-pressed="false">30 min</button>
-        <button type="button" data-minutes="60" aria-pressed="false">1 h</button>
-        <button type="button" data-minutes="120" aria-pressed="false">2 h</button>
-        <button type="button" data-minutes="240" aria-pressed="false">4 h</button>
-        <button type="button" data-minutes="300" aria-pressed="false">5 h</button>
-        <button type="button" data-minutes="480" aria-pressed="false">8 h</button>
-        <button type="button" data-minutes="720" aria-pressed="false">12 h</button>
-        <button type="button" data-minutes="1440" aria-pressed="false">24 h</button>
-        <button type="button" data-minutes="2880" aria-pressed="false">2 d</button>
-        <button type="button" data-minutes="4320" aria-pressed="false">3 d</button>
-        <button type="button" data-minutes="10080" aria-pressed="false">7 d</button>
-        <button type="button" data-minutes="20160" aria-pressed="false">14 d</button>
-        <button type="button" data-minutes="43200" aria-pressed="false">30 d</button>
-        <button type="button" data-minutes="129600" aria-pressed="false">90 d</button>
-      </div>
-      <p class="fineprint">M001 recuperado: 5 rasgos observados, hasta 18 análogos independientes, validación cronológica. Si faltan muestras no se fabrica una predicción.</p>
-    </article>
-
-    <div class="actions">
-      <button id="train" type="button"><span class="action-icon">◎</span><b>Analizar</b><small>18 análogos M001</small></button>
-      <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Test histórico</small></button>
-      <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Resultados reales</small></button>
-      <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar</b><small>Candidato M001</small></button>
-    </div>
-
-    <p id="inlineStatus" class="action-feedback" role="status" aria-live="polite">Selecciona el activo, pulsa Actualizar y elige una acción.</p>
-
-    <article class="card chart-card">
-      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
-      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
-      <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
-      <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
-    </article>
-
-    <article class="card audit-card">
-      <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
-      <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
-      <div class="stats">
-        <div><span>Patrones históricos usados</span><strong id="trainingCount">—</strong></div>
-        <div><span>Casos retrospectivos válidos</span><strong id="testingCount">—</strong></div>
-        <div><span>MAE M001 (USD)</span><strong id="modelError">—</strong></div>
-        <div><span>Referencia de persistencia</span><strong id="baselineError">—</strong></div>
-      </div>
-      <p class="fineprint">M001 calcula análogos de mercado sin imponer un movimiento mínimo ni sustituir el resultado por persistencia. EF004 y los datos mundiales se muestran separados mientras no tengan validación temporal suficiente. Sin trading.</p>
-    </article>
   </section>
 
   <section id="signals" class="tabpage" hidden>
@@ -196,14 +218,15 @@
     <article class="card">
       <div class="section-head">
         <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
-          <h2>Núcleo integral de estados</h2></div>
+          <h2>F001 · Cálculo multiescala BTC</h2></div>
         <span class="outline-tag">CÁLCULO VERIFICABLE</span>
       </div>
       <p>Ejecuta el F001 original con 14 horizontes de BTC, audita el archivo financiero
       y aplica Lφ = 0 a los retornos logarítmicos. Las fronteras son candidatos
       experimentales, no precios observados del futuro.</p>
-      <button id="integralRun" class="pde-primary" type="button">Consultar y calcular todo lo disponible</button>
-      <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. La observación mundial EF002 es una captura histórica, no un feed vivo.</p>
+      <button id="integralRun" class="pde-primary" type="button">Consultar y calcular F001 para BTC</button>
+      <p class="fineprint">F001 solo Bitcoin · 14 horizontes · Datos SEC/EF004 se muestran según disponibilidad, sin cálculos ficticios.</p>
+      <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. Esta sección calcula exclusivamente Bitcoin; los datos mundiales provienen del último archivo fechado.</p>
       <div id="integralMetrics" class="stats pde-stats"></div>
       <div id="integralTable" class="integral-results"></div>
     </article>

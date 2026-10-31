@@ -293,3 +293,43 @@ main{padding-bottom:90px}
 #integralModules .signal-row{grid-template-columns:1fr}
 #integralModules .signal-row small{line-height:1.5}
 @media(max-width:375px){.integral-item{grid-template-columns:74px minmax(0,1fr)}}
+
+/* V3.1: navegación de seis destinos visible, sin pestañas ocultas. */
+.tabs{position:static;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  overflow:visible;gap:7px;margin:0;padding:12px 0 15px;background:none;backdrop-filter:none}
+.tabs button{border:1px solid #2b4c68;background:#0c2234;min-width:0;
+  min-height:43px;padding:8px 3px;border-radius:11px;font-size:11px;font-weight:650;
+  white-space:normal;line-height:1.3}
+.tabs button[aria-current=page]{background:#153c58;border-color:#64d8f4;color:#ecfcff}
+#panel>.quote-console{margin-bottom:0}
+#panel>.hero{margin-top:4px}
+#panel .hero .portal{max-height:142px;max-width:450px;margin:0 auto}
+#panel .hero-caption{padding:10px 14px 0}
+#panel .hero-sub{padding:0 14px 10px}
+#horizonSelect{margin:0;width:100%;border-color:#4a8cae;background:#0f3147;
+  font-weight:700;color:#e9faff;font-size:16px}
+.horizon-details{margin-top:10px;border-top:1px solid #234660;padding-top:8px}
+.horizon-details summary{cursor:pointer;display:list-item;color:#99d9ef;
+  font-size:11px;font-weight:650;min-height:32px;padding:6px}
+.horizon-grid{margin-top:6px}
+.actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.actions button{min-height:66px}
+.actions #forecast{grid-column:1/-1;min-height:60px;
+  display:flex;flex-direction:row;gap:12px;align-items:center;
+  background:linear-gradient(120deg,#186eac,#304aab)}
+.actions #forecast b{font-size:16px}
+.actions #forecast small{display:block;font-size:11px}
+.actions #forecast .action-icon{font-size:30px}
+.actions button:not(#forecast){min-height:66px}
+.actions button:disabled{opacity:.5;filter:grayscale(.15)}
+.metric strong{font-size:clamp(18px,4.8vw,25px)}
+.integral-results{max-height:500px}
+.status-banner{line-height:1.45}
+#integral .card>p{max-width:68ch}
+@media(max-width:375px){
+ .tabs{grid-template-columns:repeat(3,minmax(0,1fr));top:auto}
+ .actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .actions button:not(#forecast){min-height:65px}
+ .hero .hero-sub .research{font-size:8px}
+}
+@media(min-width:740px){.tabs{grid-template-columns:repeat(6,minmax(0,1fr))}}

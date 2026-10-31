@@ -6,8 +6,8 @@ android {
         applicationId 'com.entidadlaplace.mobile'
         minSdk 26
         targetSdk 34
-        versionCode 5
-        versionName '3.0.0-F001-LAPLACE'
+        versionCode 6
+        versionName '3.1.0-UI-REPAIRED'
     }
     buildTypes { release { minifyEnabled false } }
     compileOptions {

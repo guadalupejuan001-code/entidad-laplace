@@ -5,6 +5,20 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 3.1 — reparación real de controles y simplificación del panel
+- Resuelto el bug crítico de alcance JavaScript que hacía fallar el arranque
+  (`runIntegral is not defined`) y desactivaba otras acciones sin aviso.
+- Seis secciones siempre visibles, sin navegación horizontal recortada.
+- Mercado: activo, horizonte en selector, botón Proyectar principal;
+  panel de 16 botones solo si el usuario decide desplegarlo.
+- Las acciones del mercado permanecen deshabilitadas hasta tener velas,
+  para evitar controles que parezcan muertos; actualiza desde Coinbase.
+- La sección F001 indica explícitamente que calcula BTC y presenta
+  análogos, abstenciones y fuente. PDE y estados mundiales siguen separados.
+- Se realizan pruebas reales de interacción de botones y de errores
+  de la API mediante navegador automatizado, además de CI de APK.
+- Android versionCode 6 y versionName 3.1.0-UI-REPAIRED.
+
 ## Android 3.0 — F001 original, 16 horizontes y operador de Laplace
 
 - Recuperación del motor F001 original (14 horizontes de 5 min a 90 días) en
