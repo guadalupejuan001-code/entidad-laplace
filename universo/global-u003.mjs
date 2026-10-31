@@ -162,7 +162,6 @@ export async function observeWorldU003({
         sources_failed:g.value.sources.filter(x=>x.status==='unavailable').length});
     }else groups.push({group:g.name,status:'unavailable',signals:0,sources_ok:0,sources_optional:0,sources_failed:1,reason:g.reason});
   }
-  need(observations.length<=4096,'U003 excedió 4096 estados; requiere partición por dominio');
   const snapshot=universeSnapshot(observations,{cutoff:captured});
   const observed=sources.filter(x=>x.status==='observed'),failed=sources.filter(x=>x.status==='unavailable'),optional=sources.filter(x=>['requires_credentials','requires_license','requires_contact'].includes(x.status));
   return sellarCaptura({
