@@ -67,7 +67,8 @@ function proyectarHorizonte(prepared,quote,{minutes,granularity},at){
   const n=bars.length-1;
   const result={minutes,granularity,observed_at:quote.observed_at,target_at:iso(target),
     historical_bars:bars.length,analogs:0,price_candidate:null,return_pct:null,
-    analog_low:null,analog_high:null,status:'sin_historia',validation:'no_validado'};
+    analog_low:null,analog_high:null,status:'sin_historia',validation:'no_validado',
+    raw_diagnostics:null};
   if(n<Math.max(24,step+7))return result;
   if(time-(bars[n][0]+granularity)*1000>granularity*2000){
     result.status='serie_desactualizada';return result;
@@ -90,12 +91,33 @@ function proyectarHorizonte(prepared,quote,{minutes,granularity},at){
     if(chosen.length===18)break;
   }
   result.analogs=chosen.length;
+  // Persist actual untouched numerical features and selected evidence even if
+  // minimum independent-sample criterion forces abstention.
+  result.raw_diagnostics={
+    eligible_historical_windows:candidates.length,
+    selected_analogs:chosen.map(x=>({
+      index:x.i,time:new Date(bars[x.i][0]*1000).toISOString(),
+      distance:x.distance,return_log:x.r,weight:1/(1+x.distance)
+    })),
+    features:current.slice(),normalization_scales:scale.slice(),
+    price_candidate_unrounded:null,return_log_unrounded:null,
+    return_pct_unrounded:null,analog_low_unrounded:null,
+    analog_high_unrounded:null,
+    numeric_format:'IEEE_754_binary64_no_display_rounding',
+    model_criterion_met:chosen.length>=8,
+    no_invented_price_on_abstention:true
+  };
   if(chosen.length<8){result.status='soporte_insuficiente';return result}
   const weights=chosen.map(x=>1/(1+x.distance)),sum=weights.reduce((a,b)=>a+b,0);
   const estimate=chosen.reduce((a,x,i)=>a+x.r*weights[i],0)/sum;
   const q10=percentile(chosen.map(x=>x.r),0.1),q90=percentile(chosen.map(x=>x.r),0.9);
   const price=Number(quote.value)*Math.exp(estimate);
   if(!Number.isFinite(price)||price<=0){result.status='resultado_invalido';return result}
+  result.raw_diagnostics.price_candidate_unrounded=price;
+  result.raw_diagnostics.return_log_unrounded=estimate;
+  result.raw_diagnostics.return_pct_unrounded=100*(Math.exp(estimate)-1);
+  result.raw_diagnostics.analog_low_unrounded=Number(quote.value)*Math.exp(q10);
+  result.raw_diagnostics.analog_high_unrounded=Number(quote.value)*Math.exp(q90);
   result.price_candidate=round(price,4);
   result.return_pct=round(100*(Math.exp(estimate)-1),5);
   result.analog_low=round(Number(quote.value)*Math.exp(q10),4);
@@ -153,11 +175,20 @@ function fusionTemporal({quote,series={},world=null,asOf}){
   const context=evaluarContexto(world,asOf);
   const horizons=HORIZON_PLAN.map(plan=>{
     const r=proyectarHorizonte(prepared.get(plan.granularity),quote,plan,at);
-    if(r.price_candidate===null)return {...r,scenario_low:null,scenario_high:null};
+    if(r.price_candidate===null)return {...r,scenario_low:null,scenario_high:null,
+      scenario_raw:null};
     const low=Math.min(price,r.analog_low),high=Math.max(price,r.analog_high);
     const mult=context.uncertainty_multiplier;
     return {...r,scenario_low:round(Math.max(0,price-(price-low)*mult),4),
-      scenario_high:round(price+(high-price)*mult,4)};
+      scenario_high:round(price+(high-price)*mult,4),
+      scenario_raw:{
+        low_unrounded:price-(price-low)*mult,
+        high_unrounded:price+(high-price)*mult,
+        mult:mult,
+        lower_bounded_to_zero_in_display:price-(price-low)*mult<0,
+        conditioned_on_experimental_world_freshness:true,
+        central_candidate_unchanged:true
+      }};
   });
   return {schema:FUSION_SCHEMA,as_of:asOf,asset:'BTC-USD',
     quote:{value:quote.value,observed_at:quote.observed_at,known_at:quote.known_at},
