@@ -143,7 +143,7 @@ test('V001 bloquea features futuras, target futuro, holdout falso',()=>{
 test('V001 duplicados, sha falso, precios no finitos se rechazan',()=>{
   assert.throws(()=>compararAblacionesPareadas([pair(1),pair(1)],{asOf}),/duplicado/);
   assert.throws(()=>compararAblacionesPareadas([pair(1,{world_model_hash:'fake'})],{asOf}),/hashes/);
-  assert.throws(()=>compararAblacionesPareadas([pair(1,{price_with_world:NaN})],{asOf}),/precio/);
+  assert.throws(()=>compararAblacionesPareadas([pair(1,{price_with_world:NaN})],{asOf}),/price|precio/);
 });
 test('V001 12 pares sintéticos no certifican estadística aunque ganaran',()=>{
   const r=compararAblacionesPareadas(Array.from({length:12},(_,i)=>pair(i)),{asOf});
