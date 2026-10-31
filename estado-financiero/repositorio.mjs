@@ -170,14 +170,35 @@ export async function guardarEvaluacion(tx,raw){
     scores:raw.scores,evidence:raw.evidence,model_selected_using_evaluation:false};
   return insert(tx,'laplace_fin_evaluations',{...body,evaluation_sha:recordSha(body)});
 }
+/* Importación U003 por paquetes SQL sin límite de cardinalidad global.
+ * El tamaño de cada paquete es control de memoria, no máximo de estados.
+ * Solo se usa después de validar los sellos y cada registro individual.
+ */
+async function insertarObservacionesPorLotes(tx,observations,{batchSize=256}={}){
+  const columns=COLUMNS.laplace_fin_observations;
+  const timestamps=new Set(['observed_at','known_at','published_at','valid_from','valid_to']);
+  const sql='INSERT INTO laplace_fin_observations ('+columns.join(',')+') '+
+    'SELECT '+columns.map(k=>'r.'+k).join(',')+
+    ' FROM jsonb_to_recordset($1::jsonb) AS r ('+
+    columns.map(k=>k+' '+(timestamps.has(k)?'timestamptz':
+      JSON_COLUMNS.has(k)?'jsonb':'text')).join(',')+
+    ') ON CONFLICT DO NOTHING RETURNING assertion_sha';
+  let total=0;
+  for(let start=0;start<observations.length;start+=batchSize){
+    const chunk=observations.slice(start,start+batchSize);
+    const result=await tx.query(sql,[JSON.stringify(chunk)]);
+    total+=result.rows.length;
+  }
+  return total;
+}
 export async function importarU003(store,capture){
   const c=normalizarCapturaU003(capture);
   const observations=capture.universal_state.states.map(x=>observacionU003(x,c.capture_sha));
   const coverage=normalizarCoberturasU003(capture);
   return store.transaction(async tx=>{
     const created=await insert(tx,'laplace_fin_captures',c);
-    let n=0,missing=0;
-    for(const o of observations)n+=Number(await insert(tx,'laplace_fin_observations',o));
+    const n=await insertarObservacionesPorLotes(tx,observations);
+    let missing=0;
     for(const item of coverage)missing+=Number(await insert(tx,'laplace_fin_coverage',item));
     return {capture_sha:c.capture_sha,snapshot_sha:c.snapshot_sha,
       added_observations:n,covered_sources:missing,created_capture:created,
