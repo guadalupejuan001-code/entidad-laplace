@@ -6,6 +6,30 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## EF002–EF003 — Archivo mundial persistente y leyes de evolución
+
+EF002 conecta en una misma captura pública U003 los observadores D001, D002,
+B001 y K001, más C001 cuando existe autorización SEC. Diferencia fuentes
+observadas, restringidas y fallidas, conserva hashes y fechas originales,
+archiva snapshots comprimidos y los restaura de forma idempotente.
+
+EF003 implementa operadores contables exactos y transferencia de estados
+bajo hipótesis declaradas. Solo lee datos EF001 conocidos previamente;
+los futuros hipotéticos se guardan en escenarios separados. No hay
+modelo mundial omnisciente ni trading.
+
+    npm run test:financiero
+    npm run ciclo:financiero -- capturar registros/archivo-financiero registros/input/postgres
+    npm run ciclo:financiero -- recuperar registros/archivo-financiero registros/input/postgres
+
+La automatización de GitHub intenta capturas públicas cuatro veces al día,
+con histórico separado en la rama laplace-archivo y artefactos de evidencia.
+El archivo es persistente, no una base mundial siempre encendida.
+
+[Documento operativo EF002–EF003](docs/CONTINUIDAD_EF002_EF003.md).
+
+---
+
 ## EF001 — Base de estados del sistema financiero mundial
 
 Nuevo esquema bitemporal aditivo en PostgreSQL/PGlite: observaciones exactas y
