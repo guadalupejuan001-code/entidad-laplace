@@ -1,0 +1,43 @@
+name: Laplace XG01 - recuperación experimental y decisiones crudas
+on:
+  push:
+    branches: [main, 'feature/laplace-xg01-r015-recovery-20261031']
+    paths:
+      - 'experimentos/u002-predictive-xg01.mjs'
+      - 'experimentos/xg01-raw-trace.mjs'
+      - 'tests/u002-predictive-xg01.test.mjs'
+      - 'tests/xg01-raw-trace.test.mjs'
+      - 'tools/xg01-raw.mjs'
+      - '.github/workflows/xg01-raw-audit.yml'
+  pull_request:
+    paths:
+      - 'experimentos/u002-predictive-xg01.mjs'
+      - 'experimentos/xg01-raw-trace.mjs'
+      - 'tests/u002-predictive-xg01.test.mjs'
+      - 'tests/xg01-raw-trace.test.mjs'
+      - 'tools/xg01-raw.mjs'
+      - '.github/workflows/xg01-raw-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  raw-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Verificar blobs originales inalterados
+        run: |
+          set -euo pipefail
+          test "$(git hash-object experimentos/u002-predictive-xg01.mjs)" = 2284e144404ac62b924a51cf718413b69ad35507
+          test "$(git hash-object tests/u002-predictive-xg01.test.mjs)" = 492d2144c71daea14233a5ab83018da52132319d
+          test "$(git hash-object docs/REVISION_RECALIBRACION_R015.md)" = 5b60cc9811980274218d8550145a4e2c5d054e97
+      - name: Probar XG01 y paridad de trazas crudas
+        run: |
+          set -euo pipefail
+          node --check experimentos/u002-predictive-xg01.mjs
+          node --check experimentos/xg01-raw-trace.mjs
+          node --check tools/xg01-raw.mjs
+          node --test tests/u002-predictive-xg01.test.mjs tests/xg01-raw-trace.test.mjs
