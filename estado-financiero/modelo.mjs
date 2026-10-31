@@ -96,19 +96,34 @@ export function observacionI001(e){
     metadata:{adapter_event_type:e.type,quality:e.quality,
       meaning:e.type==='chain_block'?'chain_operation_not_a_balance':'source_assertion'}});
 }
+// Inferencia conservadora por dominios PUBLICADOS por los conectores.
+export function familiaObservacionU003(o){
+  const domain=String(o?.domain??''),variable=String(o?.variable??'');
+  if(domain==='banca_bis_locacional'||domain==='banca_bis_consolidada')return 'B001';
+  if(domain==='swaps_otc_agregados')return 'D002';
+  if(domain==='flujos_fondos_sec_nport')return 'C001';
+  if(['blockchain_bitcoin_publica','blockchain_ethereum_publica',
+    'defi_tvl_por_cadena','stablecoins_suministro_publico'].includes(domain))return 'K001';
+  if(['opciones_publicas','derivados_perpetuos_publicos'].includes(domain))return 'D001';
+  return 'U003';
+}
 export function observacionU003(o,capture_sha){
   need(o&&typeof o.value==='number'&&Number.isFinite(o.value),
     'U003 solamente transporta numeros float64 observados');
   const parsed=new URL(sourceURL(o.source_url));
-  return normalizarObservacion({family:'U003',domain:o.domain,
+  return normalizarObservacion({family:familiaObservacionU003(o),domain:o.domain,
     subject_id:o.id,variable:o.variable,unit:o.unit,
+    population_id:o.domain==='banca_bis_locacional'?'BIS_LBS':
+      o.domain==='banca_bis_consolidada'?'BIS_CBS':null,
     observed_at:o.observed_at,known_at:o.known_at,value_text:String(o.value),
     value_status:'observed',value_kind:'float64_approx',
     source_id:'u003/'+parsed.hostname,source_url:o.source_url,
     source_record_id:o.id,source_revision:capture_sha,
     capture_sha256:capture_sha,
     metadata:{original_observation_id:o.id,original_numeric_type:'IEEE754_double',
-      numeric_precision_not_certified:true}});
+      numeric_precision_not_certified:true,
+      source_module:familiaObservacionU003(o),
+      original_unit:o.unit}});
 }
 export function normalizarCapturaU003(capture){
   verificarSelloCaptura(capture);
