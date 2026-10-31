@@ -49,9 +49,11 @@ function renderQuotes(){
     const button=document.querySelector('[data-quote-asset="'+symbol+'"]');
     button.classList.toggle('active',selected);
     button.setAttribute('aria-pressed',String(selected));
-    $('quote'+suffix).textContent=quote?money(quote.price):'—';
+    const backup=selected?(hourly?.at(-1)??daily?.at(-1)):null;
+    $('quote'+suffix).textContent=quote?money(quote.price):
+      backup?money(backup.close):'—';
     $('quote'+suffix+'Status').textContent=quote?
-      'Cotización pública':'Sin cotización';
+      'Cotización pública':backup?'Última vela · no spot':'Sin cotización';
     if(quote)found++;
   }
   $('quoteStatus').textContent=found?found+'/3 PRECIOS':'SIN COTIZACIONES';
@@ -274,6 +276,7 @@ function actionTest(){
   try{
     const model=trained(Engine.selectResolution(hours));
     showModel(model);showTests(model);activate('tests');
+    success('Prueba histórica completada para '+asset+'. Revisa los resultados de abajo.');
     status('Se ejecutó la comprobación temporal. Consulta el error y el baseline.');
   }catch(error){status(error.message,true);activate('panel')}
 }
@@ -282,7 +285,7 @@ function actionEvaluate(){
     const model=trained(Engine.selectResolution(hours));
     showModel(model);showTests(model);
     activate('tests');
-    status('Evaluación retrospectiva: '+model.holdoutPairs+' casos. Referencia: '+money(model.referenceMAE)+
+    success('Evaluación retrospectiva: '+model.holdoutPairs+' casos. Referencia: '+money(model.referenceMAE)+
       '; AR(1): '+money(model.modelMAE)+'.');
   }catch(error){status(error.message,true)}
 }
