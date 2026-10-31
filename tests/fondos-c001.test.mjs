@@ -135,6 +135,8 @@ test('C001 11: URLs externas, User-Agent genérico y respuestas gigantes rechaza
   await assert.rejects(()=>fetchSecText(secSubmissionsUrl(SPY),{
     userAgent:'Laplace/1.0',fetchImpl:async()=>respond('x')}),/identificable/);
   await assert.rejects(()=>fetchSecText(secSubmissionsUrl(SPY),{
+    userAgent:'Researcher WithoutEmail',fetchImpl:async()=>respond('x')}),/identificable/);
+  await assert.rejects(()=>fetchSecText(secSubmissionsUrl(SPY),{
     userAgent:'Researcher contact@example.org',maxBytes:2,now:()=>cut,fetchImpl:async()=>respond('excess')}),/excesiva/);
 });
 test('C001 12: SPY/SPYM consulta en paralelo, revisiones e índice XML',async()=>{
