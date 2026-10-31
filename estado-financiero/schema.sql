@@ -159,3 +159,26 @@ CREATE TABLE IF NOT EXISTS laplace_fin_evaluations (
   model_selected_using_evaluation boolean NOT NULL DEFAULT false
     CHECK (model_selected_using_evaluation=false)
 );
+
+-- Las identidades y relaciones P001 originales siguen siendo una parte del mundo EF001.
+-- Se exponen como vistas sin copiar ni reescribir sus versiones ya archivadas.
+CREATE OR REPLACE VIEW laplace_fin_entity_index AS
+  SELECT v.entity_id, v.entity->>'name' AS display_name,
+    v.entity->>'jurisdiction' AS jurisdiction,
+    i.source_known_at AS known_at, 'P001'::text AS family,
+    v.registry_sha256 AS source_revision
+  FROM input_entity_versions v JOIN input_registry_imports i
+    ON i.registry_sha256=v.registry_sha256
+  UNION ALL
+  SELECT e.entity_id,e.display_name,e.jurisdiction,e.known_at,
+    'EF001'::text AS family,e.revision_sha AS source_revision
+  FROM laplace_fin_entity_versions e;
+CREATE OR REPLACE VIEW laplace_fin_relation_index AS
+  SELECT a.assertion_id AS relation_id,
+    a.assertion->>'from' AS from_id,a.assertion->>'to' AS to_id,
+    COALESCE(a.assertion->>'relation',a.assertion->>'kind','assertion') AS relation_kind,
+    a.known_at,'P001'::text AS family
+  FROM input_institution_assertions a
+  UNION ALL
+  SELECT r.relation_sha,r.from_id,r.to_id,r.relation_kind,r.known_at,
+    'EF001'::text AS family FROM laplace_fin_relations r;
