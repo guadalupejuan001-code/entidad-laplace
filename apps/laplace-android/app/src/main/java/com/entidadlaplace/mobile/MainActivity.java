@@ -87,7 +87,7 @@ public final class MainActivity extends Activity {
     private final class MarketBridge {
         @JavascriptInterface
         public void fetchCandles(String requestId,String asset,int granularity,int days){
-            int expectedDays=granularity==300?7:granularity==3600?50:
+            int expectedDays=granularity==300?14:granularity==3600?50:
                 granularity==86400?300:-1;
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
                !ASSETS.contains(asset)||expectedDays<0||days!=expectedDays){
@@ -152,7 +152,7 @@ public final class MainActivity extends Activity {
             return result;
         }finally{conn.disconnect();}
     }
-    // 7 días de 5m; 50 días de 1h; 300 días de 1d.
+    // 14 días de 5m; 50 días de 1h; 300 días de 1d.
     // Cada consulta a Coinbase tiene una ventana <300 velas. Nunca se inventan
     // velas faltantes ni se mezcla un activo con otro al cambiar la selección.
     private JSONArray fetchCoinbaseHistory(String requestId,String asset,
@@ -181,6 +181,7 @@ public final class MainActivity extends Activity {
             count++;
             emitProgress(requestId,count,total);
             end=start;
+            if(end>earliest)Thread.sleep(130);
         }
         if(candles.size()<10)throw new IOException("Historial verificado insuficiente");
         if(candles.size()>5000)throw new IOException("Exceso de velas recibidas");

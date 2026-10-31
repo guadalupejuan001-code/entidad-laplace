@@ -18,7 +18,7 @@ por persistencia cuando el test sea desfavorable. El panel muestra los
 errores frente a la referencia para que se vean también los fallos.
 
 **Horizontes**: 15m, 30m, 1h, 4h, 5h, 12h, 24h, 2d, 3d, 7d, 14d.
-Velas de Coinbase 5m (7 días), 1h (50 días) y 1d (300 días),
+Velas de Coinbase 5m (14 días), 1h (50 días) y 1d (300 días),
 obtenidas por ventanas con máximo 280 barras. Verifica velas cerradas,
 huecos, OHLCV y fuente. Si los datos son antiguos o faltan al menos
 ocho patrones independientes, se abstiene de emitir candidato.

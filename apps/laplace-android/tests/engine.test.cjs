@@ -127,7 +127,7 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   const manifest=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/AndroidManifest.xml'),'utf8');
   assert.match(code,/fetchCandles\(String requestId,String asset,int granularity,int days\)/);
-  assert.match(code,/granularity==300\?7:granularity==3600\?50/);
+  assert.match(code,/granularity==300\?14:granularity==3600\?50/);
   assert.match(code,/days!=expectedDays/);
   assert.match(code,/fetchCoinbaseHistory/);
   assert.match(code,/api\.exchange\.coinbase\.com\/products\//);

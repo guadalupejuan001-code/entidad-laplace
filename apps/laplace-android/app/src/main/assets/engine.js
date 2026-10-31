@@ -17,7 +17,7 @@ const HORIZONS=Object.freeze([
 ]);
 const ALLOWED_ASSETS=Object.freeze(['BTC-USD','ETH-USD','SOL-USD']);
 const HISTORICAL_CONFIG=Object.freeze({
-  300:Object.freeze({days:7,label:'5 min',expectedMax:2016}),
+  300:Object.freeze({days:14,label:'5 min',expectedMax:4032}),
   3600:Object.freeze({days:50,label:'1 hora',expectedMax:1200}),
   86400:Object.freeze({days:300,label:'1 día',expectedMax:300})
 });
