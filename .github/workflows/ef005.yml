@@ -1,0 +1,61 @@
+name: Entidad Laplace EF005 - Escalamiento sin topes arbitrarios
+on:
+  push:
+    branches: [feature/ef005-eliminar-topes-artificiales-20261031]
+  pull_request:
+    paths:
+      - 'demonio/**'
+      - 'universo/**'
+      - 'estado-financiero/**'
+      - 'tools/nucleo-demonio.mjs'
+      - 'tests/**'
+      - '.github/workflows/ef005.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  escalar-estados:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias congeladas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis segura
+        run: |
+          set -euo pipefail
+          node --check universo/estados.mjs
+          node --check universo/global-u003.mjs
+          node --check demonio/series.mjs
+          node --check demonio/finanzas-ef004.mjs
+          node --check demonio/evaluacion-ef004.mjs
+          node --check tools/nucleo-demonio.mjs
+          node --check estado-financiero/captura.mjs
+          node --check estado-financiero/repositorio.mjs
+      - name: 4097 estados, 4101 SQL, 2501 capturas, horizontes dinámicos
+        run: |
+          set -euo pipefail
+          node --test tests/universo.test.mjs tests/ef005-scale.test.mjs
+          npm run test:ef004
+      - name: Regresiones de capturas I001 y mundo original
+        run: |
+          set -euo pipefail
+          npm run test:financiero
+          npm run test:v001
+          npm run test:fusion
+          npm run test:input
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - name: XI/Ether original, sin reescribir el runtime
+        run: |
+          set -euo pipefail
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+          MUNDO_X_QUANTUM=./build-ether/mundo_x_quantum npm run test:ef004
