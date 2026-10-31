@@ -48,7 +48,9 @@
     "test:ef003": "node --test tests/leyes-financieras-ef003.test.mjs tests/ejecucion-financiera-ef003.test.mjs",
     "test:financiero": "node --test tests/estado-financiero.test.mjs tests/captura-financiera-ef002.test.mjs tests/leyes-financieras-ef003.test.mjs tests/ejecucion-financiera-ef003.test.mjs",
     "ciclo:financiero": "node tools/ciclo-financiero.mjs",
-    "simular:finanzas": "node tools/simular-financiero.mjs"
+    "simular:finanzas": "node tools/simular-financiero.mjs",
+    "test:ef004": "node --test tests/demonio-ef004.test.mjs",
+    "test:demonio": "node --test tests/demonio-ef004.test.mjs"
   },
   "engines": {
     "node": ">=20"
