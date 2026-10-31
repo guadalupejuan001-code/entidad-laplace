@@ -73,6 +73,8 @@ test('D002 02: la tabla notional produce 50 observaciones exactas con cinco vier
   assert.equal(x.unit,'million_usd');
   assert.equal(x.known_at,now);
   assert.equal(result.raw_counterparties,false);
+  assert.equal(result.reference_status,'lagging_weekly_page');
+  assert.ok(result.reference_age_days>21);
 });
 test('D002 03: dólares de transacciones y tickets no se mezclan con notional outstanding',()=>{
   const money=parseCftcWeeklyHtml(html('trade_dollars'),{kind:'trade_dollars',knownAt:now});
