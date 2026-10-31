@@ -6,8 +6,18 @@ android {
         applicationId 'com.entidadlaplace.mobile'
         minSdk 26
         targetSdk 34
-        versionCode 7
-        versionName '3.2.0-COINBASE-LIVE'
+        versionCode 8
+        versionName '3.3.0-XN01-RAW'
+    }
+    defaultConfig {
+        ndk { abiFilters 'arm64-v8a' }
+        externalNativeBuild { cmake { cppFlags '-std=c++17' } }
+    }
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
     }
     buildTypes { release { minifyEnabled false } }
     dependencies {

@@ -141,6 +141,37 @@ public final class MainActivity extends Activity {
             });
         }
         @JavascriptInterface
+        public void analyzeXN01(String requestId,String asset,String barsJson){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
+               !"BTC-USD".equals(asset)||barsJson==null||barsJson.length()>100000){
+                emitXN01(requestId,"XN01: datos no permitidos",null);return;
+            }
+            io.execute(()->{
+                try{
+                    JSONArray rows=new JSONArray(barsJson);
+                    if(rows.length()<64||rows.length()>240)
+                        throw new IllegalArgumentException("XN01 exige entre 64 y 240 velas");
+                    String xi;
+                    try(InputStream in=getAssets().open("xn01-native.xi")){
+                        ByteArrayOutputStream out=new ByteArrayOutputStream();
+                        byte[] buffer=new byte[4096];int n;
+                        while((n=in.read(buffer))!=-1){
+                            if(out.size()+n>16000)
+                                throw new IOException("Plantilla XI demasiado grande");
+                            out.write(buffer,0,n);
+                        }
+                        xi=out.toString(StandardCharsets.UTF_8.name());
+                    }
+                    JSONObject result=NativeXN01.analyze(asset,rows,xi);
+                    emitXN01(requestId,null,result);
+                }catch(Exception e){
+                    emitXN01(requestId,"XN01 nativo: "+e.getMessage(),null);
+                }catch(LinkageError e){
+                    emitXN01(requestId,"XN01 JNI ausente o incompatible",null);
+                }
+            });
+        }
+        @JavascriptInterface
         public void fetchQuote(String requestId,String asset){
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
                !ASSETS.contains(asset)){
@@ -272,6 +303,21 @@ public final class MainActivity extends Activity {
             JSONObject.quote(requestId)+","+done+","+total+")";
         runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(javascript,null);});
     }
+    private void emitXN01(String requestId,String error,JSONObject result){
+        if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+        try{
+            JSONObject msg=new JSONObject();
+            msg.put("ok",error==null);
+            if(error==null)msg.put("xn01",result);
+            else msg.put("error",error);
+            String js="window.LaplaceMobile&&window.LaplaceMobile.receive("+
+                JSONObject.quote(requestId)+","+msg.toString()+")";
+            runOnUiThread(()->{
+                if(webView!=null)webView.evaluateJavascript(js,null);
+            });
+        }catch(Exception ignored){}
+    }
+
     private void emitQuote(String requestId,String error,JSONObject quote){
         if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
         try {
