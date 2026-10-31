@@ -221,15 +221,38 @@ export async function reindexarI001(store,{asOf=new Date().toISOString(),pageSiz
     note:more?'Limite alcanzado: ampliar presupuesto y repetir; no declarar inventario completo':
       'Todos los eventos I001 hasta el corte fueron visitados'};
 }
+// No mezclar monedas, poblaciones BIS ni contratos aunque compartan fuente.
+const SERIES_DIMENSIONS="family,domain,subject_id,variable,source_id,unit,"+
+  "COALESCE(population_id,''),COALESCE(currency,''),"+
+  "COALESCE(instrument_id,''),COALESCE(market_id,''),"+
+  "COALESCE(counterparty_id,''),COALESCE(jurisdiction,'')";
+export async function consultarPaginaCorte(store,{asOf,limit=1024,offset=0,
+  domain=null,family=null}={}){
+  const cut=time(asOf);
+  need(Number.isInteger(limit)&&limit>0&&limit<=1024,'pagina limite 1..1024');
+  need(Number.isInteger(offset)&&offset>=0&&offset<=1000000,'paginacion fuera de presupuesto');
+  let where='',params=[cut,limit+1,offset];
+  if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
+  if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
+  const query='SELECT * FROM (SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
+    'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
+    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC) latest '+
+    'ORDER BY '+SERIES_DIMENSIONS+' LIMIT $2 OFFSET $3';
+  const rows=(await store.db.query(query,params)).rows;
+  return {as_of:cut,offset,limit,states:rows.slice(0,limit),
+    next_offset:rows.length>limit?offset+limit:null,
+    complete:rows.length<=limit,world_complete:false,
+    persisted_data_not_world_omniscience:true};
+}
 export async function consultarCorte(store,{asOf,limit=4096,domain=null,family=null}={}){
   const cut=time(asOf),budget=Number(limit);
   need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite de consulta 1..4096');
   const params=[cut,budget+1];let where='';
   if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
   if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
-  const query='SELECT DISTINCT ON (family,domain,subject_id,variable,source_id) * '+
+  const query='SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
     'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
-    ' ORDER BY family,domain,subject_id,variable,source_id,observed_at DESC,known_at DESC,assertion_sha DESC LIMIT $2';
+    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC LIMIT $2';
   const rows=(await store.db.query(query,params)).rows;
   need(rows.length<=budget,'corte excede presupuesto; dividir por familia/dominio');
   return {as_of:cut,known_series:rows.length,states:rows,
