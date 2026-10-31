@@ -40,13 +40,16 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
     captures.sort((a,b)=>a.at.localeCompare(b.at));
     need(new Set(captures.map(x=>x.capture_sha256)).size===captures.length,
       'capturas con hash repetido no se deben entrenar dos veces');
-    const model=aprenderNucleoEF004(captures,{
+    const modelOptions={
       horizonHours:Number(process.env.LAPLACE_DEMON_HORIZON_HOURS??24),
       maxSteps:optionalBudget('MAX_STEPS'),
       maxSignals:optionalBudget('MAX_SIGNALS'),
       maxTargets:optionalBudget('MAX_TARGETS'),
       maxPeers:optionalBudget('MAX_PEERS',{zero:true})
-    });
+    };
+    const model=aprenderNucleoEF004(captures,modelOptions);
+    const sourceSha=sha(await readFile(new URL('../demonio/finanzas-ef004.mjs',import.meta.url)));
+    const policySha=sha(stable({model_source_sha256:sourceSha,options:modelOptions}));
     await mkdir(join(output,'reportes'),{recursive:true});
     await mkdir(join(output,'pronosticos'),{recursive:true});
     await mkdir(join(output,'evaluaciones'),{recursive:true});
@@ -57,9 +60,10 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
         {flag:'wx',mode:0o600});
     }else{
       const tail=captures.at(-1)?.capture_sha256??'archivo-vacio';
-      savedPath='reportes/status-'+tail+'.json';
+      savedPath='reportes/status-'+tail+'-'+policySha.slice(0,12)+'.json';
       await writeFile(join(output,savedPath),JSON.stringify({
         ...model,archive_count:captures.length,
+        model_source_sha256:sourceSha,model_policy_sha256:policySha,
         verification:'real_archives_only_not_synthetic',
         production_activation_allowed:false,automatic_trading:false
       },null,2)+'\n',{flag:'wx',mode:0o600});
@@ -89,6 +93,7 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
     }
     const report={schema:'laplace-ef004-cycle-v1',
       status:model.status,reason:model.reason??null,
+      model_source_sha256:sourceSha,model_policy_sha256:policySha,
       archive_count:captures.length,latest_capture_at:captures.at(-1)?.at??null,
       latest_capture_sha256:captures.at(-1)?.capture_sha256??null,
       minimum_captures:null,required_training_pairs:model.required_training_pairs??6,
