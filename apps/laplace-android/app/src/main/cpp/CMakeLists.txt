@@ -7,6 +7,7 @@ get_filename_component(LAPLACE_REPO "${CMAKE_CURRENT_LIST_DIR}/../../../../../..
 set(PINNED_ETHER "${LAPLACE_REPO}/deps/mundo-x")
 set(ETHER_INCLUDE "${PINNED_ETHER}/native/include")
 set(ETHER_PATCH "${LAPLACE_REPO}/build/ether-compat")
+set(REVERSE_SOURCE "${LAPLACE_REPO}/deps/reverse-pc/src")
 if(NOT EXISTS "${ETHER_INCLUDE}/mundo_x/quantum_runtime.hpp"
    OR NOT EXISTS "${ETHER_PATCH}/mundo_x/quantum_runtime.hpp")
   message(FATAL_ERROR "XN01 requires authentic pinned Mundo X and verified overlay")
@@ -17,7 +18,7 @@ if(NOT STATUS EQUAL 0 OR NOT PIN STREQUAL "e2778d962af22f6f1a0794058dd4685fc2573
   message(FATAL_ERROR "XN01 requires the original Mundo X commit")
 endif()
 add_library(laplace_xi SHARED native_xn01_jni.cpp)
-target_include_directories(laplace_xi PRIVATE "${ETHER_PATCH}" "${ETHER_INCLUDE}")
+target_include_directories(laplace_xi PRIVATE "${ETHER_PATCH}" "${ETHER_INCLUDE}" "${REVERSE_SOURCE}")
 target_compile_options(laplace_xi PRIVATE -O2 -fexceptions -frtti -Wall -Wextra -Wpedantic)
 target_compile_definitions(laplace_xi PRIVATE REVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1)
 find_library(ANDROID_LOG log)
