@@ -30,7 +30,7 @@ jobs:
       - name: Comprobar sintaxis
         run: |
           set -euo pipefail
-          for f in estado-financiero/*.mjs tools/ciclo-financiero.mjs tests/captura-financiera-ef002.test.mjs tests/leyes-financieras-ef003.test.mjs; do node --check "$f"; done
+          for f in estado-financiero/*.mjs tools/ciclo-financiero.mjs tests/captura-financiera-ef002.test.mjs tests/leyes-financieras-ef003.test.mjs tests/ejecucion-financiera-ef003.test.mjs tools/simular-financiero.mjs; do node --check "$f"; done
       - name: Persistencia PGlite y restauracion de capturas
         run: npm run test:ef002
       - name: Leyes financieras y escenarios condicionales
