@@ -139,7 +139,7 @@ Fuentes oficiales:
 - SEC registrantes/fondos (EDGAR):
   https://www.sec.gov/edgar/search/
 - SEC política de acceso:
-  https://www.sec.gov/os/accessing-edgar-data
+  https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data
 - Registro SPY NPORT-P del 28-ago-2026:
   https://www.sec.gov/Archives/edgar/data/884394/000141036826089410/0001410368-26-089410-index.html
 - Registro SPYM del 28-ago-2026:
