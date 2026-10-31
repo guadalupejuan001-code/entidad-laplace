@@ -205,7 +205,12 @@ export function aprenderNucleoEF004(captures,{
       .map(s=>s.capture_sha256),
     causal_model_proven:false,prospective_advantage_proven:false,
     automatic_trading:false};
-  const model_sha256=hash(stable(modelInfo));
+  // El hash del MODELO debe quedar congelado sin ningún número del holdout.
+  // El holdout se evalúa después y pertenece al reporte, no a los parámetros.
+  const {holdout_through,...beforeHoldout}=modelInfo;
+  const frozenModel={...beforeHoldout,
+    models:specs.map(({holdout,...trained})=>trained)};
+  const model_sha256=hash(stable(frozenModel));
   let z=new Map([...series].map(([k,s])=>[k,s.z.at(-1)])),
     changes=new Map([...series].map(([k,s])=>[k,s.deltas.at(-1)]));
   const path=[];
