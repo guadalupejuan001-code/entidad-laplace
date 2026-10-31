@@ -19,6 +19,7 @@ import {observeMonthlyBlocks} from './otc/finra-blocks.mjs';
 import {observeDerivatives} from './derivados/global.mjs';
 import {observeCftcWeekly} from './swaps/cftc-semanal.mjs';
 import {observeEtfNport} from './fondos/global.mjs';
+import {observeBisBanking} from './banca/bis-sdmx.mjs';
 
 export const U003_VERSION='laplace-universo-global-u003-v4';
 const need=(c,m)=>{if(!c)throw Error(m)};
@@ -33,7 +34,8 @@ export async function observeWorldU003({
   finraMonthStart=process.env.LAPLACE_FINRA_MONTH_START??null,
   includeDerivatives=process.env.LAPLACE_D001_ENABLED==='true',
   includeOtcSwaps=process.env.LAPLACE_D002_ENABLED==='true',
-  includeEtfFunds=process.env.LAPLACE_C001_ENABLED==='true'
+  includeEtfFunds=process.env.LAPLACE_C001_ENABLED==='true',
+  includeBanking=process.env.LAPLACE_B001_ENABLED==='true'
 }={}){
   const jobs=[
     ['regional_markets',()=>fetchRegionalMarkets({fetchImpl,now,timeoutMs})],
@@ -55,6 +57,15 @@ export async function observeWorldU003({
           project_modules:capture.project_modules}};
     }]
   ];
+  // B001 agrega SOLO series BIS trimestrales oficiales. LBS y CBS tienen
+  // poblaciones distintas y nunca se suman ni se convierte stock en flujo.
+  if(includeBanking)jobs.push(['bis_banking_b001',async()=>{
+    const report=await observeBisBanking({fetchImpl,now,timeoutMs});
+    return {observations:report.observations,sources:report.sources,
+      banking_metadata:{coverage:report.coverage,series_catalog:report.catalog,
+        rules:report.rules,global_banking_complete:false,
+        prediction_inputs_enabled:false,automatic_trading:false}};
+  }]);
   // C001 solo observa fondos registrados SEC. No confundir flujos N-PORT
   // trimestrales con flujos diarios de ETF ni con cambios del precio.
   if(includeEtfFunds)jobs.push(['etf_fund_flows_c001',async()=>{
@@ -116,7 +127,7 @@ export async function observeWorldU003({
   }))]);
   const captured=utcTime(now());
   const observations=[...base.universal_state.states],sources=[...base.source_status.map(x=>({...x,group:'u002_base'}))],groups=[],contracts=[],vintages=[],alerts=[];
-  let geoCoverage=null,capitalMetadata=null,finraWeeklyMetadata=null,finraMonthlyMetadata=null,derivativesMetadata=null,swapsMetadata=null,etfMetadata=null;
+  let geoCoverage=null,capitalMetadata=null,finraWeeklyMetadata=null,finraMonthlyMetadata=null,derivativesMetadata=null,swapsMetadata=null,etfMetadata=null,bankingMetadata=null;
   for(const g of settled){
     if(g.status==='fulfilled'){
       observations.push(...g.value.observations);
@@ -127,6 +138,7 @@ export async function observeWorldU003({
       if(g.name==='derivatives_d001')derivativesMetadata=g.value.derivatives_metadata??null;
       if(g.name==='swaps_otc_d002')swapsMetadata=g.value.swaps_metadata??null;
       if(g.name==='etf_fund_flows_c001')etfMetadata=g.value.etf_metadata??null;
+      if(g.name==='bis_banking_b001')bankingMetadata=g.value.banking_metadata??null;
       if(g.name==='finra_ats_otc_weekly')finraWeeklyMetadata=g.value.finra_weekly_metadata??null;
       if(g.name==='finra_ats_otc_monthly_blocks')finraMonthlyMetadata=g.value.finra_monthly_metadata??null;
       sources.push(...g.value.sources.map(x=>({...x,group:g.name})));
@@ -155,6 +167,7 @@ export async function observeWorldU003({
     geolocated_alerts:alerts,geo_news_coverage:geoCoverage,
     capital_u004:capitalMetadata,derivatives_d001:derivativesMetadata,
     swaps_otc_d002:swapsMetadata,etf_fund_flows_c001:etfMetadata,
+    bis_banking_b001:bankingMetadata,
     finra_weekly:finraWeeklyMetadata,finra_monthly_blocks:finraMonthlyMetadata,
     availability_policy:{
       known_at:'momento_de_captura_o_primera_observacion_por_laplace',
