@@ -38,8 +38,18 @@ function status(message,kind='info'){
   $('inlineStatus').dataset.kind=kind;
   $('activityStatus').textContent=message;
 }
-function show(page){
-  
+function setActionAvailability(){
+  const ready=Boolean(history&&historyGranularity===E.selectResolution(minutes)&&!loading);
+  for(const id of ['forecast','train','test','evaluate']){
+    const button=$(id);
+    button.disabled=!ready;
+    button.title=ready?'Ejecutar con velas verificadas':
+      'Primero pulsa Actualizar datos para este plazo';
+  }
+  $('refresh').disabled=loading;
+  $('refresh').textContent=loading?'Consultando datos…':'Actualizar datos';
+  $('integralRun').disabled=integralBusy;
+}
 /* F001 original: sus tres resoluciones se consultan por lotes; el mundo
  * se lee desde la captura EF002 verificable. La ecuación no sustituye
  * el candidato y no puede entrenar EF004 sin tiempo independiente.
@@ -51,8 +61,15 @@ function renderIntegral(){
   const result=integralResult;
   if(!result){
     const p=document.createElement('p');
-    p.textContent='Sin ejecución. Pulsa Consultar y calcular para obtener datos de BTC.';
-    table.appendChild(p);return;
+    p.textContent='Todavía no hay un cálculo. Pulsa el botón para consultar BTC y ejecutar F001.';
+    table.appendChild(p);
+    const row=document.createElement('div');row.className='signal-row';
+    const text=document.createElement('small');
+    text.textContent='F001: pendiente de consulta · Campo Laplace: sin resolver · '+
+      'ETF C001 y EF004: requieren fuentes e historia independientes. '+
+      'No se fabrican resultados.';
+    row.appendChild(text);modules.appendChild(row);
+    return;
   }
   const {fusion,field,audit,errors}=result;
   const info=[
@@ -108,15 +125,19 @@ function renderIntegral(){
 }
 async function runIntegral(){
   if(integralBusy)return;
-  integralBusy=true;$('integralRun').disabled=true;
-  $('integralStatus').textContent='Consultando F001: BTC + 5m/14 días + 1h/45 días + 1d/1000 días.';
-  const tasks=[
-    ...[300,3600,86400].map(granularity=>
-      remote({kind:'history',asset:'BTC-USD',granularity,
-        days:F.HISTORIA_REQUERIDA[granularity].days})),
-    remote({kind:'quote',asset:'BTC-USD'})
-  ];
+  integralBusy=true;setActionAvailability();
+  $('integralRun').textContent='Consultando Bitcoin…';
+  $('integralStatus').dataset.state='info';
+  $('integralStatus').textContent='F001 usa BTC/USD exclusivamente. Solicitando velas de 5 minutos, 1 hora y 1 día…';
   try{
+    if(!F||!window.LaplacePDE?.resolverLaplaceGrafo)
+      throw Error('El motor F001 o Laplace no se cargó correctamente.');
+    const tasks=[
+      ...[300,3600,86400].map(granularity=>
+        remote({kind:'history',asset:'BTC-USD',granularity,
+          days:F.HISTORIA_REQUERIDA[granularity].days})),
+      remote({kind:'quote',asset:'BTC-USD'})
+    ];
     const r=await Promise.allSettled(tasks);
     const problems=[],series={};
     for(let i=0;i<3;i++){
@@ -143,6 +164,7 @@ async function runIntegral(){
       solver:window.LaplacePDE.resolverLaplaceGrafo});
     const audit=F.auditarUniversoLaplace(W,{asOf});
     integralResult={fusion,field,audit,errors:problems};
+    $('integralStatus').dataset.state='success';
     $('integralStatus').textContent='F001 completado con '+
       fusion.horizons.filter(x=>x.price_candidate!==null).length+
       ' candidatos de '+fusion.horizons.length+' horizontes. Campo Laplace: '+
@@ -150,11 +172,19 @@ async function runIntegral(){
       'el archivo mundial con información en vivo.';
     show('integral');renderIntegral();
   }catch(error){
-    $('integralStatus').textContent='No se emitió cálculo integral: '+error.message;
+    $('integralStatus').dataset.state='error';
+    $('integralStatus').textContent='No se pudo completar F001: '+error.message+
+      '. Verifica Internet y vuelve a intentar.';
+    integralResult=null;
+    renderIntegral();
   }finally{
-    integralBusy=false;$('integralRun').disabled=false;
+    integralBusy=false;setActionAvailability();
+    $('integralRun').textContent='Consultar y calcular F001 para BTC';
   }
 }
+
+function show(page){
+  
 
 for(const b of document.querySelectorAll('[data-tab]'))
     b.setAttribute('aria-current',b.dataset.tab===page?'page':'false');
@@ -189,6 +219,7 @@ function useHorizon(value){
   if(!E.HORIZONS.some(h=>h.minutes===m))return;
   const previous=historyGranularity;
   minutes=m;analysis=null;lastForecast=null;
+  $('horizonSelect').value=String(m);
   for(const b of document.querySelectorAll('[data-minutes]')){
     const selected=Number(b.dataset.minutes)===m;
     b.classList.toggle('active',selected);
@@ -201,10 +232,12 @@ function useHorizon(value){
   if(history&&previous!==E.selectResolution(m)){
     history=null;historyGranularity=null;
     $('lastPrice').textContent='—';
-    $('priceTime').textContent='Selecciona Actualizar para cambiar de resolución';
+    $('priceTime').textContent='Este plazo requiere otra resolución de velas.';
+    $('dataStatus').textContent='Sin datos para el plazo '+label(m)+'. Pulsa Actualizar datos.';
+    $('chartComment').textContent='Historial pendiente para '+label(m)+'.';
     status('Horizonte cambiado. Es necesario consultar velas de '+E.HISTORICAL_CONFIG[E.selectResolution(m)].label+'.');
   }
-  renderSignals();drawChart();
+  renderSignals();drawChart();setActionAvailability();
 }
 function remote(request){
   return new Promise((resolve,reject)=>{
@@ -261,7 +294,7 @@ function forgetEstimate(){
 async function refresh(){
   const epoch=++refreshEpoch,requested=asset,m=minutes;
   const granularity=E.selectResolution(m),cfg=E.HISTORICAL_CONFIG[granularity];
-  loading=true;$('refresh').disabled=true;
+  loading=true;setActionAvailability();
   $('quoteStatus').textContent='CONSULTANDO';
   connection('CARGANDO');
   status('Consultando '+requested+' en Coinbase. Velas de '+cfg.label+
@@ -298,6 +331,8 @@ async function refresh(){
       ' · '+cfg.days+' días solicitados · del '+date(history[0].time)+
       ' al '+date(last.time+granularity)+
       (age>2.5*granularity?' · datos antiguos':'');
+    $('chartComment').textContent='Historial real cargado: '+history.length+
+      ' velas de '+cfg.label+'. Para ver un candidato selecciona Proyectar precio.';
     if(age>2.5*granularity){
       connection('DATOS ANTIGUOS');
       status('Fuente retrasada: hay velas, pero no son recientes. No emitir candidatos actuales.','error');
@@ -313,12 +348,13 @@ async function refresh(){
       status('Error al cargar historia: '+error.message+
         '. Se conserva vacío; no se fabrica predicción.','error');
       history=null;historyGranularity=null;forgetEstimate();
+      $('chartComment').textContent='No hay datos de mercado para graficar: '+error.message;
       renderSignals();drawChart();
     }
   }finally{
     await Promise.allSettled(quotePromises);
     if(epoch===refreshEpoch){
-      loading=false;$('refresh').disabled=false;renderQuotes();
+      loading=false;setActionAvailability();renderQuotes();
     }
   }
 }
@@ -385,7 +421,9 @@ function forecastAction(){
     saveForecast(candidate,model);
     drawChart();
   }catch(error){lastForecast=null;$('estimate').textContent='—';
-    status('No se emitió un candidato: '+error.message,'error')}
+    $('relativeChange').textContent='Sin candidato válido';
+    $('chartComment').textContent='No se generó proyección: '+error.message;
+    status('No se emitió un candidato: '+error.message,'error');drawChart()}
 }
 function saveForecast(candidate,model){
   const existing=log.find(x=>x.status==='pending'&&x.asset===asset&&
@@ -623,6 +661,7 @@ for(const b of document.querySelectorAll('[data-tab]'))
   b.addEventListener('click',()=>show(b.dataset.tab));
 for(const b of document.querySelectorAll('[data-minutes]'))
   b.addEventListener('click',()=>useHorizon(b.dataset.minutes));
+$('horizonSelect').addEventListener('change',()=>useHorizon($('horizonSelect').value));
 for(const b of document.querySelectorAll('[data-quote-asset]'))
   b.addEventListener('click',()=>changeAsset(b.dataset.quoteAsset));
 $('asset').addEventListener('change',()=>changeAsset($('asset').value));
@@ -640,5 +679,8 @@ $('clearHistory').addEventListener('click',()=>{
 window.addEventListener('resize',drawChart);
 useHorizon(15);renderQuotes();renderWorld();renderSignals();
 renderHistory();drawChart();connection('SIN CONSULTAR');
+window.LaplaceUIHealth={initialized:true,version:'3.1',tabs:6,
+  actions:['refresh','forecast','train','test','evaluate','integralRun','clearHistory',
+    'pdeSolve','graphSolve']};
 setTimeout(refresh,200);
 })();
