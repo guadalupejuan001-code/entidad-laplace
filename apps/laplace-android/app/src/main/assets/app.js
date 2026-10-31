@@ -17,6 +17,7 @@ const number=n=>Number.isFinite(n)?n.toLocaleString('es-MX'):'—';
 const hourLabel=h=>Engine.HORIZONS.find(x=>x.hours===h)?.label??h+' h';
 let asset='BTC-USD',hours=1,hourly=null,daily=null;
 let models=new Map(),lastForecast=null,busy=false;
+const quotes=new Map();let refreshEpoch=0;
 let promiseSequence=0;
 const pending=new Map();
 let log=[];
@@ -31,6 +32,41 @@ function updateConnection(text,live=false){
 function status(text,error=false){
   $('activityStatus').textContent=text;
   $('activityStatus').style.color=error?'#ffc6bd':'#d7efff';
+  $('noticeText').textContent=text;
+  $('noticeIcon').textContent=error?'!':'◎';
+  $('notice').dataset.kind=error?'error':'info';
+}
+function success(text){
+  status(text,false);
+  $('notice').dataset.kind='success';
+}
+function renderQuotes(){
+  const ids={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
+  let found=0;
+  for(const symbol of Engine.ALLOWED_ASSETS){
+    const suffix=ids[symbol],quote=quotes.get(symbol);
+    const selected=symbol===asset;
+    const button=document.querySelector('[data-quote-asset="'+symbol+'"]');
+    button.classList.toggle('active',selected);
+    button.setAttribute('aria-pressed',String(selected));
+    $('quote'+suffix).textContent=quote?money(quote.price):'—';
+    $('quote'+suffix+'Status').textContent=quote?
+      'Cotización pública':'Sin cotización';
+    if(quote)found++;
+  }
+  $('quoteStatus').textContent=found?found+'/3 PRECIOS':'SIN COTIZACIONES';
+  const current=quotes.get(asset);
+  const close=hourly?.at(-1)??daily?.at(-1);
+  if(current){
+    const instant=Date.parse(current.time);
+    const when=Number.isFinite(instant)?new Date(instant):new Date(current.receivedAt);
+    $('quoteTime').textContent=asset+' · Coinbase Exchange · '+when.toLocaleString('es-MX')+
+      ' · Cotización pública (puede tener retraso)';
+  }else if(close){
+    $('quoteTime').textContent=asset+' · Ticker no disponible; último cierre histórico: '+
+      money(close.close)+' · '+date(close.time);
+  }else $('quoteTime').textContent='Sin precio público para '+asset+
+    '. Verifica la conexión y pulsa Actualizar.';
 }
 function activate(page){
   for(const b of document.querySelectorAll('[data-tab]'))
@@ -61,7 +97,7 @@ function selectHours(value){
 }
 function getRows(resolution){return resolution===1?hourly:daily}
 function dataFor(hours){return getRows(Engine.selectResolution(hours))}
-function remoteCandles(resolution){
+function remoteCandles(resolution,requestedAsset){
   return new Promise((resolve,reject)=>{
     const id='lap-'+(++promiseSequence);
     const timer=setTimeout(()=>{pending.delete(id);
@@ -72,7 +108,23 @@ function remoteCandles(resolution){
       reject(Error('Este panel requiere la APK nativa de Laplace.'));
       return;
     }
-    try{window.LaplaceBridge.fetchCandles(id,asset,resolution*3600)}
+    try{window.LaplaceBridge.fetchCandles(id,requestedAsset,resolution*3600)}
+    catch(error){pending.delete(id);clearTimeout(timer);reject(error)}
+  });
+}
+function remoteQuote(requestedAsset){
+  return new Promise((resolve,reject)=>{
+    const id='lap-'+(++promiseSequence);
+    const timer=setTimeout(()=>{
+      pending.delete(id);reject(Error('El ticker no respondió a tiempo.'));
+    },26000);
+    pending.set(id,{resolve,reject,timer});
+    if(!window.LaplaceBridge||typeof window.LaplaceBridge.fetchQuote!=='function'){
+      pending.delete(id);clearTimeout(timer);
+      reject(Error('La APK no ofrece todavía cotizaciones spot.'));
+      return;
+    }
+    try{window.LaplaceBridge.fetchQuote(id,requestedAsset)}
     catch(error){pending.delete(id);clearTimeout(timer);reject(error)}
   });
 }
@@ -80,10 +132,22 @@ window.LaplaceMobile={
   receive(id,response){
     const item=pending.get(id);if(!item)return;
     pending.delete(id);clearTimeout(item.timer);
-    if(response?.ok&&Array.isArray(response.candles)){
+    if(!response?.ok){
+      item.reject(Error(response?.error||'Respuesta de fuente inválida'));
+      return;
+    }
+    if(Array.isArray(response.candles)){
       try{item.resolve(Engine.candlesFromCoinbase(response.candles,response.granularity))}
       catch(error){item.reject(error)}
-    }else item.reject(Error(response?.error||'Respuesta de fuente inválida'));
+    }else if(response.quote){
+      const q=response.quote;
+      if(!Engine.ALLOWED_ASSETS.includes(q.asset)||!Number.isFinite(Number(q.price))||
+        Number(q.price)<=0||!Number.isFinite(Number(q.receivedAt))){
+        item.reject(Error('Cotización pública inválida.'));return;
+      }
+      item.resolve({asset:q.asset,price:Number(q.price),time:q.time,
+        receivedAt:Number(q.receivedAt),source:q.source});
+    }else item.reject(Error('La fuente no proporcionó velas ni precio.'));
   }
 };
 async function refresh(){
