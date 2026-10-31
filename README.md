@@ -14,7 +14,7 @@ unidad USD en millones, población, país, corte temporal y hash de fuente.
 **No suma LBS con CBS ni infiere flujo instantáneo a partir de stocks.**
 
 Prueba GitHub Actions del 31-oct-2026:
-[98/98 tests Node aprobados y 12 estados BIS públicos de cuatro series](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175095319).
+[99/99 tests Node aprobados y 32 estados BIS públicos de cuatro series](https://github.com/guadalupejuan001-code/entidad-laplace/actions/runs/41175476309).
 Esto verifica el piloto, no todo el sistema financiero mundial ni precisión
 predictiva.
 
