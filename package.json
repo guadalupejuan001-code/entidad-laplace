@@ -33,7 +33,9 @@
     "derivados:d001": "node tools/derivados-d001.mjs",
     "test:derivados": "node --test tests/derivados-d001.test.mjs",
     "swaps:d002": "node tools/swaps-d002.mjs",
-    "test:swaps": "node --test tests/swaps-d002.test.mjs"
+    "test:swaps": "node --test tests/swaps-d002.test.mjs",
+    "fondos:c001": "node tools/fondos-c001.mjs",
+    "test:fondos": "node --test tests/fondos-c001.test.mjs"
   },
   "engines": {
     "node": ">=20"
