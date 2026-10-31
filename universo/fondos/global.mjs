@@ -18,7 +18,9 @@ export async function observeEtfNport({
     new Set(funds).size===funds.length&&funds.every(f=>NPORT_FUNDS.includes(f)),
     'C001 fondos fuera del catálogo o duplicados');
   const started=utcTime(now());
-  if(typeof userAgent!=='string'||userAgent.length<12||/^(?:node|laplace|bot|test)(?:\/|\s|$)/i.test(userAgent)){
+  if(typeof userAgent!=='string'||userAgent.length<12||
+    !/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(userAgent)||
+    /^(?:node|laplace|bot|test)(?:\/|\s|$)/i.test(userAgent)){
     const sources=funds.map(f=>({name:'SEC-NPORT-'+f.id,status:'requires_contact',
       url:secSubmissionsUrl(f),reason:'Configure SEC_USER_AGENT identificable con contacto real en el entorno del servidor',
       signals:0,missing_is_zero:false,first_seen_at:started}));
