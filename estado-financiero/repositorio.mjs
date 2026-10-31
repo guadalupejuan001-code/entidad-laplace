@@ -202,7 +202,7 @@ export async function reindexarI001(store,{asOf=new Date().toISOString(),pageSiz
       'SELECT event,known_at,event_key FROM input_events WHERE known_at<=$1 AND (known_at,event_key)>($2::timestamptz,$3) ORDER BY known_at,event_key LIMIT $4':
       'SELECT event,known_at,event_key FROM input_events WHERE known_at<=$1 ORDER BY known_at,event_key LIMIT $2';
     const rows=(await store.db.query(query,params)).rows;
-    if(!rows.length)break;
+    if(!rows.length){more=false;break;}
     inserted+=await store.transaction(async tx=>{
       let added=0;
       for(const row of rows){
