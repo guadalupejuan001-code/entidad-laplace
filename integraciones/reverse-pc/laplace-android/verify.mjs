@@ -1,0 +1,38 @@
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const lock=JSON.parse(readFileSync(root+'/laplace-android/integration-lock.json'));
+if(lock.schema!==4)throw Error('Contrato Laplace obsoleto');
+if(lock.upstream_m001!=='06ebce4bddf25d615cefd85ed24081f37504a492')throw Error('M001 no corresponde a la integración autorizada');
+if(lock.upstream_bolsa!=='08cafb094a5c0f81253509eff412214dd526b808')throw Error('X001/B001 no corresponde a la integración autorizada');
+if(lock.upstream_u002!=='533c69bddd2c76d7f3619b97152a7a7e609aa613')throw Error('U002/369 no corresponde a la integración autorizada');
+for(const [p,h] of Object.entries(lock.files)){
+ if(!resolve(root,p).startsWith(root+'/'))throw Error('Ruta inválida');
+ if(createHash('sha256').update(readFileSync(resolve(root,p))).digest('hex')!==h)throw Error('Laplace ausente o sustituido: '+p);
+}
+const desktop=readFileSync(root+'/reverse-os-android/app/src/main/assets/workbench/desktop.js','utf8');
+const activity=readFileSync(root+'/reverse-os-android/app/src/main/java/com/reversepc/os/WorkbenchActivity.java','utf8');
+const manifest=readFileSync(root+'/reverse-os-android/app/src/main/AndroidManifest.xml','utf8');
+const host=readFileSync(root+'/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceActivity.java','utf8');
+const compiler=readFileSync(root+'/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceXiCompiler.java','utf8');
+const globalCompiler=readFileSync(root+'/reverse-os-android/app/src/main/java/com/reversepc/os/LaplaceGlobalCompiler.java','utf8');
+const xi=readFileSync(root+'/reverse-os-android/app/src/main/assets/laplace/x001-native.xi','utf8');
+const u002xi=readFileSync(root+'/reverse-os-android/app/src/main/assets/laplace/u002-native.xi','utf8');
+const app=readFileSync(root+'/reverse-os-android/app/src/main/assets/laplace/app.mjs','utf8');
+if(!desktop.includes("if(app==='laplace')")||!desktop.includes("'control','laplace'")||!activity.includes('void openLaplace()')||!manifest.includes('android:name=".LaplaceActivity"'))throw Error('Laplace no está conectado al escritorio Android');
+if(!host.includes('case "stock"')||!host.includes('status==429')||!host.includes('Retry-After'))throw Error('Puente bursátil o control 429 ausente');
+if(!host.includes('"native_x001"')||!host.includes('LaplaceXiCompiler.compile')||!host.includes('NativeRuntime.execute'))throw Error('XN01 no está conectado al runtime nativo Android');
+if(!compiler.includes('laplace-xn01-native-xi-v1')||!compiler.includes('STATE_VALID_BASE')||!compiler.includes('LABEL_VALID_BASE'))throw Error('Compilador XN01 incompatible');
+if(!xi.startsWith('#!reverse-pc-machine-v1\n')||!xi.includes('# LAPLACE XN01')||!xi.includes('mem_stats')||!xi.includes('qstats'))throw Error('Plantilla XN01/XI incompatible');
+if(!app.includes("SPY:{")||!app.includes("AAPL:{")||!app.includes("NVDA:{")||!app.includes("host('native_x001'"))throw Error('Interfaz bursátil nativa XN01 ausente');
+if(!host.includes('case "global_u002"')||!host.includes('"native_u002"')||!host.includes('LaplaceGlobalCompiler.compile'))throw Error('U002 no está conectado al puente Android');
+if(!globalCompiler.includes('SIGNALS=369')||!globalCompiler.includes('laplace-u002-native-xi-v1')||!globalCompiler.includes('Inverse Ether Memory'))throw Error('Compilador U002 incompatible');
+if(!u002xi.startsWith('#!reverse-pc-machine-v1\n')||!u002xi.includes('LAPLACE U002')||!u002xi.includes('__GLOBAL_BYTES__')||!u002xi.includes('mem_stats'))throw Error('Plantilla U002/XI incompatible');
+if(!app.includes("data-tab=\"mundo\"")&&!readFileSync(root+'/reverse-os-android/app/src/main/assets/laplace/index.html','utf8').includes('data-tab="mundo"'))throw Error('Vista Mundo U002 ausente');
+if(!app.includes("host('native_u002'")||!app.includes('known_signals===369'))throw Error('Interfaz U002 no verifica 369 señales');
+if(lock.stock_model!=='XN01-native-XI'||lock.native_XI_used_for_stock_prediction!==true)throw Error('Contrato bursátil no exige XN01 nativo');
+if(lock.global_signals!==369||lock.native_U002_roundtrip!==true||lock.global_snapshot_required!==true)throw Error('Contrato U002 no exige 369 señales y round-trip nativo');
+if(lock.automatic_trading!==false||lock.native_XI_modified!==false)throw Error('El contrato no debe activar órdenes ni modificar XI');
+console.log(JSON.stringify({valid:true,files:Object.keys(lock.files).length,upstreams:{m001:lock.upstream_m001,bolsa:lock.upstream_bolsa,u002:lock.upstream_u002},models:lock.models,stock_model:lock.stock_model,markets:['BTC-USD',...lock.stock_symbols],global_signals:lock.global_signals,native_stock:true,native_u002:true,node_server_required_on_phone:false,http_429_backoff:true}));

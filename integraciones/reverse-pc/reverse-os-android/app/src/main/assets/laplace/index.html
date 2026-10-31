@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1016">
+  <title>LAPLACE · REVERSE</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="grafica.js" defer></script>
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+<header class="barra-superior">
+  <button id="volver" class="icono-boton" aria-label="Volver a REVERSE">←</button>
+  <div class="marca">
+    <strong>LAPLACE</strong>
+    <small id="modoCabecera">Mercado · BTC M001</small>
+  </div>
+  <span id="estado" class="estado-pill" role="status">Sin lectura</span>
+</header>
+
+<main>
+  <section class="selector-principal" aria-label="Configuración">
+    <label>Mercado
+      <select id="activo" aria-label="Mercado">
+        <option value="BTC-USD">Bitcoin · BTC/USD</option>
+        <option value="SPY">S&P 500 · SPY</option>
+        <option value="AAPL">Apple · AAPL</option>
+        <option value="NVDA">NVIDIA · NVDA</option>
+      </select>
+    </label>
+    <label id="horizonteGrupo">Horizonte
+      <select id="horizonte" aria-label="Horizonte">
+                <option value="5">5 minutos</option>
+        <option value="15" selected>15 minutos</option>
+        <option value="30">30 minutos</option>
+        <option value="60">1 hora</option>
+        <option value="120">2 horas</option>
+        <option value="240">4 horas</option>
+        <option value="480">8 horas</option>
+        <option value="720">12 horas</option>
+        <option value="1440">24 horas</option>
+        <option value="4320">3 días</option>
+        <option value="10080">7 días</option>
+        <option value="20160">14 días</option>
+        <option value="43200">30 días</option>
+        <option value="129600">90 días · experimental</option>
+      </select>
+    </label>
+    <button id="actualizar" class="primario">Consultar ahora</button>
+    <button id="exportar" disabled>Exportar</button>
+  </section>
+
+  <p id="aviso" role="alert" hidden></p>
+
+  <nav class="navegacion" aria-label="Secciones">
+    <button data-tab="resumen" aria-current="page"><span>Resumen</span></button>
+    <button data-tab="datos"><span>Datos</span></button>
+    <button data-tab="flujo"><span>Flujo</span></button>
+    <button data-tab="registro"><span>Registro</span></button>
+    <button data-tab="mundo"><span>Mundo</span></button>
+  </nav>
+
+  <section id="resumen" class="vista">
+    <div class="hero-grid">
+      <article class="hero">
+        <div class="titulo-linea"><small id="precioEtiqueta">PRECIO OBSERVADO · BTC/USD</small><span id="mercadoChip" class="chip">BTC</span></div>
+        <h2 id="precio">—</h2>
+        <p id="fecha">Pulsa «Consultar ahora».</p>
+      </article>
+      <article class="hero destacado">
+        <div class="titulo-linea"><small id="resultadoEtiqueta">PRECIO CALCULADO · 15 MIN</small><span id="modeloChip" class="chip">M001</span></div>
+        <h2 id="candidato">—</h2>
+        <p id="cambio">Sin cálculo</p>
+      </article>
+    </div>
+
+    <div class="metricas">
+      <article><small>OBJETIVO</small><strong id="objetivo">—</strong></article>
+      <article><small>SOPORTE</small><strong id="soporteCorto">—</strong></article>
+      <article><small>VALIDACIÓN RECIENTE</small><strong id="validacionCorta">—</strong></article>
+    </div>
+
+    <article>
+      <div class="titulo">
+        <div><h3 id="graficoTitulo">Historia observada y estimación</h3><p class="subtexto" id="graficoSubtitulo">El eje usa tiempo real.</p></div>
+        <label>Historia
+          <select id="historia">
+            <option value="12">1 hora</option>
+            <option value="36">3 horas</option>
+            <option value="72" selected>6 horas</option>
+            <option value="156">Sesión amplia</option>
+          </select>
+        </label>
+      </div>
+      <svg id="grafico" viewBox="0 0 800 285" role="img" aria-label="Historial del mercado"></svg>
+      <p id="detalleGrafico" class="subtexto">Sin cifras de demostración.</p>
+    </article>
+
+    <div class="dos">
+      <article>
+        <h3>Qué está usando</h3>
+        <p id="soporte">Se necesitan datos cerrados y una lectura reciente.</p>
+        <div id="estadoBits" class="bits" hidden></div>
+      </article>
+      <article>
+        <h3>Cómo leerlo</h3>
+        <p id="interpretacion">BTC usa F001 en tres escalas y conserva M001 como referencia; el mundo sólo ajusta el rango exploratorio. La bolsa usa XN01 ejecutado en XI/Ether para clasificar la dirección del siguiente intervalo de 5 minutos.</p>
+        <p id="guardado">La última consulta válida se conserva localmente.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="datos" class="vista" hidden>
+    <article>
+      <div class="titulo"><div><h3>Fuentes y estado</h3><p class="subtexto">Solo se consulta lo necesario para el mercado elegido.</p></div><span id="datosEstado" class="chip">Sin lectura</span></div>
+      <div id="opciones" class="opciones">
+        <label data-btc-only><input type="checkbox" checked disabled> BTC/USD + velas · necesario</label>
+        <label data-btc-only><input type="checkbox" data-source="book" checked> Libro de órdenes</label>
+        <label data-btc-only><input type="checkbox" data-source="trades" checked> Operaciones recientes</label>
+        <label data-btc-only><input type="checkbox" data-source="eth" checked> ETH/USD</label>
+        <label data-btc-only><input type="checkbox" data-source="euro"> BTC/EUR</label>
+        <label data-btc-only><input type="checkbox" data-source="noaa"> NOAA</label>
+        <label data-stock-only hidden><input type="checkbox" checked disabled> Serie bursátil 5 min · necesaria</label>
+      </div>
+    </article>
+    <div id="factores" class="tarjetas"></div>
+  </section>
+
+  <section id="flujo" class="vista" hidden>
+    <article>
+      <div class="titulo"><div><h3>Flujo de consulta</h3><p class="subtexto">Muestra qué fuente responde y qué señales se derivan localmente.</p></div><label class="toggle"><input id="animacion" type="checkbox" checked> Efectos</label></div>
+      <div id="escena"><div id="nucleo">LAPLACE<small id="nucleoModo">esperando</small></div><div id="nodos"></div></div>
+      <label>Girar representación<input id="giro" type="range" min="-30" max="30" value="0"></label>
+      <p id="flujoEstado" role="status">No hay una consulta activa.</p>
+    </article>
+  </section>
+
+  <section id="registro" class="vista" hidden>
+    <article>
+      <div class="titulo"><div><h3 id="registroTitulo">Registro M001</h3><p id="registroDescripcion" class="subtexto">Pronósticos horarios de Bitcoin.</p></div><button id="leerRegistro">Actualizar registro</button></div>
+      <p id="registroEstado">Sin descargar.</p>
+      <div id="registroControles"><label>Mostrar
+        <select id="filtro">
+          <option value="todos">Todos</option>
+          <option value="aciertos">Aciertos de precio</option>
+          <option value="fallos">Fallos de precio</option>
+          <option value="pendientes">Pendientes</option>
+        </select>
+      </label></div>
+      <div class="tabla"><table><thead><tr id="cabeceraTabla"><th>Objetivo</th><th>Horizonte</th><th>Calculado</th><th>Resultado</th></tr></thead><tbody id="filas"></tbody></table></div>
+    </article>
+  </section>
+
+  <section id="mundo" class="vista" hidden>
+    <article>
+      <div class="titulo">
+        <div>
+          <h3>Estado mundial U002</h3>
+          <p class="subtexto">369 señales selladas → XI → Inverse Ether Memory. Una sola descarga evita consultar 52 fuentes desde el teléfono.</p>
+        </div>
+        <button id="sincronizarMundo" class="primario">Sincronizar 369</button>
+      </div>
+      <p id="mundoEstado">Todavía no hay una captura mundial verificada en este dispositivo.</p>
+    </article>
+
+    <div class="metricas metricas-mundo">
+      <article><small>SEÑALES</small><strong id="mundoSenales">—</strong></article>
+      <article><small>DOMINIOS</small><strong id="mundoDominios">—</strong></article>
+      <article><small>FUENTES</small><strong id="mundoFuentes">—</strong></article>
+      <article><small>XI / ETHER</small><strong id="mundoEther">—</strong></article>
+    </div>
+
+    <div id="mundoGrupos" class="tarjetas"></div>
+
+    <article>
+      <h3>Prueba nativa</h3>
+      <dl class="filas-globales">
+        <div><dt>Registros U002</dt><dd id="mundoRegistros">—</dd></div>
+        <div><dt>Bytes materializados</dt><dd id="mundoBytes">—</dd></div>
+        <div><dt>Excepciones Inverse Ether Memory</dt><dd id="mundoOverrides">—</dd></div>
+        <div><dt>Qubits implícitos</dt><dd id="mundoQubits">—</dd></div>
+        <div><dt>Round-trip exacto</dt><dd id="mundoRoundtrip">—</dd></div>
+        <div><dt>Snapshot</dt><dd id="mundoHash">—</dd></div>
+      </dl>
+      <p class="subtexto">U002 queda disponible como estado mundial. Todavía no modifica M001/XN01: primero debe acumular historia y demostrar mejora fuera de muestra.</p>
+      <button id="exportarMundo" disabled>Exportar estado mundial</button>
+    </article>
+  </section>
+
+  <footer>REVERSE · Datos públicos · Sin cuentas ni órdenes financieras</footer>
+</main>
+</body>
+</html>

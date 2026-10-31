@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "repository": "guadalupejuan001-code/LaPlaceDIG",
+  "commit": "06ebce4bddf25d615cefd85ed24081f37504a492",
+  "files": {
+    "seguimiento/modelo.mjs": "1a72ecc3437baeb2db0afb9b8a36618c4568badfab0baf318d005bfa99fabe3a",
+    "universo/integridad.mjs": "4ed158bc6c192cba2f4ee673dc7c99f63d7d2b73889d1b04dee5c791a47fc577",
+    "panel/publico/grafica.js": "23efd2044b439b61673c11cd72127430d73520c4b640cf245641dde3f9d786b6"
+  },
+  "model": "M001",
+  "runtime": "JavaScript en WebView; no Node ni sustitución de XI/Ether",
+  "mode": "candidato sin reemplazo por persistencia",
+  "tracking": "El diario horario de GitHub se consulta separado; las consultas locales no lo modifican."
+}

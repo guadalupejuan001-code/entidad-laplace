@@ -1,0 +1,3769 @@
+{
+  "schema": "laplace-native-temporal-v1",
+  "generated_at": "2026-10-28T14:29:20.114Z",
+  "mode": "strict",
+  "plan": {
+    "training_days": 42,
+    "validation_days": 14,
+    "test_days": 14,
+    "step_days": 14,
+    "alphas": [
+      0,
+      1,
+      4,
+      16
+    ],
+    "prior_strength": 8
+  },
+  "source_ledger_sha256": "2bf20b40356e0055d35177e17c9b720909fd6c02707516c84ac5c6d0d547d4c1",
+  "executor_source_sha256": "a331e13c529f7a5d828af109bd34518ec7d5e94caa6e181621c9b82de900c2e4",
+  "runtime_ref": "3d29556eff4d1079c791abab38e203fc209f1722",
+  "folds": [
+    {
+      "partitions": {
+        "training": [
+          "2026-07-30T00:00:00.000Z",
+          "2026-09-10T00:00:00.000Z"
+        ],
+        "validation": [
+          "2026-09-10T00:00:00.000Z",
+          "2026-09-24T00:00:00.000Z"
+        ],
+        "test": [
+          "2026-09-24T00:00:00.000Z",
+          "2026-10-08T00:00:00.000Z"
+        ]
+      },
+      "selected_alpha": 0,
+      "candidates": [
+        {
+          "alpha": 0,
+          "validation": {
+            "count": 14,
+            "log_loss": 3.072139695405601,
+            "baseline_log_loss": 3.1544438528249104,
+            "abstentions": 1
+          }
+        },
+        {
+          "alpha": 1,
+          "validation": {
+            "count": 14,
+            "log_loss": 3.073557942794845,
+            "baseline_log_loss": 3.1544438528249104,
+            "abstentions": 1
+          }
+        },
+        {
+          "alpha": 4,
+          "validation": {
+            "count": 14,
+            "log_loss": 3.079597354686147,
+            "baseline_log_loss": 3.1544438528249104,
+            "abstentions": 1
+          }
+        },
+        {
+          "alpha": 16,
+          "validation": {
+            "count": 14,
+            "log_loss": 3.1008469609529614,
+            "baseline_log_loss": 3.1544438528249104,
+            "abstentions": 1
+          }
+        }
+      ],
+      "native": {
+        "backend": "original-inverse-ether-memory",
+        "arithmetic": "native-classical",
+        "active_qubits": 0,
+        "memory_overrides": 220,
+        "learned_in_native": true,
+        "propagation_backend": "native-classical",
+        "propagated_in_native": true
+      },
+      "learned": {
+        "type": "temporal_model",
+        "backend": "original-inverse-ether-memory",
+        "arithmetic": "native-classical",
+        "state_masks": [
+          280,
+          282,
+          538,
+          792,
+          794
+        ],
+        "visits": [
+          8,
+          8,
+          1,
+          18,
+          8
+        ],
+        "label_counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "positive_counts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transition_counts": [
+          2,
+          1,
+          0,
+          3,
+          2,
+          2,
+          2,
+          0,
+          3,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          4,
+          1,
+          9,
+          2,
+          3,
+          1,
+          0,
+          3,
+          1
+        ],
+        "transition_matrix": [
+          0.25,
+          0.125,
+          0,
+          0.375,
+          0.25,
+          0.25,
+          0.25,
+          0,
+          0.375,
+          0.125,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0.058823529411764705,
+          0.23529411764705882,
+          0.058823529411764705,
+          0.5294117647058824,
+          0.11764705882352941,
+          0.375,
+          0.125,
+          0,
+          0.375,
+          0.125
+        ],
+        "emissions": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "state_reference": [
+          0.1875,
+          0.1875,
+          0.041666666666666664,
+          0.3958333333333333,
+          0.1875
+        ],
+        "samples": 43,
+        "labels": 0,
+        "alpha": 0,
+        "prior_strength": 8,
+        "training_prior": 0.5,
+        "checksum": "17100217240219998132"
+      },
+      "checkpoint": {
+        "schema": "laplace-native-temporal-v1",
+        "runtime_ref": "3d29556eff4d1079c791abab38e203fc209f1722",
+        "executor_source_sha256": "a331e13c529f7a5d828af109bd34518ec7d5e94caa6e181621c9b82de900c2e4",
+        "extractor_sha256": "1256cb97f9d05b82a214de366b5ff7238181cd1dd6c68dac69d4128b79adac11",
+        "cutoff": "2026-09-24T00:00:00.000Z",
+        "training_sha256": "c9335c2babd753d51fc57eb3ca58c364e18263153aeda0e37d286de371a29147",
+        "xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a",
+        "xi": "# LaPlaceDIG temporal: evidencia en Ether original, ajuste nativo\nmem_reset 0\nmem_store 1000000 26\nmem_store 1000001 3\nmem_store 1000002 2\nmem_store 1000003 1\nmem_store 1000004 24\nmem_store 1000005 3\nmem_store 1000006 2\nmem_store 1000007 1\nmem_store 1000008 26\nmem_store 1000009 1\nmem_store 1000010 2\nmem_store 1000011 1\nmem_store 1000012 26\nmem_store 1000013 1\nmem_store 1000014 2\nmem_store 1000015 1\nmem_store 1000016 24\nmem_store 1000017 3\nmem_store 1000018 2\nmem_store 1000019 1\nmem_store 1000020 24\nmem_store 1000021 3\nmem_store 1000022 2\nmem_store 1000023 1\nmem_store 1000024 26\nmem_store 1000025 3\nmem_store 1000026 2\nmem_store 1000027 1\nmem_store 1000028 24\nmem_store 1000029 1\nmem_store 1000030 2\nmem_store 1000031 1\nmem_store 1000032 24\nmem_store 1000033 3\nmem_store 1000034 2\nmem_store 1000035 1\nmem_store 1000036 24\nmem_store 1000037 3\nmem_store 1000038 2\nmem_store 1000039 1\nmem_store 1000040 26\nmem_store 1000041 3\nmem_store 1000042 2\nmem_store 1000043 1\nmem_store 1000044 26\nmem_store 1000045 1\nmem_store 1000046 2\nmem_store 1000047 1\nmem_store 1000048 24\nmem_store 1000049 1\nmem_store 1000050 2\nmem_store 1000051 1\nmem_store 1000052 24\nmem_store 1000053 3\nmem_store 1000054 2\nmem_store 1000055 1\nmem_store 1000056 26\nmem_store 1000057 1\nmem_store 1000058 2\nmem_store 1000059 1\nmem_store 1000060 26\nmem_store 1000061 1\nmem_store 1000062 2\nmem_store 1000063 1\nmem_store 1000064 24\nmem_store 1000065 1\nmem_store 1000066 2\nmem_store 1000067 1\nmem_store 1000068 26\nmem_store 1000069 1\nmem_store 1000070 2\nmem_store 1000071 1\nmem_store 1000072 24\nmem_store 1000073 3\nmem_store 1000074 2\nmem_store 1000075 1\nmem_store 1000076 26\nmem_store 1000077 1\nmem_store 1000078 2\nmem_store 1000079 1\nmem_store 1000080 24\nmem_store 1000081 3\nmem_store 1000082 2\nmem_store 1000083 1\nmem_store 1000084 24\nmem_store 1000085 3\nmem_store 1000086 2\nmem_store 1000087 1\nmem_store 1000088 24\nmem_store 1000089 3\nmem_store 1000090 2\nmem_store 1000091 1\nmem_store 1000092 24\nmem_store 1000093 3\nmem_store 1000094 2\nmem_store 1000095 1\nmem_store 1000096 24\nmem_store 1000097 3\nmem_store 1000098 2\nmem_store 1000099 1\nmem_store 1000100 24\nmem_store 1000101 3\nmem_store 1000102 2\nmem_store 1000103 1\nmem_store 1000104 26\nmem_store 1000105 1\nmem_store 1000106 2\nmem_store 1000107 1\nmem_store 1000108 26\nmem_store 1000109 3\nmem_store 1000110 2\nmem_store 1000111 1\nmem_store 1000112 24\nmem_store 1000113 3\nmem_store 1000114 2\nmem_store 1000115 1\nmem_store 1000116 24\nmem_store 1000117 3\nmem_store 1000118 2\nmem_store 1000119 1\nmem_store 1000120 24\nmem_store 1000121 1\nmem_store 1000122 2\nmem_store 1000123 1\nmem_store 1000124 24\nmem_store 1000125 1\nmem_store 1000126 2\nmem_store 1000127 1\nmem_store 1000128 24\nmem_store 1000129 1\nmem_store 1000130 2\nmem_store 1000131 1\nmem_store 1000132 26\nmem_store 1000133 3\nmem_store 1000134 2\nmem_store 1000135 1\nmem_store 1000136 24\nmem_store 1000137 1\nmem_store 1000138 2\nmem_store 1000139 1\nmem_store 1000140 26\nmem_store 1000141 3\nmem_store 1000142 2\nmem_store 1000143 1\nmem_store 1000144 24\nmem_store 1000145 3\nmem_store 1000146 2\nmem_store 1000147 1\nmem_store 1000148 26\nmem_store 1000149 2\nmem_store 1000150 2\nmem_store 1000151 1\nmem_store 1000152 26\nmem_store 1000153 3\nmem_store 1000154 2\nmem_store 1000155 1\nmem_store 1000156 26\nmem_store 1000157 3\nmem_store 1000158 2\nmem_store 1000159 1\nmem_store 1000160 24\nmem_store 1000161 1\nmem_store 1000162 2\nmem_store 1000163 1\nmem_store 1000164 24\nmem_store 1000165 3\nmem_store 1000166 2\nmem_store 1000167 1\nmem_store 1000168 24\nmem_store 1000169 3\nmem_store 1000170 2\nlaplace_fit 1000000 43 0 8\n",
+        "training_cutoff": "2026-09-10T00:00:00.000Z",
+        "selection_sha256": "e2896403c391e77a939083d4297609d5a8bce8854a6e9ac759ded0393f856276",
+        "checkpoint_sha256": "36b66ee594eeda22be39c5af933df953dde0f0028cc82f3c63dac6efa82cb745"
+      },
+      "forecasts": [
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-24T00:00:00.000Z",
+          "due_at": "2026-09-25T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-25T00:00:00.000Z",
+          "due_at": "2026-09-26T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.375,
+            0.125,
+            0,
+            0.375,
+            0.125
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-26T00:00:00.000Z",
+          "due_at": "2026-09-27T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.19393382352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.16911764705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-27T00:00:00.000Z",
+          "due_at": "2026-09-28T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1828638624567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1653600778546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-28T00:00:00.000Z",
+          "due_at": "2026-09-29T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18141472162502542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16695178727037963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18182828576198745,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16681371405598497
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186576884330263,
+            0.19370500105291777,
+            0.02542373214795327,
+            0.4321990729891063,
+            0.16680642496672
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-24T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818685767182872,
+            0.1937041740163308,
+            0.025423474881712135,
+            0.4322027220090119,
+            0.16680105237465792
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-25T00:00:00.000Z",
+          "due_at": "2026-09-26T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-26T00:00:00.000Z",
+          "due_at": "2026-09-27T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.375,
+            0.125,
+            0,
+            0.375,
+            0.125
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-27T00:00:00.000Z",
+          "due_at": "2026-09-28T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.19393382352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.16911764705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-28T00:00:00.000Z",
+          "due_at": "2026-09-29T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1828638624567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1653600778546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18141472162502542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16695178727037963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18182828576198745,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16681371405598497
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186576884330263,
+            0.19370500105291777,
+            0.02542373214795327,
+            0.4321990729891063,
+            0.16680642496672
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-25T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818685767182872,
+            0.1937041740163308,
+            0.025423474881712135,
+            0.4322027220090119,
+            0.16680105237465792
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-09-26T00:00:00.000Z",
+          "due_at": "2026-09-27T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-09-27T00:00:00.000Z",
+          "due_at": "2026-09-28T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.375,
+            0.125,
+            0,
+            0.375,
+            0.125
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-09-28T00:00:00.000Z",
+          "due_at": "2026-09-29T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.19393382352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.16911764705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1828638624567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1653600778546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18141472162502542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16695178727037963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18182828576198745,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16681371405598497
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186576884330263,
+            0.19370500105291777,
+            0.02542373214795327,
+            0.4321990729891063,
+            0.16680642496672
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-26T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818685767182872,
+            0.1937041740163308,
+            0.025423474881712135,
+            0.4322027220090119,
+            0.16680105237465792
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-09-27T00:00:00.000Z",
+          "due_at": "2026-09-28T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-09-28T00:00:00.000Z",
+          "due_at": "2026-09-29T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.058823529411764705,
+            0.23529411764705882,
+            0.058823529411764705,
+            0.5294117647058824,
+            0.11764705882352941
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14878892733564014,
+            0.2054498269896194,
+            0.031141868512110725,
+            0.4346885813148789,
+            0.17993079584775085
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18160365357215552,
+            0.19473208833706496,
+            0.025569916547934054,
+            0.4304428302462853,
+            0.16765151129656014
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18227341869859076,
+            0.19362058363315812,
+            0.025320166485075606,
+            0.4318767183178482,
+            0.1669091128653273
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1819689307496613,
+            0.19367101372268475,
+            0.025404512842226362,
+            0.43219178377894085,
+            0.1667637589064867
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818694418126626,
+            0.19370152405626404,
+            0.02542304610464358,
+            0.4322088037088545,
+            0.1667971843175753
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-27T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186573286331384,
+            0.1937048983883115,
+            0.025424047276991442,
+            0.4322044818128612,
+            0.16680083965852202
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-09-28T00:00:00.000Z",
+          "due_at": "2026-09-29T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.25,
+            0.125,
+            0,
+            0.375,
+            0.25
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20955882352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.15349264705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1809107374567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1673132028546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18165886225002542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16670764664537963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18179776818386245,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16684423163410997
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186958354056826,
+            0.19370500105291777,
+            0.02542373214795327,
+            0.4321990729891063,
+            0.16680261026945437
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-28T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.181868099881129,
+            0.1937041740163308,
+            0.025423474881712135,
+            0.4322027220090119,
+            0.16680152921181612
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-09-29T00:00:00.000Z",
+          "due_at": "2026-09-30T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.25,
+            0.125,
+            0,
+            0.375,
+            0.25
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20955882352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.15349264705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1809107374567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1673132028546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18165886225002542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16670764664537963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18179776818386245,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16684423163410997
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186958354056826,
+            0.19370500105291777,
+            0.02542373214795327,
+            0.4321990729891063,
+            0.16680261026945437
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-29T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.181868099881129,
+            0.1937041740163308,
+            0.025423474881712135,
+            0.4322027220090119,
+            0.16680152921181612
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-09-30T00:00:00.000Z",
+          "due_at": "2026-10-01T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.058823529411764705,
+            0.23529411764705882,
+            0.058823529411764705,
+            0.5294117647058824,
+            0.11764705882352941
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14878892733564014,
+            0.2054498269896194,
+            0.031141868512110725,
+            0.4346885813148789,
+            0.17993079584775085
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18160365357215552,
+            0.19473208833706496,
+            0.025569916547934054,
+            0.4304428302462853,
+            0.16765151129656014
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18227341869859076,
+            0.19362058363315812,
+            0.025320166485075606,
+            0.4318767183178482,
+            0.1669091128653273
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1819689307496613,
+            0.19367101372268475,
+            0.025404512842226362,
+            0.43219178377894085,
+            0.1667637589064867
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818694418126626,
+            0.19370152405626404,
+            0.02542304610464358,
+            0.4322088037088545,
+            0.1667971843175753
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-09-30T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18186573286331384,
+            0.1937048983883115,
+            0.025424047276991442,
+            0.4322044818128612,
+            0.16680083965852202
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-01T00:00:00.000Z",
+          "due_at": "2026-10-02T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.058823529411764705,
+            0.23529411764705882,
+            0.058823529411764705,
+            0.5294117647058824,
+            0.11764705882352941
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14878892733564014,
+            0.2054498269896194,
+            0.031141868512110725,
+            0.4346885813148789,
+            0.17993079584775085
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18160365357215552,
+            0.19473208833706496,
+            0.025569916547934054,
+            0.4304428302462853,
+            0.16765151129656014
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18227341869859076,
+            0.19362058363315812,
+            0.025320166485075606,
+            0.4318767183178482,
+            0.1669091128653273
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1819689307496613,
+            0.19367101372268475,
+            0.025404512842226362,
+            0.43219178377894085,
+            0.1667637589064867
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-01T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1818694418126626,
+            0.19370152405626404,
+            0.02542304610464358,
+            0.4322088037088545,
+            0.1667971843175753
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-02T00:00:00.000Z",
+          "due_at": "2026-10-03T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.25,
+            0.125,
+            0,
+            0.375,
+            0.25
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20955882352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.15349264705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1809107374567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1673132028546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18165886225002542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16670764664537963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-02T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18179776818386245,
+            0.19371928993543258,
+            0.02543526373138941,
+            0.4322034465152056,
+            0.16684423163410997
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-03T00:00:00.000Z",
+          "decision_at": "2026-10-03T00:00:00.000Z",
+          "due_at": "2026-10-04T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-03T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.25,
+            0.125,
+            0,
+            0.375,
+            0.25
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-03T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20955882352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.15349264705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-03T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1809107374567474,
+            0.19273761894463667,
+            0.025464965397923877,
+            0.43357347534602075,
+            0.1673132028546713
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-03T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18165886225002542,
+            0.19372968559179726,
+            0.02550432207917769,
+            0.43239948343362,
+            0.16670764664537963
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-04T00:00:00.000Z",
+          "decision_at": "2026-10-04T00:00:00.000Z",
+          "due_at": "2026-10-05T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-04T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.058823529411764705,
+            0.23529411764705882,
+            0.058823529411764705,
+            0.5294117647058824,
+            0.11764705882352941
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-04T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14878892733564014,
+            0.2054498269896194,
+            0.031141868512110725,
+            0.4346885813148789,
+            0.17993079584775085
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-04T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.18160365357215552,
+            0.19473208833706496,
+            0.025569916547934054,
+            0.4304428302462853,
+            0.16765151129656014
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-05T00:00:00.000Z",
+          "decision_at": "2026-10-05T00:00:00.000Z",
+          "due_at": "2026-10-06T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-05T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.25,
+            0.125,
+            0,
+            0.375,
+            0.25
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-05T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20955882352941177,
+            0.18198529411764705,
+            0.022058823529411763,
+            0.4329044117647059,
+            0.15349264705882354
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-06T00:00:00.000Z",
+          "decision_at": "2026-10-06T00:00:00.000Z",
+          "due_at": "2026-10-07T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-06T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.058823529411764705,
+            0.23529411764705882,
+            0.058823529411764705,
+            0.5294117647058824,
+            0.11764705882352941
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        },
+        {
+          "origin_at": "2026-10-07T00:00:00.000Z",
+          "decision_at": "2026-10-07T00:00:00.000Z",
+          "due_at": "2026-10-08T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "180e678d374440d63516abc2d5ff0788ecb22280e5191d9aa08569d73edf818a"
+        }
+      ],
+      "observations": [],
+      "forecasts_sha256": "00a9485c56afc5299dcc78ca89d792fc2c70d4d9610bb5af06e0bcd7f1ddb951",
+      "native_program_sha256": "fc506cb2a114d803c5d3952ce0efac68172fe2f92fb1bdbc5efe401571c364b4",
+      "native_output_sha256": "324b3abbde6e4f2dc903cc9e662b973eacd0021ae13c1a536cc245f6ba5417aa",
+      "by_horizon": [
+        {
+          "horizon_days": 0,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 1,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 2,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 3,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 4,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 5,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 6,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 7,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        }
+      ]
+    },
+    {
+      "partitions": {
+        "training": [
+          "2026-08-13T00:00:00.000Z",
+          "2026-09-24T00:00:00.000Z"
+        ],
+        "validation": [
+          "2026-09-24T00:00:00.000Z",
+          "2026-10-08T00:00:00.000Z"
+        ],
+        "test": [
+          "2026-10-08T00:00:00.000Z",
+          "2026-10-22T00:00:00.000Z"
+        ]
+      },
+      "selected_alpha": 16,
+      "candidates": [
+        {
+          "alpha": 16,
+          "validation": {
+            "count": 14,
+            "log_loss": 1.4988535972915968,
+            "baseline_log_loss": 1.4196827284847249,
+            "abstentions": 0
+          }
+        },
+        {
+          "alpha": 4,
+          "validation": {
+            "count": 14,
+            "log_loss": 1.5698438960361034,
+            "baseline_log_loss": 1.4196827284847249,
+            "abstentions": 0
+          }
+        },
+        {
+          "alpha": 1,
+          "validation": {
+            "count": 14,
+            "log_loss": 1.6171042716192334,
+            "baseline_log_loss": 1.4196827284847249,
+            "abstentions": 0
+          }
+        },
+        {
+          "alpha": 0,
+          "validation": {
+            "count": 14,
+            "log_loss": 1.6416116871559367,
+            "baseline_log_loss": 1.4196827284847249,
+            "abstentions": 0
+          }
+        }
+      ],
+      "native": {
+        "backend": "original-inverse-ether-memory",
+        "arithmetic": "native-classical",
+        "active_qubits": 0,
+        "memory_overrides": 225,
+        "learned_in_native": true,
+        "propagation_backend": "native-classical",
+        "propagated_in_native": true
+      },
+      "learned": {
+        "type": "temporal_model",
+        "backend": "original-inverse-ether-memory",
+        "arithmetic": "native-classical",
+        "state_masks": [
+          280,
+          282,
+          538,
+          784,
+          792,
+          794
+        ],
+        "visits": [
+          7,
+          8,
+          1,
+          1,
+          19,
+          7
+        ],
+        "label_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "positive_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transition_counts": [
+          2,
+          1,
+          0,
+          0,
+          2,
+          2,
+          2,
+          1,
+          0,
+          1,
+          3,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          5,
+          1,
+          0,
+          11,
+          1,
+          2,
+          0,
+          0,
+          0,
+          2,
+          2
+        ],
+        "transition_matrix": [
+          0.20053238686779057,
+          0.1712511091393079,
+          0.028393966282165038,
+          0.028393966282165038,
+          0.37089618456078083,
+          0.20053238686779057,
+          0.19217687074829928,
+          0.16411564625850342,
+          0.027210884353741496,
+          0.06887755102040816,
+          0.397108843537415,
+          0.15051020408163265,
+          0.15366146458583432,
+          0.17286914765906364,
+          0.03841536614645858,
+          0.03841536614645858,
+          0.38415366146458585,
+          0.21248499399759901,
+          0.15366146458583432,
+          0.17286914765906364,
+          0.03841536614645858,
+          0.03841536614645858,
+          0.44297719087635057,
+          0.15366146458583432,
+          0.1032069970845481,
+          0.22682215743440232,
+          0.04723032069970845,
+          0.018658892128279883,
+          0.5008746355685131,
+          0.1032069970845481,
+          0.20964749536178104,
+          0.13358070500927643,
+          0.02968460111317254,
+          0.02968460111317254,
+          0.3877551020408163,
+          0.20964749536178104
+        ],
+        "emissions": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "state_reference": [
+          0.16326530612244897,
+          0.1836734693877551,
+          0.04081632653061224,
+          0.04081632653061224,
+          0.40816326530612246,
+          0.16326530612244897
+        ],
+        "samples": 43,
+        "labels": 0,
+        "alpha": 16,
+        "prior_strength": 8,
+        "training_prior": 0.5,
+        "checksum": "15469414754021152434"
+      },
+      "checkpoint": {
+        "schema": "laplace-native-temporal-v1",
+        "runtime_ref": "3d29556eff4d1079c791abab38e203fc209f1722",
+        "executor_source_sha256": "a331e13c529f7a5d828af109bd34518ec7d5e94caa6e181621c9b82de900c2e4",
+        "extractor_sha256": "1256cb97f9d05b82a214de366b5ff7238181cd1dd6c68dac69d4128b79adac11",
+        "cutoff": "2026-10-08T00:00:00.000Z",
+        "training_sha256": "37e27dfd05503177e51fd1efd9898999a8e855394825fe450a1cf517be582d9a",
+        "xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b",
+        "xi": "# LaPlaceDIG temporal: evidencia en Ether original, ajuste nativo\nmem_reset 0\nmem_store 1000000 26\nmem_store 1000001 1\nmem_store 1000002 2\nmem_store 1000003 1\nmem_store 1000004 26\nmem_store 1000005 1\nmem_store 1000006 2\nmem_store 1000007 1\nmem_store 1000008 24\nmem_store 1000009 1\nmem_store 1000010 2\nmem_store 1000011 1\nmem_store 1000012 26\nmem_store 1000013 1\nmem_store 1000014 2\nmem_store 1000015 1\nmem_store 1000016 24\nmem_store 1000017 3\nmem_store 1000018 2\nmem_store 1000019 1\nmem_store 1000020 26\nmem_store 1000021 1\nmem_store 1000022 2\nmem_store 1000023 1\nmem_store 1000024 24\nmem_store 1000025 3\nmem_store 1000026 2\nmem_store 1000027 1\nmem_store 1000028 24\nmem_store 1000029 3\nmem_store 1000030 2\nmem_store 1000031 1\nmem_store 1000032 24\nmem_store 1000033 3\nmem_store 1000034 2\nmem_store 1000035 1\nmem_store 1000036 24\nmem_store 1000037 3\nmem_store 1000038 2\nmem_store 1000039 1\nmem_store 1000040 24\nmem_store 1000041 3\nmem_store 1000042 2\nmem_store 1000043 1\nmem_store 1000044 24\nmem_store 1000045 3\nmem_store 1000046 2\nmem_store 1000047 1\nmem_store 1000048 26\nmem_store 1000049 1\nmem_store 1000050 2\nmem_store 1000051 1\nmem_store 1000052 26\nmem_store 1000053 3\nmem_store 1000054 2\nmem_store 1000055 1\nmem_store 1000056 24\nmem_store 1000057 3\nmem_store 1000058 2\nmem_store 1000059 1\nmem_store 1000060 24\nmem_store 1000061 3\nmem_store 1000062 2\nmem_store 1000063 1\nmem_store 1000064 24\nmem_store 1000065 1\nmem_store 1000066 2\nmem_store 1000067 1\nmem_store 1000068 24\nmem_store 1000069 1\nmem_store 1000070 2\nmem_store 1000071 1\nmem_store 1000072 24\nmem_store 1000073 1\nmem_store 1000074 2\nmem_store 1000075 1\nmem_store 1000076 26\nmem_store 1000077 3\nmem_store 1000078 2\nmem_store 1000079 1\nmem_store 1000080 24\nmem_store 1000081 1\nmem_store 1000082 2\nmem_store 1000083 1\nmem_store 1000084 26\nmem_store 1000085 3\nmem_store 1000086 2\nmem_store 1000087 1\nmem_store 1000088 24\nmem_store 1000089 3\nmem_store 1000090 2\nmem_store 1000091 1\nmem_store 1000092 26\nmem_store 1000093 2\nmem_store 1000094 2\nmem_store 1000095 1\nmem_store 1000096 26\nmem_store 1000097 3\nmem_store 1000098 2\nmem_store 1000099 1\nmem_store 1000100 26\nmem_store 1000101 3\nmem_store 1000102 2\nmem_store 1000103 1\nmem_store 1000104 24\nmem_store 1000105 1\nmem_store 1000106 2\nmem_store 1000107 1\nmem_store 1000108 24\nmem_store 1000109 3\nmem_store 1000110 2\nmem_store 1000111 1\nmem_store 1000112 24\nmem_store 1000113 3\nmem_store 1000114 2\nmem_store 1000115 1\nmem_store 1000116 24\nmem_store 1000117 3\nmem_store 1000118 2\nmem_store 1000119 1\nmem_store 1000120 24\nmem_store 1000121 3\nmem_store 1000122 2\nmem_store 1000123 1\nmem_store 1000124 26\nmem_store 1000125 1\nmem_store 1000126 2\nmem_store 1000127 1\nmem_store 1000128 24\nmem_store 1000129 1\nmem_store 1000130 2\nmem_store 1000131 1\nmem_store 1000132 24\nmem_store 1000133 3\nmem_store 1000134 2\nmem_store 1000135 1\nmem_store 1000136 24\nmem_store 1000137 3\nmem_store 1000138 2\nmem_store 1000139 1\nmem_store 1000140 26\nmem_store 1000141 1\nmem_store 1000142 2\nmem_store 1000143 1\nmem_store 1000144 24\nmem_store 1000145 3\nmem_store 1000146 2\nmem_store 1000147 1\nmem_store 1000148 24\nmem_store 1000149 3\nmem_store 1000150 2\nmem_store 1000151 1\nmem_store 1000152 26\nmem_store 1000153 1\nmem_store 1000154 2\nmem_store 1000155 1\nmem_store 1000156 16\nmem_store 1000157 3\nmem_store 1000158 2\nmem_store 1000159 1\nmem_store 1000160 24\nmem_store 1000161 3\nmem_store 1000162 2\nmem_store 1000163 1\nmem_store 1000164 26\nmem_store 1000165 3\nmem_store 1000166 2\nmem_store 1000167 1\nmem_store 1000168 26\nmem_store 1000169 3\nmem_store 1000170 2\nlaplace_fit 1000000 43 16 8\n",
+        "training_cutoff": "2026-09-24T00:00:00.000Z",
+        "selection_sha256": "8f8f4b75b89ae3f45e224c79a459845b3242b27247ede2fef20dba5597386850",
+        "checkpoint_sha256": "0cff5d367fbbe9181469c99eaaa7fba781894ab34656b6b6553fbac2c53b6bd0"
+      },
+      "forecasts": [
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-08T00:00:00.000Z",
+          "due_at": "2026-10-09T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-09T00:00:00.000Z",
+          "due_at": "2026-10-10T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1032069970845481,
+            0.22682215743440232,
+            0.04723032069970845,
+            0.018658892128279883,
+            0.5008746355685131,
+            0.1032069970845481
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-10T00:00:00.000Z",
+          "due_at": "2026-10-11T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14774180633792927,
+            0.19368551861252653,
+            0.03835377393479858,
+            0.03349399328784592,
+            0.44565577055659744,
+            0.1410691372703022
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-11T00:00:00.000Z",
+          "due_at": "2026-10-12T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15345871219408724,
+            0.18943675270296453,
+            0.03746143443456073,
+            0.03279864236084655,
+            0.43919987170653635,
+            0.14764458660100443
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-12T00:00:00.000Z",
+          "due_at": "2026-10-13T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15425688814678482,
+            0.18885803976972362,
+            0.03733743109720654,
+            0.032682061363452836,
+            0.4382982757150691,
+            0.1485673039077629
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15436915885134023,
+            0.18877691811142866,
+            0.03731991287965857,
+            0.03266618999249032,
+            0.4381714268278406,
+            0.14869639333724133
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15438492394702005,
+            0.18876553094975418,
+            0.03731745147952542,
+            0.03266397277718236,
+            0.438153612827886,
+            0.1487145080186316
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-08T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15438713725542905,
+            0.18876393230222313,
+            0.03731710589381648,
+            0.03266366169783093,
+            0.4381511118468327,
+            0.14871705100386726
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-09T00:00:00.000Z",
+          "due_at": "2026-10-10T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-10T00:00:00.000Z",
+          "due_at": "2026-10-11T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20964749536178104,
+            0.13358070500927643,
+            0.02968460111317254,
+            0.02968460111317254,
+            0.3877551020408163,
+            0.20964749536178104
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-11T00:00:00.000Z",
+          "due_at": "2026-10-12T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.16080610508949236,
+            0.1840444622602642,
+            0.03640536276821572,
+            0.030892508275769396,
+            0.4308651662188285,
+            0.15698639538742973
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-12T00:00:00.000Z",
+          "due_at": "2026-10-13T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15533711489299593,
+            0.18807664526153786,
+            0.03716918656753887,
+            0.03252727250784525,
+            0.43707969321038814,
+            0.1498100875596937
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15452075580351776,
+            0.1886674369728429,
+            0.03729625041458021,
+            0.032644786065895104,
+            0.4380001190862763,
+            0.14887065165688734
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1544062119979901,
+            0.18875015509709314,
+            0.03731412746687294,
+            0.03266098155732398,
+            0.4381295580067205,
+            0.14873896587399893
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15439012581023734,
+            0.18876177370883504,
+            0.037316639258262785,
+            0.032663241682354405,
+            0.43814773485126285,
+            0.14872048468904706
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-09T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1543878675401299,
+            0.18876340482581863,
+            0.037316991866800736,
+            0.032663559061299446,
+            0.43815028664339895,
+            0.14871789006255173
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-10T00:00:00.000Z",
+          "due_at": "2026-10-11T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-11T00:00:00.000Z",
+          "due_at": "2026-10-12T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1032069970845481,
+            0.22682215743440232,
+            0.04723032069970845,
+            0.018658892128279883,
+            0.5008746355685131,
+            0.1032069970845481
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-12T00:00:00.000Z",
+          "due_at": "2026-10-13T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14774180633792927,
+            0.19368551861252653,
+            0.03835377393479858,
+            0.03349399328784592,
+            0.44565577055659744,
+            0.1410691372703022
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15345871219408724,
+            0.18943675270296453,
+            0.03746143443456073,
+            0.03279864236084655,
+            0.43919987170653635,
+            0.14764458660100443
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15425688814678482,
+            0.18885803976972362,
+            0.03733743109720654,
+            0.032682061363452836,
+            0.4382982757150691,
+            0.1485673039077629
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15436915885134023,
+            0.18877691811142866,
+            0.03731991287965857,
+            0.03266618999249032,
+            0.4381714268278406,
+            0.14869639333724133
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15438492394702005,
+            0.18876553094975418,
+            0.03731745147952542,
+            0.03266397277718236,
+            0.438153612827886,
+            0.1487145080186316
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-10T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15438713725542905,
+            0.18876393230222313,
+            0.03731710589381648,
+            0.03266366169783093,
+            0.4381511118468327,
+            0.14871705100386726
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-11T00:00:00.000Z",
+          "due_at": "2026-10-12T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-12T00:00:00.000Z",
+          "due_at": "2026-10-13T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20964749536178104,
+            0.13358070500927643,
+            0.02968460111317254,
+            0.02968460111317254,
+            0.3877551020408163,
+            0.20964749536178104
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.16080610508949236,
+            0.1840444622602642,
+            0.03640536276821572,
+            0.030892508275769396,
+            0.4308651662188285,
+            0.15698639538742973
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15533711489299593,
+            0.18807664526153786,
+            0.03716918656753887,
+            0.03252727250784525,
+            0.43707969321038814,
+            0.1498100875596937
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15452075580351776,
+            0.1886674369728429,
+            0.03729625041458021,
+            0.032644786065895104,
+            0.4380001190862763,
+            0.14887065165688734
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1544062119979901,
+            0.18875015509709314,
+            0.03731412746687294,
+            0.03266098155732398,
+            0.4381295580067205,
+            0.14873896587399893
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15439012581023734,
+            0.18876177370883504,
+            0.037316639258262785,
+            0.032663241682354405,
+            0.43814773485126285,
+            0.14872048468904706
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-11T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1543878675401299,
+            0.18876340482581863,
+            0.037316991866800736,
+            0.032663559061299446,
+            0.43815028664339895,
+            0.14871789006255173
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-12T00:00:00.000Z",
+          "due_at": "2026-10-13T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-12T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 536,
+          "probability": null,
+          "negative_probability": null,
+          "status": "abstencion_estado_no_observado",
+          "narrative_distribution": null,
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-13T00:00:00.000Z",
+          "due_at": "2026-10-14T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20964749536178104,
+            0.13358070500927643,
+            0.02968460111317254,
+            0.02968460111317254,
+            0.3877551020408163,
+            0.20964749536178104
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.16080610508949236,
+            0.1840444622602642,
+            0.03640536276821572,
+            0.030892508275769396,
+            0.4308651662188285,
+            0.15698639538742973
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15533711489299593,
+            0.18807664526153786,
+            0.03716918656753887,
+            0.03252727250784525,
+            0.43707969321038814,
+            0.1498100875596937
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15452075580351776,
+            0.1886674369728429,
+            0.03729625041458021,
+            0.032644786065895104,
+            0.4380001190862763,
+            0.14887065165688734
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1544062119979901,
+            0.18875015509709314,
+            0.03731412746687294,
+            0.03266098155732398,
+            0.4381295580067205,
+            0.14873896587399893
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15439012581023734,
+            0.18876177370883504,
+            0.037316639258262785,
+            0.032663241682354405,
+            0.43814773485126285,
+            0.14872048468904706
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-13T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1543878675401299,
+            0.18876340482581863,
+            0.037316991866800736,
+            0.032663559061299446,
+            0.43815028664339895,
+            0.14871789006255173
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-14T00:00:00.000Z",
+          "due_at": "2026-10-15T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20964749536178104,
+            0.13358070500927643,
+            0.02968460111317254,
+            0.02968460111317254,
+            0.3877551020408163,
+            0.20964749536178104
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.16080610508949236,
+            0.1840444622602642,
+            0.03640536276821572,
+            0.030892508275769396,
+            0.4308651662188285,
+            0.15698639538742973
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15533711489299593,
+            0.18807664526153786,
+            0.03716918656753887,
+            0.03252727250784525,
+            0.43707969321038814,
+            0.1498100875596937
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15452075580351776,
+            0.1886674369728429,
+            0.03729625041458021,
+            0.032644786065895104,
+            0.4380001190862763,
+            0.14887065165688734
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1544062119979901,
+            0.18875015509709314,
+            0.03731412746687294,
+            0.03266098155732398,
+            0.4381295580067205,
+            0.14873896587399893
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15439012581023734,
+            0.18876177370883504,
+            0.037316639258262785,
+            0.032663241682354405,
+            0.43814773485126285,
+            0.14872048468904706
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-14T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 7,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1543878675401299,
+            0.18876340482581863,
+            0.037316991866800736,
+            0.032663559061299446,
+            0.43815028664339895,
+            0.14871789006255173
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-15T00:00:00.000Z",
+          "due_at": "2026-10-16T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20964749536178104,
+            0.13358070500927643,
+            0.02968460111317254,
+            0.02968460111317254,
+            0.3877551020408163,
+            0.20964749536178104
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.16080610508949236,
+            0.1840444622602642,
+            0.03640536276821572,
+            0.030892508275769396,
+            0.4308651662188285,
+            0.15698639538742973
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15533711489299593,
+            0.18807664526153786,
+            0.03716918656753887,
+            0.03252727250784525,
+            0.43707969321038814,
+            0.1498100875596937
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15452075580351776,
+            0.1886674369728429,
+            0.03729625041458021,
+            0.032644786065895104,
+            0.4380001190862763,
+            0.14887065165688734
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1544062119979901,
+            0.18875015509709314,
+            0.03731412746687294,
+            0.03266098155732398,
+            0.4381295580067205,
+            0.14873896587399893
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-15T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 6,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15439012581023734,
+            0.18876177370883504,
+            0.037316639258262785,
+            0.032663241682354405,
+            0.43814773485126285,
+            0.14872048468904706
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-16T00:00:00.000Z",
+          "due_at": "2026-10-17T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1032069970845481,
+            0.22682215743440232,
+            0.04723032069970845,
+            0.018658892128279883,
+            0.5008746355685131,
+            0.1032069970845481
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14774180633792927,
+            0.19368551861252653,
+            0.03835377393479858,
+            0.03349399328784592,
+            0.44565577055659744,
+            0.1410691372703022
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15345871219408724,
+            0.18943675270296453,
+            0.03746143443456073,
+            0.03279864236084655,
+            0.43919987170653635,
+            0.14764458660100443
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15425688814678482,
+            0.18885803976972362,
+            0.03733743109720654,
+            0.032682061363452836,
+            0.4382982757150691,
+            0.1485673039077629
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-16T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 5,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15436915885134023,
+            0.18877691811142866,
+            0.03731991287965857,
+            0.03266618999249032,
+            0.4381714268278406,
+            0.14869639333724133
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-17T00:00:00.000Z",
+          "decision_at": "2026-10-17T00:00:00.000Z",
+          "due_at": "2026-10-18T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-17T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.20053238686779057,
+            0.1712511091393079,
+            0.028393966282165038,
+            0.028393966282165038,
+            0.37089618456078083,
+            0.20053238686779057
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-17T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.162170051422484,
+            0.18317799199931806,
+            0.03600560283715162,
+            0.03254403187336238,
+            0.42939750001528876,
+            0.1567048218523951
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-17T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1554259579937094,
+            0.18801390056913136,
+            0.03715474720769566,
+            0.03251866354056376,
+            0.4369752123910157,
+            0.149911518297884
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-17T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 4,
+          "initial_mask": 280,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15453345355280954,
+            0.1886582203466274,
+            0.0372942565424897,
+            0.03264316299788877,
+            0.43798579216593014,
+            0.1488851143942543
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-18T00:00:00.000Z",
+          "decision_at": "2026-10-18T00:00:00.000Z",
+          "due_at": "2026-10-19T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-18T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.19217687074829928,
+            0.16411564625850342,
+            0.027210884353741496,
+            0.06887755102040816,
+            0.397108843537415,
+            0.15051020408163265
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-18T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.15738050620940552,
+            0.1866335173361877,
+            0.036837081291145074,
+            0.032329266260370866,
+            0.4346766343648204,
+            0.15214299453807034
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-18T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 3,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1548128040372278,
+            0.18845545456988497,
+            0.03725039135649822,
+            0.03260745550174927,
+            0.4376705999183131,
+            0.14920329461632656
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-19T00:00:00.000Z",
+          "decision_at": "2026-10-19T00:00:00.000Z",
+          "due_at": "2026-10-20T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-19T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.1032069970845481,
+            0.22682215743440232,
+            0.04723032069970845,
+            0.018658892128279883,
+            0.5008746355685131,
+            0.1032069970845481
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-19T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 2,
+          "initial_mask": 792,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.14774180633792927,
+            0.19368551861252653,
+            0.03835377393479858,
+            0.03349399328784592,
+            0.44565577055659744,
+            0.1410691372703022
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-20T00:00:00.000Z",
+          "decision_at": "2026-10-20T00:00:00.000Z",
+          "due_at": "2026-10-21T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-20T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 1,
+          "initial_mask": 282,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0.19217687074829928,
+            0.16411564625850342,
+            0.027210884353741496,
+            0.06887755102040816,
+            0.397108843537415,
+            0.15051020408163265
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        },
+        {
+          "origin_at": "2026-10-21T00:00:00.000Z",
+          "decision_at": "2026-10-21T00:00:00.000Z",
+          "due_at": "2026-10-22T00:00:00.000Z",
+          "horizon_days": 0,
+          "initial_mask": 794,
+          "probability": null,
+          "negative_probability": null,
+          "status": "estimacion_nativa",
+          "narrative_distribution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "model_xi_sha256": "88bb7d761ce9154c62beea9139f172df462ec376f8b5bd5692b9a90bda74251b"
+        }
+      ],
+      "observations": [],
+      "forecasts_sha256": "f53887a3eb268f763d0a5f578533e3b7095093917d91332471684df5f25cec05",
+      "native_program_sha256": "4c455e97c3443890e500d197b6d42cfad4de1217e9bb10cca56b171c7b9e7fb7",
+      "native_output_sha256": "f9eae6bfc601081235d1619f3944036d279b3d391ff63eed812a96b784d09fe0",
+      "by_horizon": [
+        {
+          "horizon_days": 0,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 1,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 2,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 3,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 4,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 5,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 6,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        },
+        {
+          "horizon_days": 7,
+          "count": 0,
+          "brier": null,
+          "log_loss": null,
+          "baseline_brier": null,
+          "brier_skill": null,
+          "coverage": 0,
+          "conditional_brier": null,
+          "conditional_baseline_brier": null,
+          "calibration": []
+        }
+      ]
+    }
+  ],
+  "horizons": [
+    {
+      "horizon_days": 0,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 1,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 2,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 3,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 4,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 5,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 6,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    },
+    {
+      "horizon_days": 7,
+      "count": 0,
+      "brier": null,
+      "baseline_brier": null,
+      "coverage": null,
+      "eligible_for_confirmation": false,
+      "retrospective_improvement": false
+    }
+  ],
+  "horizon_days_tested": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "certified_price_vintages": false,
+  "independent_fresh_holdout": false,
+  "live_activation": false,
+  "financial_edge_demonstrated": false,
+  "computation": "native Laplace domain operations; unmodified original QuantumRuntime/InverseMemory; classical arithmetic",
+  "interpretation": "Retrospective periods were explored earlier; this is a new temporal model test, not independent confirmation."
+}

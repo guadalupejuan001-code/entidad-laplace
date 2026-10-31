@@ -1,0 +1,88 @@
+{
+  "schema": 3,
+  "required_component": "LAPLACE M001 + XN01 nativo XI/Ether + U002 global 369 + F001 multiescala experimental",
+  "repository": "guadalupejuan001-code/REVERSE-PC",
+  "upstream": "guadalupejuan001-code/LaPlaceDIG",
+  "upstream_commits": {
+    "m001": "06ebce4bddf25d615cefd85ed24081f37504a492",
+    "bolsa": "08cafb094a5c0f81253509eff412214dd526b808",
+    "u002": "533c69bddd2c76d7f3619b97152a7a7e609aa613"
+  },
+  "contract": "laplace-android/integration-lock.json",
+  "gradle_check": ":app:verifyLaplaceIntegration",
+  "flavors": [
+    "control",
+    "workbench"
+  ],
+  "markets": [
+    "BTC-USD",
+    "SPY",
+    "AAPL",
+    "NVDA"
+  ],
+  "preserve": [
+    "BBY Q X01",
+    "XI/Ether",
+    "firma de distribución existente",
+    "datos privados del usuario",
+    "XN01 .xi nativo",
+    "selector BTC/bolsa",
+    "control HTTP 429",
+    "U002 369 señales",
+    "round-trip U002 XI/Ether",
+    "vista Mundo",
+    "registro global único",
+    "F001 motor multiescala",
+    "mundo U003 si hay registro válido, retroceso U002",
+    "14 horizontes 5m a 90d",
+    "M001/XN01 se conservan sin alterar"
+  ],
+  "release_requested_now": false,
+  "requires_node_on_phone": false,
+  "automatic_trading": false,
+  "note": "La próxima APK debe conservar M001 y XN01, además de U002: una captura mundial sellada de 369 señales descargada como snapshot único y verificada byte por byte dentro de XI/Inverse Ether Memory. U002 no modifica la predicción hasta demostrar mejora temporal.",
+  "upstream_commit": "533c69bddd2c76d7f3619b97152a7a7e609aa613",
+  "stock_prediction_backend": "XI/Ether · NativeRuntime",
+  "native_XI_for_all_markets": true,
+  "global_signals": 369,
+  "global_snapshot_path": "laplace-registro/universo/global-latest.json",
+  "global_prediction_inputs_enabled": false,
+  "native_U002_roundtrip": true,
+  "fusion_f001": {
+    "source": "LaPlaceDIG/prediccion/fusion-temporal.mjs",
+    "android_asset": "reverse-os-android/app/src/main/assets/laplace/fusion-temporal.mjs",
+    "horizons_minutes": [
+      5,
+      15,
+      30,
+      60,
+      120,
+      240,
+      480,
+      720,
+      1440,
+      4320,
+      10080,
+      20160,
+      43200,
+      129600
+    ],
+    "resolution_seconds": [
+      300,
+      3600,
+      86400
+    ],
+    "parallel_lanes": [
+      "BTC-USD ticker",
+      "5m OHLCV",
+      "1h OHLCV",
+      "1d OHLCV",
+      "U003 si se publica o U002 369"
+    ],
+    "uses_world_context_for": "escenario_y_cobertura_no_precio_central",
+    "uses_u003_when_available": true,
+    "global_prediction_central_price_enabled": false,
+    "android_code_only": true,
+    "apk_compiled_and_tested": false
+  }
+}
