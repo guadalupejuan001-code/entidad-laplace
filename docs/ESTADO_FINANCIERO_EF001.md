@@ -182,6 +182,7 @@ La ruta predeterminada del CLI es registros/input/postgres.
 
     npm ci
     npm run estado:financiero -- migrar
+    npm run estado:financiero -- reindexar-i001
     npm run estado:financiero -- mapa
     npm run estado:financiero -- importar-u003 evidencia/continuidad-u003-20261030/captura-integrada.json
     npm run estado:financiero -- corte 2026-10-30T17:03:17.000Z
