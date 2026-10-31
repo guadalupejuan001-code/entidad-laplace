@@ -1,0 +1,45 @@
+name: Entidad Laplace - continuidad del nucleo
+on:
+  push:
+    branches: [main, 'feature/d002-*']
+    paths:
+      - 'universo/**'
+      - 'prediccion/**'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/continuidad.yml'
+  pull_request:
+    paths:
+      - 'universo/**'
+      - 'prediccion/**'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/continuidad.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core-continuity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Install pinned dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Existing D001 / O001-A-B / F001 / U003
+        run: |
+          set -euo pipefail
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Confirm archive rather than duplicate schedules
+        run: |
+          test ! -f .github/workflows/seguimiento-m001.yml
+          test -f procedencia/workflows-originales/seguimiento-m001.yml
+          test -f MIGRACION.md
