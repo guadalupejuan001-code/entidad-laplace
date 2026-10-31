@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {Store} from '../input/almacen.mjs';
 import {sha,rawRecord} from '../input/contrato.mjs';
+import {normalize} from '../input/normalizar.mjs';
 import {universeSnapshot} from '../universo/estados.mjs';
 import {sellarCaptura} from '../universo/integridad.mjs';
 import {prepararLotesXI,compilarLotesXI,probarLotesXI} from '../estado-financiero/puente-xi.mjs';
 import {WORLD_DOMAIN_CATALOG,consultarCatalogo} from '../estado-financiero/catalogo-mundial.mjs';
 import {normalizarObservacion,normalizarDelta,normalizarCapturaU003,
   normalizarPronostico} from '../estado-financiero/modelo.mjs';
-import {guardarObservacion,importarU003,consultarCorte,coberturaCorte,
+import {guardarObservacion,importarU003,reindexarI001,consultarCorte,coberturaCorte,
   guardarEntidad,guardarRelacion,guardarRegla,guardarEscenario,
   guardarDelta,guardarIntervencion,consultarEstadosDispersos,
   guardarPronostico,guardarEvaluacion} from '../estado-financiero/repositorio.mjs';
@@ -334,5 +335,39 @@ test('EF001 importa captura U003 original archivada, sin inventar las 563 señal
     assert.ok(asOf.states.length>400);
     assert.ok(asOf.states.every(x=>new Date(x.known_at).toISOString()<=raw.at));
     assert.equal(asOf.global_coverage_complete,false);
+  }finally{await s.close()}
+});
+
+
+test('EF001 reproyecta historia I001 previa al nuevo esquema sin alterar evento ni revisiones',async()=>{
+  const s=await db();
+  try{
+    const r=rawRecord({id:'legacy',adapter:'macro_json',
+      url:'https://example.org/legacy'},JSON.stringify({
+      id:'historical',revision:'r1',series_id:'US-RATE',value:'5.123456789012345678901',
+      unit:'percent',observed_at:T1}),{received_at:T2});
+    const event=normalize(r)[0];
+    await s.db.query('INSERT INTO input_events(known_at,event_key,type,subject,source_id,event_time,event) '+
+      'VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb)',[
+      event.known_at,event.event_key,event.type,event.subject,event.source_id,
+      event.event_time,JSON.stringify(event)]);
+    assert.equal((await s.db.query('SELECT count(*)::int AS n FROM laplace_fin_observations')).rows[0].n,0);
+    const one=await reindexarI001(s,{asOf:T2,pageSize:1});
+    assert.equal(one.scanned,1);
+    assert.equal(one.inserted,1);
+    assert.equal(one.complete,true);
+    const again=await reindexarI001(s,{asOf:T2,pageSize:1});
+    assert.equal(again.inserted,0);
+    assert.equal((await consultarCorte(s,{asOf:T2})).states[0].value_text,
+      '5.123456789012345678901');
+    assert.equal((await s.db.query('SELECT count(*)::int AS n FROM input_events')).rows[0].n,1);
+  }finally{await s.close()}
+});
+
+test('EF001 no admite consultar escenarios futuros ni IDs de simulacion inventados',async()=>{
+  const s=await db();
+  try{
+    await assert.rejects(()=>consultarEstadosDispersos(s,{asOf:T2,scenario_id:'fake'}),
+      /escenario inexistente/);
   }finally{await s.close()}
 });
