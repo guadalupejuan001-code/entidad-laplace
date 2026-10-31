@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07111e"><title>LAPLACE · Android</title>
+<link rel="stylesheet" href="style.css">
+<script src="world.js" defer></script>
+<script src="engine.js" defer></script><script src="app.js" defer></script>
+</head><body>
+<header class="topbar">
+  <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
+    <div><h1>LAPLACE</h1><small>ENTIDAD · ANDROID</small></div>
+  </div>
+  <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
+</header>
+<main>
+  <nav class="tabs" aria-label="Secciones de Laplace">
+    <button type="button" data-tab="panel" aria-current="page">Panel</button>
+    <button type="button" data-tab="signals">Señales</button>
+    <button type="button" data-tab="tests">Pruebas</button>
+    <button type="button" data-tab="world">Mundo</button>
+  </nav>
+
+  <section id="panel" class="tabpage">
+    <div class="hero">
+      <div class="hero-caption"><span class="eyebrow">NÚCLEO VISUAL</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
+      <svg class="portal" viewBox="0 0 640 310" role="img" aria-label="Ojo triangular con vórtice central y corrientes de datos">
+      <defs>
+        <radialGradient id="halo"><stop stop-color="#527fff" stop-opacity=".35"/><stop offset=".48" stop-color="#25aaff" stop-opacity=".10"/><stop offset="1" stop-color="#08162c" stop-opacity="0"/></radialGradient>
+        <linearGradient id="tri" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#62edff"/><stop offset=".56" stop-color="#8595ff"/><stop offset="1" stop-color="#b1e6ff"/></linearGradient>
+        <filter id="glow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur stdDeviation="5"/></filter>
+      </defs>
+      <ellipse cx="318" cy="155" rx="220" ry="135" fill="url(#halo)"/>
+      <g id="streams" stroke="#3c99e9" stroke-width="1" fill="none" opacity=".45">
+        <path d="M0 15 Q145 32 257 116 T320 160"/>
+        <path d="M18 70 Q150 97 267 129 T320 160"/>
+        <path d="M0 145 Q145 151 269 144 T320 160"/>
+        <path d="M15 248 Q135 193 257 177 T320 160"/>
+        <path d="M640 12 Q487 48 385 120 T320 160"/>
+        <path d="M630 78 Q470 98 373 137 T320 160"/>
+        <path d="M640 170 Q480 165 369 155 T320 160"/>
+        <path d="M625 283 Q471 222 377 181 T320 160"/>
+        <path d="M190 0 Q214 76 283 125 T320 160"/>
+        <path d="M460 0 Q431 76 350 131 T320 160"/>
+        <path d="M194 310 Q227 230 285 190 T320 160"/>
+        <path d="M478 310 Q430 236 357 193 T320 160"/>
+      </g>
+      <g opacity=".55" fill="#67ddff">
+        <circle cx="58" cy="29" r="2.8"/><circle cx="94" cy="128" r="2"/>
+        <circle cx="145" cy="232" r="2.5"/><circle cx="244" cy="59" r="1.8"/>
+        <circle cx="488" cy="49" r="2.8"/><circle cx="570" cy="207" r="2"/>
+        <circle cx="418" cy="269" r="2.4"/><circle cx="508" cy="136" r="1.8"/>
+      </g>
+      <polygon points="230,73 460,112 310,266" fill="none" stroke="#74baff" stroke-width="10" opacity=".24" filter="url(#glow)"/>
+      <polygon class="triangle" points="230,73 460,112 310,266" fill="#0a1c37" fill-opacity=".15" stroke="url(#tri)" stroke-width="3"/>
+      <g class="swirl">
+        <circle cx="325" cy="157" r="65" stroke="#4d8bff" stroke-opacity=".25" stroke-width="1" fill="none"/>
+        <path d="M325,158 C320,139 339,125 358,139 C389,163 367,201 334,205 C284,210 270,157 300,132 C340,96 394,130 400,161" fill="none" stroke="#82ddff" stroke-width="3.3" stroke-linecap="round"/>
+        <path d="M325,158 C331,151 336,158 334,167 C331,187 297,180 300,158 C304,131 343,126 365,151" fill="none" stroke="#a7b0ff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="326" cy="158" r="6" fill="#a3f7ff"/>
+      </g>
+      <text x="20" y="150" class="svg-label">SEÑALES</text>
+      <text x="530" y="150" class="svg-label">ESTADOS</text>
+      </svg>
+      <div class="hero-sub"><span>DATOS <b>→</b> ESTADOS <b>→</b> EVOLUCIÓN</span><span class="research">LABORATORIO EXPERIMENTAL</span></div>
+    </div>
+
+    <div class="two-metrics">
+      <article class="metric">
+        <small>PRECIO OBSERVADO</small><strong id="lastPrice">—</strong>
+        <span id="priceTime">Sin lectura pública</span>
+      </article>
+      <article class="metric"><small>ESTIMACIÓN EXPERIMENTAL</small>
+        <strong id="estimate">—</strong><span id="relativeChange">Sin modelo</span>
+      </article>
+    </div>
+
+    <article class="card selector">
+      <div class="section-head"><div><small class="eyebrow">ACTIVO</small><h2>Mercado de referencia</h2></div><span class="outline-tag">SPOT · USD</span></div>
+      <div class="asset-row">
+        <label for="asset" class="sr-only">Activo</label>
+        <select id="asset" aria-label="Activo">
+          <option value="BTC-USD">Bitcoin · BTC/USD</option>
+          <option value="ETH-USD">Ethereum · ETH/USD</option>
+          <option value="SOL-USD">Solana · SOL/USD</option>
+        </select>
+        <button id="refresh" class="refresh" type="button">↻ Actualizar</button>
+      </div>
+      <small id="dataStatus" class="helper">Fuente pública: Coinbase Exchange. Sin conexión todavía.</small>
+    </article>
+
+    <article class="card horizons">
+      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>Horizonte de predicción</h2></div><span id="horizonTag" class="outline-tag">1 HORA</span></div>
+      <div id="horizons" class="horizon-grid" role="group" aria-label="Elegir duración de la proyección">
+        <button type="button" data-hours="1" class="active" aria-pressed="true">1 h</button>
+        <button type="button" data-hours="5" aria-pressed="false">5 h</button>
+        <button type="button" data-hours="12" aria-pressed="false">12 h</button>
+        <button type="button" data-hours="24" aria-pressed="false">24 h</button>
+        <button type="button" data-hours="48" aria-pressed="false">2 días</button>
+        <button type="button" data-hours="72" aria-pressed="false">3 días</button>
+        <button type="button" data-hours="168" aria-pressed="false">7 días</button>
+        <button type="button" data-hours="336" aria-pressed="false">14 días</button>
+      </div>
+      <p class="fineprint">Proyección de laboratorio, no una predicción financiera validada. Las bandas son exploratorias.</p>
+    </article>
+
+    <div class="actions">
+      <button id="train" type="button"><span class="action-icon">◎</span><b>Entrenar</b><small>Ajustar modelo</small></button>
+      <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Test temporal</small></button>
+      <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Medir error</small></button>
+      <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar</b><small>1 h → 14 días</small></button>
+    </div>
+
+    <article class="card chart-card">
+      <div class="section-head"><div><small class="eyebrow">EVOLUCIÓN</small><h2>Historia y proyección</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
+      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios históricos y escenario proyectado"></canvas>
+      <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
+      <p id="chartComment" class="helper">La gráfica se construirá después de obtener datos reales.</p>
+    </article>
+
+    <article class="card audit-card">
+      <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
+      <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
+      <div class="stats">
+        <div><span>Velas de entrenamiento</span><strong id="trainingCount">—</strong></div>
+        <div><span>Pruebas reservadas</span><strong id="testingCount">—</strong></div>
+        <div><span>Error absoluto del modelo</span><strong id="modelError">—</strong></div>
+        <div><span>Referencia de persistencia</span><strong id="baselineError">—</strong></div>
+      </div>
+      <p class="fineprint">Aprendizaje AR(1) regularizado en el teléfono, independiente del motor global EF005. Sin órdenes de compraventa.</p>
+    </article>
+  </section>
+
+  <section id="signals" class="tabpage" hidden>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">OBSERVACIÓN</small><h2>Entradas móviles</h2></div><span class="outline-tag">PÚBLICAS</span></div>
+      <p>Las señales móviles son velas horarias y diarias del activo seleccionado. El resto del sistema mundial pertenece al archivo EF005 y no se presenta como entrada del modelo local.</p>
+      <div id="signalRows" class="signal-rows"></div>
+    </article>
+    <article class="card"><h2>Integridad y limitaciones</h2><p>Las cotizaciones se descargan desde Coinbase Exchange por HTTPS. La aplicación no solicita acceso a cuentas, claves privadas ni permisos para operar dinero.</p></article>
+  </section>
+
+  <section id="tests" class="tabpage" hidden>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">PRUEBA TEMPORAL</small><h2>Diagnóstico del modelo</h2></div><span class="outline-tag">RETROSPECTIVO</span></div>
+      <div id="testResults"><p>Entrena el modelo para generar pruebas fuera del tramo de ajuste.</p></div>
+    </article>
+    <article class="card"><h2>Registro local</h2><p>Las proyecciones quedan guardadas en este dispositivo. El resultado futuro solo se comprobará cuando existan nuevas observaciones correspondientes al objetivo.</p><div id="history" class="history"></div>
+      <button id="clearHistory" class="secondary" type="button">Limpiar registro local</button></article>
+  </section>
+
+  <section id="world" class="tabpage" hidden>
+    <article class="card"><div class="section-head"><div><small class="eyebrow">EF005 · ARCHIVO</small><h2>Estados financieros mundiales</h2></div><span class="outline-tag">SNAPSHOT</span></div>
+      <div class="two-metrics world-metrics">
+        <div class="metric"><small>ESTADOS ARCHIVADOS</small><strong id="worldStates">—</strong></div>
+        <div class="metric"><small>DOMINIOS</small><strong id="worldDomains">—</strong></div>
+      </div>
+      <p id="worldTime" class="helper">Archivo no integrado.</p>
+      <div id="worldGroups" class="group-list"></div>
+      <p class="fineprint">Captura pública verificada durante la compilación, no necesariamente en vivo. El núcleo financiero de servidor aprende y registra estados por separado; no se ejecuta una copia falsa de EF005 dentro de la APK.</p>
+      <a href="https://github.com/guadalupejuan001-code/entidad-laplace" class="external">Consultar repositorio de Laplace</a>
+    </article>
+  </section>
+  <footer>LAPLACE · DEMONIO DIGITAL · INVESTIGACIÓN · NO TRADING</footer>
+</main>
+</body></html>
