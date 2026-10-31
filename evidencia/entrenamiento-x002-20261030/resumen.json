@@ -1,0 +1,265 @@
+{
+  "schema": "laplace-entrenamiento-x002-v1",
+  "generated_at": "2026-10-30T18:18:06.501Z",
+  "bars": 7488,
+  "partitions": {
+    "training": [
+      "2026-10-05T18:05:00.000Z",
+      "2026-10-19T18:05:00.000Z"
+    ],
+    "validation": [
+      "2026-10-19T18:05:00.000Z",
+      "2026-10-22T18:05:00.000Z"
+    ],
+    "calibration": [
+      "2026-10-22T18:05:00.000Z",
+      "2026-10-25T18:05:00.000Z"
+    ],
+    "test": [
+      "2026-10-25T18:05:00.000Z",
+      "2026-10-30T18:05:00.000Z"
+    ]
+  },
+  "evaluation": "retrospective_chronological_not_fresh_prospective_holdout",
+  "availability_assumption": "exploratory_close_assumption_not_authenticated_vintages",
+  "horizons": [
+    {
+      "minutes": 15,
+      "status": "retrospective_evaluation_only",
+      "prior_strength": 64,
+      "calibration_lambda": 0,
+      "native": {
+        "eligible": 480,
+        "count": 480,
+        "abstentions": 0,
+        "brier": 0.25490089196852617,
+        "binary_accuracy": 0.4583333333333333,
+        "direction_accuracy": 0.4583333333333333
+      },
+      "calibrated": {
+        "eligible": 480,
+        "count": 480,
+        "abstentions": 0,
+        "brier": 0.2491745937376158,
+        "binary_accuracy": 0.5291666666666667,
+        "direction_accuracy": 0.5291666666666667
+      },
+      "calibration_retains_state_information": false,
+      "baseline": {
+        "eligible": 480,
+        "count": 480,
+        "abstentions": 0,
+        "brier": 0.2518974220299273,
+        "binary_accuracy": 0.4708333333333333,
+        "direction_accuracy": 0.4708333333333333
+      },
+      "m001": {
+        "eligible": 480,
+        "count": 480,
+        "abstentions": 0,
+        "direction_accuracy": 0.5,
+        "mae_usd": 123.27435133100326,
+        "persistence_mae_usd": 120.79697916666676,
+        "price_within_10_bps": 0.46458333333333335
+      },
+      "common_direction": {
+        "count": 480,
+        "native": 0.4583333333333333,
+        "calibrated": 0.5291666666666667,
+        "m001": 0.5,
+        "persistence": 0
+      }
+    },
+    {
+      "minutes": 30,
+      "status": "retrospective_evaluation_only",
+      "prior_strength": 64,
+      "calibration_lambda": 1,
+      "native": {
+        "eligible": 240,
+        "count": 240,
+        "abstentions": 0,
+        "brier": 0.257324407932869,
+        "binary_accuracy": 0.4666666666666667,
+        "direction_accuracy": 0.4666666666666667
+      },
+      "calibrated": {
+        "eligible": 240,
+        "count": 240,
+        "abstentions": 0,
+        "brier": 0.257324407932869,
+        "binary_accuracy": 0.4666666666666667,
+        "direction_accuracy": 0.4666666666666667
+      },
+      "calibration_retains_state_information": true,
+      "baseline": {
+        "eligible": 240,
+        "count": 240,
+        "abstentions": 0,
+        "brier": 0.25535424553812763,
+        "binary_accuracy": 0.42916666666666664,
+        "direction_accuracy": 0.42916666666666664
+      },
+      "m001": {
+        "eligible": 240,
+        "count": 240,
+        "abstentions": 0,
+        "direction_accuracy": 0.4166666666666667,
+        "mae_usd": 176.01843113450008,
+        "persistence_mae_usd": 169.5474583333334,
+        "price_within_10_bps": 0.37916666666666665
+      },
+      "common_direction": {
+        "count": 240,
+        "native": 0.4666666666666667,
+        "calibrated": 0.4666666666666667,
+        "m001": 0.4166666666666667,
+        "persistence": 0
+      }
+    },
+    {
+      "minutes": 60,
+      "status": "retrospective_evaluation_only",
+      "prior_strength": 64,
+      "calibration_lambda": 0.75,
+      "native": {
+        "eligible": 120,
+        "count": 120,
+        "abstentions": 0,
+        "brier": 0.2506775642163181,
+        "binary_accuracy": 0.48333333333333334,
+        "direction_accuracy": 0.48333333333333334
+      },
+      "calibrated": {
+        "eligible": 120,
+        "count": 120,
+        "abstentions": 0,
+        "brier": 0.2509326264967826,
+        "binary_accuracy": 0.48333333333333334,
+        "direction_accuracy": 0.48333333333333334
+      },
+      "calibration_retains_state_information": true,
+      "baseline": {
+        "eligible": 120,
+        "count": 120,
+        "abstentions": 0,
+        "brier": 0.2478276545880663,
+        "binary_accuracy": 0.5583333333333333,
+        "direction_accuracy": 0.5583333333333333
+      },
+      "m001": {
+        "eligible": 120,
+        "count": 120,
+        "abstentions": 0,
+        "direction_accuracy": 0.4666666666666667,
+        "mae_usd": 259.3884177501864,
+        "persistence_mae_usd": 250.01541666666745,
+        "price_within_10_bps": 0.26666666666666666
+      },
+      "common_direction": {
+        "count": 120,
+        "native": 0.48333333333333334,
+        "calibrated": 0.48333333333333334,
+        "m001": 0.4666666666666667,
+        "persistence": 0
+      }
+    },
+    {
+      "minutes": 240,
+      "status": "retrospective_evaluation_only",
+      "prior_strength": 64,
+      "calibration_lambda": 0,
+      "native": {
+        "eligible": 30,
+        "count": 28,
+        "abstentions": 2,
+        "brier": 0.2528171496661799,
+        "binary_accuracy": 0.35714285714285715,
+        "direction_accuracy": 0.35714285714285715
+      },
+      "calibrated": {
+        "eligible": 30,
+        "count": 28,
+        "abstentions": 2,
+        "brier": 0.24571428571428583,
+        "binary_accuracy": 0.5714285714285714,
+        "direction_accuracy": 0.5714285714285714
+      },
+      "calibration_retains_state_information": false,
+      "baseline": {
+        "eligible": 28,
+        "count": 28,
+        "abstentions": 0,
+        "brier": 0.25386309201885193,
+        "binary_accuracy": 0.42857142857142855,
+        "direction_accuracy": 0.42857142857142855
+      },
+      "m001": {
+        "eligible": 30,
+        "count": 30,
+        "abstentions": 0,
+        "direction_accuracy": 0.4666666666666667,
+        "mae_usd": 609.3015795160532,
+        "persistence_mae_usd": 575.7116666666678,
+        "price_within_10_bps": 0.16666666666666666
+      },
+      "common_direction": {
+        "count": 28,
+        "native": 0.35714285714285715,
+        "calibrated": 0.5714285714285714,
+        "m001": 0.5,
+        "persistence": 0
+      }
+    },
+    {
+      "minutes": 1440,
+      "status": "retrospective_evaluation_only",
+      "prior_strength": 16,
+      "calibration_lambda": 1,
+      "native": {
+        "eligible": 5,
+        "count": 2,
+        "abstentions": 3,
+        "brier": 0.22884002770083103,
+        "binary_accuracy": 0.5,
+        "direction_accuracy": 0.5
+      },
+      "calibrated": {
+        "eligible": 5,
+        "count": 2,
+        "abstentions": 3,
+        "brier": 0.22884002770083103,
+        "binary_accuracy": 0.5,
+        "direction_accuracy": 0.5
+      },
+      "calibration_retains_state_information": true,
+      "baseline": {
+        "eligible": 2,
+        "count": 2,
+        "abstentions": 0,
+        "brier": 0.265625,
+        "binary_accuracy": 0.5,
+        "direction_accuracy": 0.5
+      },
+      "m001": {
+        "eligible": 5,
+        "count": 5,
+        "abstentions": 0,
+        "direction_accuracy": 0.6,
+        "mae_usd": 976.1963467947237,
+        "persistence_mae_usd": 1017.0619999999996,
+        "price_within_10_bps": 0.4
+      },
+      "common_direction": {
+        "count": 2,
+        "native": 0.5,
+        "calibrated": 0.5,
+        "m001": 1,
+        "persistence": 0
+      }
+    }
+  ],
+  "report_sha256": "f10b83356e96bb45d0bc18448cfd8b1108cd676e1a7b182b33d2e6055ec8b28b",
+  "production_changed": false,
+  "financial_edge_demonstrated": false
+}

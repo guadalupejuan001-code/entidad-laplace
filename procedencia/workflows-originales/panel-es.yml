@@ -1,0 +1,45 @@
+name: LAPLACE - Panel en español
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verificar-panel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Comprobar sintaxis y contratos
+        run: |
+          node --check panel/servidor.mjs
+          node --check panel/registro.mjs
+          node --check panel/publico/panel.js
+          node --check bitcoin/intradia15.mjs
+          npm run test:panel
+      - name: Iniciar panel local y verificar la página sin datos inventados
+        run: |
+          set -euo pipefail
+          export LAPLACE_PANEL_ARCHIVO="$RUNNER_TEMP/panel-laplace.json"
+          npm run panel > "$RUNNER_TEMP/salida-panel.txt" 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          for intento in 1 2 3 4 5 6 7 8; do
+            if curl --fail --silent http://127.0.0.1:4179/api/estado > "$RUNNER_TEMP/estado.json"; then break; fi
+            sleep 1
+          done
+          node --input-type=module -e 'import {readFileSync} from "node:fs"; import assert from "node:assert/strict"; const j=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/estado.json")); assert.equal(j.ultima,null); assert.equal(j.horizonte_disponible_minutos,15); assert.equal(j.actualizacion_automatica,false);'
+          curl --fail --silent http://127.0.0.1:4179/ > "$RUNNER_TEMP/pagina.html"
+          grep -q 'lang="es"' "$RUNNER_TEMP/pagina.html"
+          grep -q 'LAPLACE' "$RUNNER_TEMP/pagina.html"
+          ! grep -q 'Universal Observatory' "$RUNNER_TEMP/pagina.html"

@@ -1,0 +1,113 @@
+{
+  "observations": [
+    {
+      "id": "i001-21388e18697f052497ba5f0b16e85f438d51732fad81b563",
+      "domain": "mercado",
+      "variable": "BTC-USD/precio_e8",
+      "unit": "USD_e-8",
+      "value": 7683479000000,
+      "observed_at": "2026-10-30T18:20:27.853Z",
+      "known_at": "2026-10-30T18:20:28.107Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+    },
+    {
+      "id": "i001-07fce71384340436df21ba7919a95da3397439c3e705d94b",
+      "domain": "mercado",
+      "variable": "BTC-USD/precio_e8",
+      "unit": "USD_e-8",
+      "value": 7684304000000,
+      "observed_at": "2026-10-30T18:20:29.633Z",
+      "known_at": "2026-10-30T18:20:30.206Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+    },
+    {
+      "id": "i001-af70fb1ff7ff0119c6fabd2c9c18f6c0fbca23f39e359839",
+      "domain": "mercado",
+      "variable": "BTC-USD/precio_e8",
+      "unit": "USD_e-8",
+      "value": 7659313000000,
+      "observed_at": "2026-10-30T18:38:24.794Z",
+      "known_at": "2026-10-30T18:38:26.048Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+    }
+  ],
+  "batches": [
+    {
+      "snapshot": {
+        "schema": "laplace-universo-estados-u001-v1",
+        "cutoff": "2026-10-30T18:38:27.939Z",
+        "total_supplied": 3,
+        "withheld_future": 0,
+        "known_states": 3,
+        "domains": [
+          "mercado"
+        ],
+        "states": [
+          {
+            "id": "i001-21388e18697f052497ba5f0b16e85f438d51732fad81b563",
+            "domain": "mercado",
+            "variable": "BTC-USD/precio_e8",
+            "observed_at": "2026-10-30T18:20:27.853Z",
+            "known_at": "2026-10-30T18:20:28.107Z",
+            "value": 7683479000000,
+            "unit": "USD_e-8",
+            "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+          },
+          {
+            "id": "i001-07fce71384340436df21ba7919a95da3397439c3e705d94b",
+            "domain": "mercado",
+            "variable": "BTC-USD/precio_e8",
+            "observed_at": "2026-10-30T18:20:29.633Z",
+            "known_at": "2026-10-30T18:20:30.206Z",
+            "value": 7684304000000,
+            "unit": "USD_e-8",
+            "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+          },
+          {
+            "id": "i001-af70fb1ff7ff0119c6fabd2c9c18f6c0fbca23f39e359839",
+            "domain": "mercado",
+            "variable": "BTC-USD/precio_e8",
+            "observed_at": "2026-10-30T18:38:24.794Z",
+            "known_at": "2026-10-30T18:38:26.048Z",
+            "value": 7659313000000,
+            "unit": "USD_e-8",
+            "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+          }
+        ],
+        "variables": [
+          {
+            "domain": "mercado",
+            "variable": "BTC-USD/precio_e8",
+            "count": 3,
+            "first_seen_at": "2026-10-30T18:20:28.107Z",
+            "last_seen_at": "2026-10-30T18:38:26.048Z",
+            "last_value": 7659313000000,
+            "unit": "USD_e-8"
+          }
+        ],
+        "relations": [],
+        "relations_type": "hipotesis_o_precedencia_no_causalidad_probada",
+        "complete_universe_observed": false,
+        "snapshot_sha256": "7b11147ef7b08ad7f4bf61d79ae6b2f2dee82a209eaba8b1a260fe576283c93a"
+      },
+      "proof": {
+        "status": "U002_XI_ETHER_VERIFICADO",
+        "records": 3,
+        "materialized_bytes": 112,
+        "exact_roundtrip": true,
+        "snapshot_sha256": "7b11147ef7b08ad7f4bf61d79ae6b2f2dee82a209eaba8b1a260fe576283c93a",
+        "encoded_sha256": "97afbd255ba2b3a1e11deacaed5cfb7cc7a72e993b6a491b257f49db3ed078dc",
+        "xi_sha256": "c5ccbd78e9dfd0a31564198fc07ab125dba053a49abc3401567283ec42026ab4",
+        "base_address": "970000000000000000000000000000",
+        "inverse_memory_overrides": 90,
+        "active_qubits": 0,
+        "prediction_generated": false
+      }
+    }
+  ],
+  "excluded": [],
+  "native_payload": "exact_scaled_integers_and_hash_keys",
+  "full_text_and_uint256_in_host": true,
+  "exact_roundtrip": true,
+  "prediction_generated": false
+}

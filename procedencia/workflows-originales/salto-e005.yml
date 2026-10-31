@@ -1,0 +1,107 @@
+name: LaPlaceDIG E005 - salto XI / RXE nativo
+on:
+  push:
+    branches:
+      - feat/laplace-salto-temporal-xi-e005
+      - main
+      - test/laplace-e005-extreme-20261028
+  pull_request:
+    branches:
+      - feat/laplace-aprende-leyes-xi
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probar-salto-xi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Fuente E005
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: REVERSE-PC real y fijado por commit
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Mundo X original requerido por REVERSE-PC
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - name: Mundo X original fijado para el aprendiz E001
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/ether-e001
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Comprobar referencias, compilación de fuente y pruebas sin binario
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check salto/compilar.mjs
+          node --check tools/salto.mjs
+          node --test tests/salto.test.mjs
+      - name: Compilar REVERSE-PC con su propietario Ether original
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Compilar propietario XI E001 sin modificar su SHA
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/ether-e001 rev-parse HEAD)" = 3d29556eff4d1079c791abab38e203fc209f1722
+          cmake -S deps/ether-e001/quantum-runtime -B build-e001 -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-e001 --target mundo_x_quantum --parallel 2
+      - name: Ejecutar XI y RXE reales contra oráculo independiente
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/salto.test.mjs
+      - name: Prueba de integracion E001 a E005 con pronosticos sellados
+        run: |
+          set -euo pipefail
+          mkdir -p ci-evidence
+          node --check tests/salto-integracion.mjs
+          node tests/salto-integracion.mjs ./build-reverse/reverse_pc ./build-e001/mundo_x_quantum ci-evidence/e001-e005.json
+      - name: Pruebas adversariales hasta 10^12 pasos con referencia de ciclos independiente
+        run: |
+          set -euo pipefail
+          mkdir -p ci-evidence
+          node --check tests/salto-extremo.mjs
+          node tests/salto-extremo.mjs ./build-reverse/reverse_pc ci-evidence/extremo.json
+      - name: Benchmark de tiempo y RAM real, XI vs XI
+        run: |
+          set -euo pipefail
+          node --check tests/salto-rendimiento.mjs
+          node tests/salto-rendimiento.mjs ./build-reverse/reverse_pc ci-evidence/rendimiento.json
+      - name: Guardar ejemplo reproducible y verificar bytecode RXE
+        run: |
+          set -euo pipefail
+          mkdir -p ci-evidence
+          node tools/salto.mjs ejemplo 1000000 1011 ci-evidence/salto-e005.xi > ci-evidence/manifest.json
+          build-reverse/reverse_pc compile ci-evidence/salto-e005.xi ci-evidence/Laplace-Salto.rxe "LAPLACE E005"
+          build-reverse/reverse_pc inspect-rxe ci-evidence/Laplace-Salto.rxe > ci-evidence/rxe.json
+          build-reverse/reverse_pc init ci-evidence/estado-inicial.rvp
+          build-reverse/reverse_pc run ci-evidence/Laplace-Salto.rxe ci-evidence/estado-inicial.rvp ci-evidence/estado-final.rvp > ci-evidence/observacion.jsonl
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Laplace-E005-Salto-XI-RXE
+          path: ci-evidence/
+          retention-days: 30
+          if-no-files-found: warn

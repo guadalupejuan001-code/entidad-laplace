@@ -1,0 +1,21 @@
+{
+  "kafka_version": "4.1.2",
+  "brokers": 3,
+  "replicas": 3,
+  "min_insync_replicas": 2,
+  "acks": "all",
+  "initial_unique_macro_events": 12,
+  "repeated_delivery": 1,
+  "documents": 1,
+  "derived_narratives": 1,
+  "transient_storage_failures_recovered": 2,
+  "events_after_one_broker_stopped": 15,
+  "health": {
+    "engine": "embedded_postgresql",
+    "events": "15",
+    "quarantined": "0",
+    "pending_outbox": "0"
+  },
+  "benchmark": false,
+  "scope": "single host; three processes; not three failure-independent machines"
+}

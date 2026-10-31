@@ -1,0 +1,78 @@
+name: LAPLACE U002 - registro mundial verificado
+on:
+  schedule:
+    - cron: '27 * * * *'
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'universo/**'
+      - '.github/workflows/universo-global-registro.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'universo/**'
+      - '.github/workflows/universo-global-registro.yml'
+permissions:
+  contents: read
+jobs:
+  capturar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Capturar señales globales disponibles sin completar vacíos con cero
+        run: |
+          mkdir -p ci-global
+          node universo/registro-global.mjs --directorio ci-global | tee ci-global/salida.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-global/global-summary.json"));assert.ok(r.known_signals>0&&r.known_signals<=r.nominal_signals);assert.equal(r.nominal_signals,369);assert.equal(r.failed_sources,0);assert.equal(r.prediction_inputs_enabled,false);'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-u002-registro-captura
+          path: ci-global/**
+          retention-days: 7
+  publicar:
+    if: github.event_name != 'pull_request'
+    needs: capturar
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      contents: write
+    concurrency:
+      group: laplace-u002-global-registro
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: laplace-u002-registro-captura
+          path: _captura
+      - uses: actions/checkout@v4
+        with:
+          ref: laplace-registro
+          path: _registro
+          persist-credentials: true
+      - name: Publicar captura U002 con cobertura declarada
+        run: |
+          set -euo pipefail
+          mkdir -p _registro/universo
+          cp _captura/global-latest.json _registro/universo/global-latest.json
+          cp _captura/global-summary.json _registro/universo/global-summary.json
+          git -C _registro config user.name 'LAPLACE U002 registro'
+          git -C _registro config user.email 'laplace-registro@users.noreply.github.com'
+          git -C _registro add -- universo/global-latest.json universo/global-summary.json
+          if ! git -C _registro diff --cached --quiet; then
+            git -C _registro commit -m "U002 global 369 señales $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git -C _registro push origin HEAD:laplace-registro
+          fi

@@ -1,0 +1,50 @@
+{
+  "name": "laplacedig",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "description": "Laplace: leyes binarias y probabilidad de mercado desde narrativa geopolitica/humanitaria en Ether/XI",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "help": "node tools/laplace.mjs --help",
+    "panel": "node panel/servidor.mjs",
+    "test:panel": "node --test tests/panel.test.mjs tests/intradia15.test.mjs tests/universo.test.mjs tests/panel-regresion.test.mjs",
+    "seguimiento": "node seguimiento/ciclo.mjs",
+    "seguimiento:continuo": "node seguimiento/ciclo.mjs --continuo",
+    "test:seguimiento": "node --test tests/seguimiento.test.mjs",
+    "fuentes:oficiales": "node tools/fuentes-oficiales.mjs",
+    "test:fuentes": "node --test tests/fuentes-oficiales.test.mjs tests/global-u003.test.mjs tests/global.test.mjs tests/noticias-vintages.test.mjs",
+    "vintages:macro": "node tools/vintages-macro.mjs",
+    "capital": "node tools/capital.mjs",
+    "test:capital": "node --test tests/capital.test.mjs",
+    "entrenar": "node tools/entrenar.mjs",
+    "test:entrenamiento": "node --test tests/entrenamiento.test.mjs tests/mercado-xi-x001.test.mjs",
+    "laplace": "node tools/iniciar.mjs",
+    "input:install": "node tools/laplace.mjs entrada instalar",
+    "input": "node tools/laplace.mjs entrada iniciar",
+    "input:status": "node tools/laplace.mjs entrada estado",
+    "test:input": "node --test tests/input*.test.mjs",
+    "fusion": "node tools/fusion.mjs",
+    "test:fusion": "node --test tests/fusion-temporal.test.mjs",
+    "finra:o001": "node tools/finra-o001.mjs",
+    "test:finra": "node --test tests/finra-o001.test.mjs",
+    "finra:o001b": "node tools/finra-o001b.mjs",
+    "test:finra-o001b": "node --test tests/finra-o001b.test.mjs",
+    "derivados:d001": "node tools/derivados-d001.mjs",
+    "test:derivados": "node --test tests/derivados-d001.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.13",
+    "fast-xml-parser": "5.11.2",
+    "https-proxy-agent": "9.1.0",
+    "kafkajs": "2.2.4",
+    "lossless-json": "4.3.3",
+    "parse5": "8.0.1",
+    "pg": "8.23.1",
+    "undici": "6.29.1",
+    "ws": "8.22.0"
+  }
+}

@@ -1,0 +1,1626 @@
+[
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 1,
+    "previous_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "slot": "b22cd7dc5640e707ef2b3e1a211c49b055110bdf3f3c4e4fc16a08eb41517f21",
+    "revision_index": 1,
+    "version_fingerprint": "b72ae921ce5d8eff7937353c782364adfea15db5d55aaead11b2a3565f2021fd",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-BRA-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "BRA_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 2.2857464902475,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "32fd603a95b6e8b0b1330519ae389be80980e960923276254ed13a699baa45b1"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 2,
+    "previous_sha256": "32fd603a95b6e8b0b1330519ae389be80980e960923276254ed13a699baa45b1",
+    "slot": "a70c2ad134261937b2c1fb625616525f46b465b71733449c521a80ab014762e7",
+    "revision_index": 1,
+    "version_fingerprint": "2b286b18a54083b29998a2307435f6824f4c27599843e132df080ed096a2c523",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-CHN-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "CHN_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 4.95994886240992,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "4036236c0ac67e304b398e5b8eccd16f86c97b260249aa65cd699982c2bdb594"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 3,
+    "previous_sha256": "4036236c0ac67e304b398e5b8eccd16f86c97b260249aa65cd699982c2bdb594",
+    "slot": "560a490322b327dee2478c755da3a17d1c90a5474a4ec88eac4fa19770c8a4ee",
+    "revision_index": 1,
+    "version_fingerprint": "e3433ee558fabb8fb28370dd378157d74abf5420e9c910832cbfe3bdfaf3d7c2",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-DEU-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "DEU_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 0.239578342117881,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "3da80248525c78b5e9a14d72ee42729b5f22c187d98c456a6507c53d5bd1419d"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 4,
+    "previous_sha256": "3da80248525c78b5e9a14d72ee42729b5f22c187d98c456a6507c53d5bd1419d",
+    "slot": "704050e9802ee04707198d53d0b8b7dc9cb7f768774aee45c0881a11b7bf2424",
+    "revision_index": 1,
+    "version_fingerprint": "b792bb97601fb4660a276195131d21f507473aeff93fa5d99f1ebfd7598ddf0c",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-GBR-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "GBR_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 1.38844207858726,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "c1c9824eca11f19a46af6d44776cfcd2813fa51e03994bca081888a8af00f365"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 5,
+    "previous_sha256": "c1c9824eca11f19a46af6d44776cfcd2813fa51e03994bca081888a8af00f365",
+    "slot": "26299bbe2c25bc9a043c411785638609e46101bb82928db8addd3a4e88456a9b",
+    "revision_index": 1,
+    "version_fingerprint": "df39f29549252a6503f8b93249093ec9e6b7e74db6b8893be965a00076d83b52",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-IND-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "IND_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 7.56666179284244,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "1421ecc59a648d3881b118e46d2c9c9e6e6537de3f4b964df0ebf4c067fcf809"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 6,
+    "previous_sha256": "1421ecc59a648d3881b118e46d2c9c9e6e6537de3f4b964df0ebf4c067fcf809",
+    "slot": "0c603c555ae57d927ecf6bef40aad3e764cca7382cc0053b011d4a02a86f3576",
+    "revision_index": 1,
+    "version_fingerprint": "b5145b951157386cc4f866b52e03b7f5860b51aad8061a30190d1fd6345c02b5",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-JPN-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "JPN_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 1.19311288444599,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "705db9806c6f69a1c5ca2646f35e641edd838506a6a0f3c77dfa6e54ec3bd19a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 7,
+    "previous_sha256": "705db9806c6f69a1c5ca2646f35e641edd838506a6a0f3c77dfa6e54ec3bd19a",
+    "slot": "429005bcbf26726c8eb821a2bc010ac33c1b9ea22a0406f1ed1c24be0755d6f3",
+    "revision_index": 1,
+    "version_fingerprint": "d67b5f36d2a1b347fa423625101f3f64573e2196f4c0be36919b79f5048a2cae",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-USA-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "USA_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 2.16138195623856,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "ae47945960be2828b40054369e737bed88188a6804fcdd0a4aa7fd8764877e8c"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 8,
+    "previous_sha256": "ae47945960be2828b40054369e737bed88188a6804fcdd0a4aa7fd8764877e8c",
+    "slot": "dfe36ab8d468169cd60e9edefcb0f2e419a0ce162ffab6682047a5f65253ea6f",
+    "revision_index": 1,
+    "version_fingerprint": "bdab4c73e6f64a7310da86048d39f187578a84966a3348df195443b389dc2e6c",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-WLD-gdp_growth-2025",
+      "domain": "macro_global",
+      "variable": "WLD_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.042Z",
+      "value": 2.92127318539153,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "d0cbe17960d29e82b0dacf1479d389ae6aaa972cec16df0b76d5e754fb9cf7a6"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 9,
+    "previous_sha256": "d0cbe17960d29e82b0dacf1479d389ae6aaa972cec16df0b76d5e754fb9cf7a6",
+    "slot": "b5358c26888b5fa28a6dbd8c82dd42ec052521b94bd45a34e354f0e55a218516",
+    "revision_index": 1,
+    "version_fingerprint": "208628076c519f2c6f1588e311d30394fb37cf2801ae8bab9a8643fdbc7a0719",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-BRA-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "BRA_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 5.01675279604836,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "3ec36ea68fa85e44570c3102f13b027ed12a3af6ba807e8b0454300f4233fe39"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 10,
+    "previous_sha256": "3ec36ea68fa85e44570c3102f13b027ed12a3af6ba807e8b0454300f4233fe39",
+    "slot": "d9cb62895965a9a786612bd6d1163b3d7189b96f2c9badd47815f391b81bee0b",
+    "revision_index": 1,
+    "version_fingerprint": "f0e401e51b12d52554a92d10211fa20033d787c594761faa770232de1b8c235f",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-CHN-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "CHN_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 0.0595646916565402,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "0d7e139381166947ef75df16adc8171c8bffe8cb597cc0494a27e3d145c986b5"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 11,
+    "previous_sha256": "0d7e139381166947ef75df16adc8171c8bffe8cb597cc0494a27e3d145c986b5",
+    "slot": "7928c39b64faba2d271e539e023dedb7dc9041eab51c37d92ae6854acf116931",
+    "revision_index": 1,
+    "version_fingerprint": "426c1ac626b2e2c745d6c3fa9f444afe5cd3e731095951cf7c6f058bdf71ff07",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-DEU-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "DEU_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 2.17178770949721,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "8fa796100f4e3562f73aa68796b9127573f2fa7bd8d840f699f0f1a71ce95a5a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 12,
+    "previous_sha256": "8fa796100f4e3562f73aa68796b9127573f2fa7bd8d840f699f0f1a71ce95a5a",
+    "slot": "da7c69e45409e5041cdf66f32cb54432872d18693dc90a4d4893a451c9226b56",
+    "revision_index": 1,
+    "version_fingerprint": "dd3ad0a3480887b47f793608547d5efbbf1e4db176d2a8722c0210fc66dd2e37",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-GBR-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "GBR_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 3.88306881625999,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "b04bae41a0056f1278377e6bb1b8c5b45f56d7319fe76c87b8a785aac15c9b26"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 13,
+    "previous_sha256": "b04bae41a0056f1278377e6bb1b8c5b45f56d7319fe76c87b8a785aac15c9b26",
+    "slot": "1ba923c02d46256f41b8721a6786ab1b400198e90b1c64778ce63c9fc31811e8",
+    "revision_index": 1,
+    "version_fingerprint": "afc06e41792e45aa862dbf66a3cc1c62cb61ae4256a2009a5562210a2a0e378e",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-IND-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "IND_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 2.39884954182294,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "95c04ad5a9fc705d0b5c4472321a299a3ee7d375f56d4cf79b9bae315b264216"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 14,
+    "previous_sha256": "95c04ad5a9fc705d0b5c4472321a299a3ee7d375f56d4cf79b9bae315b264216",
+    "slot": "2e2916f5c3f6826fb23c0bd95f1e37b6f9a1e95946d5c7341ec650c2ed593d0e",
+    "revision_index": 1,
+    "version_fingerprint": "525e11cdd5a5db8050111f530b613853590ec2a7f1c2966ac238f2b365fa8dd5",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-JPN-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "JPN_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 3.17253034260247,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "10c6414e3ec3380e0115099e6c8f740e924eca0a542812f9ce709784aad8fa2c"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 15,
+    "previous_sha256": "10c6414e3ec3380e0115099e6c8f740e924eca0a542812f9ce709784aad8fa2c",
+    "slot": "bfe6507ababb62f4704f6bb717d2c35135e280776d63906bcd49c49e021907d3",
+    "revision_index": 1,
+    "version_fingerprint": "258674929b1e9969adf2543bd737868ea66108e0fe787ef13c65a04be439f744",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-USA-inflation_cpi-2024",
+      "domain": "macro_global",
+      "variable": "USA_inflation_cpi",
+      "observed_at": "2024-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 2.94952520485207,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "39010d9e1a1e29c412c72fc8b75d51fa2b42bbb97f0824d51fced59d9d723ae7"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 16,
+    "previous_sha256": "39010d9e1a1e29c412c72fc8b75d51fa2b42bbb97f0824d51fced59d9d723ae7",
+    "slot": "c1161651a564ec13b088b99ab323c55cd25938e68693a76ed9fa3eb04a4970cc",
+    "revision_index": 1,
+    "version_fingerprint": "578bc50ab5ff9db0783f64a2f49d4019b1eea7d85db8a6ed5685fc8e788840eb",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-WLD-inflation_cpi-2025",
+      "domain": "macro_global",
+      "variable": "WLD_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.047Z",
+      "value": 3.04141321556539,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "8d0468e12fca8d6cadbe81e7be6cd1f8082ecbbed067d05c5000cd6ea72266de"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 17,
+    "previous_sha256": "8d0468e12fca8d6cadbe81e7be6cd1f8082ecbbed067d05c5000cd6ea72266de",
+    "slot": "17c1ed747aae07f496c0d6771a599612e8ff626eb1e11ccf9b2d23ba7f2169b5",
+    "revision_index": 1,
+    "version_fingerprint": "240418f6bf53fc12ed1d67b5a6d596e76b1b82f11d90a6f2ba3d881e2f18a41f",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-BRA-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "BRA_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 5.97,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "93299b830e74f2d2a80dd244dfe5046a29fe8ae7023be6508dc705a364b1d735"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 18,
+    "previous_sha256": "93299b830e74f2d2a80dd244dfe5046a29fe8ae7023be6508dc705a364b1d735",
+    "slot": "771d055e76aa3aed5330a2bef277954077b9807b65538576ce2bc078002e015b",
+    "revision_index": 1,
+    "version_fingerprint": "580f66132d976557cbef6e8940ca5119e2b2f980cb356ed9faf8605d06be29a9",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-CHN-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "CHN_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 4.615,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "049f8c61f356dfcd581da3b1783a6f50e492f7f3de8c78f10598b86b0b2ff77e"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 19,
+    "previous_sha256": "049f8c61f356dfcd581da3b1783a6f50e492f7f3de8c78f10598b86b0b2ff77e",
+    "slot": "ce66dedc14ca2d71357f0d7fa2eec61b3f50f1240dad08040b8641f9f95d65d8",
+    "revision_index": 1,
+    "version_fingerprint": "e9f7d239b78d658642dbe2655dafe2c21e088204014fd2fc6309e211291e5cea",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-DEU-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "DEU_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 3.711,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "b13e6a868cba2f83ad899f10475d8ac0cb54148f5a0cd9caade5904524730bbc"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 20,
+    "previous_sha256": "b13e6a868cba2f83ad899f10475d8ac0cb54148f5a0cd9caade5904524730bbc",
+    "slot": "e7c772cf255df16ccf59d71063316ab42dc67da0a1c0a5d010abf2871c6f688a",
+    "revision_index": 1,
+    "version_fingerprint": "9f7411e848bbef9f6125447a0330cee33a7ea4791736da63e4a019534c493950",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-GBR-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "GBR_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 4.746,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "ce9624d0c8389a69ee12ce605d148c615c2e1acb312fe1aa665a9d4654110bb9"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 21,
+    "previous_sha256": "ce9624d0c8389a69ee12ce605d148c615c2e1acb312fe1aa665a9d4654110bb9",
+    "slot": "f834f540a85564b67193902f2c5762847e031ccb0d45c8f85bcfecc593b5c0c0",
+    "revision_index": 1,
+    "version_fingerprint": "eda4516b5677bf51c894d6642dfdb7bae63a83042a1e2c5414d9b02403744619",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-IND-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "IND_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 4.219,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "c96b2668abe20790a23945836c74042b2f39ee1d695a09cd405f8670bd999b06"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 22,
+    "previous_sha256": "c96b2668abe20790a23945836c74042b2f39ee1d695a09cd405f8670bd999b06",
+    "slot": "56e0ed30e8959b64d66d6f34645c82b71024db7f7c52ff464fed7088bae76242",
+    "revision_index": 1,
+    "version_fingerprint": "ccb657cec55dcb4fdfa5665306d34fc1d4e5a5ef039854960bb2842bfca0b929",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-JPN-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "JPN_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 2.451,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "acd99b55f9486729d801c9d0c00c08f4465fc1b063621d5008e51c83ccb3172b"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 23,
+    "previous_sha256": "acd99b55f9486729d801c9d0c00c08f4465fc1b063621d5008e51c83ccb3172b",
+    "slot": "1dc96300670eb74a08e2ec85f7a448cb1514876d5bf5b475240b707dabefda7a",
+    "revision_index": 1,
+    "version_fingerprint": "61c61c6fe083bc98ad4fea6cb4976003ab735fbd837b087fe46b811c609708ad",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-USA-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "USA_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 4.198,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "e9251a42d646ff094825be29157721da1b3e06757a98bd9d47f186d7d9effb67"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 24,
+    "previous_sha256": "e9251a42d646ff094825be29157721da1b3e06757a98bd9d47f186d7d9effb67",
+    "slot": "f0a5e33af5c36c485734ede5e52d18303ba7fdaceb79914d37009965f8b976cc",
+    "revision_index": 1,
+    "version_fingerprint": "787254aa52e17f27f4513e99f8b52c1d8035242407d34a334a8fcfc088aa10b3",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-WLD-unemployment-2025",
+      "domain": "macro_global",
+      "variable": "WLD_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.364Z",
+      "value": 4.7913330740211,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "21a8465db1979653d3f1c3b2819010d6121489947ed7b314269bb65bd08ce6c3"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 25,
+    "previous_sha256": "21a8465db1979653d3f1c3b2819010d6121489947ed7b314269bb65bd08ce6c3",
+    "slot": "62da5f2ec5b66e63edc9f9704a6aa8f9556f8fd4011191fa1c93a32775468d73",
+    "revision_index": 1,
+    "version_fingerprint": "bd477c7afbf77381163d653a7fce365552c3e79750285a2a29016825797dc26a",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-BRA-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "BRA_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": -2.92630139201733,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "5f37b8e858bc5cbd017b4eb16a05c3763d6cab0cffa8c5c45207c626d366a841"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 26,
+    "previous_sha256": "5f37b8e858bc5cbd017b4eb16a05c3763d6cab0cffa8c5c45207c626d366a841",
+    "slot": "be7029db1d80ec03168d3f82996dcbc925aad8a4abd0671fda6d4ee0a46419df",
+    "revision_index": 1,
+    "version_fingerprint": "89b76cb0533e6bc5850c272f6963e2c38dfb59dd1dc48649eaf4f9d1c83b6679",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-CHN-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "CHN_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": 3.76972243689338,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "d8aeb9b889a1976db4a4b697b339eb1c07e600ded60daf38f63587289edc6c2d"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 27,
+    "previous_sha256": "d8aeb9b889a1976db4a4b697b339eb1c07e600ded60daf38f63587289edc6c2d",
+    "slot": "e565a8dc30232601c57fe55a5c9cee224d6347c8082766a26ff6e3b7d3987570",
+    "revision_index": 1,
+    "version_fingerprint": "85173aadebf4f3c3af61b65e32d683c1cce88ddeb5f6ee8c72fd741f77a9fdcc",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-DEU-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "DEU_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": 4.44736378284623,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "2ae8d8c32af6398d24ad3f398eee201a7dd2410aa1d168bf0bc44500231f9429"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 28,
+    "previous_sha256": "2ae8d8c32af6398d24ad3f398eee201a7dd2410aa1d168bf0bc44500231f9429",
+    "slot": "898a6d28fb33acd6d8adfa004258b76125474a8f1fc540c4260e5b8bb6a5a121",
+    "revision_index": 1,
+    "version_fingerprint": "11f697e2aa8cea03471947097e5d6a7931d3c359a52836f8c0047e6fc5de62ce",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-GBR-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "GBR_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": -3.13347768999639,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "d1436d5af87b8d8bbbc87f8595152c186353b5300a29fd3ded6fba151d3f4ed5"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 29,
+    "previous_sha256": "d1436d5af87b8d8bbbc87f8595152c186353b5300a29fd3ded6fba151d3f4ed5",
+    "slot": "dbb1aa48825574d1f950faf76cb6de4b9381c6048f41eb06e69bf002adeb1791",
+    "revision_index": 1,
+    "version_fingerprint": "7b13c2f62e2b157c443b081db0f519ba1e993828d7c25d5279a8c4ef64ea9906",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-IND-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "IND_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": -0.511308076227287,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "385354f799ce5b5c5bb6a6bacf6efa0c9055889d26a232e371d52a4d1aeb0fed"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 30,
+    "previous_sha256": "385354f799ce5b5c5bb6a6bacf6efa0c9055889d26a232e371d52a4d1aeb0fed",
+    "slot": "05b7a4b2a2d5e751ebbc7c5777d71a2b19c844a70577b3a5c93bf05d9c8b9e39",
+    "revision_index": 1,
+    "version_fingerprint": "73c1a145de9406e434bdd60f2d6fce23a11ec613519529d981c25215d8e79388",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-JPN-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "JPN_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": 4.86496093471918,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "fb3a1b7bd749ac4649d5126d46494b4133cd9e4c68d3dc2ba78cf838d63c72a7"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 31,
+    "previous_sha256": "fb3a1b7bd749ac4649d5126d46494b4133cd9e4c68d3dc2ba78cf838d63c72a7",
+    "slot": "bb85164679fbe2fc95b2fc6c863037866530e9f3f3a86435e98351ce39099604",
+    "revision_index": 1,
+    "version_fingerprint": "bac9f449540bfa61ff7a565a09003442a6d93d08779d935586d1c4b4afae98e1",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "macro-USA-current_account_gdp-2025",
+      "domain": "macro_global",
+      "variable": "USA_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.484Z",
+      "value": -3.8254126624569,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "e79f318e977e2f82e208dbd94095cd943a33fd5c9afb9c921d17cc57c7a4a67b"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 32,
+    "previous_sha256": "e79f318e977e2f82e208dbd94095cd943a33fd5c9afb9c921d17cc57c7a4a67b",
+    "slot": "4aa40f222379a0fddb80c225da17c82d376dbea92d3c79a50c008dc862195c77",
+    "revision_index": 1,
+    "version_fingerprint": "5a45369189eb538d6165c2f638ab8e78002631b082e33846e42e5eb77293299f",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "fred-ICSA-2026-10-24",
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_initial_unemployment_claims",
+      "observed_at": "2026-10-24T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.783Z",
+      "value": 194000,
+      "unit": "persons",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "147666b90ad1601619e84de16fa32b4d3cb6634a5b93435f38c8193af91d183d"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 33,
+    "previous_sha256": "147666b90ad1601619e84de16fa32b4d3cb6634a5b93435f38c8193af91d183d",
+    "slot": "3cc7db2c8a5e711d5075c741c076451c27301fc5a2312755bd8d5c52ad651cd4",
+    "revision_index": 1,
+    "version_fingerprint": "2bb5be48ccaf4720972a1f770283897cfe7148e4cd4950dbca8c6c0a3bd47828",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "fred-CCSA-2026-10-17",
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_continued_unemployment_claims",
+      "observed_at": "2026-10-17T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.886Z",
+      "value": 1701000,
+      "unit": "persons",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CCSA"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "78efdd4921a138344bed2344af863188ab56c95f1ae764c63ba94ba668b50a60"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 34,
+    "previous_sha256": "78efdd4921a138344bed2344af863188ab56c95f1ae764c63ba94ba668b50a60",
+    "slot": "d5b1ef9e372e554f7c024d539dd12f70df167fc691333b57bd09575c9b0a5a9d",
+    "revision_index": 1,
+    "version_fingerprint": "47c72f7fb6518930af5672824822dac8149bce48898f29b53cf13cf1c6a62f86",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bcb-432-2026-10-30T00:00:00.000Z",
+      "domain": "tasas_oficiales_directas",
+      "variable": "BR_selic_target",
+      "observed_at": "2026-10-30T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:12.961Z",
+      "value": 13.75,
+      "unit": "pct",
+      "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=30%2F09%2F2026&dataFinal=30%2F10%2F2026"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "621d11fbf0171254c9a040d7aecc6dac065dbc7240f27a2bee0f74ba1f39479a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 35,
+    "previous_sha256": "621d11fbf0171254c9a040d7aecc6dac065dbc7240f27a2bee0f74ba1f39479a",
+    "slot": "97ec7c95cffe431e14b831383a9b583715a39a5f369c04b0f68b0853de9a11b9",
+    "revision_index": 1,
+    "version_fingerprint": "f5abc7c01531b746307d39be2790c5446b03c96ac1fe0a2b2440bf535d76ddc1",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "boc-V39079-2026-10-29T00:00:00.000Z",
+      "domain": "tasas_oficiales_directas",
+      "variable": "CA_overnight_target",
+      "observed_at": "2026-10-29T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:13.036Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://www.bankofcanada.ca/valet/observations/V39079/json?recent=20"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "de3c6527ceffbcaf87788c461aa3881e8fe452b4e12fb0c629fc9d7c68510f6d"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 36,
+    "previous_sha256": "de3c6527ceffbcaf87788c461aa3881e8fe452b4e12fb0c629fc9d7c68510f6d",
+    "slot": "a8cecaa829052c5a1560aa20212bb44dcac4738ca24d22b8651354c01e9cae7c",
+    "revision_index": 1,
+    "version_fingerprint": "d687b2cf4a6d4fb2d8f90cfb75fc1e02923944b65f22fcfff1fd651822042cf4",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bls-CES0000000001-2026-M09",
+      "domain": "empleo_macro",
+      "variable": "us_total_nonfarm_payrolls",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:13.063Z",
+      "value": 159044,
+      "unit": "thousand_persons",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "5d71975847b68716413ec2df2bff7448d6fd8b2555219198c2f7032d15383094"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 37,
+    "previous_sha256": "5d71975847b68716413ec2df2bff7448d6fd8b2555219198c2f7032d15383094",
+    "slot": "786a06d52b66a8002bb5f75aee24324d0fe094a2f6de23cae96b47358f99518e",
+    "revision_index": 1,
+    "version_fingerprint": "425f5b6461b084e45141f5ee145903ed40cf9a2ae07055c13882dd3f3e3f5249",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bls-LNS11300000-2026-M09",
+      "domain": "empleo_macro",
+      "variable": "us_labor_force_participation",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:13.063Z",
+      "value": 61.8,
+      "unit": "pct",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "06b4052665b761aec8833af4a7d941c0bee761b4e0497be8c7ca32488a6ee91d"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 38,
+    "previous_sha256": "06b4052665b761aec8833af4a7d941c0bee761b4e0497be8c7ca32488a6ee91d",
+    "slot": "6846901726acaa13736180be8afba9410284da016e757983cbdc7913bea70fe1",
+    "revision_index": 1,
+    "version_fingerprint": "3f965696011e1a5acc81708290a2a295d32ff7e60a53e3d028de6d25897b3b26",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bls-LNS14000000-2026-M09",
+      "domain": "empleo_macro",
+      "variable": "us_unemployment_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:13.063Z",
+      "value": 4.2,
+      "unit": "pct",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "fad87ac88823be01a0f3d84a1b82cb82a681a331193ada14f320d1a3cc2fa7ef"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 39,
+    "previous_sha256": "fad87ac88823be01a0f3d84a1b82cb82a681a331193ada14f320d1a3cc2fa7ef",
+    "slot": "332fb6590472d86dc8a1e7d91e7421289b3fbb19946c8492efa68c1cf5d39c33",
+    "revision_index": 1,
+    "version_fingerprint": "f5abc7c01531b746307d39be2790c5446b03c96ac1fe0a2b2440bf535d76ddc1",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "ecb-DFR-2026-10-30T00:00:00.000Z",
+      "domain": "tasas_oficiales_directas",
+      "variable": "EA_deposit_facility_rate",
+      "observed_at": "2026-10-30T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:13.114Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.DFR.LEV?lastNObservations=20&format=csvdata"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "a43df6e65cd4c8deb3aee36f09c2a3feacdf8a2bb1e2affc19abcbb328cb57ba"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 40,
+    "previous_sha256": "a43df6e65cd4c8deb3aee36f09c2a3feacdf8a2bb1e2affc19abcbb328cb57ba",
+    "slot": "bfbff32da1ea0a85b2c737b54cf6714931b9ed6e435c8b4df5c4979e4e5ed18b",
+    "revision_index": 1,
+    "version_fingerprint": "8051972d43b9308a5412e6502138af7e34d8f8ed060925945055ee1a2f005fb9",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-AU-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "AU_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 4.6,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "4f431f75e213668d1981c70858b8f90923f9a090ab7df362facd8f844988fde9"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 41,
+    "previous_sha256": "4f431f75e213668d1981c70858b8f90923f9a090ab7df362facd8f844988fde9",
+    "slot": "f154e7e36ab1763e694850b2b3a1282c6c2c1f1f4c0bc47d064d3f2070bdd7c4",
+    "revision_index": 1,
+    "version_fingerprint": "47c72f7fb6518930af5672824822dac8149bce48898f29b53cf13cf1c6a62f86",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-BR-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "BR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 13.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "856cea4c2531b2fe24f8a584b82a6679d5dca4329cde49bdd395dbaf274ee8ad"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 42,
+    "previous_sha256": "856cea4c2531b2fe24f8a584b82a6679d5dca4329cde49bdd395dbaf274ee8ad",
+    "slot": "1df2784a7dbef8e9a44638cb84dd3d9b77383c7ac54dd671da7de8e605a80c9e",
+    "revision_index": 1,
+    "version_fingerprint": "64f2a9b4ce13814c9a3b47a69860f58a9ec6513a6572b7e0d6ecebaee9716939",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-CA-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CA_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 2.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "0fb814e000a2cfc088da04509fa5fa152626e996d32986bb6bb02aeea5a10b70"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 43,
+    "previous_sha256": "0fb814e000a2cfc088da04509fa5fa152626e996d32986bb6bb02aeea5a10b70",
+    "slot": "7cc17906da5c08104543fb79c2f7d066d959a57946ff713658bcdc44cf10d61b",
+    "revision_index": 1,
+    "version_fingerprint": "92f7299bab1e5f145b09daf0d0a840b78ec8ed673199e3ee05f07a7149443160",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-CH-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CH_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 0,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "1e58833a5dc8d124d072aad13ac03700f1ca7911c2d63688a2a6f1ace81a7db2"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 44,
+    "previous_sha256": "1e58833a5dc8d124d072aad13ac03700f1ca7911c2d63688a2a6f1ace81a7db2",
+    "slot": "0a97e9e3eda7944316353d68cc69cdaddf335d0d725e7386e6e69f8656c3d06a",
+    "revision_index": 1,
+    "version_fingerprint": "f73372e59d0e9586eec34b026c83ca3f6152748b5f24b63000bff763611560b9",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-CN-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CN_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 3,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "e23ee77417c6ec9cf5974a9086d4824dae83449f11fa386c2c3f9bbea26448b1"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 45,
+    "previous_sha256": "e23ee77417c6ec9cf5974a9086d4824dae83449f11fa386c2c3f9bbea26448b1",
+    "slot": "b40e937e0b9598f1f5f4d83bec990fdb5b5b225d56e0dedeca7b5390bf3d7f62",
+    "revision_index": 1,
+    "version_fingerprint": "8ec368a5ef6573730c10582829935d23968971c01f917b25e9d5592f0fd78915",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-GB-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "GB_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 3.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "0c9fd6de55569669f275853fd56ecda645da5dde2e34f07099948ba7df9b151f"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 46,
+    "previous_sha256": "0c9fd6de55569669f275853fd56ecda645da5dde2e34f07099948ba7df9b151f",
+    "slot": "a8887aaf733de70575bf1f1bd7fcfe605d7b715936bd9aa9e226e711197d1ed6",
+    "revision_index": 1,
+    "version_fingerprint": "efa1133effb2075a4633ef0d82c445accf353ee1487c68b53193c9e64b3f5fc5",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-ID-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "ID_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 5.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "9b52eb172b1df897f12c044db91db6ea8182bbce6e6be362e63951913f68bf53"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 47,
+    "previous_sha256": "9b52eb172b1df897f12c044db91db6ea8182bbce6e6be362e63951913f68bf53",
+    "slot": "70b897f1722819701a912864d658104df4ac30049e12fe98bd58b93bba28e878",
+    "revision_index": 1,
+    "version_fingerprint": "39076ed60333cdfd78e4c36cca1ce236b7fae1d66055df68efc22bc2ea03738b",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-IN-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "IN_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 5.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "babf1be0bce44e1bdcbb0894a64ccef3e4557adfe0faffb044825ce722c55f04"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 48,
+    "previous_sha256": "babf1be0bce44e1bdcbb0894a64ccef3e4557adfe0faffb044825ce722c55f04",
+    "slot": "fc5d9d3b057b0509dd039d3c2d85f12be3c2dc8b06b904f78747ef4168c8b457",
+    "revision_index": 1,
+    "version_fingerprint": "2daa685487a76a2493e6068329f3b494a70367f44889d93a0c4e01c90466b8a2",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-JP-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "JP_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 1.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "a557bf2878d574382b631b627e4071537839e24c2b851c1fde41af9994683cd4"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 49,
+    "previous_sha256": "a557bf2878d574382b631b627e4071537839e24c2b851c1fde41af9994683cd4",
+    "slot": "06b693e8b0a572f13a81de0da8b1b54616dde78b99e7a0c8946d6d4af2084ead",
+    "revision_index": 1,
+    "version_fingerprint": "f73372e59d0e9586eec34b026c83ca3f6152748b5f24b63000bff763611560b9",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-KR-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "KR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 3,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "82280e646d107c2b8f99345d837d6e3e0a14d1b102145d66069dbdeebe45f3aa"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 50,
+    "previous_sha256": "82280e646d107c2b8f99345d837d6e3e0a14d1b102145d66069dbdeebe45f3aa",
+    "slot": "2426a13780ca5a43a50e3bed5f4bb1987aaa90eb91c5732e1da227132223834c",
+    "revision_index": 1,
+    "version_fingerprint": "aaeb8820b28b73a6751ee27368993996ee773ae338f06f7ed0fb8242724f3d63",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-MX-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "MX_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 6.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "b600e8aaf7e95ae18d6c3d12229e45eaeeb9e1e7fe9abc2f9491d3cc113d2ea2"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 51,
+    "previous_sha256": "b600e8aaf7e95ae18d6c3d12229e45eaeeb9e1e7fe9abc2f9491d3cc113d2ea2",
+    "slot": "1ae236d58fa9391aa1668529b84531369327daa94e91a5a3824402c845739cec",
+    "revision_index": 1,
+    "version_fingerprint": "6dd72eca4fd052dbc9e09723b51b09d93946a39f3d18f46fa48447c7a9a76af3",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-NO-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "NO_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 4.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "4f8a0ff21ea6192a92bab94567b33f526e8a62bc31873ddb5bfc05a369dacb0a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 52,
+    "previous_sha256": "4f8a0ff21ea6192a92bab94567b33f526e8a62bc31873ddb5bfc05a369dacb0a",
+    "slot": "ba0dde7e7a4d0b59f457c66d168787f9bd9c704fd4d073ad063d24a7355d7709",
+    "revision_index": 1,
+    "version_fingerprint": "2e2691928a9f3d506d00ea64271ab616f239c6f588097bc9b075b55977707591",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-NZ-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "NZ_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 2.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "cb156468fc846df3de14f72ba96e127a0efc0d392bab5dc4fbcb5fb19aa6223a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 53,
+    "previous_sha256": "cb156468fc846df3de14f72ba96e127a0efc0d392bab5dc4fbcb5fb19aa6223a",
+    "slot": "6cea474a412081d9d86879c5daee4281c12506efd9d4b805a9e32cdca8121ee4",
+    "revision_index": 1,
+    "version_fingerprint": "290573aa4936045d6aba7e5b11ef6664e74308a812104cfd1cda0e80876f2fb5",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-SE-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "SE_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 1.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "2f0516c3fcb6bc29c12aa4e6195a0411ddac7cfa47f0ed06bcfafc05ecc208ec"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 54,
+    "previous_sha256": "2f0516c3fcb6bc29c12aa4e6195a0411ddac7cfa47f0ed06bcfafc05ecc208ec",
+    "slot": "10ae9083080981daaaf2ca4d06a269e89c54c5752a6d9fe6d755a815a67321cf",
+    "revision_index": 1,
+    "version_fingerprint": "d59cb1b8d9156cd270fc52d2432c5e631fde03823134802864391a943d121d80",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-TR-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "TR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 37,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "e0dea653c4d1a5508bd5400e013d759b22938debba5d08ad357eb825be4d0631"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 55,
+    "previous_sha256": "e0dea653c4d1a5508bd5400e013d759b22938debba5d08ad357eb825be4d0631",
+    "slot": "8695ca3ab7d9815c03a458b2d0ce987afebc12a231bc06b8750704c4c57ca08f",
+    "revision_index": 1,
+    "version_fingerprint": "2031f55330073f10dd0c8490e0865aa0ab7711f312bc980860e46e5c4da99ce1",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-US-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "US_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 3.875,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "49a5f61ca740c31811f1c7874465371ea89e82b0b4e93489234eb71a3c945041"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 56,
+    "previous_sha256": "49a5f61ca740c31811f1c7874465371ea89e82b0b4e93489234eb71a3c945041",
+    "slot": "56be2a9cbcc46324d22625670916321a312b3ca9a5ee361852a6ff26535edd1d",
+    "revision_index": 1,
+    "version_fingerprint": "f5abc7c01531b746307d39be2790c5446b03c96ac1fe0a2b2440bf535d76ddc1",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-XM-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "XM_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "16274987bba96539ae4a85bef4a0981d6a554708d1f675251cf9cd9dfbad627a"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 57,
+    "previous_sha256": "16274987bba96539ae4a85bef4a0981d6a554708d1f675251cf9cd9dfbad627a",
+    "slot": "e79f227ccb8d0f4f19f843b26624c059163ae038dd1c9a591d8ecd5efc0271e1",
+    "revision_index": 1,
+    "version_fingerprint": "6e58721225d0810e1030fe603b05c5f4c5d996f146370dd4deaf8c97806e7405",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "bis-policy-ZA-2026-09",
+      "domain": "tasas_bancos_centrales",
+      "variable": "ZA_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:14.755Z",
+      "value": 7.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "998b8ef8918f22804a5a689ff002e24585899c54fd48a78e59292e86226c79fc"
+  },
+  {
+    "schema": "laplace-macro-revision-v1",
+    "sequence": 58,
+    "previous_sha256": "998b8ef8918f22804a5a689ff002e24585899c54fd48a78e59292e86226c79fc",
+    "slot": "45374b7466a4b2d1b2597bd7eb25ce4585c52b80e2a18aa5e0d4dd3a450f56c6",
+    "revision_index": 1,
+    "version_fingerprint": "fce5c4b30b0fca423c9625580414bd232cfe0ae5fda3aa86d452947cc7332f7b",
+    "captured_at": "2026-10-30T16:36:42.606Z",
+    "recorded_at": "2026-10-30T17:02:30.711Z",
+    "source_capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+    "observation": {
+      "id": "fred-DFF-2026-10-28",
+      "domain": "tasas_mercado",
+      "variable": "us_effective_federal_funds_rate",
+      "observed_at": "2026-10-28T00:00:00.000Z",
+      "known_at": "2026-10-30T16:34:15.815Z",
+      "value": 3.88,
+      "unit": "pct",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFF"
+    },
+    "provider_vintage": {
+      "date": null,
+      "publication_at": null,
+      "publication_precision": "unknown",
+      "basis": "laplace_capture"
+    },
+    "entry_sha256": "32f45956cb704e5695bc466d6c5720814794e7acd73913d4bc978401f8579acf"
+  }
+]

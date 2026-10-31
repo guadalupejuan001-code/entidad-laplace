@@ -1,0 +1,24 @@
+name: Laplace F001 - Fusion temporal multiescala
+on:
+  push:
+    branches:
+      - feature/laplace-fusion-temporal-multiescala-20261030
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-f001:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validación estática
+        run: |
+          node --check prediccion/fusion-temporal.mjs
+          node --check prediccion/fuentes-paralelas.mjs
+          node --check tools/fusion.mjs
+      - name: F001 - pruebas sin red
+        run: node --test tests/fusion-temporal.test.mjs

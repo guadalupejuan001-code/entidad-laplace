@@ -1,0 +1,6 @@
+Consolidación autorizada: U003/U004/X002 de PR21 b8fb5056 + Entrada I001/Pulso P001 81a81f1a.
+285 pruebas completas aprobadas, sin omisiones, con ejecutores XI/Ether, temporal y REVERSE reales.
+Los cinco candidatos X002 permanecen experimentales; sus resultados históricos no prueban ventaja financiera.
+I001 y P001 son servicios de servidor; la APK tiene cliente/manual de captura y consulta HTTPS de salud.
+Los siete temas GDELT fallidos de la captura archivada siguen identificados; no se inventaron observaciones.
+Kafka externo, TimescaleDB productivo y nodos blockchain requieren configuración del operador.

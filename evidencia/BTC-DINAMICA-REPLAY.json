@@ -1,0 +1,22 @@
+{
+  "schema": "laplace-native-browser-replay-v1",
+  "checked_at": "2026-10-28T05:41:57.715Z",
+  "date": "2026-09-25",
+  "program_sha256": "096d82973b9eef955f08c4843f59f9a4774a7744ceaa35de9778572544dbb2a5",
+  "executor_source_sha256": "22795816c08762765cc7e1c3be31ae6e711e52f6b7f268ccb2c5ac5e65da7c61",
+  "native_type": "temporal_evolution",
+  "initial_mask": 794,
+  "step": 1,
+  "browser_probability": 0.43315340909090916,
+  "native_probability": 0.43315340909090916,
+  "exact_match": true,
+  "narrative_distribution": [
+    0.375,
+    0.125,
+    0,
+    0.375,
+    0.125
+  ],
+  "actual_result": 0,
+  "model_xi_sha256": "bef81b34df39caa10ca44cc47b563c8b0348303e273463878d0320a46768b32e"
+}

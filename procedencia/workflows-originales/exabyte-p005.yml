@@ -1,0 +1,97 @@
+name: LaPlaceDIG P005 - desafio exabyte Rule90 XI Ether
+on:
+  push:
+    branches:
+      - feature/laplace-p005-exabyte-rule90-xi-20261028
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  exabyte-exacto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Obtener LAPLACE vigente
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: REVERSE-PC original fijado
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Mundo X original fijado
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Verificar procedencia, sintaxis, presupuestos, inyección y compilador
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check escala/compilar.mjs
+          node --check tools/exabyte.mjs
+          node --check tools/laplace.mjs
+          node tools/laplace.mjs --help | grep -q crear-exabyte
+          node --check tests/exabyte.test.mjs
+          node --check tests/exabyte-experimento.mjs
+          node --test tests/exabyte.test.mjs
+      - name: Construir el original REVERSE-PC sin segunda CPU
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Contrastar XI con simulador denso pequeño y Lucas BigInt
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/exabyte.test.mjs
+      - name: Ejecutar 2^60 celdas logicas por 2^50 pasos y observar 224 posiciones
+        run: |
+          set -euo pipefail
+          mkdir -p ci-exabyte
+          node tests/exabyte-experimento.mjs ./build-reverse/reverse_pc ci-exabyte/resultado.json
+      - name: Comprobar exactitud matemática y memoria residente bajo 64 MiB
+        run: |
+          set -euo pipefail
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const r=JSON.parse(readFileSync("ci-exabyte/resultado.json","utf8"));
+            assert.equal(r.pass,true);
+            assert.equal(r.logical_cells,"1152921504606846976");
+            assert.equal(r.temporal_steps,"1125891316776447");
+            assert.equal(r.exact_total_active_cells,"2251799813685248");
+            assert.equal(r.query_count,224);
+            assert.equal(r.lit_cells,112);
+            assert.equal(r.dark_cells,112);
+            assert.equal(r.verified.all_queries,true);
+            assert.equal(r.verified.persistent_answers,true);
+            assert.equal(r.verified.xi_equals_rxe,true);
+            assert.equal(r.quantum_components,0);
+            assert.ok(r.actual_rss_median_kib>0);
+            assert.ok(r.actual_rss_median_kib<65536);
+          '
+      - name: Conservar código XI/RXE, estados RVPC2, consultas y RSS
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaPlaceDIG-P005-Exabyte-Rule90-XI
+          path: ci-exabyte/
+          retention-days: 30
+          if-no-files-found: warn

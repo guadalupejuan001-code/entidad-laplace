@@ -1,0 +1,1125 @@
+{
+  "schema": "laplace-universo-estados-u001-v1",
+  "cutoff": "2026-10-30T16:36:42.606Z",
+  "total_supplied": 58,
+  "withheld_future": 0,
+  "known_states": 58,
+  "domains": [
+    "empleo_alta_frecuencia",
+    "empleo_macro",
+    "macro_global",
+    "tasas_bancos_centrales",
+    "tasas_mercado",
+    "tasas_oficiales_directas"
+  ],
+  "states": [
+    {
+      "id": "macro-v1-b72ae921ce5d8eff",
+      "domain": "macro_global",
+      "variable": "BRA_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.2857464902475,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v10-f0e401e51b12d525",
+      "domain": "macro_global",
+      "variable": "CHN_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 0.0595646916565402,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v11-426c1ac626b2e2c7",
+      "domain": "macro_global",
+      "variable": "DEU_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.17178770949721,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v12-dd3ad0a3480887b4",
+      "domain": "macro_global",
+      "variable": "GBR_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.88306881625999,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v13-afc06e41792e45aa",
+      "domain": "macro_global",
+      "variable": "IND_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.39884954182294,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v14-525e11cdd5a5db80",
+      "domain": "macro_global",
+      "variable": "JPN_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.17253034260247,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v15-258674929b1e9969",
+      "domain": "macro_global",
+      "variable": "USA_inflation_cpi",
+      "observed_at": "2024-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.94952520485207,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v16-578bc50ab5ff9db0",
+      "domain": "macro_global",
+      "variable": "WLD_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.04141321556539,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v17-240418f6bf53fc12",
+      "domain": "macro_global",
+      "variable": "BRA_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 5.97,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v18-580f66132d976557",
+      "domain": "macro_global",
+      "variable": "CHN_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.615,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v19-e9f7d239b78d6586",
+      "domain": "macro_global",
+      "variable": "DEU_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.711,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v2-2b286b18a54083b2",
+      "domain": "macro_global",
+      "variable": "CHN_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.95994886240992,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v20-9f7411e848bbef9f",
+      "domain": "macro_global",
+      "variable": "GBR_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.746,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v21-eda4516b5677bf51",
+      "domain": "macro_global",
+      "variable": "IND_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.219,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v22-ccb657cec55dcb4f",
+      "domain": "macro_global",
+      "variable": "JPN_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.451,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v23-61c61c6fe083bc98",
+      "domain": "macro_global",
+      "variable": "USA_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.198,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v24-787254aa52e17f27",
+      "domain": "macro_global",
+      "variable": "WLD_unemployment",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.7913330740211,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/SL.UEM.TOTL.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v25-bd477c7afbf77381",
+      "domain": "macro_global",
+      "variable": "BRA_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": -2.92630139201733,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v26-89b76cb0533e6bc5",
+      "domain": "macro_global",
+      "variable": "CHN_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.76972243689338,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v27-85173aadebf4f3c3",
+      "domain": "macro_global",
+      "variable": "DEU_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.44736378284623,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v28-11f697e2aa8cea03",
+      "domain": "macro_global",
+      "variable": "GBR_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": -3.13347768999639,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v29-7b13c2f62e2b157c",
+      "domain": "macro_global",
+      "variable": "IND_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": -0.511308076227287,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v3-e3433ee558fabb8f",
+      "domain": "macro_global",
+      "variable": "DEU_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 0.239578342117881,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v30-73c1a145de9406e4",
+      "domain": "macro_global",
+      "variable": "JPN_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.86496093471918,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v31-bac9f449540bfa61",
+      "domain": "macro_global",
+      "variable": "USA_current_account_gdp",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": -3.8254126624569,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/BN.CAB.XOKA.GD.ZS?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v32-5a45369189eb538d",
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_initial_unemployment_claims",
+      "observed_at": "2026-10-24T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 194000,
+      "unit": "persons",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=ICSA"
+    },
+    {
+      "id": "macro-v33-2bb5be48ccaf4720",
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_continued_unemployment_claims",
+      "observed_at": "2026-10-17T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 1701000,
+      "unit": "persons",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CCSA"
+    },
+    {
+      "id": "macro-v34-47c72f7fb6518930",
+      "domain": "tasas_oficiales_directas",
+      "variable": "BR_selic_target",
+      "observed_at": "2026-10-30T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 13.75,
+      "unit": "pct",
+      "source_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=30%2F09%2F2026&dataFinal=30%2F10%2F2026"
+    },
+    {
+      "id": "macro-v35-f5abc7c01531b746",
+      "domain": "tasas_oficiales_directas",
+      "variable": "CA_overnight_target",
+      "observed_at": "2026-10-29T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://www.bankofcanada.ca/valet/observations/V39079/json?recent=20"
+    },
+    {
+      "id": "macro-v36-d687b2cf4a6d4fb2",
+      "domain": "empleo_macro",
+      "variable": "us_total_nonfarm_payrolls",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 159044,
+      "unit": "thousand_persons",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    {
+      "id": "macro-v37-425f5b6461b084e4",
+      "domain": "empleo_macro",
+      "variable": "us_labor_force_participation",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 61.8,
+      "unit": "pct",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    {
+      "id": "macro-v38-3f965696011e1a5a",
+      "domain": "empleo_macro",
+      "variable": "us_unemployment_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.2,
+      "unit": "pct",
+      "source_url": "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+    },
+    {
+      "id": "macro-v39-f5abc7c01531b746",
+      "domain": "tasas_oficiales_directas",
+      "variable": "EA_deposit_facility_rate",
+      "observed_at": "2026-10-30T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.DFR.LEV?lastNObservations=20&format=csvdata"
+    },
+    {
+      "id": "macro-v4-b792bb97601fb466",
+      "domain": "macro_global",
+      "variable": "GBR_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 1.38844207858726,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v40-8051972d43b9308a",
+      "domain": "tasas_bancos_centrales",
+      "variable": "AU_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.6,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v41-47c72f7fb6518930",
+      "domain": "tasas_bancos_centrales",
+      "variable": "BR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 13.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v42-64f2a9b4ce13814c",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CA_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v43-92f7299bab1e5f14",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CH_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 0,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v44-f73372e59d0e9586",
+      "domain": "tasas_bancos_centrales",
+      "variable": "CN_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v45-8ec368a5ef657373",
+      "domain": "tasas_bancos_centrales",
+      "variable": "GB_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v46-efa1133effb2075a",
+      "domain": "tasas_bancos_centrales",
+      "variable": "ID_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 5.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v47-39076ed60333cdfd",
+      "domain": "tasas_bancos_centrales",
+      "variable": "IN_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 5.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v48-2daa685487a76a24",
+      "domain": "tasas_bancos_centrales",
+      "variable": "JP_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 1.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v49-f73372e59d0e9586",
+      "domain": "tasas_bancos_centrales",
+      "variable": "KR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v5-df39f29549252a65",
+      "domain": "macro_global",
+      "variable": "IND_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 7.56666179284244,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v50-aaeb8820b28b73a6",
+      "domain": "tasas_bancos_centrales",
+      "variable": "MX_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 6.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v51-6dd72eca4fd052db",
+      "domain": "tasas_bancos_centrales",
+      "variable": "NO_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 4.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v52-2e2691928a9f3d50",
+      "domain": "tasas_bancos_centrales",
+      "variable": "NZ_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v53-290573aa4936045d",
+      "domain": "tasas_bancos_centrales",
+      "variable": "SE_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 1.75,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v54-d59cb1b8d9156cd2",
+      "domain": "tasas_bancos_centrales",
+      "variable": "TR_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 37,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v55-2031f55330073f10",
+      "domain": "tasas_bancos_centrales",
+      "variable": "US_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.875,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v56-f5abc7c01531b746",
+      "domain": "tasas_bancos_centrales",
+      "variable": "XM_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.5,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v57-6e58721225d0810e",
+      "domain": "tasas_bancos_centrales",
+      "variable": "ZA_policy_rate",
+      "observed_at": "2026-09-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 7.25,
+      "unit": "pct",
+      "source_url": "https://stats.bis.org/api/v1/data/WS_CBPOL/M.US+GB+XM+JP+CN+IN+BR+MX+CA+AU+KR+CH+SE+NO+NZ+ZA+TR+ID/all?startPeriod=2025-01&format=csvfile"
+    },
+    {
+      "id": "macro-v58-fce5c4b30b0fca42",
+      "domain": "tasas_mercado",
+      "variable": "us_effective_federal_funds_rate",
+      "observed_at": "2026-10-28T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 3.88,
+      "unit": "pct",
+      "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFF"
+    },
+    {
+      "id": "macro-v6-b5145b951157386c",
+      "domain": "macro_global",
+      "variable": "JPN_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 1.19311288444599,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v7-d67b5f36d2a1b347",
+      "domain": "macro_global",
+      "variable": "USA_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.16138195623856,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v8-bdab4c73e6f64a73",
+      "domain": "macro_global",
+      "variable": "WLD_gdp_growth",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 2.92127318539153,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=200&date=2020:2026"
+    },
+    {
+      "id": "macro-v9-208628076c519f2c",
+      "domain": "macro_global",
+      "variable": "BRA_inflation_cpi",
+      "observed_at": "2025-01-01T00:00:00.000Z",
+      "known_at": "2026-10-30T16:36:42.606Z",
+      "value": 5.01675279604836,
+      "unit": "pct",
+      "source_url": "https://api.worldbank.org/v2/country/WLD;USA;CHN;JPN;DEU;IND;BRA;GBR/indicator/FP.CPI.TOTL.ZG?format=json&per_page=200&date=2020:2026"
+    }
+  ],
+  "variables": [
+    {
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_continued_unemployment_claims",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 1701000,
+      "unit": "persons"
+    },
+    {
+      "domain": "empleo_alta_frecuencia",
+      "variable": "us_initial_unemployment_claims",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 194000,
+      "unit": "persons"
+    },
+    {
+      "domain": "empleo_macro",
+      "variable": "us_labor_force_participation",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 61.8,
+      "unit": "pct"
+    },
+    {
+      "domain": "empleo_macro",
+      "variable": "us_total_nonfarm_payrolls",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 159044,
+      "unit": "thousand_persons"
+    },
+    {
+      "domain": "empleo_macro",
+      "variable": "us_unemployment_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.2,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "BRA_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": -2.92630139201733,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "BRA_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.2857464902475,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "BRA_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 5.01675279604836,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "BRA_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 5.97,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "CHN_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.76972243689338,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "CHN_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.95994886240992,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "CHN_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 0.0595646916565402,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "CHN_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.615,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "DEU_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.44736378284623,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "DEU_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 0.239578342117881,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "DEU_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.17178770949721,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "DEU_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.711,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "GBR_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": -3.13347768999639,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "GBR_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 1.38844207858726,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "GBR_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.88306881625999,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "GBR_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.746,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "IND_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": -0.511308076227287,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "IND_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 7.56666179284244,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "IND_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.39884954182294,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "IND_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.219,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "JPN_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.86496093471918,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "JPN_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 1.19311288444599,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "JPN_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.17253034260247,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "JPN_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.451,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "USA_current_account_gdp",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": -3.8254126624569,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "USA_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.16138195623856,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "USA_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.94952520485207,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "USA_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.198,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "WLD_gdp_growth",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.92127318539153,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "WLD_inflation_cpi",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.04141321556539,
+      "unit": "pct"
+    },
+    {
+      "domain": "macro_global",
+      "variable": "WLD_unemployment",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.7913330740211,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "AU_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.6,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "BR_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 13.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "CA_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.25,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "CH_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 0,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "CN_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "GB_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "ID_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 5.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "IN_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 5.25,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "JP_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 1.25,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "KR_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "MX_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 6.5,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "NO_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 4.5,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "NZ_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "SE_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 1.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "TR_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 37,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "US_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.875,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "XM_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.5,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_bancos_centrales",
+      "variable": "ZA_policy_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 7.25,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_mercado",
+      "variable": "us_effective_federal_funds_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 3.88,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_oficiales_directas",
+      "variable": "BR_selic_target",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 13.75,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_oficiales_directas",
+      "variable": "CA_overnight_target",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.5,
+      "unit": "pct"
+    },
+    {
+      "domain": "tasas_oficiales_directas",
+      "variable": "EA_deposit_facility_rate",
+      "count": 1,
+      "first_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_seen_at": "2026-10-30T16:36:42.606Z",
+      "last_value": 2.5,
+      "unit": "pct"
+    }
+  ],
+  "relations": [],
+  "relations_type": "hipotesis_o_precedencia_no_causalidad_probada",
+  "complete_universe_observed": false,
+  "snapshot_sha256": "ce57730394a85a7e60256e08eb679b8c0a2840ae8f59897f0c9614cad4fae419"
+}

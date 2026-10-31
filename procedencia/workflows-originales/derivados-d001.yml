@@ -1,0 +1,48 @@
+name: Laplace D001 - Derivados publicos y opciones
+on:
+  push:
+    branches:
+      - feature/d001-derivados-perps-opciones-20261031
+  pull_request:
+    paths:
+      - 'universo/derivados/**'
+      - 'universo/global-u003.mjs'
+      - 'tools/derivados-d001.mjs'
+      - 'tests/derivados-d001.test.mjs'
+      - '.github/workflows/derivados-d001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-contratos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Sintaxis y seguridad básica
+        run: |
+          set -euo pipefail
+          for f in universo/derivados/*.mjs; do node --check "$f"; done
+          node --check universo/global-u003.mjs
+          node --check tools/derivados-d001.mjs
+      - name: Pruebas de derivados y módulos anteriores
+        run: |
+          set -euo pipefail
+          npm run test:derivados
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Modo de ejecución sin cuentas y sin órdenes
+        run: |
+          set -euo pipefail
+          node tools/derivados-d001.mjs --help
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const src=readFileSync("universo/global-u003.mjs","utf8");assert.match(src,/if\(includeDerivatives\)/);assert.match(src,/LAPLACE_D001_ENABLED/);const p=JSON.parse(readFileSync("package.json"));assert.ok(p.scripts["test:derivados"]);'
+      - name: Smoke voluntario de feeds públicos (puede bloquear geografía)
+        continue-on-error: true
+        run: |
+          node tools/derivados-d001.mjs --out=/tmp/laplace-d001-live.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-d001-live.json")); console.log(JSON.stringify({signals:x.universal_state.known_states,sources:x.source_status.map(s=>({name:s.name,status:s.status,reason:s.reason??null}))}));'

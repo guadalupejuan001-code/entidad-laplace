@@ -1,0 +1,48 @@
+{
+  "suite": "LAPLACE_E004_REALIDADES_XI_MAS_DE_1000_QUBITS",
+  "synthetic": true,
+  "selected_features": [
+    "AID_BLOCKED",
+    "CEASEFIRE"
+  ],
+  "scenario_count": 512,
+  "expected_positive_count": 256,
+  "expected_negative_count": 256,
+  "positive_mass": 256,
+  "negative_mass": 256,
+  "positive_probability": 0.5,
+  "negative_probability": 0.5,
+  "native": {
+    "active_qubits": 1536,
+    "components": 512,
+    "largest_component": 3,
+    "tableau_bytes": 26112,
+    "address_bytes": 24576,
+    "query_qubit_address_bound": 1536
+  },
+  "unequal_weights": {
+    "scenario_count": 3,
+    "expected_positive_count": 1.5,
+    "positive_mass": 9.5,
+    "negative_mass": 1.5,
+    "total_weight": 11,
+    "positive_probability": 0.8636363636363636
+  },
+  "journal": {
+    "forecasts": 1,
+    "analyses": 2,
+    "patterns": 1,
+    "events": 4
+  },
+  "pattern_ether_proof": {
+    "exact_roundtrip": true,
+    "materialized_bytes": 2116,
+    "overrides": 2116,
+    "active_qubits": 0
+  },
+  "exhaustive_state_enumeration": false,
+  "quantum_hardware": false,
+  "physical_realities_demonstrated": false,
+  "real_world_calibration_demonstrated": false,
+  "scope": "circuitos Clifford compactos con incertidumbre y pesos declarados; no simula cualquier universo de 1536 qubits"
+}

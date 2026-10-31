@@ -1,0 +1,96 @@
+name: LaPlaceDIG P002 - tres cuerpos gravitacionales XI
+on:
+  push:
+    branches:
+      - feature/laplace-gravedad-tres-cuerpos-p002-20261028
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  p002-gravedad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Obtener LaPlaceDIG
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: REVERSE-PC original con XI Machine
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Mundo X original de QuantumRuntime/Inverse Ether Memory
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar procedencia, compilador y pruebas independientes
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check fisica/tres-cuerpos.mjs
+          node --check tools/gravedad.mjs
+          node --check tools/laplace.mjs
+          node tools/laplace.mjs --help | grep -q 'crear-gravedad'
+          node --check tests/tres-cuerpos.test.mjs
+          node --check tests/tres-cuerpos-experimento.mjs
+          node --test tests/tres-cuerpos.test.mjs
+      - name: Construir REVERSE-PC desde SHA fijado (sin segundo motor)
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Probar 3 cuerpos, energía, persistencia y referencia continua
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/tres-cuerpos.test.mjs
+      - name: Sellar pronóstico y medir sensibilidad al estado inicial
+        run: |
+          set -euo pipefail
+          mkdir -p ci-gravedad
+          node tests/tres-cuerpos-experimento.mjs ./build-reverse/reverse_pc ci-gravedad/resultado.json
+      - name: Pronosticar un acercamiento gravitatorio en el mundo de tres cuerpos
+        run: |
+          set -euo pipefail
+          node --check tests/tres-cuerpos-encuentro.mjs
+          node tests/tres-cuerpos-encuentro.mjs ./build-reverse/reverse_pc ci-gravedad/encuentro.json
+      - name: Medir la ventana de futuro en nueve condiciones iniciales
+        run: |
+          set -euo pipefail
+          node --check tests/tres-cuerpos-escenarios.mjs
+          node tests/tres-cuerpos-escenarios.mjs ./build-reverse/reverse_pc ci-gravedad/escenarios.json
+      - name: Construir y ejecutar programa gravitatorio .rxe
+        run: |
+          set -euo pipefail
+          mkdir -p ci-gravedad
+          node tools/gravedad.mjs ejemplo 16 ci-gravedad/iniciar.xi > ci-gravedad/programa.json
+          node tools/gravedad.mjs continuar 16 ci-gravedad/continuar.xi > ci-gravedad/continuacion.json
+          build-reverse/reverse_pc compile ci-gravedad/iniciar.xi ci-gravedad/Gravedad-P002.rxe "LAPLACE P002 TRES CUERPOS"
+          build-reverse/reverse_pc inspect-rxe ci-gravedad/Gravedad-P002.rxe > ci-gravedad/rxe-inspect.json
+          build-reverse/reverse_pc init ci-gravedad/estado-inicial.rvp
+          build-reverse/reverse_pc run ci-gravedad/Gravedad-P002.rxe ci-gravedad/estado-inicial.rvp ci-gravedad/estado-16.rvp > ci-gravedad/salida-16.jsonl
+          build-reverse/reverse_pc run ci-gravedad/continuar.xi ci-gravedad/estado-16.rvp ci-gravedad/estado-32.rvp > ci-gravedad/salida-32.jsonl
+      - name: Archivar estados, ejecutable y evidencia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaPlaceDIG-P002-Gravedad-3Cuerpos-XI
+          path: ci-gravedad/
+          retention-days: 30
+          if-no-files-found: warn

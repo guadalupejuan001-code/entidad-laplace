@@ -1,0 +1,25 @@
+{
+  "schema": "laplace-entrenamiento-x002-v1",
+  "horizon_minutes": 1440,
+  "source_sha256": "20f0c4b4921fa2691877fae4388eb066d90bf4b81b04a1ee43e8e5eb52047f15",
+  "fitted_through": "2026-10-22T18:05:00.000Z",
+  "logical_freeze_boundary": "2026-10-25T18:05:00.000Z",
+  "prior_strength": 16,
+  "cutoff_semantics": "logical_backtest_boundary_not_actual_past_execution",
+  "training_sha256": "ca48921a9dbd590569abbcb828f0e7fde2fbe5926dd860b73c11ce71391e43a3",
+  "xi_sha256": "55542a152858c2e38766695e441d2cb9b843c453761b6715865c0f9a0ffe0ed9",
+  "calibrator": {
+    "method": "identity",
+    "lambda": 1,
+    "prior": null,
+    "support": 2,
+    "start": "2026-10-22T18:05:00.000Z",
+    "end": "2026-10-25T18:05:00.000Z",
+    "status": "soporte_calibracion_insuficiente"
+  },
+  "historical_availability": "exploratory_close_assumption_not_authenticated_vintages",
+  "calibration_arithmetic": "host_classical_scalar_shrinkage",
+  "prediction_arithmetic": "native_classical_in_original_ether",
+  "frozen_sha256": "33da821a7b0479e36069d90074d3b8a7a7a4b34111493ec8bd81a719382f1d7b",
+  "calibration_retains_state_information": true
+}

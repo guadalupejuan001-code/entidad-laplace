@@ -1,0 +1,94 @@
+name: LaPlaceDIG P004 - frontera de singularidad clasica XI Ether
+on:
+  push:
+    branches:
+      - feature/laplace-p004-frontera-singularidad-20261028
+      - main
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  singularidad-xi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Fuente actual LAPLACE
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: REVERSE-PC original con ABI XI/RXE
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Mundo X original (QuantumRuntime + Inverse Ether Memory)
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Rechazar cambios silenciosos de dependencia y errores de compilación
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check cosmos/singularidad.mjs
+          node --check tools/singularidad.mjs
+          node --check tests/singularidad.test.mjs
+          node --check tests/singularidad-experimento.mjs
+          node --check tests/singularidad-extremo.mjs
+          node --test tests/singularidad.test.mjs
+      - name: Compilar el REVERSE-PC real sin otro motor físico
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Ejecutar referencia independiente, RXE y persistencia Ether
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/singularidad.test.mjs
+      - name: P003 más P004 en una única autoridad de estado REVERSE
+        run: |
+          set -euo pipefail
+          mkdir -p ci-singularidad
+          node tests/singularidad-experimento.mjs ./build-reverse/reverse_pc ci-singularidad/resultado.json
+      - name: Sobrecargar el límite con 128 condiciones iniciales
+        run: |
+          set -euo pipefail
+          node tests/singularidad-extremo.mjs ./build-reverse/reverse_pc ci-singularidad/extremo.json
+      - name: Verificar frontera matemática, Planck y programa ejecutable
+        run: |
+          set -euo pipefail
+          node tools/singularidad.mjs ejemplo ci-singularidad/ejemplo.xi > ci-singularidad/compilador.json
+          build-reverse/reverse_pc inspect-rxe ci-singularidad/Laplace-Singularidad-P004.rxe > ci-singularidad/rxe-inspeccion.json
+          node --input-type=module -e '
+            import assert from "node:assert/strict";
+            import {readFileSync} from "node:fs";
+            const r=JSON.parse(readFileSync("ci-singularidad/resultado.json","utf8"));
+            const x=JSON.parse(readFileSync("ci-singularidad/extremo.json","utf8"));
+            assert.equal(r.passed,true);assert.equal(r.epoch_count,51);
+            assert.equal(r.packed_logical_bytes,4896);
+            assert.equal(r.first_flagged_scale_factor,"1e-32");
+            assert.equal(r.matched_previous_P003,true);
+            assert.equal(r.singularity_at_a_zero.numerically_simulated,false);
+            assert.equal(x.passed,128);assert.equal(x.failed,0);
+          '
+      - name: Preservar código XI, RXE y estados RVPC2 con evidencia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LaPlaceDIG-P004-Singularidad-XI-RXE
+          path: ci-singularidad/
+          retention-days: 30
+          if-no-files-found: warn

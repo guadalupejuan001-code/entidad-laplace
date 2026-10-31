@@ -1,0 +1,112 @@
+name: LaPlaceDIG - demonio Ether XI y verdad temporal
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: LaPlaceDIG exact commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Ether original de Mundo X, referencia reproducible
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: "Procedencia: núcleo XI del demonio migrado sin cambios"
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-X rev-parse HEAD)" = 3d29556eff4d1079c791abab38e203fc209f1722
+          cmp demonio/modelo.mjs deps/mundo-X/demonio-laplace/modelo.mjs
+          cmp demonio/experimento.mjs deps/mundo-X/demonio-laplace/experimento.mjs
+          node --check historia/contrato.mjs
+          node --check historia/ether-xi.mjs
+          node --check tools/laplace.mjs
+          node --check demonio/modelo.mjs
+          node --check demonio/experimento.mjs
+          node --check inteligencia/laplace.mjs
+          node --check inteligencia/experimento.mjs
+          node --check narrativa/espacio.mjs
+          node --check narrativa/modelo.mjs
+          node --check narrativa/fuentes.mjs
+          node --check narrativa/experimento.mjs
+          node --check coexistencia/modelo.mjs
+          node --check coexistencia/patrones.mjs
+          node --check coexistencia/estado-xi.mjs
+          node --check coexistencia/experimento.mjs
+          node --check coexistencia/realidades.mjs
+          node --check coexistencia/experimento-realidades.mjs
+          node --check bitcoin/agente.mjs
+          node --check bitcoin/historico.mjs
+          node --check bitcoin/calibracion.mjs
+          node --check dinamica/modelo.mjs
+          node --check dinamica/vista.mjs
+          node --check salto/compilar.mjs
+          node --check tools/salto.mjs
+      - name: Construir únicamente el QuantumRuntime existente
+        run: |
+          set -euo pipefail
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Compilar operaciones temporales de Laplace sobre el runtime original
+        run: |
+          set -euo pipefail
+          cmake -S native -B build-laplace -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-laplace --target laplace_temporal --parallel 2
+      - name: Pruebas cronológicas y equivalencia real InverseMemory/XI
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+          LAPLACE_TEMPORAL: ./build-laplace/laplace_temporal
+        run: |
+          set -euo pipefail
+          node --test tests/*.test.mjs
+      - name: Reproducir predicción del mundo cerrado y el evento desconocido
+        run: |
+          set -euo pipefail
+          mkdir -p ci-evidence
+          node demonio/experimento.mjs ./build-ether/mundo_x_quantum ci-evidence | tee ci-evidence/demon-out.jsonl
+          grep -q '"exactitud_cerrada":"33/33"' ci-evidence/demon-out.jsonl
+          grep -q '"prediccion_condicional":"33/33"' ci-evidence/demon-out.jsonl
+          grep -q '"divergencia_por_evento_no_observado":9' ci-evidence/demon-out.jsonl
+      - name: Aprender leyes ocultas, sellar pronostico y retirar una ley refutada
+        run: |
+          set -euo pipefail
+          node tools/laplace.mjs experimento-aprendiz ./build-ether/mundo_x_quantum ci-evidence/aprendiz > ci-evidence/aprendiz-out.json
+          node --input-type=module -e 'import {readFileSync} from "node:fs"; import assert from "node:assert/strict"; const r=JSON.parse(readFileSync("ci-evidence/aprendiz/resultado.json")); assert.equal(r.unseen_future.matched_states,32); assert.equal(r.unknown_event.first_divergence,9); assert.equal(r.abstains_after_contradiction,true); assert.equal(r.future_leakage_check,true);'
+      - name: Probabilidad narrativa con prueba temporal y control sin noticias
+        run: |
+          set -euo pipefail
+          node tools/laplace.mjs experimento-narrativa ./build-ether/mundo_x_quantum ci-evidence/narrativa > ci-evidence/narrativa-out.json
+          node --input-type=module -e 'import {readFileSync} from "node:fs"; import assert from "node:assert/strict"; const r=JSON.parse(readFileSync("ci-evidence/narrativa/resultado.json")); assert.equal(r.synthetic,true); assert.equal(r.test.count,64); assert.ok(r.test.brier<r.test.baseline_brier); assert.equal(r.no_narrative_control.coverage,0); assert.equal(r.financial_edge_demonstrated,false);'
+      - name: Dos resultados y resultados observados agrupados por patron
+        run: |
+          set -euo pipefail
+          node tools/laplace.mjs experimento-dual ./build-ether/mundo_x_quantum ci-evidence/dual > ci-evidence/dual-out.json
+          node --input-type=module -e 'import {readFileSync} from "node:fs"; import assert from "node:assert/strict"; const r=JSON.parse(readFileSync("ci-evidence/dual/resultado.json")); assert.equal(r.closed_world.paired_forecasts,64); assert.equal(r.closed_world.patterns,4); assert.equal(r.closed_world.events,128); assert.equal(r.noisy_world.deterministic_status,"ley_refutada"); assert.equal(r.pattern_ether_proof.exact_roundtrip,true);'
+      - name: Realidades nativas con mas de mil qubits y pesos declarados
+        run: |
+          set -euo pipefail
+          node tools/laplace.mjs experimento-realidades ./build-ether/mundo_x_quantum ci-evidence/realidades > ci-evidence/realidades-out.json
+          node --input-type=module -e 'import {readFileSync} from "node:fs"; import assert from "node:assert/strict"; const r=JSON.parse(readFileSync("ci-evidence/realidades/resultado.json")); assert.equal(r.native.active_qubits,1536); assert.equal(r.scenario_count,512); assert.equal(r.expected_positive_count,256); assert.equal(r.unequal_weights.positive_probability,9.5/11); assert.equal(r.journal.forecasts,1); assert.equal(r.journal.analyses,2);'
+      - name: Archivar evidencia y datos de control identificados como sinteticos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LaPlaceDIG-Ether-XI-proof
+          path: ci-evidence/**
+          retention-days: 30
+          if-no-files-found: warn

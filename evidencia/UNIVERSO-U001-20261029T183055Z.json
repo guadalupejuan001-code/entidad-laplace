@@ -1,0 +1,55 @@
+{
+  "schema": "laplace-universo-u001-evidence-v1",
+  "captured_at": "2026-10-29T18:30:55.649Z",
+  "asset": "BTC-USD",
+  "price_observed_usd": 80664.12,
+  "projected_15m_usd": 80664.12,
+  "observed_sources": 6,
+  "observed_state_count": 11,
+  "domains": [
+    "flujo",
+    "geomagnetismo",
+    "liquidez",
+    "mercado",
+    "mercados_vinculados"
+  ],
+  "book": {
+    "best_bid_usd": 80664.43,
+    "best_ask_usd": 80664.44,
+    "spread_bps": 0.0012397,
+    "bid_depth_top10_usd": 53760.51349581,
+    "ask_depth_top10_usd": 38709.74862172,
+    "imbalance_top10": 0.1627633,
+    "raw_levels": {
+      "bids": 20214,
+      "asks": 20849
+    }
+  },
+  "trades": {
+    "reported_count": 1000,
+    "maker_buy_notional_usd": 417471.92430208,
+    "maker_sell_notional_usd": 297415.69227231,
+    "sample_complete": false
+  },
+  "observed_related": {
+    "eth_usd": 2331.64,
+    "btc_eur": 72271.27
+  },
+  "observed_physical": {
+    "domain": "geomagnetismo",
+    "kp": 0.33,
+    "observed_at": "2026-10-29T15:00:00.000Z",
+    "source_url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json"
+  },
+  "state_sha256": "b8b4b9ed270a6e85e4fbb1f8c914d026627a9e8d415440a99c30d1ba42cc01ba",
+  "workflow": {
+    "run_id": 40931511016,
+    "artifact_id": 12922876685,
+    "url": "https://github.com/guadalupejuan001-code/LaPlaceDIG/actions/runs/40931511016"
+  },
+  "source_kind": "live_public_network_observation",
+  "verification": "workflow logs plus downloadable full snapshot artifact; quoted figures are captured measurements, not forecasts of market outcomes",
+  "full_universe_observed": false,
+  "financial_edge_demonstrated": false,
+  "orders_executed": 0
+}

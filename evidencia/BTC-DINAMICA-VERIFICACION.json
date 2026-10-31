@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-10-28T05:48:56.319Z",
+  "url": "https://laplace-bitcoin-observatorio.guadalupejuan001.chatgpt.site",
+  "deployment_id": "appgdep_6ae18befe1f48191b8a65ba000b97b86",
+  "site_source_commit": "2adf75785cd3203c0be24bc817f5c60f9cc80387",
+  "assets": [
+    {
+      "path": "/",
+      "status": 200,
+      "sha256": "f575e2ea66253e64d0e87b8d2625f09d19fb752af1339c3ac8dd54dac3991747"
+    },
+    {
+      "path": "/time-profile.json",
+      "status": 200,
+      "sha256": "c63c08bf3c24cf7db5f824f71514506f9dd3a51db2d0cc2499a7a6ec9d3df4d1"
+    },
+    {
+      "path": "/native-time-view.mjs",
+      "status": 200,
+      "sha256": "4d2fa5d5762d05c68bd1ca212a42a467cdd4a8cb406d81cdfd0c6cb3bbf12653"
+    },
+    {
+      "path": "/temporal-engine.mjs",
+      "status": 404,
+      "sha256": "98b2cb2ba0f63a1004e1cac1fa713a36620d3f6ccdded9cebf1ccd651577b173"
+    },
+    {
+      "path": "/temporal-worker.mjs",
+      "status": 404,
+      "sha256": "a5eece5ea28ecc02de34d2c225af19e4371375a9905a9bebe562d89351099dee"
+    }
+  ],
+  "profile_sha256": "3cadcde0e24d3b44b8dacebcd4d7dc1fde115642ee5afcd59156714090df94de",
+  "executor_source_sha256": "22795816c08762765cc7e1c3be31ae6e711e52f6b7f268ccb2c5ac5e65da7c61",
+  "native_program_sha256": "c2c4dc47152bf12ab34d8dea9592f18baa04523820695e0b877551511e3ef81c",
+  "native_output_sha256": "e5ff27995d2ad81395e5c48b95162dbbfe8b0bf0a67bf937307bd9342fe120b1",
+  "production_profile_matches_canonical": true,
+  "all_native_traces_replayed_exactly": true,
+  "states": 7,
+  "labels": 90,
+  "origin_date": "2026-10-29",
+  "as_of": "2026-10-28T05:34:48.748Z",
+  "first_selection": {
+    "step": 2,
+    "probability": 0.4413334777146407,
+    "negative_probability": 0.5586665222853593,
+    "distribution": [
+      0.18012453531535702,
+      0.1748437500264013,
+      0.014300152246298926,
+      0.01703181052677467,
+      0.014383740989681482,
+      0.38671631909694415,
+      0.21259969179854238
+    ],
+    "mode": "native",
+    "date": "2026-10-29",
+    "horizon_days": 2,
+    "initial_mask": 282,
+    "validated": false,
+    "native_program_sha256": "c2c4dc47152bf12ab34d8dea9592f18baa04523820695e0b877551511e3ef81c",
+    "native_output_sha256": "e5ff27995d2ad81395e5c48b95162dbbfe8b0bf0a67bf937307bd9342fe120b1",
+    "arithmetic": "native-classical"
+  },
+  "selection_2030": {
+    "mode": "unsupported_horizon",
+    "date": "2030-12-31",
+    "horizon_days": 1526,
+    "probability": null,
+    "status": "abstencion_horizonte_sin_evidencia",
+    "max_horizon_days": 7
+  },
+  "validated_horizon_days": [],
+  "financial_edge_demonstrated": false,
+  "transitions": 89
+}

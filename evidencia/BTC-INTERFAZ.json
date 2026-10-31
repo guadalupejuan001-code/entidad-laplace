@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-10-28T17:37:40.826Z",
+  "url": "https://laplace-bitcoin-observatorio.guadalupejuan001.chatgpt.site",
+  "deployment_id": "appgdep_6ae2327e03cc819193655eeababc194c",
+  "site_source_commit": "87eb4ab345f67e9cfa38c81f47b5b27a88937397",
+  "assets": [
+    {
+      "path": "/",
+      "status": 200,
+      "sha256": "b77b412bb2016ed02616b3032fb124314bab89bdd86373aeb43a04c8eeb853fc"
+    },
+    {
+      "path": "/time-profile.json",
+      "status": 200,
+      "sha256": "65c94991b1edc9f6344e4d44b576bee6c702992a2a58c9f811a36e539f755aea"
+    }
+  ],
+  "visible_phrases_checked": [
+    "¿Qué puede pasar con Bitcoin?",
+    "Elige una fecha",
+    "Lee las dos posibilidades",
+    "Sube más de 0,10%",
+    "No supera esa subida",
+    "Puede subir menos, mantenerse o bajar.",
+    "Cambiar el contexto de noticias",
+    "Revisar las pruebas anteriores"
+  ],
+  "initially_closed_sections": 4,
+  "unchanged_numerical_profile": true,
+  "profile_sha256": "24f7f80bd325df75ec4af21030ecbf653544bd42779697a17ad266ab16ab98ff",
+  "default_date": "2026-10-29",
+  "rendered_positive": "44,1%",
+  "rendered_complement": "55,9%",
+  "complement_meaning": "BTC return is at most +0.10%; includes smaller rises, no change and falls",
+  "future_2030": {
+    "probability": 0.4415997863929211,
+    "negative_probability": 0.5584002136070789
+  },
+  "typescript": "passed",
+  "build": "passed",
+  "browser_qa_verified": false,
+  "browser_qa_limitation": "Managed preview returned ERR_CONNECTION_REFUSED to the cloud browser."
+}

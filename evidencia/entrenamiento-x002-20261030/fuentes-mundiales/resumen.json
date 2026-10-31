@@ -1,0 +1,222 @@
+{
+  "at": "2026-10-30T18:19:26.870Z",
+  "coverage": {
+    "base_signals": 368,
+    "known_signals": 684,
+    "added_signals": 316,
+    "domains": 21,
+    "groups": [
+      {
+        "group": "regional_markets",
+        "status": "observed",
+        "signals": 64,
+        "sources_ok": 16,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "commodity_futures",
+        "status": "observed",
+        "signals": 40,
+        "sources_ok": 10,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "policy_rates",
+        "status": "observed",
+        "signals": 18,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "official_central_banks",
+        "status": "observed",
+        "signals": 3,
+        "sources_ok": 3,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "employment_monthly",
+        "status": "observed",
+        "signals": 3,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "employment_high_frequency",
+        "status": "observed",
+        "signals": 3,
+        "sources_ok": 3,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "macro_exact_vintages",
+        "status": "requires_access",
+        "signals": 0,
+        "sources_ok": 0,
+        "sources_optional": 1,
+        "sources_failed": 0
+      },
+      {
+        "group": "electricity",
+        "status": "observed",
+        "signals": 10,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "maritime",
+        "status": "observed",
+        "signals": 5,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "geo_news",
+        "status": "observed",
+        "signals": 12,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 7
+      },
+      {
+        "group": "dated_commodity_contracts",
+        "status": "observed",
+        "signals": 12,
+        "sources_ok": 1,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "capital_u004",
+        "status": "observed",
+        "signals": 121,
+        "sources_ok": 6,
+        "sources_optional": 0,
+        "sources_failed": 0
+      },
+      {
+        "group": "air_traffic",
+        "status": "requires_access",
+        "signals": 0,
+        "sources_ok": 0,
+        "sources_optional": 1,
+        "sources_failed": 0
+      },
+      {
+        "group": "direct_exchanges",
+        "status": "requires_access",
+        "signals": 0,
+        "sources_ok": 0,
+        "sources_optional": 3,
+        "sources_failed": 0
+      },
+      {
+        "group": "public_direct_exchanges",
+        "status": "observed",
+        "signals": 25,
+        "sources_ok": 3,
+        "sources_optional": 0,
+        "sources_failed": 0
+      }
+    ],
+    "observed_sources": 99,
+    "failed_sources": 7,
+    "optional_sources": 5
+  },
+  "failed": [
+    {
+      "name": "GDELT-conflict",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-protest",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-trade",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-energy",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-shipping",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-cyber",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    },
+    {
+      "name": "GDELT-disaster",
+      "status": "unavailable",
+      "reason": "HTTP 503 api.gdeltproject.org",
+      "group": "geo_news"
+    }
+  ],
+  "optional": [
+    {
+      "name": "FRED-ALFRED-vintages",
+      "status": "requires_credentials",
+      "signals": 0,
+      "url": "https://api.stlouisfed.org/fred/series/observations",
+      "reason": "FRED_API_KEY requerido para output_type=4 / initial release",
+      "group": "macro_exact_vintages"
+    },
+    {
+      "name": "OpenSky",
+      "status": "requires_credentials",
+      "signals": 0,
+      "url": "https://opensky-network.org/api/states/all",
+      "reason": "OAuth2 requerido; no se consulta sin autorización",
+      "group": "air_traffic"
+    },
+    {
+      "name": "JPX-JQuants",
+      "status": "requires_credentials",
+      "signals": 0,
+      "url": "https://api.jquants.com/v2/indices/bars/daily/topix",
+      "reason": "x-api-key requerido por JPX",
+      "direct_exchange": true,
+      "group": "direct_exchanges"
+    },
+    {
+      "name": "B3-direct",
+      "status": "requires_license",
+      "signals": 0,
+      "url": "https://developers.b3.com.br/",
+      "direct_exchange": true,
+      "group": "direct_exchanges"
+    },
+    {
+      "name": "Deutsche-Boerse-direct",
+      "status": "requires_license",
+      "signals": 0,
+      "url": "https://www.deutsche-boerse.com/dbg-en/markets-services/ps-technology/ps-api-platform",
+      "direct_exchange": true,
+      "group": "direct_exchanges"
+    }
+  ],
+  "prediction_inputs_enabled": false
+}

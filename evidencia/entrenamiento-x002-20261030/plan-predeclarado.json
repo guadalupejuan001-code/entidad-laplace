@@ -1,0 +1,38 @@
+{
+  "schema": "laplace-x002-predeclared-v1",
+  "declared_at": "2026-10-30T18:06:32.347Z",
+  "asset": "BTC-USD",
+  "bar_seconds": 300,
+  "training_days": 14,
+  "validation_days": 3,
+  "calibration_days": 3,
+  "test_days": 5,
+  "horizons_minutes": [
+    15,
+    30,
+    60,
+    240,
+    1440
+  ],
+  "prior_strengths": [
+    1,
+    4,
+    16,
+    64
+  ],
+  "calibration_lambdas": [
+    1,
+    0.75,
+    0.5,
+    0.25,
+    0
+  ],
+  "max_native_rows": 256,
+  "evaluation_stride": "horizon_nonoverlapping",
+  "training_sampling": "uniform_from_nonoverlapping_eligible_labels",
+  "minimum_calibration_rows": 8,
+  "selection_metric": "brier_on_common_supported_states",
+  "tie_break": "larger_prior_strength_then_identity_calibration",
+  "historical_availability": "exploratory_close_assumption_not_authenticated_vintages",
+  "activation": "research_only_no_automatic_promotion"
+}

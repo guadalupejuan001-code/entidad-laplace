@@ -1,0 +1,39 @@
+{
+  "schema": "laplace.input.installation.i001",
+  "date": "2026-10-30",
+  "base_commit": "25f188859c97574271bd27ca704d079c60339db5",
+  "p001_commit": "7f5ac6e",
+  "branch": "feature/input-i001-20261030",
+  "publicly_published": false,
+  "tests": {
+    "total": 220,
+    "passed": 185,
+    "skipped": 35,
+    "failed": 0,
+    "note": "35 existing tests require native binaries from other modules"
+  },
+  "input_tests": 22,
+  "real_sources": [
+    "Coinbase BTC-USD ticker",
+    "Federal Reserve RSS releases"
+  ],
+  "installed_development": {
+    "dependencies": true,
+    "postgresql_embedded": true,
+    "institutional_entities": 15787,
+    "institutional_relations": 27093
+  },
+  "prepared_not_deployed": {
+    "timescale_compose": true,
+    "bitcoin_rpc": true,
+    "ethereum_rpc_websocket": true,
+    "macro_webhook": true
+  },
+  "native_bridge": {
+    "runtime_ref": "3d29556eff4d1079c791abab38e203fc209f1722",
+    "original_runtime_unchanged": true
+  },
+  "predictive_training_run": false,
+  "full_pipeline_load_benchmark": false,
+  "source_coverage": "configured sources, not the entire world"
+}

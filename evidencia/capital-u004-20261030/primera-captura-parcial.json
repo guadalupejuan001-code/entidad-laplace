@@ -1,0 +1,1685 @@
+{
+  "schema": "laplace-capital-u004-v1",
+  "at": "2026-10-30T17:38:32.924Z",
+  "universal_state": {
+    "schema": "laplace-universo-estados-u001-v1",
+    "cutoff": "2026-10-30T17:38:32.924Z",
+    "total_supplied": 73,
+    "withheld_future": 0,
+    "known_states": 73,
+    "domains": [
+      "curva_tesoro",
+      "liquidez_eeuu",
+      "posicionamiento_cot"
+    ],
+    "states": [
+      {
+        "id": "u004-COT_disaggregated_002602_managed_money_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 297797,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_managed_money_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 164423,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_managed_money_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 133374,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_nonreportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 148512,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_nonreportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -25609,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_nonreportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 174121,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_open_interest-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_open_interest",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 1835658,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_other_reportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 185158,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_other_reportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 122266,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_other_reportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 62892,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_producers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 415001,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_producers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -528744,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_producers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 943745,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_swap_dealers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 292431,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_swap_dealers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 267664,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_002602_swap_dealers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 24767,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_managed_money_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 163413,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_managed_money_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 36187,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_managed_money_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 127226,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_nonreportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 76036,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_nonreportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 26833,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_nonreportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 49203,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_open_interest-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_open_interest",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 1835144,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_other_reportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 171699,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_other_reportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 53138,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_other_reportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 118561,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_producers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 625697,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_producers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 359568,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_producers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 266129,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_swap_dealers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 130922,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_swap_dealers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -475726,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_067651_swap_dealers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 606648,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_managed_money_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 67225,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_managed_money_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 47690,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_managed_money_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 19535,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_nonreportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 16836,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_nonreportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 6899,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_nonreportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 9937,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_open_interest-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_open_interest",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 327119,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_other_reportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 31310,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_other_reportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 9707,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_other_reportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 21603,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_producers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 52941,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_producers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -77406,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_producers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 130347,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_swap_dealers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 53260,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_swap_dealers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 13110,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_085692_swap_dealers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 40150,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_managed_money_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 120970,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_managed_money_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 104206,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_managed_money_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 16764,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_nonreportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 51407,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_nonreportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 35717,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_nonreportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 15690,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_open_interest-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_open_interest",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 402279,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_other_reportables_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 116172,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_other_reportables_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 95659,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_other_reportables_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 20513,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_producers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 19715,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_producers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -14783,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_producers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 34498,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_swap_dealers_long-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_long",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 17737,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_swap_dealers_net-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_net",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": -220799,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-COT_disaggregated_088691_swap_dealers_short-2026-10-20",
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_short",
+        "observed_at": "2026-10-20T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.710Z",
+        "value": 238536,
+        "unit": "contracts",
+        "source_url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400"
+      },
+      {
+        "id": "u004-US_Fed_TGA_ONRRP_proxy-2026-10-28",
+        "domain": "liquidez_eeuu",
+        "variable": "US_Fed_TGA_ONRRP_proxy",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.775Z",
+        "value": 5729827000000,
+        "unit": "USD",
+        "source_url": "https://fred.stlouisfed.org/series/WALCL"
+      },
+      {
+        "id": "u004-US_fed_total_assets-2026-10-28",
+        "domain": "liquidez_eeuu",
+        "variable": "US_fed_total_assets",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.775Z",
+        "value": 6745635000000,
+        "unit": "USD",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_overnight_reverse_repo-2026-10-28",
+        "domain": "liquidez_eeuu",
+        "variable": "US_overnight_reverse_repo",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.775Z",
+        "value": 176000000,
+        "unit": "USD",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_treasury_general_account-2026-10-28",
+        "domain": "liquidez_eeuu",
+        "variable": "US_treasury_general_account",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:28.775Z",
+        "value": 1015632000000,
+        "unit": "USD",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WDTGAL&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_10Y_minus_2Y-2026-10-28",
+        "domain": "curva_tesoro",
+        "variable": "US_10Y_minus_2Y",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:31.902Z",
+        "value": 38,
+        "unit": "bps",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_10Y_minus_3M-2026-10-28",
+        "domain": "curva_tesoro",
+        "variable": "US_10Y_minus_3M",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:31.902Z",
+        "value": 87,
+        "unit": "bps",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_DGS10-2026-10-28",
+        "domain": "curva_tesoro",
+        "variable": "US_DGS10",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:31.902Z",
+        "value": 5.05,
+        "unit": "pct",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_DGS2-2026-10-28",
+        "domain": "curva_tesoro",
+        "variable": "US_DGS2",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:31.902Z",
+        "value": 4.67,
+        "unit": "pct",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30"
+      },
+      {
+        "id": "u004-US_DGS3MO-2026-10-28",
+        "domain": "curva_tesoro",
+        "variable": "US_DGS3MO",
+        "observed_at": "2026-10-28T00:00:00.000Z",
+        "known_at": "2026-10-30T17:38:31.902Z",
+        "value": 4.18,
+        "unit": "pct",
+        "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30"
+      }
+    ],
+    "variables": [
+      {
+        "domain": "curva_tesoro",
+        "variable": "US_10Y_minus_2Y",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_value": 38,
+        "unit": "bps"
+      },
+      {
+        "domain": "curva_tesoro",
+        "variable": "US_10Y_minus_3M",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_value": 87,
+        "unit": "bps"
+      },
+      {
+        "domain": "curva_tesoro",
+        "variable": "US_DGS10",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_value": 5.05,
+        "unit": "pct"
+      },
+      {
+        "domain": "curva_tesoro",
+        "variable": "US_DGS2",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_value": 4.67,
+        "unit": "pct"
+      },
+      {
+        "domain": "curva_tesoro",
+        "variable": "US_DGS3MO",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_seen_at": "2026-10-30T17:38:31.902Z",
+        "last_value": 4.18,
+        "unit": "pct"
+      },
+      {
+        "domain": "liquidez_eeuu",
+        "variable": "US_Fed_TGA_ONRRP_proxy",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_value": 5729827000000,
+        "unit": "USD"
+      },
+      {
+        "domain": "liquidez_eeuu",
+        "variable": "US_fed_total_assets",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_value": 6745635000000,
+        "unit": "USD"
+      },
+      {
+        "domain": "liquidez_eeuu",
+        "variable": "US_overnight_reverse_repo",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_value": 176000000,
+        "unit": "USD"
+      },
+      {
+        "domain": "liquidez_eeuu",
+        "variable": "US_treasury_general_account",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_seen_at": "2026-10-30T17:38:28.775Z",
+        "last_value": 1015632000000,
+        "unit": "USD"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 297797,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 164423,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_managed_money_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 133374,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 148512,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -25609,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_nonreportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 174121,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_open_interest",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 1835658,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 185158,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 122266,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_other_reportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 62892,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 415001,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -528744,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_producers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 943745,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 292431,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 267664,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_002602_swap_dealers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 24767,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 163413,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 36187,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_managed_money_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 127226,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 76036,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 26833,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_nonreportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 49203,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_open_interest",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 1835144,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 171699,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 53138,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_other_reportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 118561,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 625697,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 359568,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_producers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 266129,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 130922,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -475726,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_067651_swap_dealers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 606648,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 67225,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 47690,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_managed_money_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 19535,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 16836,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 6899,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_nonreportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 9937,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_open_interest",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 327119,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 31310,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 9707,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_other_reportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 21603,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 52941,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -77406,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_producers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 130347,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 53260,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 13110,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_085692_swap_dealers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 40150,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 120970,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 104206,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_managed_money_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 16764,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 51407,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 35717,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_nonreportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 15690,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_open_interest",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 402279,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 116172,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 95659,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_other_reportables_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 20513,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 19715,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -14783,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_producers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 34498,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_long",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 17737,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_net",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": -220799,
+        "unit": "contracts"
+      },
+      {
+        "domain": "posicionamiento_cot",
+        "variable": "COT_disaggregated_088691_swap_dealers_short",
+        "count": 1,
+        "first_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_seen_at": "2026-10-30T17:38:28.710Z",
+        "last_value": 238536,
+        "unit": "contracts"
+      }
+    ],
+    "relations": [],
+    "relations_type": "hipotesis_o_precedencia_no_causalidad_probada",
+    "complete_universe_observed": false,
+    "snapshot_sha256": "5feff79ae5946acf4966c21439ce5380e79c610c3098f8c2c49dc8912e1b76d1"
+  },
+  "coverage": {
+    "known_signals": 73,
+    "domains": 3,
+    "groups": [
+      {
+        "group": "cot",
+        "status": "observed",
+        "signals": 64,
+        "sources_observed": 1,
+        "sources_failed": 1
+      },
+      {
+        "group": "treasury_curve",
+        "status": "observed",
+        "signals": 5,
+        "sources_observed": 1,
+        "sources_failed": 0
+      },
+      {
+        "group": "us_liquidity",
+        "status": "observed",
+        "signals": 4,
+        "sources_observed": 3,
+        "sources_failed": 0
+      }
+    ],
+    "observed_sources": 5,
+    "failed_sources": 1
+  },
+  "source_status": [
+    {
+      "name": "CFTC-disaggregated",
+      "url": "https://publicreporting.cftc.gov/resource/72hh-3qpy.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cprod_merc_positions_long%2Cprod_merc_positions_short%2Cswap_positions_long_all%2Cswap__positions_short_all%2Cm_money_positions_long_all%2Cm_money_positions_short_all%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27088691%27%2C%27067651%27%2C%27085692%27%2C%27002602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400",
+      "status": "observed",
+      "received_at": "2026-10-30T17:38:28.710Z",
+      "body_sha256": "4eebcea38061625f8084e54ee7d3b16403a67c66439799b23f323ba3dea92fce",
+      "raw_response_archived": true,
+      "archive_ref": "entradas/4eebcea38061625f8084e54ee7d3b16403a67c66439799b23f323ba3dea92fce.gz.b64",
+      "signals": 64,
+      "frequency": "weekly",
+      "reference_precision": "day",
+      "dataset": "Disaggregated - Futures Only",
+      "missing_markets": [],
+      "complete": true,
+      "group": "cot"
+    },
+    {
+      "name": "CFTC-financial",
+      "url": "https://publicreporting.cftc.gov/resource/gpe5-46if.json?%24select=market_and_exchange_names%2Creport_date_as_yyyy_mm_dd%2Ccftc_contract_market_code%2Copen_interest_all%2Ccontract_units%2Cfutonly_or_combined%2Cdealer_positions_long_all%2Cdealer_positions_short_all%2Casset_mgr_positions_long%2Casset_mgr_positions_short%2Clev_money_positions_long%2Clev_money_positions_short%2Cother_rept_positions_long%2Cother_rept_positions_short%2Cnonrept_positions_long_all%2Cnonrept_positions_short_all&%24where=futonly_or_combined%3D%27FutOnly%27+AND+cftc_contract_market_code+in%28%27133741%27%2C%27099741%27%2C%27043602%27%29&%24order=report_date_as_yyyy_mm_dd+DESC%2Ccftc_contract_market_code+ASC&%24limit=400",
+      "status": "unavailable",
+      "signals": 0,
+      "received_at": null,
+      "body_sha256": null,
+      "raw_response_archived": false,
+      "archive_ref": null,
+      "reason": "HTTP 503",
+      "group": "cot"
+    },
+    {
+      "name": "FRED-US-yield-curve",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2%2CDGS10%2CDGS3MO&cosd=2026-08-31&coed=2026-10-30",
+      "status": "observed",
+      "received_at": "2026-10-30T17:38:31.902Z",
+      "body_sha256": "9e74b8c05e482bf363fe38439e9b7033e8c0a6dc8fa43bc08971a23c1beaa429",
+      "raw_response_archived": true,
+      "archive_ref": "entradas/9e74b8c05e482bf363fe38439e9b7033e8c0a6dc8fa43bc08971a23c1beaa429.gz.b64",
+      "signals": 5,
+      "reference_date": "2026-10-28",
+      "frequency": "daily_business_days",
+      "real_time": false,
+      "reference_precision": "day",
+      "spread_formula": "(10Y - plazo_corto) * 100 puntos básicos",
+      "common_date_required": true,
+      "publication_at": null,
+      "group": "treasury_curve"
+    },
+    {
+      "name": "FRED-WALCL",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2026-08-31&coed=2026-10-30",
+      "status": "observed",
+      "received_at": "2026-10-30T17:38:28.774Z",
+      "body_sha256": "223921678068e742517ef04eefb5b6272b56f3fcb066027f71df8e9acf0c8d76",
+      "raw_response_archived": true,
+      "archive_ref": "entradas/223921678068e742517ef04eefb5b6272b56f3fcb066027f71df8e9acf0c8d76.gz.b64",
+      "signals": 1,
+      "frequency": "weekly_wednesday_level",
+      "original_unit_multiplier_usd": 1000000,
+      "group": "us_liquidity"
+    },
+    {
+      "name": "FRED-WDTGAL",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WDTGAL&cosd=2026-08-31&coed=2026-10-30",
+      "status": "observed",
+      "received_at": "2026-10-30T17:38:28.753Z",
+      "body_sha256": "3ad317062f9123713c86096a156cf732b17ff3aacf521ebc4be4d58b01e5c4a8",
+      "raw_response_archived": true,
+      "archive_ref": "entradas/3ad317062f9123713c86096a156cf732b17ff3aacf521ebc4be4d58b01e5c4a8.gz.b64",
+      "signals": 1,
+      "frequency": "weekly_wednesday_level",
+      "original_unit_multiplier_usd": 1000000,
+      "group": "us_liquidity"
+    },
+    {
+      "name": "FRED-RRPONTSYD",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2026-08-31&coed=2026-10-30",
+      "status": "observed",
+      "received_at": "2026-10-30T17:38:28.667Z",
+      "body_sha256": "67cad3d688decd7577218907855fe6e96181bc2431d7ce1d44c4bd72c60f7bcf",
+      "raw_response_archived": true,
+      "archive_ref": "entradas/67cad3d688decd7577218907855fe6e96181bc2431d7ce1d44c4bd72c60f7bcf.gz.b64",
+      "signals": 1,
+      "frequency": "daily",
+      "original_unit_multiplier_usd": 1000000000,
+      "group": "us_liquidity"
+    }
+  ],
+  "cot_reports": [
+    {
+      "dataset": "disaggregated",
+      "market_code": "088691",
+      "market_name": "GOLD - COMMODITY EXCHANGE INC.",
+      "contract_units": "(CONTRACTS OF 100 TROY OUNCES)",
+      "reference_date": "2026-10-20",
+      "publication_at": null,
+      "frequency": "weekly",
+      "received_at": "2026-10-30T17:38:28.710Z",
+      "missing_fields": [],
+      "reference_age_days": 10.74,
+      "semantics": "Contratos reportados por categoría; no órdenes actuales ni intenciones de operadores."
+    },
+    {
+      "dataset": "disaggregated",
+      "market_code": "067651",
+      "market_name": "WTI-PHYSICAL - NEW YORK MERCANTILE EXCHANGE",
+      "contract_units": "(CONTRACTS OF 1,000 BARRELS)",
+      "reference_date": "2026-10-20",
+      "publication_at": null,
+      "frequency": "weekly",
+      "received_at": "2026-10-30T17:38:28.710Z",
+      "missing_fields": [],
+      "reference_age_days": 10.74,
+      "semantics": "Contratos reportados por categoría; no órdenes actuales ni intenciones de operadores."
+    },
+    {
+      "dataset": "disaggregated",
+      "market_code": "085692",
+      "market_name": "COPPER- #1 - COMMODITY EXCHANGE INC.",
+      "contract_units": "(CONTRACTS OF 25,000 POUNDS)",
+      "reference_date": "2026-10-20",
+      "publication_at": null,
+      "frequency": "weekly",
+      "received_at": "2026-10-30T17:38:28.710Z",
+      "missing_fields": [],
+      "reference_age_days": 10.74,
+      "semantics": "Contratos reportados por categoría; no órdenes actuales ni intenciones de operadores."
+    },
+    {
+      "dataset": "disaggregated",
+      "market_code": "002602",
+      "market_name": "CORN - CHICAGO BOARD OF TRADE",
+      "contract_units": "(CONTRACTS OF 5,000 BUSHELS)",
+      "reference_date": "2026-10-20",
+      "publication_at": null,
+      "frequency": "weekly",
+      "received_at": "2026-10-30T17:38:28.710Z",
+      "missing_fields": [],
+      "reference_age_days": 10.74,
+      "semantics": "Contratos reportados por categoría; no órdenes actuales ni intenciones de operadores."
+    }
+  ],
+  "yield_curve": {
+    "reference_date": "2026-10-28",
+    "frequency": "daily_business_days",
+    "real_time": false,
+    "reference_precision": "day",
+    "spread_formula": "(10Y - plazo_corto) * 100 puntos básicos",
+    "common_date_required": true,
+    "publication_at": null
+  },
+  "us_liquidity": {
+    "status": "calculated",
+    "reference_date": "2026-10-28",
+    "scope": "US_Fed_TGA_ONRRP",
+    "is_global_index": false,
+    "formula": "WALCL * 1e6 - WDTGAL * 1e6 - RRPONTSYD * 1e9",
+    "formula_defined_by": "Laplace U004 v1",
+    "alignment": "misma_fecha_de_referencia",
+    "tga_basis": "Wednesday level; no promedio semanal WTREGEN",
+    "currency": "USD",
+    "input_sources": [
+      {
+        "series": "WALCL",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WALCL&cosd=2026-08-31&coed=2026-10-30",
+        "received_at": "2026-10-30T17:38:28.774Z",
+        "body_sha256": "223921678068e742517ef04eefb5b6272b56f3fcb066027f71df8e9acf0c8d76"
+      },
+      {
+        "series": "WDTGAL",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WDTGAL&cosd=2026-08-31&coed=2026-10-30",
+        "received_at": "2026-10-30T17:38:28.753Z",
+        "body_sha256": "3ad317062f9123713c86096a156cf732b17ff3aacf521ebc4be4d58b01e5c4a8"
+      },
+      {
+        "series": "RRPONTSYD",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RRPONTSYD&cosd=2026-08-31&coed=2026-10-30",
+        "received_at": "2026-10-30T17:38:28.667Z",
+        "body_sha256": "67cad3d688decd7577218907855fe6e96181bc2431d7ce1d44c4bd72c60f7bcf"
+      }
+    ],
+    "semantics": "Proxy exploratorio de balance Fed menos TGA y ON RRP; no liquidez mundial ni causalidad financiera demostrada."
+  },
+  "project_modules": [
+    {
+      "id": "order_l3",
+      "status": "pending",
+      "need": "órdenes individuales y eventos secuenciados; L2 existente es parcial"
+    },
+    {
+      "id": "cot",
+      "status": "implemented",
+      "need": "posiciones CFTC Futures Only, semanales, por categoría y contrato"
+    },
+    {
+      "id": "etf_flows",
+      "status": "pending",
+      "need": "creaciones/redenciones o estimaciones identificadas con NAV y acciones"
+    },
+    {
+      "id": "macro_releases",
+      "status": "partial_u003",
+      "need": "calendario, hora de publicación y valor inicial verificables"
+    },
+    {
+      "id": "treasury_curve",
+      "status": "implemented_daily",
+      "need": "DGS2, DGS10 y DGS3MO en una fecha común"
+    },
+    {
+      "id": "global_liquidity",
+      "status": "partial_us_only",
+      "need": "balances y divisas de varios bancos centrales; U004 inicia con Fed/TGA/ON RRP"
+    },
+    {
+      "id": "onchain_exchange_flows",
+      "status": "pending",
+      "need": "transferencias y etiquetas verificables de direcciones"
+    },
+    {
+      "id": "dormancy_hodl",
+      "status": "pending",
+      "need": "edades y gasto de UTXO; no inferirlas desde precios"
+    },
+    {
+      "id": "perpetual_funding_oi",
+      "status": "pending",
+      "need": "funding y open interest de contratos perpetuos identificados"
+    },
+    {
+      "id": "news_transcripts",
+      "status": "partial_u003",
+      "need": "transcripciones completas y recepción fechada; RSS no equivale a terminal"
+    },
+    {
+      "id": "supply_chain",
+      "status": "partial_u003",
+      "need": "inventarios y proveedores; ya existen puertos y electricidad"
+    }
+  ],
+  "parallel_collection_groups": 3,
+  "prediction_inputs_enabled": false,
+  "parallel_prediction_engine_validated": false,
+  "automatic_trading": false,
+  "availability_policy": "Fecha de referencia y recepción separadas; no inferir publicaciones históricas ni completar ausencias con cero.",
+  "capture_sha256": "7a0fc04fc3b9b3d4ed60a9eab6e8539064c1b17475a372fb0eb90f6992891b52"
+}

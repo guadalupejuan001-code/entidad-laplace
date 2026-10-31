@@ -1,0 +1,13 @@
+✔ raw hash, conservative availability and revisions protect history (15.600129ms)
+✔ WAL group commit, rotation, single writer and exact replay (170.060638ms)
+✔ WAL only repairs an incomplete tail; middle checksum corruption is isolated (27.588998ms)
+✔ WAL capacity backpressures and acknowledged retention preserves sequence (64.794823ms)
+✔ authenticated webhook ACK has a replayable WAL record and SQL projection (5301.459181ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6232.44792

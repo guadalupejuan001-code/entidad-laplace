@@ -1,0 +1,26 @@
+{
+  "schema": "laplace.input.benchmark.i001",
+  "captured_at": "2026-10-30T18:32:00.910Z",
+  "stage": "local_WAL_admission_through_fsync",
+  "synthetic": true,
+  "events": 5000,
+  "concurrency": 128,
+  "source_body_bytes": 400,
+  "persisted_bytes": 5612783,
+  "elapsed_ms": 1008.575755,
+  "throughput_events_per_second": 4957.485816224088,
+  "latency_ms": {
+    "p50": 22.775608000000034,
+    "p99": 47.58339699999988
+  },
+  "exact_replay_records": 5000,
+  "host": {
+    "node": "v24.22.1",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "kafka_replication_included": false,
+  "SQL_included": false,
+  "NLP_included": false,
+  "predictive_accuracy_measured": false,
+  "scope": "single temporary development environment; no production throughput claim"
+}

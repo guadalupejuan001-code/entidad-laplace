@@ -1,0 +1,176 @@
+{
+  "schema": "laplace-time-v1",
+  "profile_sha256": "701d020305156ab3dbec2784144cd1bc55c23ce1ed1e7989605576c984f9bec3",
+  "paths": 4096,
+  "seed": 271828,
+  "condition": {
+    "probability": 0.396078431372549,
+    "reference_probability": 0.43333333333333335,
+    "alpha": 13.466666666666667,
+    "beta": 20.53333333333333,
+    "simulation_daily_mean": 0.396078431372549,
+    "pattern": {
+      "type": "pair",
+      "terms": [
+        "CONFLICT_ESCALATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    "source": "narrative_pattern",
+    "support": 26
+  },
+  "checkpoints": [
+    {
+      "mode": "scenario",
+      "date": "2026-10-29",
+      "horizon_days": 1,
+      "probability": 0.396240234375,
+      "positives": 1623,
+      "negatives": 2473,
+      "paths": 4096,
+      "seed": 271828,
+      "daily_narrative_probability": 0.396078431372549,
+      "condition": {
+        "probability": 0.396078431372549,
+        "reference_probability": 0.43333333333333335,
+        "alpha": 13.466666666666667,
+        "beta": 20.53333333333333,
+        "simulation_daily_mean": 0.396078431372549,
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "source": "narrative_pattern",
+        "support": 26
+      },
+      "future_observations": 0,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+    },
+    {
+      "mode": "scenario",
+      "date": "2027-12-31",
+      "horizon_days": 429,
+      "probability": 0.75927734375,
+      "positives": 3110,
+      "negatives": 986,
+      "paths": 4096,
+      "seed": 271828,
+      "daily_narrative_probability": 0.396078431372549,
+      "condition": {
+        "probability": 0.396078431372549,
+        "reference_probability": 0.43333333333333335,
+        "alpha": 13.466666666666667,
+        "beta": 20.53333333333333,
+        "simulation_daily_mean": 0.396078431372549,
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "source": "narrative_pattern",
+        "support": 26
+      },
+      "future_observations": 0,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+    },
+    {
+      "mode": "scenario",
+      "date": "2028-12-31",
+      "horizon_days": 795,
+      "probability": 0.76806640625,
+      "positives": 3146,
+      "negatives": 950,
+      "paths": 4096,
+      "seed": 271828,
+      "daily_narrative_probability": 0.396078431372549,
+      "condition": {
+        "probability": 0.396078431372549,
+        "reference_probability": 0.43333333333333335,
+        "alpha": 13.466666666666667,
+        "beta": 20.53333333333333,
+        "simulation_daily_mean": 0.396078431372549,
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "source": "narrative_pattern",
+        "support": 26
+      },
+      "future_observations": 0,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+    },
+    {
+      "mode": "scenario",
+      "date": "2029-12-31",
+      "horizon_days": 1160,
+      "probability": 0.770751953125,
+      "positives": 3157,
+      "negatives": 939,
+      "paths": 4096,
+      "seed": 271828,
+      "daily_narrative_probability": 0.396078431372549,
+      "condition": {
+        "probability": 0.396078431372549,
+        "reference_probability": 0.43333333333333335,
+        "alpha": 13.466666666666667,
+        "beta": 20.53333333333333,
+        "simulation_daily_mean": 0.396078431372549,
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "source": "narrative_pattern",
+        "support": 26
+      },
+      "future_observations": 0,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+    },
+    {
+      "mode": "scenario",
+      "date": "2030-12-31",
+      "horizon_days": 1525,
+      "probability": 0.77197265625,
+      "positives": 3162,
+      "negatives": 934,
+      "paths": 4096,
+      "seed": 271828,
+      "daily_narrative_probability": 0.396078431372549,
+      "condition": {
+        "probability": 0.396078431372549,
+        "reference_probability": 0.43333333333333335,
+        "alpha": 13.466666666666667,
+        "beta": 20.53333333333333,
+        "simulation_daily_mean": 0.396078431372549,
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "source": "narrative_pattern",
+        "support": 26
+      },
+      "future_observations": 0,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+    }
+  ],
+  "future_observations": 0,
+  "assumptions": [
+    "fixed narrative scenario",
+    "one beta probability draw per trajectory",
+    "conditionally independent daily returns",
+    "return magnitudes sampled only from frozen training labels"
+  ]
+}

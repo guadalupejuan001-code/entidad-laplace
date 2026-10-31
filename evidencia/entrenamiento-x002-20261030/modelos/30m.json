@@ -1,0 +1,47 @@
+{
+  "schema": "laplace-entrenamiento-x002-v1",
+  "horizon_minutes": 30,
+  "source_sha256": "20f0c4b4921fa2691877fae4388eb066d90bf4b81b04a1ee43e8e5eb52047f15",
+  "fitted_through": "2026-10-22T18:05:00.000Z",
+  "logical_freeze_boundary": "2026-10-25T18:05:00.000Z",
+  "prior_strength": 64,
+  "cutoff_semantics": "logical_backtest_boundary_not_actual_past_execution",
+  "training_sha256": "d5f47d53b4f6532183e186cef49a1372ff45cce8dde44c6af0ea7ca0828487cf",
+  "xi_sha256": "0c80c38271f9511191efe0667ca5365c38d6928f944dadb41eeee78acb7fb202",
+  "calibrator": {
+    "method": "shrinkage_to_calibration_prior",
+    "lambda": 1,
+    "prior": 0.5205479452054794,
+    "support": 144,
+    "start": "2026-10-22T18:05:00.000Z",
+    "end": "2026-10-25T18:05:00.000Z",
+    "status": "ajustada_solo_en_calibracion",
+    "candidates": [
+      {
+        "lambda": 1,
+        "brier": 0.2478340369646406
+      },
+      {
+        "lambda": 0.75,
+        "brier": 0.24812585536557277
+      },
+      {
+        "lambda": 0.5,
+        "brier": 0.24851179761654427
+      },
+      {
+        "lambda": 0.25,
+        "brier": 0.24899186371755544
+      },
+      {
+        "lambda": 0,
+        "brier": 0.2495660536686054
+      }
+    ]
+  },
+  "historical_availability": "exploratory_close_assumption_not_authenticated_vintages",
+  "calibration_arithmetic": "host_classical_scalar_shrinkage",
+  "prediction_arithmetic": "native_classical_in_original_ether",
+  "frozen_sha256": "5af9f036ce18a57387fedff204d5ad853a986bb56bae11330b8138b091332099",
+  "calibration_retains_state_information": true
+}

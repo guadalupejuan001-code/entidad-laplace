@@ -1,0 +1,123 @@
+{
+  "suite": "LAPLACE_E003_DOS_RESULTADOS_Y_PATRONES",
+  "synthetic": true,
+  "objective": {
+    "asset": "BTC-USD",
+    "currency": "USD",
+    "price_basis": "raw_close",
+    "horizon_hours": 24,
+    "cost_bps": 10,
+    "definition": "return_after_assumed_cost_positive"
+  },
+  "closed_world": {
+    "paired_forecasts": 64,
+    "observed": 64,
+    "deterministic_hits": 64,
+    "probabilistic_evaluated": 64,
+    "patterns": 4,
+    "events": 128,
+    "pattern_metrics": [
+      {
+        "pattern_id": "267d7adccb3f9456c5284764359caf6f11105e8279fc6736dfe869841a6da3d0",
+        "issued": 16,
+        "paired_outputs": 16,
+        "observed": 16,
+        "deterministic_evaluated": 16,
+        "deterministic_hits": 16,
+        "deterministic_refutations": 0,
+        "probabilistic_evaluated": 16,
+        "brier_sum": 0.15999999999999998,
+        "different_directions": 0,
+        "simulation_runs": 0,
+        "max_simulated_active_qubits": 0,
+        "pending": 0,
+        "deterministic_accuracy": 1,
+        "brier": 0.009999999999999998,
+        "deterministic_coverage": 1,
+        "probabilistic_coverage": 1
+      },
+      {
+        "pattern_id": "7daf55f332ca3a5ad8c89621cb59c8fee0158f6549bd7fee4181aaf3a149c2b8",
+        "issued": 16,
+        "paired_outputs": 16,
+        "observed": 16,
+        "deterministic_evaluated": 16,
+        "deterministic_hits": 16,
+        "deterministic_refutations": 0,
+        "probabilistic_evaluated": 16,
+        "brier_sum": 0.1600000000000001,
+        "different_directions": 0,
+        "simulation_runs": 0,
+        "max_simulated_active_qubits": 0,
+        "pending": 0,
+        "deterministic_accuracy": 1,
+        "brier": 0.010000000000000005,
+        "deterministic_coverage": 1,
+        "probabilistic_coverage": 1
+      },
+      {
+        "pattern_id": "9ac2b4d1702199039fc5ab006d9f2c9d83214a277f745863657af81db3341363",
+        "issued": 16,
+        "paired_outputs": 16,
+        "observed": 16,
+        "deterministic_evaluated": 16,
+        "deterministic_hits": 16,
+        "deterministic_refutations": 0,
+        "probabilistic_evaluated": 16,
+        "brier_sum": 0.1600000000000001,
+        "different_directions": 0,
+        "simulation_runs": 0,
+        "max_simulated_active_qubits": 0,
+        "pending": 0,
+        "deterministic_accuracy": 1,
+        "brier": 0.010000000000000005,
+        "deterministic_coverage": 1,
+        "probabilistic_coverage": 1
+      },
+      {
+        "pattern_id": "e544f36f64a1013079c1f73c3220938bb1357fc8d72db266bbaf07afedbc275f",
+        "issued": 16,
+        "paired_outputs": 16,
+        "observed": 16,
+        "deterministic_evaluated": 16,
+        "deterministic_hits": 16,
+        "deterministic_refutations": 0,
+        "probabilistic_evaluated": 16,
+        "brier_sum": 0.15999999999999998,
+        "different_directions": 0,
+        "simulation_runs": 0,
+        "max_simulated_active_qubits": 0,
+        "pending": 0,
+        "deterministic_accuracy": 1,
+        "brier": 0.009999999999999998,
+        "deterministic_coverage": 1,
+        "probabilistic_coverage": 1
+      }
+    ]
+  },
+  "exact_rules": [
+    "y0 = 1 XOR x0 XOR x1",
+    "y1 = 0"
+  ],
+  "selected_features": [
+    "AID_BLOCKED",
+    "CEASEFIRE"
+  ],
+  "noisy_world": {
+    "deterministic_status": "ley_refutada",
+    "deterministic_value": null,
+    "probabilistic_status": "probabilidad_narrativa",
+    "probability": 0.19846153846153847
+  },
+  "shared_objective": true,
+  "no_averaging": true,
+  "original_forecasts_preserved": true,
+  "pattern_ether_proof": {
+    "exact_roundtrip": true,
+    "materialized_bytes": 8403,
+    "overrides": 8403,
+    "active_qubits": 0
+  },
+  "financial_edge_demonstrated": false,
+  "orders_executed": 0
+}

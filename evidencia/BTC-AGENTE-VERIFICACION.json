@@ -1,0 +1,100 @@
+{
+  "checked_at": "2026-10-28T04:37:23.552Z",
+  "site": "https://laplace-bitcoin-observatorio.guadalupejuan001.chatgpt.site",
+  "source_sha": "2bf20b40356e0055d35177e17c9b720909fd6c02707516c84ac5c6d0d547d4c1",
+  "first": {
+    "capture_id": "e4009557-6211-491f-a982-c9cbd7b3938a",
+    "totals": {
+      "quotes": 1,
+      "stories": 24,
+      "runs": 1
+    },
+    "quote": {
+      "id": "ac5f1f71cdee40fe633dca38abb524e14992233891836fb5128f84a766b027a5",
+      "asset": "BTC-USD",
+      "currency": "USD",
+      "price_basis": "spot_quote",
+      "value": "80822.15",
+      "bid": "80822.15",
+      "ask": "80822.16",
+      "observed_at": "2026-10-28T04:26:49.099Z",
+      "source_time": "2026-10-28T04:26:49.099851742Z",
+      "captured_at": "2026-10-28T04:26:50.866Z",
+      "known_at": "2026-10-28T04:26:50.866Z",
+      "source_id": "coinbase",
+      "source_name": "Coinbase Exchange",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+      "trade_id": "1111423033",
+      "open_24h": "79607.24",
+      "change_24h_pct": 1.5261300354088236
+    }
+  },
+  "second": {
+    "capture_id": "cd8c70f9-1c52-423b-8869-3f822e8cc81a",
+    "totals": {
+      "quotes": 2,
+      "stories": 24,
+      "runs": 2
+    },
+    "quote": {
+      "id": "15f0f676f757ed19b3bd4a8c7b1c5ca5ef0b0cb49ec421d0aa564e5ef0571681",
+      "asset": "BTC-USD",
+      "currency": "USD",
+      "price_basis": "spot_quote",
+      "value": "80821.37",
+      "bid": "80821.36",
+      "ask": "80821.37",
+      "observed_at": "2026-10-28T04:27:10.467Z",
+      "source_time": "2026-10-28T04:27:10.467123498Z",
+      "captured_at": "2026-10-28T04:27:11.080Z",
+      "known_at": "2026-10-28T04:27:11.080Z",
+      "source_id": "coinbase",
+      "source_name": "Coinbase Exchange",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+      "trade_id": "1111423048",
+      "open_24h": "79607.24",
+      "change_24h_pct": 1.52515022502977
+    },
+    "new_news_count": 0
+  },
+  "first_capture_preserved": true,
+  "duplicate_news_removed": true,
+  "all_sources_ok": true,
+  "final": {
+    "capture_id": "28e8c262-82c0-44b8-8852-5cb412d9100f",
+    "version": "laplace-bitcoin-live-v2",
+    "totals": {
+      "quotes": 3,
+      "stories": 24,
+      "runs": 3
+    },
+    "quote": {
+      "id": "98d43fc0d5f94b27156bb423b2985dfa927fb35d5b3ec469da4b9992fede8267",
+      "asset": "BTC-USD",
+      "currency": "USD",
+      "price_basis": "spot_quote",
+      "value": "80902.47",
+      "bid": "80902.46",
+      "ask": "80902.47",
+      "observed_at": "2026-10-28T04:37:21.550Z",
+      "source_time": "2026-10-28T04:37:21.550884369Z",
+      "captured_at": "2026-10-28T04:37:22.606Z",
+      "known_at": "2026-10-28T04:37:22.606Z",
+      "source_id": "coinbase",
+      "source_name": "Coinbase Exchange",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+      "trade_id": "1111424447",
+      "open_24h": "79607.24",
+      "change_24h_pct": 1.6270253811085489
+    },
+    "news_in_latest_capture": 23,
+    "eligible_news_displayed": 23,
+    "new_news_count": 0
+  },
+  "irrelevant_conflict_excluded": true,
+  "historical_cases": {
+    "count": 42,
+    "probabilities": 14,
+    "abstentions": 28
+  }
+}

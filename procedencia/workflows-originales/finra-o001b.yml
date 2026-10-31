@@ -1,0 +1,46 @@
+name: Laplace O001-B - ATS/Non-ATS Weekly and Monthly Blocks
+on:
+  push:
+    branches: [feature/o001b-finra-weekly-blocks-20261031]
+  pull_request:
+    paths:
+      - 'universo/otc/**'
+      - 'universo/global-u003.mjs'
+      - 'tools/finra-o001b.mjs'
+      - 'tests/finra-o001b.test.mjs'
+      - '.github/workflows/finra-o001b.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  finra-o001b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Syntax of connectors and orchestration
+        run: |
+          set -euo pipefail
+          node --check universo/otc/finra-query.mjs
+          node --check universo/otc/finra-weekly.mjs
+          node --check universo/otc/finra-blocks.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/finra-o001b.mjs
+          node --check tests/finra-o001b.test.mjs
+      - name: Unit tests and backwards compatibility
+        run: |
+          set -euo pipefail
+          npm run test:finra-o001b
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Credential gating must not fabricate data
+        run: |
+          set -euo pipefail
+          if node tools/finra-o001b.mjs --week=2026-09-28 --out=/tmp/without-credentials.json > /tmp/o001b-stdout 2>/tmp/o001b-stderr; then
+            echo "Expected absence of credentials to fail" >&2; exit 1
+          fi
+          grep -q 'FINRA Public API Credential no configurada' /tmp/o001b-stderr
+          test ! -e /tmp/without-credentials.json

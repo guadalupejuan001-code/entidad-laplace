@@ -1,0 +1,11 @@
+{
+  "source_repository": "https://github.com/guadalupejuan001-code/mundo-X",
+  "source_commit": "3d29556eff4d1079c791abab38e203fc209f1722",
+  "source_file": "native/src/quantum_runner.cpp",
+  "new_cpp_code": false,
+  "build": "g++ -std=c++17 -O3 -Wall -Wextra -Wpedantic -pthread -I native/include native/src/quantum_runner.cpp -o mundo_x_quantum",
+  "runtime_binary_sha256": "2e96c38989fd4c8c69b322ebc980c4494fb0eda3657ebee83b5bfb10155fbaa1",
+  "numeric_relation_states": 13720,
+  "verified_batches": 14,
+  "exact_roundtrip": true
+}

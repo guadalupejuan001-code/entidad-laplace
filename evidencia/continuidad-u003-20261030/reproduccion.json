@@ -1,0 +1,11 @@
+{
+  "gdacs_source_hash_verified": true,
+  "gdacs_alerts_reproduced": 224,
+  "macro_versions_preserved": 58,
+  "before_cutoff_states": 0,
+  "at_cutoff_states": 58,
+  "unchanged_real_observations": 58,
+  "actual_macro_value_revisions_observed": 0,
+  "duplicate_versions_inserted": 0,
+  "chronological_import_verified": true
+}

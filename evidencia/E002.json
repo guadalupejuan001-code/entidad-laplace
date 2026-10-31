@@ -1,0 +1,634 @@
+{
+  "suite": "LAPLACE_E002_PROBABILIDAD_NARRATIVA",
+  "synthetic": true,
+  "target": {
+    "asset": "BTC-USD",
+    "horizon_hours": 24,
+    "cost_bps": 10
+  },
+  "formula": "p_j=(s_j+kappa*p0)/(n_j+kappa); p0=(S+1)/(N+2)",
+  "inference_inputs": [
+    "geopolitica",
+    "humanitaria"
+  ],
+  "prices_used_only_for_labels": true,
+  "host_computation": "extraccion simbolica, conteos, suavizado Beta y seleccion temporal",
+  "native_xi": "unica copia persistida de las estadisticas y reglas; recuperacion exacta desde Ether",
+  "train_end": "2020-05-08T00:00:00.000Z",
+  "validation_end": "2020-07-11T00:00:00.000Z",
+  "test_end": "2020-09-13T00:00:00.000Z",
+  "training_samples": 128,
+  "validation_samples": 64,
+  "training_prior": 0.49230769230769234,
+  "candidates_examined": 16,
+  "candidates_generated": 16,
+  "pattern_audit": [
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "AID_BLOCKED",
+          "CEASEFIRE"
+        ]
+      },
+      "count": 32,
+      "successes": 28,
+      "probability": 0.7984615384615384,
+      "validation_count": 16,
+      "validation_brier_gain": 0.025787573964497067,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "AID_BLOCKED",
+          "CONFLICT_ESCALATION"
+        ]
+      },
+      "count": 32,
+      "successes": 4,
+      "probability": 0.19846153846153847,
+      "validation_count": 16,
+      "validation_brier_gain": 0.0927875739644971,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CEASEFIRE",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 5,
+      "probability": 0.22346153846153846,
+      "validation_count": 16,
+      "validation_brier_gain": 0.12522026627218932,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 26,
+      "probability": 0.7484615384615385,
+      "validation_count": 16,
+      "validation_brier_gain": 0.1304414201183432,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CEASEFIRE",
+          "AID_BLOCKED"
+        ]
+      },
+      "count": 32,
+      "successes": 28,
+      "probability": 0.7984615384615384,
+      "validation_count": 16,
+      "validation_brier_gain": 0.025787573964497067,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CEASEFIRE",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 5,
+      "probability": 0.22346153846153846,
+      "validation_count": 16,
+      "validation_brier_gain": 0.12522026627218932,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "AID_BLOCKED"
+        ]
+      },
+      "count": 32,
+      "successes": 4,
+      "probability": 0.19846153846153847,
+      "validation_count": 16,
+      "validation_brier_gain": 0.0927875739644971,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 26,
+      "probability": 0.7484615384615385,
+      "validation_count": 16,
+      "validation_brier_gain": 0.1304414201183432,
+      "status": "seleccionado"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "AID_BLOCKED"
+        ]
+      },
+      "count": 64,
+      "successes": 32,
+      "probability": 0.49914529914529915,
+      "validation_count": 32,
+      "validation_brier_gain": -0.0007962597706187569,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "AID_BLOCKED@GLOBAL"
+        ]
+      },
+      "count": 64,
+      "successes": 32,
+      "probability": 0.49914529914529915,
+      "validation_count": 32,
+      "validation_brier_gain": -0.0007962597706187569,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "CEASEFIRE"
+        ]
+      },
+      "count": 64,
+      "successes": 33,
+      "probability": 0.513034188034188,
+      "validation_count": 32,
+      "validation_brier_gain": -0.003996936408795365,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "CEASEFIRE@GLOBAL"
+        ]
+      },
+      "count": 64,
+      "successes": 33,
+      "probability": 0.513034188034188,
+      "validation_count": 32,
+      "validation_brier_gain": -0.003996936408795365,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "CONFLICT_ESCALATION"
+        ]
+      },
+      "count": 64,
+      "successes": 30,
+      "probability": 0.47136752136752136,
+      "validation_count": 32,
+      "validation_brier_gain": -0.00206940791876688,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "CONFLICT_ESCALATION@GLOBAL"
+        ]
+      },
+      "count": 64,
+      "successes": 30,
+      "probability": 0.47136752136752136,
+      "validation_count": 32,
+      "validation_brier_gain": -0.00206940791876688,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 64,
+      "successes": 31,
+      "probability": 0.48525641025641025,
+      "validation_count": 32,
+      "validation_brier_gain": -0.0001582018408941288,
+      "status": "sin_mejora_validada"
+    },
+    {
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "RELIEF_ACCESS@GLOBAL"
+        ]
+      },
+      "count": 64,
+      "successes": 31,
+      "probability": 0.48525641025641025,
+      "validation_count": 32,
+      "validation_brier_gain": -0.0001582018408941288,
+      "status": "sin_mejora_validada"
+    }
+  ],
+  "validated_rules": 8,
+  "learned_rules": [
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 26,
+      "validation_count": 16,
+      "validation_brier_gain": 0.1304414201183432,
+      "probability": 0.7484615384615385
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 26,
+      "validation_count": 16,
+      "validation_brier_gain": 0.1304414201183432,
+      "probability": 0.7484615384615385
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CEASEFIRE",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 5,
+      "validation_count": 16,
+      "validation_brier_gain": 0.12522026627218932,
+      "probability": 0.22346153846153846
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CEASEFIRE",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "count": 32,
+      "successes": 5,
+      "validation_count": 16,
+      "validation_brier_gain": 0.12522026627218932,
+      "probability": 0.22346153846153846
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "AID_BLOCKED",
+          "CONFLICT_ESCALATION"
+        ]
+      },
+      "count": 32,
+      "successes": 4,
+      "validation_count": 16,
+      "validation_brier_gain": 0.0927875739644971,
+      "probability": 0.19846153846153847
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "AID_BLOCKED"
+        ]
+      },
+      "count": 32,
+      "successes": 4,
+      "validation_count": 16,
+      "validation_brier_gain": 0.0927875739644971,
+      "probability": 0.19846153846153847
+    },
+    {
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "AID_BLOCKED",
+          "CEASEFIRE"
+        ]
+      },
+      "count": 32,
+      "successes": 28,
+      "validation_count": 16,
+      "validation_brier_gain": 0.025787573964497067,
+      "probability": 0.7984615384615384
+    },
+    {
+      "pattern": {
+        "type": "sequence",
+        "terms": [
+          "CEASEFIRE",
+          "AID_BLOCKED"
+        ]
+      },
+      "count": 32,
+      "successes": 28,
+      "validation_count": 16,
+      "validation_brier_gain": 0.025787573964497067,
+      "probability": 0.7984615384615384
+    }
+  ],
+  "validation": {
+    "count": 64,
+    "brier": 0.1560191937869823,
+    "log_loss": 0.4932245803535255,
+    "baseline_brier": 0.24957840236686357,
+    "brier_skill": 0.3748690098687124,
+    "coverage": 1,
+    "conditional_brier": 0.1560191937869823,
+    "conditional_baseline_brier": 0.24957840236686357,
+    "calibration": [
+      {
+        "lower": 0,
+        "upper": 0.1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.1,
+        "upper": 0.2,
+        "count": 16,
+        "mean_probability": 0.19846153846153847,
+        "observed_frequency": 0.1875
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.3,
+        "count": 16,
+        "mean_probability": 0.2234615384615384,
+        "observed_frequency": 0.125
+      },
+      {
+        "lower": 0.3,
+        "upper": 0.4,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.5,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.7,
+        "upper": 0.8,
+        "count": 32,
+        "mean_probability": 0.7734615384615382,
+        "observed_frequency": 0.78125
+      },
+      {
+        "lower": 0.8,
+        "upper": 0.9,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.9,
+        "upper": 1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "test": {
+    "count": 64,
+    "brier": 0.10831486686390535,
+    "log_loss": 0.38264367559024787,
+    "baseline_brier": 0.24933801775147896,
+    "brier_skill": 0.5655902463624087,
+    "coverage": 1,
+    "conditional_brier": 0.10831486686390535,
+    "conditional_baseline_brier": 0.24933801775147896,
+    "calibration": [
+      {
+        "lower": 0,
+        "upper": 0.1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.1,
+        "upper": 0.2,
+        "count": 16,
+        "mean_probability": 0.19846153846153847,
+        "observed_frequency": 0.0625
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.3,
+        "count": 16,
+        "mean_probability": 0.2234615384615384,
+        "observed_frequency": 0.0625
+      },
+      {
+        "lower": 0.3,
+        "upper": 0.4,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.5,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.7,
+        "upper": 0.8,
+        "count": 32,
+        "mean_probability": 0.7734615384615382,
+        "observed_frequency": 0.84375
+      },
+      {
+        "lower": 0.8,
+        "upper": 0.9,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.9,
+        "upper": 1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "no_narrative_control": {
+    "count": 64,
+    "brier": 0.24933801775147896,
+    "log_loss": 0.6918231162625299,
+    "baseline_brier": 0.24933801775147896,
+    "brier_skill": 0,
+    "coverage": 0,
+    "conditional_brier": null,
+    "conditional_baseline_brier": null,
+    "calibration": [
+      {
+        "lower": 0,
+        "upper": 0.1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.1,
+        "upper": 0.2,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.3,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.3,
+        "upper": 0.4,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.5,
+        "count": 64,
+        "mean_probability": 0.49230769230769145,
+        "observed_frequency": 0.453125
+      },
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.7,
+        "upper": 0.8,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.8,
+        "upper": 0.9,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      },
+      {
+        "lower": 0.9,
+        "upper": 1,
+        "count": 0,
+        "mean_probability": null,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "native": {
+    "backend": "inverse-ether-memory",
+    "materialized_bytes": 2334,
+    "overrides": 2334,
+    "active_qubits": 0,
+    "exact_roundtrip": true
+  },
+  "model_state_sha256": "a7b3fc56ac69b13690520b21826efa87de4ba6eacb2a94fd8180d410abb43183",
+  "forecast_sha256": "3d82725bfab2316f89f2728797db0bc8cedb6b18d6c4e096c1d2723aca3fdbe4",
+  "seal_sha256": "5ec8edc77c6ad2d4fd6030ed241056cbdf99ed1642feb3279be47ed7e8589958",
+  "financial_edge_demonstrated": false,
+  "causal_laws_demonstrated": false,
+  "full_language_comprehension": false,
+  "orders_executed": 0
+}

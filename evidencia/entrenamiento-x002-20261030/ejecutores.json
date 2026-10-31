@@ -1,0 +1,26 @@
+{
+  "captured_at": "2026-10-30T18:20:31.657Z",
+  "node": "v24.22.1",
+  "runtimes": [
+    {
+      "name": "mundo_x_quantum",
+      "binary_sha256": "2e96c38989fd4c8c69b322ebc980c4494fb0eda3657ebee83b5bfb10155fbaa1",
+      "source": "3d29556eff4d1079c791abab38e203fc209f1722"
+    },
+    {
+      "name": "laplace_temporal",
+      "binary_sha256": "70689e901745883008688289217cc9b31e82a8490ba50ae721b713d82b961f04",
+      "source": "LaPlaceDIG native/laplace_temporal.cpp sin cambios"
+    },
+    {
+      "name": "reverse_pc",
+      "binary_sha256": "e31b9cc47edc8e8b6226a1ebc4f210e4730a3e33e0bdee6a33b8147e86894d74",
+      "source": "01829217cfb0a3a704d37f0c0f66527a23ec149d; Ether e2778d962af22f6f1a0794058dd4685fc2573966"
+    }
+  ],
+  "gnu_time_package": {
+    "source": "https://archive.ubuntu.com/ubuntu/pool/main/t/time/time_1.9-0.2build1_amd64.deb",
+    "sha256": "abe09ee9806b336cc255c013cc726b39cbf9d56ff9dc7c2acff5762ab0f07be8"
+  },
+  "initial_environment_failures": "Cuatro laboratorios requerían GNU Time ausente. Se instaló el paquete oficial y se repitieron; Exabyte se ejecutó en directorio nuevo para respetar la protección EEXIST. No se rebajaron umbrales."
+}

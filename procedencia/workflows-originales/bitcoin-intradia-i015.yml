@@ -1,0 +1,44 @@
+name: LaPlaceDIG I015 - precio BTC 15 minutos
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  instrumento-15m:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Sintaxis e integridad I015
+        run: |
+          node --check bitcoin/intradia15.mjs
+          node --check tools/laplace.mjs
+          node --test tests/intradia15.test.mjs tests/causal.test.mjs tests/bitcoin.test.mjs
+      - name: Medir precio Coinbase actual y proyectar quince minutos (si disponible)
+        run: |
+          mkdir -p ci-intraday
+          if node tools/laplace.mjs bitcoin-15m ci-intraday/forecast.json > ci-intraday/salida.txt; then
+            echo "estado=success" | tee ci-intraday/source-status.txt
+            cat ci-intraday/salida.txt
+          else
+            echo "estado=unavailable" | tee ci-intraday/source-status.txt
+            echo "Cotizacion no accesible o rechazada por controles de antiguedad." | tee -a ci-intraday/source-status.txt
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-i015-btc-live
+          path: ci-intraday/**
+          if-no-files-found: warn
+          retention-days: 7

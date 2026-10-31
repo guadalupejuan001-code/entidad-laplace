@@ -1,0 +1,77 @@
+{
+  "checked_at": "2026-10-28T14:35:26.817Z",
+  "url": "https://laplace-bitcoin-observatorio.guadalupejuan001.chatgpt.site",
+  "deployment_id": "appgdep_6ae207d9c9cc8191b3fada8c0e2fdb6a",
+  "site_source_commit": "bbfdd16bf62ae35750d3e35ebeffce81375a224b",
+  "assets": [
+    {
+      "path": "/",
+      "status": 200,
+      "sha256": "811982f974c74803ddc6c6337e678dcb94d2316e3e9a6d67109d4d6b79e6c8af"
+    },
+    {
+      "path": "/time-profile.json",
+      "status": 200,
+      "sha256": "65c94991b1edc9f6344e4d44b576bee6c702992a2a58c9f811a36e539f755aea"
+    },
+    {
+      "path": "/native-time-view.mjs",
+      "status": 200,
+      "sha256": "0d9051adbb8c8c3a3e9c2fa213fd602b3ea6cf27483c7287ed0bae14438a5419"
+    }
+  ],
+  "profile_sha256": "24f7f80bd325df75ec4af21030ecbf653544bd42779697a17ad266ab16ab98ff",
+  "native_program_sha256": "5563ab9d6ec420a4eeada7024bfdc3e9fc49e2168712e318afb052c4c244b1dd",
+  "native_output_sha256": "93256df7ae163253f3656d932f0d5488e33bd2dd8eec1dc0aa7c79b9f9a09c55",
+  "executor_source_sha256": "a331e13c529f7a5d828af109bd34518ec7d5e94caa6e181621c9b82de900c2e4",
+  "projection_data_as_of": "2026-10-28T05:34:48.748Z",
+  "range_end": "2030-12-31",
+  "max_computed_horizon_days": 1526,
+  "initial_states": 7,
+  "native_trace_rows": 10689,
+  "future_calendar_dates_checked": 1525,
+  "all_native_traces_replayed_exactly": true,
+  "all_probability_masses_conserved": true,
+  "future_horizon_gate": false,
+  "projection_2030": {
+    "step": 1526,
+    "probability": 0.4415997863929211,
+    "negative_probability": 0.5584002136070789,
+    "distribution": [
+      0.1796529768119416,
+      0.1729687739870912,
+      0.01492118003041571,
+      0.016611940820685598,
+      0.01483704120681167,
+      0.38456679608562544,
+      0.21644129105742863
+    ],
+    "mode": "native",
+    "date": "2030-12-31",
+    "horizon_days": 1526,
+    "initial_mask": 282,
+    "tested": false,
+    "validated": false,
+    "native_program_sha256": "5563ab9d6ec420a4eeada7024bfdc3e9fc49e2168712e318afb052c4c244b1dd",
+    "native_output_sha256": "93256df7ae163253f3656d932f0d5488e33bd2dd8eec1dc0aa7c79b9f9a09c55",
+    "arithmetic": "native-classical"
+  },
+  "target": "BTC-USD return above 10 bps during the 24h AFTER the selected date",
+  "assumptions": [
+    "learned_transition_matrix_held_constant",
+    "daily_BTC_target_held_constant"
+  ],
+  "tested_horizon_days": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "financial_edge_demonstrated": false,
+  "browser_qa_verified": false,
+  "browser_qa_limitation": "Managed preview URL returned ERR_CONNECTION_REFUSED to the cloud browser; build, TypeScript, 77 tests and production asset checks passed."
+}

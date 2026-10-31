@@ -1,0 +1,57 @@
+name: LAPLACE U002 - expansión global XI Ether
+on:
+  pull_request:
+    branches: [main]
+    paths: ['universo/**','bolsa/mercado.mjs','tests/global.test.mjs','tools/laplace.mjs','docs/UNIVERSO_U002_GLOBAL.md','.github/workflows/universo-global.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  global:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar código y contratos U002
+        run: |
+          node --check universo/catalogo-global.mjs
+          node --check universo/fuentes-globales.mjs
+          node --check universo/global.mjs
+          node --check universo/ether-global.mjs
+          node --check tools/laplace.mjs
+          node --test tests/global.test.mjs tests/universo.test.mjs
+      - name: Compilar QuantumRuntime original de Mundo X
+        run: |
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Verificar cientos de estados dentro de Inverse Ether Memory
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+        run: node --test tests/global.test.mjs
+      - name: Captura mundial real
+        run: |
+          mkdir -p ci-u002
+          node tools/laplace.mjs universo-global ci-u002/captura.json | tee ci-u002/salida.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-u002/captura.json"));assert.ok(r.coverage.known_signals>=20,"cobertura real demasiado baja");assert.ok(r.universal_state.domains.length>=2,"faltan dominios reales");assert.equal(r.full_universe_observed,false);assert.equal(r.prediction_inputs_enabled,false);console.log(JSON.stringify(r.coverage));'
+      - name: Materializar captura real en XI Ether
+        run: |
+          node tools/laplace.mjs verificar-universo-global ci-u002/captura.json ./build-ether/mundo_x_quantum | tee ci-u002/ether.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-u002/ether.json"));assert.equal(r.exact_roundtrip,true);assert.equal(r.active_qubits,0);assert.ok(r.records>=20);'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-u002-global
+          path: ci-u002/**
+          retention-days: 14
+          if-no-files-found: warn

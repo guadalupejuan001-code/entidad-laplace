@@ -1,0 +1,102 @@
+name: LaPlaceDIG P003 - cosmologia del Big Bang mediante XI y Ether
+on:
+  push:
+    branches:
+      - feature/laplace-cosmologia-p003-20261028
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cosmologia-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Obtener LaPlaceDIG
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: REVERSE-PC real fijado
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Mundo X original de Ether fijado
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Comprobar integridad, sintaxis, contratos y dominios
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check cosmos/lcdm.mjs
+          node --check tests/cosmos.test.mjs
+          node --check tests/cosmos-fino.test.mjs
+          node --check tests/cosmos-experimento.mjs
+          node --check tests/cosmos-extremo.mjs
+          node --check tools/laplace.mjs
+          node tools/laplace.mjs --help | grep -q crear-cosmos
+          node --check tools/cosmos.mjs
+          node --test tests/cosmos.test.mjs tests/cosmos-fino.test.mjs
+      - name: Construir REVERSE-PC y XI Machine sin copiar otro runtime
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Pruebas numéricas contra Friedmann independiente y memoria Ether
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/cosmos.test.mjs tests/cosmos-fino.test.mjs
+      - name: Ejecutar Big Bang cosmológico P003 y archivar toda la historia
+        run: |
+          set -euo pipefail
+          mkdir -p ci-cosmos
+          node tests/cosmos-experimento.mjs ./build-reverse/reverse_pc ci-cosmos/resultado.json
+      - name: Someter el universo virtual a 1024 parámetros cosmológicos distintos
+        run: |
+          set -euo pipefail
+          node tests/cosmos-extremo.mjs ./build-reverse/reverse_pc ci-cosmos/extremo.json
+      - name: Calcular 271 épocas cósmicas y guardar 7317 bytes lógicos
+        run: |
+          set -euo pipefail
+          mkdir -p ci-cosmos/fino
+          node tests/cosmos-experimento.mjs ./build-reverse/reverse_pc ci-cosmos/fino/resultado.json fino
+      - name: Comprobar ejecutable RXE completo y manifest
+        run: |
+          set -euo pipefail
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const r=JSON.parse(readFileSync("ci-cosmos/resultado.json","utf8"));
+            assert.equal(r.pass,true);assert.equal(r.actual_observations,33);
+            assert.equal(r.packed_logical_bytes,891);
+            const f=JSON.parse(readFileSync("ci-cosmos/fino/resultado.json","utf8"));
+            assert.equal(f.pass,true);assert.equal(f.actual_observations,271);
+            assert.equal(f.packed_logical_bytes,7317);
+            assert.ok(r.landmarks.early_expansion.energy_density_J_m3>1e100);
+            assert.ok(r.landmarks.today.energy_density_J_m3<1e-9);
+          '
+          build-reverse/reverse_pc inspect-rxe ci-cosmos/Laplace-Cosmos-P003.rxe > ci-cosmos/inspeccion-rxe.json
+      - name: Preservar observaciones XI, 891 bytes lógicos, RXE y estado RVPC2
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LaPlaceDIG-P003-Cosmos-XI-RXE
+          path: ci-cosmos/
+          retention-days: 30
+          if-no-files-found: warn

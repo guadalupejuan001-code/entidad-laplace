@@ -1,0 +1,195 @@
+{
+  "schema": "laplace-pulso-sec-capture-p001-v1",
+  "bundles": [
+    {
+      "institution": {
+        "cik": "0002012383",
+        "ticker": "BLK",
+        "name": "BlackRock, Inc.",
+        "aliases": [
+          "BlackRock"
+        ]
+      },
+      "submission": {
+        "file": "raw/4b0fb2bf41b7250c6f8c9cc6ea5e64c3b1c6aec4ec189ebcb8353cfef14cdc44.txt.gz",
+        "url": "https://data.sec.gov/submissions/CIK0002012383.json",
+        "received_at": "2026-10-30T17:18:18.883Z",
+        "body_sha256": "4b0fb2bf41b7250c6f8c9cc6ea5e64c3b1c6aec4ec189ebcb8353cfef14cdc44",
+        "size_bytes": 285250
+      },
+      "tickers": {
+        "file": "raw/b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea.txt.gz",
+        "url": "https://www.sec.gov/files/company_tickers.json",
+        "received_at": "2026-10-30T17:18:18.883Z",
+        "body_sha256": "b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea",
+        "size_bytes": 798077
+      },
+      "subsidiaries": {
+        "filing": {
+          "form": "10-K",
+          "accession": "0001193125-26-071966",
+          "report_date": "2025-12-31",
+          "accepted_at": "2026-02-25T21:57:59.000Z"
+        },
+        "document": {
+          "file": "raw/c52c0d589e1f599d8fda28879dc234b74f0c4fc9e30430be7c3cb95b5cdf7a15.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/2012383/000119312526071966/blk-ex21_1.htm",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "c52c0d589e1f599d8fda28879dc234b74f0c4fc9e30430be7c3cb95b5cdf7a15",
+          "size_bytes": 339540
+        },
+        "unresolved_amendments": []
+      },
+      "holdings": {
+        "filing": {
+          "form": "13F-HR",
+          "accession": "0002012383-26-003238",
+          "report_date": "2026-06-30",
+          "accepted_at": "2026-08-07T16:29:42.000Z"
+        },
+        "document": {
+          "file": "raw/2e119cb5d8cb393d720d080a56370794e2513e03de11a4c1c6d90dd36743fe82.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/2012383/000201238326003238/form13fInfoTable.xml",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "2e119cb5d8cb393d720d080a56370794e2513e03de11a4c1c6d90dd36743fe82",
+          "size_bytes": 23016794
+        },
+        "cover": {
+          "file": "raw/78c307ca4455e7c204fc83f8c5aeceaa0af4d70bdb35f5959717da34f6431049.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/2012383/000201238326003238/primary_doc.xml",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "78c307ca4455e7c204fc83f8c5aeceaa0af4d70bdb35f5959717da34f6431049",
+          "size_bytes": 13828
+        },
+        "unresolved_amendments": []
+      }
+    },
+    {
+      "institution": {
+        "cik": "0000019617",
+        "ticker": "JPM",
+        "name": "JPMorgan Chase & Co.",
+        "aliases": [
+          "JPMorgan",
+          "JP Morgan",
+          "J.P. Morgan",
+          "jepi morgan"
+        ]
+      },
+      "submission": {
+        "file": "raw/1714aaa543013f6809f709c3614de0ff373e3939761c76469a620130e9fe20a6.txt.gz",
+        "url": "https://data.sec.gov/submissions/CIK0000019617.json",
+        "received_at": "2026-10-30T17:18:18.883Z",
+        "body_sha256": "1714aaa543013f6809f709c3614de0ff373e3939761c76469a620130e9fe20a6",
+        "size_bytes": 4694302
+      },
+      "tickers": {
+        "file": "raw/b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea.txt.gz",
+        "url": "https://www.sec.gov/files/company_tickers.json",
+        "received_at": "2026-10-30T17:18:18.883Z",
+        "body_sha256": "b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea",
+        "size_bytes": 798077
+      },
+      "subsidiaries": {
+        "filing": {
+          "form": "10-K",
+          "accession": "0001628280-26-008131",
+          "report_date": "2025-12-31",
+          "accepted_at": "2026-02-13T21:20:00.000Z"
+        },
+        "document": {
+          "file": "raw/8712594dd5b2a36a303a0970946e25e0490dafe27ae67b23155d1640fb60df93.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026008131/corp10k2025exhibit21.htm",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "8712594dd5b2a36a303a0970946e25e0490dafe27ae67b23155d1640fb60df93",
+          "size_bytes": 11993
+        },
+        "unresolved_amendments": []
+      },
+      "holdings": {
+        "filing": {
+          "form": "13F-HR",
+          "accession": "0000019617-26-000325",
+          "report_date": "2026-06-30",
+          "accepted_at": "2026-08-12T15:51:44.000Z"
+        },
+        "document": {
+          "file": "raw/92da8d636696d6ed269784c92554c606275b0de25d9813ed0d7f378289aa66fc.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/19617/000001961726000325/Information_Table_06.30.2026.xml",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "92da8d636696d6ed269784c92554c606275b0de25d9813ed0d7f378289aa66fc",
+          "size_bytes": 19472014
+        },
+        "cover": {
+          "file": "raw/a6184abc31114cc102e6aee9133b280a2048af2d4491a8d88ae5a18bff790d9b.txt.gz",
+          "url": "https://www.sec.gov/Archives/edgar/data/19617/000001961726000325/primary_doc.xml",
+          "received_at": "2026-10-30T17:18:18.883Z",
+          "body_sha256": "a6184abc31114cc102e6aee9133b280a2048af2d4491a8d88ae5a18bff790d9b",
+          "size_bytes": 7036
+        },
+        "unresolved_amendments": []
+      }
+    }
+  ],
+  "discovery": {
+    "tickers": {
+      "file": "raw/b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea.txt.gz",
+      "url": "https://www.sec.gov/files/company_tickers.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "b5be63822ef78687908848b349820d9d6a962af9287e2164f44f4b217259f4ea",
+      "size_bytes": 798077
+    },
+    "blk-annual-index": {
+      "file": "raw/806a133d6e36c05d1a576f73bba35b43a11de7143bf0c254a018ff6954a303e2.txt.gz",
+      "url": "https://www.sec.gov/Archives/edgar/data/2012383/000119312526071966/index.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "806a133d6e36c05d1a576f73bba35b43a11de7143bf0c254a018ff6954a303e2",
+      "size_bytes": 16649
+    },
+    "blk-13f-index": {
+      "file": "raw/772bce61efd6e6b57f4512eef700e131c2febd5022f8708e1e8968ac3bcaff0b.txt.gz",
+      "url": "https://www.sec.gov/Archives/edgar/data/2012383/000201238326003238/index.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "772bce61efd6e6b57f4512eef700e131c2febd5022f8708e1e8968ac3bcaff0b",
+      "size_bytes": 671
+    },
+    "blk-submissions": {
+      "file": "raw/4b0fb2bf41b7250c6f8c9cc6ea5e64c3b1c6aec4ec189ebcb8353cfef14cdc44.txt.gz",
+      "url": "https://data.sec.gov/submissions/CIK0002012383.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "4b0fb2bf41b7250c6f8c9cc6ea5e64c3b1c6aec4ec189ebcb8353cfef14cdc44",
+      "size_bytes": 285250
+    },
+    "jpm-annual-index": {
+      "file": "raw/3581d46c6045e0b32a793c01f02e4167868870e4703dcdb874d283c941149bfb.txt.gz",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000162828026008131/index.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "3581d46c6045e0b32a793c01f02e4167868870e4703dcdb874d283c941149bfb",
+      "size_bytes": 25642
+    },
+    "jpm-13f-index": {
+      "file": "raw/3558ce7baebda46d159e3fabcdca800987989afa8c2686953e8c9636033fddb7.txt.gz",
+      "url": "https://www.sec.gov/Archives/edgar/data/19617/000001961726000325/index.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "3558ce7baebda46d159e3fabcdca800987989afa8c2686953e8c9636033fddb7",
+      "size_bytes": 678
+    },
+    "jpm-submissions": {
+      "file": "raw/1714aaa543013f6809f709c3614de0ff373e3939761c76469a620130e9fe20a6.txt.gz",
+      "url": "https://data.sec.gov/submissions/CIK0000019617.json",
+      "received_at": "2026-10-30T17:18:18.883Z",
+      "body_sha256": "1714aaa543013f6809f709c3614de0ff373e3939761c76469a620130e9fe20a6",
+      "size_bytes": 4694302
+    }
+  },
+  "status": [
+    {
+      "ticker": "BLK",
+      "status": "captured"
+    },
+    {
+      "ticker": "JPM",
+      "status": "captured"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+name: LaPlaceDIG U001 - Universo observable BTC
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  universo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar registros universales y proteccion de tiempo
+        run: |
+          node --check universo/estados.mjs
+          node --check universo/mercado.mjs
+          node --check universo/geomagnetismo.mjs
+          node --check tools/laplace.mjs
+          node --test tests/universo.test.mjs tests/intradia15.test.mjs tests/causal.test.mjs
+      - name: Medir una captura multiescala del mercado sin emitir ordenes
+        run: |
+          mkdir -p ci-universo
+          if node tools/laplace.mjs universo-btc-15m ci-universo/captura.json > ci-universo/salida.txt 2> ci-universo/error.txt; then
+            echo 'estado=observed' > ci-universo/status.txt
+            node --input-type=module -e 'import {readFileSync} from "node:fs"; const r=JSON.parse(readFileSync("ci-universo/captura.json")); console.log(JSON.stringify({state:r.schema,price:r.instrument_15m.observed_price_usd,projected:r.projected_price_usd,sources:r.source_count,domains:r.universal_state.domains,source_diagnostics:r.measured_market.map(x=>({name:x.name,status:x.status,reason:x.reason??null})),noaa:{status:r.measured_space_weather.status,reason:r.measured_space_weather.reason??null},orders:r.execution_orders,full_universe_observed:r.full_universe_observed}));'
+          else
+            echo 'estado=unavailable' > ci-universo/status.txt
+            echo 'No se obtuvo captura; sin cifras inventadas.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-universo-u001
+          path: ci-universo/**
+          retention-days: 7
+          if-no-files-found: warn

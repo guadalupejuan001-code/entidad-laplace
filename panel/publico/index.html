@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1016">
+  <meta name="description" content="LAPLACE: panel local de mediciones, estados y verificación temporal.">
+  <title>LAPLACE · Panel de análisis</title>
+  <link rel="stylesheet" href="/panel.css">
+  <script defer src="/grafica.js"></script>
+  <script defer src="/panel.js"></script>
+</head>
+<body>
+  <div class="envoltura">
+    <header class="encabezado">
+      <div class="marca"><span class="simbolo" aria-hidden="true">L</span>
+        <div><h1>LAPLACE</h1><p>Panel de análisis causal</p></div>
+      </div>
+      <div class="encabezado-acciones">
+        <span id="estadoConexion" class="indicador" role="status">Sin lectura</span>
+        <button class="boton boton-principal" id="actualizar" type="button">Actualizar lectura</button>
+        <a class="boton boton-secundario" href="/api/exportar" id="exportar" download="laplace-ultima-captura.json" hidden>Exportar captura</a>
+      </div>
+    </header>
+    <main class="principal">
+      <div class="contexto">
+        <div><span class="etiqueta">INSTRUMENTO DE INVESTIGACIÓN</span>
+          <h2>Estado, trayectoria y consecuencias</h2>
+          <p>Datos observados separados de los cálculos y de las hipótesis no verificadas.</p>
+        </div>
+        <p id="horaLectura" class="sello">Sin una captura registrada</p>
+      </div>
+      <p id="aviso" class="aviso" role="alert" hidden></p>
+      <p id="avisoIntegridad" class="aviso" role="status" hidden></p>
+      <nav class="pestanas" aria-label="Secciones de Laplace">
+        <button class="pestana activo" data-vista="mercado" aria-current="page" type="button">Mercado</button>
+        <button class="pestana" data-vista="factores" type="button">Factores observados</button>
+        <button class="pestana" data-vista="historia" type="button">Historia</button>
+        <button class="pestana" data-vista="validacion" type="button">Validación</button>
+      </nav>
+      <section class="vista" id="vista-mercado" aria-label="Mercado">
+        <div class="dos-columnas indicadores">
+          <article class="tarjeta">
+            <p class="rotulo">PRECIO OBSERVADO · BTC/USD</p>
+            <div class="valor-principal" id="precioObservado">—</div>
+            <p class="subdato" id="precioFecha">Todavía no hay datos de la fuente.</p>
+          </article>
+          <article class="tarjeta">
+            <p class="rotulo">ESTIMACIÓN CENTRAL · 15 MINUTOS</p>
+            <div class="valor-principal" id="precioEstimado">—</div>
+            <p class="subdato" id="modeloEstado">Pendiente de cálculo.</p>
+          </article>
+        </div>
+        <article class="tarjeta grafica-tarjeta">
+          <div class="tarjeta-cabecera">
+            <div><h3>Trayectoria del precio</h3><p class="subdato">Cierres de 5 minutos, cotización exacta y estimación separada</p></div>
+            <div class="leyendas"><span><i class="linea-observada"></i>Observado</span><span><i class="linea-estimada"></i>Calculado</span></div>
+          </div>
+          <svg id="grafico" role="img" aria-label="Gráfico de cotizaciones observadas y proyección a quince minutos" viewBox="0 0 800 240" preserveAspectRatio="xMidYMid meet">
+            <text x="400" y="122" text-anchor="middle" fill="#8192a3" font-size="14">Actualiza una lectura para mostrar los precios reales.</text>
+          </svg>
+          <p class="pie" id="graficaDetalle"></p>
+          <p class="pie" id="graficaNota">El tramo calculado no representa un precio futuro observado.</p>
+        </article>
+        <div class="tres-columnas">
+          <article class="tarjeta compacta"><p class="rotulo">RANGO HISTÓRICO DE ESCENARIOS</p><strong id="rango">—</strong><p class="subdato">Percentiles 10 y 90; no son garantías.</p></article>
+          <article class="tarjeta compacta"><p class="rotulo">CANDIDATO SIN VALIDAR</p><strong id="candidato">—</strong><p class="subdato">Se muestra aparte cuando el modelo no mejora la referencia.</p></article>
+          <article class="tarjeta compacta"><p class="rotulo">HORIZONTE DISPONIBLE</p><strong>15 minutos</strong><p class="subdato" id="fechaObjetivo">Otros horizontes aún no están implementados.</p></article>
+        </div>
+      </section>
+      <section class="vista" id="vista-factores" aria-label="Factores observados" hidden>
+        <div class="tarjeta introduccion">
+          <h3>Qué está midiendo Laplace</h3>
+          <p>Estos datos amplían el contexto. Una relación observada no demuestra que una variable cause movimientos del precio.</p>
+        </div>
+        <div class="factores-cuadricula">
+          <article class="tarjeta"><p class="rotulo">LIQUIDEZ · BTC/USD</p>
+            <p class="dato" id="presion">—</p><p class="subdato" id="libroEstado">Sin libro de órdenes</p>
+            <dl class="filas"><div><dt>Profundidad compradora</dt><dd id="profCompra">—</dd></div>
+              <div><dt>Profundidad vendedora</dt><dd id="profVenta">—</dd></div>
+              <div><dt>Diferencia entre compra y venta</dt><dd id="spread">—</dd></div></dl>
+          </article>
+          <article class="tarjeta"><p class="rotulo">OPERACIONES RECIENTES · BTC/USD</p>
+            <p class="dato" id="operaciones">—</p><p class="subdato" id="operacionesEstado">Sin muestra de operaciones</p>
+            <dl class="filas"><div><dt>Nocional por lado creador comprador</dt><dd id="volCompra">—</dd></div>
+              <div><dt>Nocional por lado creador vendedor</dt><dd id="volVenta">—</dd></div></dl>
+          </article>
+          <article class="tarjeta"><p class="rotulo">MERCADOS RELACIONADOS</p>
+            <dl class="filas"><div><dt>ETH/USD</dt><dd id="eth">—</dd></div>
+              <div><dt>BTC/EUR</dt><dd id="btceur">—</dd></div></dl>
+            <p class="subdato">Otras cotizaciones, sin atribuir influencia causal.</p>
+          </article>
+          <article class="tarjeta"><p class="rotulo">ENTORNO FÍSICO · NOAA</p>
+            <p class="dato" id="kp">—</p><p class="subdato" id="kpEstado">Sin lectura geomagnética</p>
+            <p class="subdato">El índice Kp es un dato físico independiente; no se usa para calcular el precio de BTC.</p>
+          </article>
+        </div>
+        <article class="tarjeta">
+          <div class="tarjeta-cabecera"><h3>Estado de las fuentes</h3><span class="chip" id="fuentesContador">0 verificadas</span></div>
+          <div id="fuentes" class="fuentes"><p class="subdato">Sin captura disponible.</p></div>
+        </article>
+      </section>
+      <section class="vista" id="vista-historia" aria-label="Historia" hidden>
+        <article class="tarjeta">
+          <div class="tarjeta-cabecera"><div><h3>Registro de lecturas</h3><p class="subdato">Solo instantáneas capturadas; no se reconstruyen mediciones inexistentes.</p></div>
+            <span class="chip" id="historiaContador">0 lecturas</span></div>
+          <div class="tabla-contenedor">
+            <table><thead><tr><th>Fecha de captura</th><th>BTC/USD observado</th><th>Estimación +15 min</th><th>Fuentes</th></tr></thead>
+              <tbody id="tablaHistoria"><tr><td colspan="4">Sin lecturas.</td></tr></tbody></table>
+          </div>
+        </article>
+        <article class="tarjeta"><h3>Reconstrucción causal</h3>
+          <p id="historiaNota">Las relaciones entre sistemas se registran como hipótesis. Aún faltan capturas repetidas para comprobar efectos temporales.</p>
+          <p class="subdato">LAPLACE no equipara una noticia, correlación o libro de órdenes con una causa demostrada.</p>
+        </article>
+      </section>
+      <section class="vista" id="vista-validacion" aria-label="Validación" hidden>
+        <div class="tres-columnas">
+          <article class="tarjeta compacta"><p class="rotulo">ERROR DEL MODELO · PRUEBA RETROSPECTIVA</p><strong id="errorModelo">—</strong><p class="subdato">Error absoluto medio</p></article>
+          <article class="tarjeta compacta"><p class="rotulo">ERROR DE LA REFERENCIA</p><strong id="errorReferencia">—</strong><p class="subdato">Precio sin cambio</p></article>
+          <article class="tarjeta compacta"><p class="rotulo">DECISIONES EVALUADAS</p><strong id="decisiones">—</strong><p class="subdato">Horizonte de 15 minutos</p></article>
+        </div>
+        <article class="tarjeta">
+          <h3>Resultado de validación</h3><p id="resultadoPrueba">Todavía no se ha ejecutado una lectura.</p>
+          <dl class="filas">
+            <div><dt>Estados observados</dt><dd id="numeroEstados">—</dd></div>
+            <div><dt>Dominios con datos</dt><dd id="numeroDominios">—</dd></div>
+            <div><dt>Huella de la captura completa</dt><dd id="huella">—</dd></div>
+            <div><dt>Fecha del objetivo +15 minutos</dt><dd id="objetivoValidacion">—</dd></div>
+            <div><dt>Alcance del sello</dt><dd>Integridad local, no firma del proveedor</dd></div>
+            <div><dt>Ejecución de operaciones</dt><dd>Ninguna</dd></div>
+          </dl>
+        </article>
+        <article class="tarjeta aviso-cientifico">
+          <h3>Límites del instrumento</h3>
+          <p>La lectura muestra estados conocidos, no el universo completo. Los percentiles históricos no son intervalos de confianza certificados. Los resultados de 15 minutos pueden fallar aunque el cálculo sea reproducible. Los modelos físicos y cosmológicos de Laplace son simulaciones separadas de las observaciones.</p>
+        </article>
+      </section>
+    </main>
+    <footer> LAPLACE · Investigación y medición reproducible · Sin operaciones automáticas</footer>
+  </div>
+</body>
+</html>

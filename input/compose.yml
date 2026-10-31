@@ -1,0 +1,86 @@
+name: laplace-input
+x-kafka-env: &kafka-env
+  KAFKA_PROCESS_ROLES: broker,controller
+  KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+  KAFKA_MIN_INSYNC_REPLICAS: 2
+  KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+  KAFKA_MESSAGE_MAX_BYTES: 6291456
+  KAFKA_REPLICA_FETCH_MAX_BYTES: 8388608
+  KAFKA_LOG_DIRS: /var/lib/kafka/data
+  KAFKA_HEAP_OPTS: -Xms256m -Xmx512m
+  CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+services:
+  kafka1:
+    image: apache/kafka:4.1.2@sha256:5cc2a2fd93fa2687b44015eee04fb2c3edd9e526bd64bf8bec5ff1e268772e0e
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9092
+    volumes: [kafka1:/var/lib/kafka/data]
+    restart: unless-stopped
+  kafka2:
+    image: apache/kafka:4.1.2@sha256:5cc2a2fd93fa2687b44015eee04fb2c3edd9e526bd64bf8bec5ff1e268772e0e
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:9092
+    volumes: [kafka2:/var/lib/kafka/data]
+    restart: unless-stopped
+  kafka3:
+    image: apache/kafka:4.1.2@sha256:5cc2a2fd93fa2687b44015eee04fb2c3edd9e526bd64bf8bec5ff1e268772e0e
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:9092
+    volumes: [kafka3:/var/lib/kafka/data]
+    restart: unless-stopped
+  timescale:
+    image: timescale/timescaledb:2.22.1-pg17@sha256:fba60021a224479e174ae1ec577c1a0576d5185b09fe9e622f1d19e4bf5bab0d
+    environment:
+      POSTGRES_DB: laplace
+      POSTGRES_USER: laplace
+      POSTGRES_PASSWORD: ${LAPLACE_DB_PASSWORD:?configure LAPLACE_DB_PASSWORD}
+    volumes: [timescale:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U laplace -d laplace]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  install:
+    build: {context: .., dockerfile: input/Dockerfile}
+    environment: &app-env
+      LAPLACE_DATABASE_URL: postgresql://laplace:${LAPLACE_DB_PASSWORD}@timescale:5432/laplace
+      LAPLACE_KAFKA_BROKERS: kafka1:9092,kafka2:9092,kafka3:9092
+    command: [node, tools/laplace.mjs, entrada, instalar, input/config.cluster.json]
+    depends_on:
+      timescale: {condition: service_healthy}
+      kafka1: {condition: service_started}
+      kafka2: {condition: service_started}
+      kafka3: {condition: service_started}
+    restart: on-failure
+  input:
+    build: {context: .., dockerfile: input/Dockerfile}
+    environment: *app-env
+    ports: [127.0.0.1:8787:8787]
+    volumes: [input:/app/registros/input]
+    depends_on:
+      install: {condition: service_completed_successfully}
+    restart: unless-stopped
+volumes:
+  kafka1:
+  kafka2:
+  kafka3:
+  timescale:
+  input:

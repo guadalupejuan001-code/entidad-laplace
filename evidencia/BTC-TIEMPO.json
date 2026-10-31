@@ -1,0 +1,1416 @@
+{
+  "schema": "laplace-time-v1",
+  "origin_date": "2026-10-28",
+  "range_start": "2026-09-12",
+  "range_end": "2030-12-31",
+  "asset": "BTC-USD",
+  "cost_bps": 10,
+  "source_ledger_sha256": "2bf20b40356e0055d35177e17c9b720909fd6c02707516c84ac5c6d0d547d4c1",
+  "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+  "model_validation_end": "2026-10-09T00:00:00.000Z",
+  "training_start": "2026-09-03T00:00:00.000Z",
+  "training_end": "2026-10-01T00:00:00.000Z",
+  "training_samples": 28,
+  "model": {
+    "global": {
+      "count": 28,
+      "successes": 12
+    },
+    "prior_strength": 8,
+    "rules": [
+      {
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "count": 26,
+        "successes": 10,
+        "validation_count": 8,
+        "validation_brier_gain": 0.002958477508650491
+      },
+      {
+        "pattern": {
+          "type": "single",
+          "terms": [
+            "CONFLICT_ESCALATION"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      },
+      {
+        "pattern": {
+          "type": "single",
+          "terms": [
+            "CONFLICT_ESCALATION@GLOBAL"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      },
+      {
+        "pattern": {
+          "type": "single",
+          "terms": [
+            "RELIEF_ACCESS"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      },
+      {
+        "pattern": {
+          "type": "single",
+          "terms": [
+            "RELIEF_ACCESS@GLOBAL"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      },
+      {
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "CONFLICT_ESCALATION",
+            "DIPLOMATIC_COOPERATION"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      },
+      {
+        "pattern": {
+          "type": "pair",
+          "terms": [
+            "DIPLOMATIC_COOPERATION",
+            "RELIEF_ACCESS"
+          ]
+        },
+        "count": 27,
+        "successes": 11,
+        "validation_count": 8,
+        "validation_brier_gain": 0.0019333333333333216
+      }
+    ]
+  },
+  "native": {
+    "backend": "inverse-ether-memory",
+    "materialized_bytes": 2165,
+    "overrides": 2165,
+    "active_qubits": 0,
+    "exact_roundtrip": true
+  },
+  "returns": {
+    "positive": [
+      0.049913826488224046,
+      0.0019616738353790144,
+      0.006337759639402439,
+      0.00874179768278846,
+      0.017747344235309843,
+      0.007392416249631335,
+      0.0026722426062525647,
+      0.0575937188298479,
+      0.004427523418574748,
+      0.06482330503494119,
+      0.0038397818511911198,
+      0.0021745701263080923
+    ],
+    "negative": [
+      -0.019745624582289314,
+      -0.015645447342255845,
+      -0.008186712803716727,
+      -0.002081655387038501,
+      -0.022574579851836165,
+      0.0007030427928608517,
+      -0.006010557959737123,
+      -0.03370316153640139,
+      -0.0009146915647602334,
+      -0.0045938286960895735,
+      -0.021337177551163943,
+      0.00008473382651129735,
+      -0.003470236703266822,
+      0.0005387295953531116,
+      -0.011974972849975661,
+      -0.0009842426289740872
+    ]
+  },
+  "return_price_ids": [
+    [
+      "coinbase-close-1788307200",
+      "coinbase-close-1788393600"
+    ],
+    [
+      "coinbase-close-1788393600",
+      "coinbase-close-1788480000"
+    ],
+    [
+      "coinbase-close-1788480000",
+      "coinbase-close-1788566400"
+    ],
+    [
+      "coinbase-close-1788566400",
+      "coinbase-close-1788652800"
+    ],
+    [
+      "coinbase-close-1788652800",
+      "coinbase-close-1788739200"
+    ],
+    [
+      "coinbase-close-1788739200",
+      "coinbase-close-1788825600"
+    ],
+    [
+      "coinbase-close-1788825600",
+      "coinbase-close-1788912000"
+    ],
+    [
+      "coinbase-close-1788912000",
+      "coinbase-close-1788998400"
+    ],
+    [
+      "coinbase-close-1788998400",
+      "coinbase-close-1789084800"
+    ],
+    [
+      "coinbase-close-1789084800",
+      "coinbase-close-1789171200"
+    ],
+    [
+      "coinbase-close-1789171200",
+      "coinbase-close-1789257600"
+    ],
+    [
+      "coinbase-close-1789257600",
+      "coinbase-close-1789344000"
+    ],
+    [
+      "coinbase-close-1789344000",
+      "coinbase-close-1789430400"
+    ],
+    [
+      "coinbase-close-1789430400",
+      "coinbase-close-1789516800"
+    ],
+    [
+      "coinbase-close-1789516800",
+      "coinbase-close-1789603200"
+    ],
+    [
+      "coinbase-close-1789603200",
+      "coinbase-close-1789689600"
+    ],
+    [
+      "coinbase-close-1789689600",
+      "coinbase-close-1789776000"
+    ],
+    [
+      "coinbase-close-1789776000",
+      "coinbase-close-1789862400"
+    ],
+    [
+      "coinbase-close-1789862400",
+      "coinbase-close-1789948800"
+    ],
+    [
+      "coinbase-close-1789948800",
+      "coinbase-close-1790035200"
+    ],
+    [
+      "coinbase-close-1790035200",
+      "coinbase-close-1790121600"
+    ],
+    [
+      "coinbase-close-1790121600",
+      "coinbase-close-1790208000"
+    ],
+    [
+      "coinbase-close-1790208000",
+      "coinbase-close-1790294400"
+    ],
+    [
+      "coinbase-close-1790294400",
+      "coinbase-close-1790380800"
+    ],
+    [
+      "coinbase-close-1790380800",
+      "coinbase-close-1790467200"
+    ],
+    [
+      "coinbase-close-1790467200",
+      "coinbase-close-1790553600"
+    ],
+    [
+      "coinbase-close-1790553600",
+      "coinbase-close-1790640000"
+    ],
+    [
+      "coinbase-close-1790640000",
+      "coinbase-close-1790726400"
+    ]
+  ],
+  "history": [
+    {
+      "fold": 1,
+      "decision_at": "2026-09-12T00:00:00.000Z",
+      "due_at": "2026-09-13T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "77208.55",
+      "end_price": "77262.85",
+      "net_return_bps": -2.967100146292088,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-13T00:00:00.000Z",
+      "due_at": "2026-09-14T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "77262.85",
+      "end_price": "76799.85",
+      "net_return_bps": -69.92530692305552,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-14T00:00:00.000Z",
+      "due_at": "2026-09-15T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "76799.85",
+      "end_price": "78175.01",
+      "net_return_bps": 169.0576413886225,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-15T00:00:00.000Z",
+      "due_at": "2026-09-16T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "78175.01",
+      "end_price": "75584.17",
+      "net_return_bps": -341.4153717409182,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-16T00:00:00.000Z",
+      "due_at": "2026-09-17T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "75584.17",
+      "end_price": "76144.99",
+      "net_return_bps": 64.19807613154977,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-17T00:00:00.000Z",
+      "due_at": "2026-09-18T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "76144.99",
+      "end_price": "76348.74",
+      "net_return_bps": 16.758162290125718,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 1,
+      "decision_at": "2026-09-18T00:00:00.000Z",
+      "due_at": "2026-09-19T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "76348.74",
+      "end_price": "80875.04",
+      "net_return_bps": 582.8454091056382,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "05b0b3aed073c96105bb58d04457643507efffe6f5d65b5c036c57b54c28bfb8",
+      "forecasts_sha256": "aacd11bae3ca8ecd4d5fafcb7806c6bc74f79cf68395c66a78d8334dcd126cfd",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-19T00:00:00.000Z",
+      "due_at": "2026-09-20T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "80875.04",
+      "end_price": "81233.91",
+      "net_return_bps": 34.373393818414186,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-20T00:00:00.000Z",
+      "due_at": "2026-09-21T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "81233.91",
+      "end_price": "81159.64",
+      "net_return_bps": -19.142733619494617,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-21T00:00:00.000Z",
+      "due_at": "2026-09-22T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "81159.64",
+      "end_price": "86594.94",
+      "net_return_bps": 659.7047941563072,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-22T00:00:00.000Z",
+      "due_at": "2026-09-23T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "86594.94",
+      "end_price": "86198.05",
+      "net_return_bps": -55.83293203967807,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-23T00:00:00.000Z",
+      "due_at": "2026-09-24T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "86198.05",
+      "end_price": "84378.31",
+      "net_return_bps": -221.11150426256742,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-24T00:00:00.000Z",
+      "due_at": "2026-09-25T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "84378.31",
+      "end_price": "84385.46",
+      "net_return_bps": -9.152625834767253,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 2,
+      "decision_at": "2026-09-25T00:00:00.000Z",
+      "due_at": "2026-09-26T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "84385.46",
+      "end_price": "84093.13",
+      "net_return_bps": -44.642223909190044,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "ed3f3d77442c7d36276e5268b02426d3172cb38f0ef3f85609c0f605c1471d0a",
+      "forecasts_sha256": "9272f9d2daa98e55be90dda74781f57f466d7f6a67fad0938ca73f48be7dc613",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-09-26T00:00:00.000Z",
+      "due_at": "2026-09-27T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "84093.13",
+      "end_price": "84416.65",
+      "net_return_bps": 28.471632581638953,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-09-27T00:00:00.000Z",
+      "due_at": "2026-09-28T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "84416.65",
+      "end_price": "84462.14",
+      "net_return_bps": -4.611252637957086,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-09-28T00:00:00.000Z",
+      "due_at": "2026-09-29T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "84462.14",
+      "end_price": "83456.74",
+      "net_return_bps": -129.03558209630967,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-09-29T00:00:00.000Z",
+      "due_at": "2026-09-30T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "83456.74",
+      "end_price": "83638.42",
+      "net_return_bps": 11.769362186924628,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-09-30T00:00:00.000Z",
+      "due_at": "2026-10-01T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "83638.42",
+      "end_price": "83556.14",
+      "net_return_bps": -19.837584210701255,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-10-01T00:00:00.000Z",
+      "due_at": "2026-10-02T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "83556.14",
+      "end_price": "84848.73",
+      "net_return_bps": 144.6971892191286,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 3,
+      "decision_at": "2026-10-02T00:00:00.000Z",
+      "due_at": "2026-10-03T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "84848.73",
+      "end_price": "84504.88",
+      "net_return_bps": -50.52506148294736,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "b40978fc4076d6976db5fa7f4f56df4d07875f13011ff88e4745bb58c60e8588",
+      "forecasts_sha256": "62609d82e140ef46f924e3f5eeb5add385b668cbf00e8e4857bf906c40b647ad",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-03T00:00:00.000Z",
+      "due_at": "2026-10-04T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "84504.88",
+      "end_price": "84742.22",
+      "net_return_bps": 18.08595195922413,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-04T00:00:00.000Z",
+      "due_at": "2026-10-05T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "84742.22",
+      "end_price": "86507.11",
+      "net_return_bps": 198.26572634042392,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-05T00:00:00.000Z",
+      "due_at": "2026-10-06T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "86507.11",
+      "end_price": "85748.96",
+      "net_return_bps": -97.64019512384588,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-06T00:00:00.000Z",
+      "due_at": "2026-10-07T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "85748.96",
+      "end_price": "85539.77",
+      "net_return_bps": -34.395631154010495,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-07T00:00:00.000Z",
+      "due_at": "2026-10-08T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "85539.77",
+      "end_price": "83275.06",
+      "net_return_bps": -274.75521269229506,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-08T00:00:00.000Z",
+      "due_at": "2026-10-09T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 0,
+      "start_price": "83275.06",
+      "end_price": "81692.79",
+      "net_return_bps": -200.00526688302597,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 4,
+      "decision_at": "2026-10-09T00:00:00.000Z",
+      "due_at": "2026-10-10T00:00:00.000Z",
+      "probability": null,
+      "calibrated_probability": null,
+      "pattern": null,
+      "actual": 1,
+      "start_price": "81692.79",
+      "end_price": "82544.71",
+      "net_return_bps": 94.28337678270016,
+      "raw_correct": null,
+      "calibrated_correct": null,
+      "model_state_sha256": "1de4bc9530a22fd9221af63f372fc22007a85c719e9b8ba3df53d60a5144b5d1",
+      "forecasts_sha256": "ee599027343ef43ba077acf9fa7fb7324e33bf60b1b5ffb4e9da7e086acf85de",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-10T00:00:00.000Z",
+      "due_at": "2026-10-11T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "82544.71",
+      "end_price": "82910.8",
+      "net_return_bps": 34.35051016594522,
+      "raw_correct": false,
+      "calibrated_correct": false,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-11T00:00:00.000Z",
+      "due_at": "2026-10-12T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "82910.8",
+      "end_price": "83678.29",
+      "net_return_bps": 82.5681575862252,
+      "raw_correct": false,
+      "calibrated_correct": false,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-12T00:00:00.000Z",
+      "due_at": "2026-10-13T00:00:00.000Z",
+      "probability": 0.44952380952380955,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "single",
+        "terms": [
+          "CONFLICT_ESCALATION"
+        ]
+      },
+      "actual": 0,
+      "start_price": "83678.29",
+      "end_price": "81742.5",
+      "net_return_bps": -241.3371843521181,
+      "raw_correct": true,
+      "calibrated_correct": true,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-13T00:00:00.000Z",
+      "due_at": "2026-10-14T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "81742.5",
+      "end_price": "83101.99",
+      "net_return_bps": 156.31372908829556,
+      "raw_correct": false,
+      "calibrated_correct": false,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-14T00:00:00.000Z",
+      "due_at": "2026-10-15T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "83101.99",
+      "end_price": "81566.29",
+      "net_return_bps": -194.7970186995522,
+      "raw_correct": true,
+      "calibrated_correct": true,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-15T00:00:00.000Z",
+      "due_at": "2026-10-16T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "81566.29",
+      "end_price": "82131.46",
+      "net_return_bps": 59.28965385087393,
+      "raw_correct": false,
+      "calibrated_correct": false,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 5,
+      "decision_at": "2026-10-16T00:00:00.000Z",
+      "due_at": "2026-10-17T00:00:00.000Z",
+      "probability": 0.43333333333333335,
+      "calibrated_probability": 0.4,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "82131.46",
+      "end_price": "81500.04",
+      "net_return_bps": -86.87918855941439,
+      "raw_correct": true,
+      "calibrated_correct": true,
+      "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+      "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-17T00:00:00.000Z",
+      "due_at": "2026-10-18T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "81500.04",
+      "end_price": "81378.21",
+      "net_return_bps": -24.948458921001755,
+      "raw_correct": true,
+      "calibrated_correct": false,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-18T00:00:00.000Z",
+      "due_at": "2026-10-19T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "81378.21",
+      "end_price": "82006.85",
+      "net_return_bps": 67.24918009378678,
+      "raw_correct": false,
+      "calibrated_correct": true,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-19T00:00:00.000Z",
+      "due_at": "2026-10-20T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "82006.85",
+      "end_price": "81837.69",
+      "net_return_bps": -30.62754513799762,
+      "raw_correct": true,
+      "calibrated_correct": false,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-20T00:00:00.000Z",
+      "due_at": "2026-10-21T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "81837.69",
+      "end_price": "82938.26",
+      "net_return_bps": 124.48204610858396,
+      "raw_correct": false,
+      "calibrated_correct": true,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-21T00:00:00.000Z",
+      "due_at": "2026-10-22T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 1,
+      "start_price": "82938.26",
+      "end_price": "84024.67",
+      "net_return_bps": 120.99020886138678,
+      "raw_correct": false,
+      "calibrated_correct": true,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-22T00:00:00.000Z",
+      "due_at": "2026-10-23T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "84024.67",
+      "end_price": "81307.16",
+      "net_return_bps": -333.41811041923756,
+      "raw_correct": true,
+      "calibrated_correct": false,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    },
+    {
+      "fold": 6,
+      "decision_at": "2026-10-23T00:00:00.000Z",
+      "due_at": "2026-10-24T00:00:00.000Z",
+      "probability": 0.396078431372549,
+      "calibrated_probability": 0.6,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "actual": 0,
+      "start_price": "81307.16",
+      "end_price": "81078.04",
+      "net_return_bps": -38.179560078103826,
+      "raw_correct": true,
+      "calibrated_correct": false,
+      "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc",
+      "forecasts_sha256": "916635a7e3de77c383e12429a2cf732b7a49a6a5e4cbf6449b5858ce5c146241",
+      "narrative_themes": [
+        "CEASEFIRE",
+        "CONFLICT_ESCALATION",
+        "DIPLOMATIC_COOPERATION",
+        "RELIEF_ACCESS",
+        "SANCTIONS"
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "id": "CONFLICT_ESCALATION",
+      "label": "Conflicto armado",
+      "kind": "geopolitica",
+      "supported": true
+    },
+    {
+      "id": "CEASEFIRE",
+      "label": "Alto el fuego",
+      "kind": "geopolitica",
+      "supported": false
+    },
+    {
+      "id": "SANCTIONS",
+      "label": "Sanciones",
+      "kind": "geopolitica",
+      "supported": false
+    },
+    {
+      "id": "SHIPPING_DISRUPTION",
+      "label": "Rutas comerciales",
+      "kind": "geopolitica",
+      "supported": false
+    },
+    {
+      "id": "DIPLOMATIC_COOPERATION",
+      "label": "Cooperación diplomática",
+      "kind": "geopolitica",
+      "supported": true
+    },
+    {
+      "id": "CIVILIAN_HARM",
+      "label": "Daño a civiles",
+      "kind": "humanitaria",
+      "supported": false
+    },
+    {
+      "id": "DISPLACEMENT",
+      "label": "Desplazamiento",
+      "kind": "humanitaria",
+      "supported": false
+    },
+    {
+      "id": "FOOD_INSECURITY",
+      "label": "Inseguridad alimentaria",
+      "kind": "humanitaria",
+      "supported": false
+    },
+    {
+      "id": "AID_BLOCKED",
+      "label": "Ayuda restringida",
+      "kind": "humanitaria",
+      "supported": false
+    },
+    {
+      "id": "RELIEF_ACCESS",
+      "label": "Acceso a ayuda",
+      "kind": "humanitaria",
+      "supported": true
+    },
+    {
+      "id": "HEALTH_EMERGENCY",
+      "label": "Emergencia sanitaria",
+      "kind": "humanitaria",
+      "supported": false
+    }
+  ],
+  "default_themes": [
+    "CEASEFIRE",
+    "CONFLICT_ESCALATION",
+    "DIPLOMATIC_COOPERATION",
+    "RELIEF_ACCESS"
+  ],
+  "narrative_as_of": "2026-10-27T00:00:00.000Z",
+  "narrative_sources": [
+    {
+      "id": "gdelt-archive-1329812783",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://www.artshub.com.au/job/curator-contemporary-visual-art-maternity-leave-2877938/",
+      "tags": [
+        "DIPLOMATIC_COOPERATION"
+      ]
+    },
+    {
+      "id": "gdelt-archive-1329812785",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://www.sthelensstar.co.uk/news/national/26668594.brazil-resumes-vote-count-last-minute-extension-polling-station-hours/",
+      "tags": [
+        "DIPLOMATIC_COOPERATION"
+      ]
+    },
+    {
+      "id": "gdelt-archive-1329812794",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://www.tribuneindia.com/news/himachal/masked-duo-fires-five-rounds-at-nalagarh-scrap-dealers-gate/",
+      "tags": [
+        "CONFLICT_ESCALATION"
+      ]
+    },
+    {
+      "id": "gdelt-archive-1329813127",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://abcnews.com/Politics/wireStory/iran-messages-passed-us-amid-war-concerns-mideast-137558362",
+      "tags": [
+        "CEASEFIRE"
+      ]
+    },
+    {
+      "id": "gdelt-archive-1329813310",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://chinookobserver.com/2026/10/25/elks-program-honors-the-best-of-the-best-veteran-deputy-emt-and-coast-guardsmen-applauded/",
+      "tags": [
+        "RELIEF_ACCESS"
+      ]
+    },
+    {
+      "id": "gdelt-archive-1329813365",
+      "known_at": "2026-10-27T00:00:00.000Z",
+      "url": "https://www.breitbart.com/news/ukraine-disputes-elon-musks-claim-that-its-military-violated-starlinks-terms-of-service/",
+      "tags": [
+        "RELIEF_ACCESS"
+      ]
+    }
+  ],
+  "historical_mode": "exploratory_close_availability",
+  "certified_point_in_time": false,
+  "live_prediction_validated": false,
+  "backtest": {
+    "count": 42,
+    "raw_brier": 0.2489516703787024,
+    "baseline_brier": 0.2470899470899471,
+    "calibrated_brier": 0.2550529100529101,
+    "calibration_improved": false
+  },
+  "future_method": "Conditional beta posterior + empirical daily log-return bootstrap; fixed user-declared narrative, no future news.",
+  "original_price_vintages_verified": false,
+  "profile_sha256": "701d020305156ab3dbec2784144cd1bc55c23ce1ed1e7989605576c984f9bec3"
+}

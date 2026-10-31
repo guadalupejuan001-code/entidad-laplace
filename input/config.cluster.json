@@ -1,0 +1,15 @@
+{
+  "schema": "laplace.input.config.i001",
+  "mode": "kafka",
+  "role": "all",
+  "host": "0.0.0.0",
+  "port": 8787,
+  "database_url_env": "LAPLACE_DATABASE_URL",
+  "timescale": true,
+  "institutional_registry": "evidencia/pulso-20261030/resultado/registry.json.gz",
+  "kafka": {"brokers_env": "LAPLACE_KAFKA_BROKERS", "prefix": "laplace.input", "replicas": 3, "minISR": 2, "partitions": 12},
+  "sources": [
+    {"id": "coinbase/btc-usd", "transport": "http", "adapter": "coinbase_ticker", "product": "BTC-USD", "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker", "interval_ms": 10000, "max_staleness_ms": 60000},
+    {"id": "fed/releases", "transport": "http", "adapter": "rss", "url": "https://www.federalreserve.gov/feeds/press_all.xml", "interval_ms": 60000}
+  ]
+}

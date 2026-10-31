@@ -1,0 +1,30 @@
+✔ R01: el sello detecta alteraciones fuera de la memoria universal (23.577623ms)
+✔ R02: no basta con resellar un precio contradictorio con la memoria (0.99261ms)
+✔ R03: rechaza retroceso de captura y no muta el registro anterior (7.144792ms)
+✔ R04: fechas equivalentes no permiten duplicar la misma captura (5.212151ms)
+✔ R05: un sello del historial detecta cambios en filas ya resumidas (2.423401ms)
+✔ R06: la última fila debe concordar aunque el archivo se haya resellado (9.645127ms)
+✔ R07: conserva exactamente las 144 últimas capturas de 150 (1480.62605ms)
+✔ R08: el registro no comparte referencias mutables con el colector (1.519748ms)
+✔ R09: migración explícita, con aviso de procedencia no sellada (5.398836ms)
+✔ R10: el arranque migra sin perder el archivo original (24.922406ms)
+✔ R11: un archivo dañado nunca se convierte silenciosamente en historial vacío (1.446544ms)
+✔ R12: la gráfica parte del precio instantáneo con tiempo propio (2.421239ms)
+✔ R13: separaciones temporales desiguales producen distancias desiguales (3.975121ms)
+✔ R14: gráfico sin velas todavía representa cotización y estimación, no cierres inventados (0.933738ms)
+✔ R15: UTC inválido y objetivo distinto a 15 minutos se rechazan (2.454175ms)
+✔ R16: localhost funciona y el origen externo sigue bloqueado (151.146272ms)
+✔ R17: orden invertido de propiedades JSON no invalida el sello completo (0.817634ms)
+✔ el contrato de memoria respeta marcas temporales, huellas y límite de 144 capturas (65.254397ms)
+✔ interfaz en español: sin cifras inventadas ni textos de marca extranjeros (4.662444ms)
+✔ servidor solo local: estado vacío, captura real inyectada, exportación y persistencia (368.342118ms)
+✔ rechaza lecturas demasiado seguidas y conserva la última válida tras un error (34.455714ms)
+✔ no permite dos lecturas simultáneas (23.375049ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2246.483893

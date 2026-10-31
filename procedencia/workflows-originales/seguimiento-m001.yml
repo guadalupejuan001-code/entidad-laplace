@@ -1,0 +1,92 @@
+name: LAPLACE - Registro prospectivo horario
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['seguimiento/**', 'tests/seguimiento.test.mjs', '.github/workflows/seguimiento-m001.yml']
+  pull_request:
+    branches: [main]
+    paths: ['seguimiento/**', 'tests/seguimiento.test.mjs', '.github/workflows/seguimiento-m001.yml']
+permissions:
+  contents: read
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - run: node --test tests/seguimiento.test.mjs tests/panel.test.mjs tests/panel-regresion.test.mjs tests/intradia15.test.mjs tests/universo.test.mjs
+      - name: Primera prueba real aislada, sin puntuar futuros que no han ocurrido
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p ci-seguimiento
+          node seguimiento/ciclo.mjs --directorio ci-seguimiento > ci-seguimiento/salida.txt
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const s=JSON.parse(readFileSync("ci-seguimiento/resumen.json"));assert.equal(s.pronosticos,5,"No se pudieron emitir los cinco horizontes; revisar fuentes");assert.equal(s.evaluados,0,"No puede haber resultados futuros");console.log(JSON.stringify({pronosticos:s.pronosticos,evaluados:s.evaluados,huella:s.huella_diario}));'
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name == 'pull_request'
+        with:
+          name: laplace-seguimiento-prueba
+          path: ci-seguimiento/**
+          retention-days: 14
+          if-no-files-found: warn
+  registrar:
+    if: github.event_name != 'pull_request'
+    needs: pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    concurrency:
+      group: laplace-registro-prospectivo
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Abrir exclusivamente la rama de datos, sin alterar main
+        uses: actions/checkout@v4
+        with:
+          ref: laplace-registro
+          path: _registro
+          persist-credentials: true
+      - name: Registrar primero los pronósticos y contrastar objetivos vencidos
+        run: |
+          node seguimiento/ciclo.mjs --directorio _registro/seguimiento > "$RUNNER_TEMP/laplace-ciclo.json"
+      - name: Conservar incluso los fallos de fuentes; nunca forzar el historial Git
+        if: always()
+        run: |
+          set -euo pipefail
+          test -d _registro/.git || test -f _registro/.git
+          test -f _registro/seguimiento/diario.jsonl
+          git -C _registro config user.name 'LAPLACE registro'
+          git -C _registro config user.email 'laplace-registro@users.noreply.github.com'
+          git -C _registro add -- seguimiento/diario.jsonl seguimiento/resumen.json
+          if [ -d _registro/seguimiento/entradas ]; then git -C _registro add -- seguimiento/entradas; fi
+          if ! git -C _registro diff --cached --quiet; then
+            git -C _registro commit -m "Registro prospectivo LAPLACE $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git -C _registro push origin HEAD:laplace-registro
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-registro-ultima-ejecucion
+          path: _registro/seguimiento/resumen.json
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Hacer visibles los fallos de emisión sin borrar la evidencia
+        run: |
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const es=readFileSync("_registro/seguimiento/diario.jsonl","utf8").trim().split("\n").map(JSON.parse);const ultimo=es.at(-1);const ahora=Date.parse(ultimo.registrado_en),ps=es.filter(e=>e.tipo==="pronostico"&&ahora-Date.parse(e.registrado_en)<3600000);assert.ok(ps.length>=5,"Sin nuevas predicciones en esta hora; los errores quedaron registrados");'

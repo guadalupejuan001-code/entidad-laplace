@@ -1,0 +1,12 @@
+{
+  "actual_http_sources_reproduced": 6,
+  "states_reproduced": 121,
+  "cot_markets_reproduced": 7,
+  "source_hashes_verified": true,
+  "identical_snapshot": true,
+  "source_snapshot_sha256": "4126918e93be77c8ff3bc7467347248294629de2c895fbaa1725adab48401918",
+  "before_first_capture_states": 0,
+  "after_partial_capture_states": 73,
+  "after_complete_capture_states": 121,
+  "predictor_activated": false
+}

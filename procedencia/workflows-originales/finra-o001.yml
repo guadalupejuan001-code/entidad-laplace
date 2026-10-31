@@ -1,0 +1,45 @@
+name: LAPLACE O001 - FINRA off-exchange contract
+on:
+  push:
+    branches:
+      - feature/o001-finra-offexchange-20261031
+  pull_request:
+    paths:
+      - 'universo/otc/**'
+      - 'universo/global-u003.mjs'
+      - 'tests/finra-o001.test.mjs'
+      - 'tools/finra-o001.mjs'
+      - '.github/workflows/finra-o001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  finra-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse / adapter / CLI syntax checks
+        run: |
+          set -euo pipefail
+          node --check universo/otc/finra-regsho.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/finra-o001.mjs
+          node --check tests/finra-o001.test.mjs
+      - name: Unit tests with deterministic FINRA fixtures
+        run: |
+          set -euo pipefail
+          npm run test:finra
+          npm run test:fusion
+          node --test tests/global-u003.test.mjs
+      - name: Connectivity smoke to FINRA public data (non-blocking)
+        continue-on-error: true
+        run: |
+          node tools/finra-o001.mjs 20261030 /tmp/laplace-o001-live.json --symbols=AAPL,SPY
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const x=JSON.parse(readFileSync("/tmp/laplace-o001-live.json"));for(const s of x.source_status)console.log(s.name,s.status,s.reason??"ok");if(!x.coverage.observed_sources)process.exitCode=1;'
+      - name: No silent live feed or auto-trading
+        run: |
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const src=readFileSync("universo/global-u003.mjs","utf8");assert.match(src,/if\(finraTradeDate\)/);const x=JSON.parse(readFileSync("package.json"));assert.ok(x.scripts["test:finra"]);'

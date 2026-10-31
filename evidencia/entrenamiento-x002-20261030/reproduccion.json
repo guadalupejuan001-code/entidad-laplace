@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-10-30T18:20:31.581Z",
+  "raw_responses": 26,
+  "bars_replayed": 7488,
+  "rows_sha256": "fb47f9a77a4d719efd9b5fdf922e8c1eb2b95aad16f54d293bed0eec3914199d",
+  "source_sha256": "20f0c4b4921fa2691877fae4388eb066d90bf4b81b04a1ee43e8e5eb52047f15",
+  "report_sha256": "f10b83356e96bb45d0bc18448cfd8b1108cd676e1a7b182b33d2e6055ec8b28b",
+  "horizons": [
+    {
+      "horizon_minutes": 15,
+      "forecasts_replayed": 480,
+      "exact": true,
+      "xi_sha256": "d8679f666202afa0465b798407a6960c4abfedc1c6440fbe61d1b8fd4053a171"
+    },
+    {
+      "horizon_minutes": 30,
+      "forecasts_replayed": 240,
+      "exact": true,
+      "xi_sha256": "864cceca20d68f5fb490c39d297c770c3f731ab0e2045d147f6b6338efe7f630"
+    },
+    {
+      "horizon_minutes": 60,
+      "forecasts_replayed": 120,
+      "exact": true,
+      "xi_sha256": "3c051a217557713c7dd471699a1afc05506ba5d1d597289eb9bc601a0149b32c"
+    },
+    {
+      "horizon_minutes": 240,
+      "forecasts_replayed": 30,
+      "exact": true,
+      "xi_sha256": "e0ebedf3810e44ab87fe07814df386aa2db73d4417f1221ddefa029b2470640d"
+    },
+    {
+      "horizon_minutes": 1440,
+      "forecasts_replayed": 5,
+      "exact": true,
+      "xi_sha256": "a131dd24e4965cd7ce5a63007992f62fe1cfb4efda09d5c1257820f39d90ece2"
+    }
+  ]
+}

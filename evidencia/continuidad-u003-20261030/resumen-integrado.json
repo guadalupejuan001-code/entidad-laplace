@@ -1,0 +1,36 @@
+{
+  "schema": "laplace-u003-world-summary-v1",
+  "at": "2026-10-30T17:03:17.171Z",
+  "base_signals": 368,
+  "known_signals": 563,
+  "added_signals": 195,
+  "domains": 18,
+  "observed_sources": 93,
+  "failed_sources": 7,
+  "optional_sources": 5,
+  "missing_critical_groups": [],
+  "coverage_status": "partial_sources",
+  "geo_news_topics_complete": false,
+  "macro_journal": {
+    "capture_at": "2026-10-30T17:03:17.171Z",
+    "total_entries": 58,
+    "new_references": 0,
+    "revisions": 0,
+    "unchanged": 58,
+    "last_entry_sha256": "32f45956cb704e5695bc466d6c5720814794e7acd73913d4bc978401f8579acf",
+    "exact_historical_release_time_available": false,
+    "availability_basis": "captura_conservada_por_laplace"
+  },
+  "exact_vintage_group": {
+    "group": "macro_exact_vintages",
+    "status": "requires_access",
+    "signals": 0,
+    "sources_ok": 0,
+    "sources_optional": 1,
+    "sources_failed": 0
+  },
+  "snapshot_sha256": "9cb1c1a6941c7408ea7c32e524fb23eedc3bb6e517aa81ecbd8e3a70656b6280",
+  "capture_sha256": "e2e7d8c70f9e0518858791ac57350fcea35612aac5d335e09b05d3d5130ba879",
+  "prediction_inputs_enabled": false,
+  "automatic_trading": false
+}

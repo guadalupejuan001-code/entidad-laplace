@@ -1,0 +1,2 @@
+# Respuestas HTTP originales: conservar sus bytes y hashes, incluidos CRLF.
+evidencia/fuentes-primarias-20261030/entradas/*.txt -text -diff

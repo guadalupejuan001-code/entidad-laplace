@@ -1,0 +1,63 @@
+name: LAPLACE U003 - mundo económico y logístico
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'universo/**'
+      - 'tests/global-u003.test.mjs'
+      - 'tests/fuentes-oficiales.test.mjs'
+      - 'tests/noticias-vintages.test.mjs'
+      - 'tools/laplace.mjs'
+      - 'docs/UNIVERSO_U003_REAL_WORLD.md'
+      - '.github/workflows/universo-u003.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  u003:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Validar U003
+        run: |
+          node --check universo/catalogo-u003.mjs
+          node --check universo/fuentes-u003.mjs
+          node --check universo/fuentes-oficiales.mjs
+          node --check tools/fuentes-oficiales.mjs
+          node --check universo/noticias-oficiales.mjs
+          node --check universo/vintages-macro.mjs
+          node --check universo/global-u003.mjs
+          node --check tools/laplace.mjs
+          node --test tests/noticias-vintages.test.mjs tests/fuentes-oficiales.test.mjs tests/global-u003.test.mjs tests/global.test.mjs tests/universo.test.mjs
+      - name: Compilar XI Ether original
+        run: |
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Capturar U003 real
+        run: |
+          mkdir -p ci-u003
+          node tools/laplace.mjs universo-global-u003 ci-u003/captura.json | tee ci-u003/salida.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-u003/captura.json"));assert.ok(r.coverage.base_signals>0);assert.ok(r.coverage.known_signals>=430,"U003 real quedó por debajo de cobertura mínima");assert.ok(r.coverage.added_signals>=61);assert.ok(r.coverage.domains>=9);assert.equal(r.prediction_inputs_enabled,false);assert.equal(r.automatic_trading,false);console.log(JSON.stringify(r.coverage));'
+      - name: Verificar captura U003 dentro de XI Ether
+        run: |
+          node tools/laplace.mjs verificar-universo-global ci-u003/captura.json ./build-ether/mundo_x_quantum | tee ci-u003/ether.json
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-u003/ether.json"));assert.equal(r.exact_roundtrip,true);assert.equal(r.active_qubits,0);assert.ok(r.records>=430);'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-u003-real-world
+          path: ci-u003/**
+          retention-days: 14
+          if-no-files-found: warn

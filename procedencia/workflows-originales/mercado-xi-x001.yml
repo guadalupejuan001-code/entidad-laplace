@@ -1,0 +1,70 @@
+name: LAPLACE X001 - XI Ether contra M001
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  x001:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Compilar ejecutor temporal sobre el QuantumRuntime original
+        run: |
+          cmake -S native -B build-laplace -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-laplace --target laplace_temporal --parallel 2
+      - name: Pruebas sintéticas sin fuga de futuro
+        env:
+          LAPLACE_TEMPORAL: ./build-laplace/laplace_temporal
+        run: node --test tests/mercado-xi-x001.test.mjs
+      - name: Descargar una ventana fija de BTC y ejecutar comparación sellada
+        env:
+          LAPLACE_TEMPORAL: ./build-laplace/laplace_temporal
+        run: |
+          mkdir -p ci-x001
+          node --input-type=module <<'JS'
+          import {writeFileSync} from 'node:fs';
+          const end=Math.floor(Date.now()/300000)*300000,start=end-14*86400000,all=[];
+          for(let t=start;t<end;t+=86400000){
+            const url=new URL('https://api.exchange.coinbase.com/products/BTC-USD/candles');
+            url.searchParams.set('start',new Date(t).toISOString());
+            url.searchParams.set('end',new Date(Math.min(t+86400000,end)).toISOString());
+            url.searchParams.set('granularity','300');
+            const r=await fetch(url,{headers:{'User-Agent':'LaPlaceDIG-X001/1.0'},cache:'no-store'});
+            if(!r.ok)throw Error('Coinbase HTTP '+r.status);
+            const rows=await r.json();all.push(...rows);
+            await new Promise(ok=>setTimeout(ok,150));
+          }
+          writeFileSync('ci-x001/velas.json',JSON.stringify({start:new Date(start).toISOString(),end:new Date(end).toISOString(),captured_at:new Date().toISOString(),rows:all}));
+          JS
+          node --input-type=module <<'JS' | tee ci-x001/resultado.json
+          import {readFileSync} from 'node:fs';
+          import {experiment} from './experimentos/mercado-xi-x001.mjs';
+          const d=JSON.parse(readFileSync('ci-x001/velas.json'));
+          const r=experiment(process.env.LAPLACE_TEMPORAL,d.rows,{cutoff:d.end,folds:8});
+          console.log(JSON.stringify(r,null,2));
+          JS
+      - name: Verificar procedencia nativa y no promover automáticamente
+        run: |
+          node --input-type=module -e 'import{readFileSync}from"node:fs";import assert from"node:assert/strict";const r=JSON.parse(readFileSync("ci-x001/resultado.json"));assert.equal(r.production_changed,false);assert.equal(r.orders_executed,0);assert.ok(r.native.direction_count>0);console.log(JSON.stringify({native:r.native,baseline:r.baseline,m001:r.m001,skill:r.native_brier_skill,delta_m001:r.native_accuracy_minus_m001}));'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-x001-xi-vs-m001
+          path: ci-x001/**
+          retention-days: 14
+          if-no-files-found: error

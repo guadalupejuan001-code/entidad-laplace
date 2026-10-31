@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-30T16:32:59.476Z",
+  "known_signals": 40,
+  "domains": [
+    "bolsas_directas",
+    "futuros_con_vencimiento",
+    "tasas_oficiales_directas"
+  ],
+  "sources": [
+    {
+      "name": "Bank-of-Canada-V39079",
+      "status": "observed",
+      "signals": 1
+    },
+    {
+      "name": "BCB-SGS-432",
+      "status": "observed",
+      "signals": 1
+    },
+    {
+      "name": "ECB-deposit-facility",
+      "status": "observed",
+      "signals": 1
+    },
+    {
+      "name": "TWSE-public-daily",
+      "status": "observed",
+      "signals": 4
+    },
+    {
+      "name": "B3-public-movers",
+      "status": "observed",
+      "signals": 20
+    },
+    {
+      "name": "MOEX-public-index",
+      "status": "observed",
+      "signals": 1
+    },
+    {
+      "name": "MOEX-public-dated-commodities",
+      "status": "observed",
+      "signals": 12
+    }
+  ],
+  "dated_contracts": 12,
+  "capture_sha256": "a395c79c33a5e63130fb9bb684e28c8713978a130e298e2681c886d5a79be456",
+  "exact_publication_times": false,
+  "prediction_inputs_enabled": false
+}

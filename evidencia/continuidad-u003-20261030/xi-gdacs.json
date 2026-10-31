@@ -1,0 +1,13 @@
+{
+  "status": "U002_XI_ETHER_VERIFICADO",
+  "records": 12,
+  "materialized_bytes": 400,
+  "exact_roundtrip": true,
+  "snapshot_sha256": "1df58bb1182eab26d4c95238cdfdf4729e4241cf89e4dcb839ca6bf434807011",
+  "encoded_sha256": "2dad4395bc2cf09acf35d0028458af724a9020f34a6a768db7b01979c82d461f",
+  "xi_sha256": "3c15a8ce503bfd0056d82015611cf9f471b08fb89fa4d5895af4076281e97b7a",
+  "base_address": "970000000000000000000000000000",
+  "inverse_memory_overrides": 286,
+  "active_qubits": 0,
+  "prediction_generated": false
+}

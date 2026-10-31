@@ -1,0 +1,41 @@
+name: LAPLACE B001 - bolsa con XI Ether
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bolsa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Compilar ejecutor temporal nativo
+        run: |
+          cmake -S native -B build-laplace -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-laplace --target laplace_temporal --parallel 2
+      - name: Ejecutar Laplace en SPY AAPL y NVDA
+        run: |
+          mkdir -p ci-bolsa
+          node tools/bolsa-x001.mjs ./build-laplace/laplace_temporal SPY AAPL NVDA | tee ci-bolsa/resultado.json
+      - name: Verificar que no hubo órdenes ni activación automática
+        run: |
+          node --input-type=module -e 'import{readFileSync}from"node:fs";const r=JSON.parse(readFileSync("ci-bolsa/resultado.json"));if(r.symbols.length!==3)throw Error("faltan símbolos");for(const s of r.symbols){if(s.production_changed||s.orders_executed!==0)throw Error("producción alterada");console.log(s.symbol,s.native.accuracy,s.baseline.accuracy,s.native.brier,s.baseline.brier)}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-b001-bolsa
+          path: ci-bolsa/**
+          retention-days: 14

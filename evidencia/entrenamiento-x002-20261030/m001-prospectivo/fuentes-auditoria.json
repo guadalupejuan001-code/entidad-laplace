@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Coinbase M001 outcome",
+    "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?start=2026-10-30T16%3A56%3A00.000Z&end=2026-10-30T16%3A57%3A00.000Z&granularity=60",
+    "status": "received",
+    "received_at": "2026-10-30T18:17:20.732Z",
+    "body_sha256": "8cfa47ca42b4a5257441c85c0de4c3d87ffd295005a9383f2818f22484bae239",
+    "attempts": 1,
+    "raw_response_archived": true,
+    "archive_ref": "entradas/8cfa47ca42b4a5257441c85c0de4c3d87ffd295005a9383f2818f22484bae239.gz.b64"
+  },
+  {
+    "name": "Coinbase M001 outcome",
+    "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?start=2026-10-30T17%3A11%3A00.000Z&end=2026-10-30T17%3A12%3A00.000Z&granularity=60",
+    "status": "received",
+    "received_at": "2026-10-30T18:17:20.893Z",
+    "body_sha256": "4068b3b1474f7c71314dff182f4d2d51481b75d8a00a180980c44de6285a1e91",
+    "attempts": 1,
+    "raw_response_archived": true,
+    "archive_ref": "entradas/4068b3b1474f7c71314dff182f4d2d51481b75d8a00a180980c44de6285a1e91.gz.b64"
+  },
+  {
+    "name": "Coinbase M001 outcome",
+    "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?start=2026-10-30T17%3A41%3A00.000Z&end=2026-10-30T17%3A42%3A00.000Z&granularity=60",
+    "status": "received",
+    "received_at": "2026-10-30T18:17:21.045Z",
+    "body_sha256": "411c9d20d55104d983a351dc70defd94fc39562367def2ba0887eab9a74f5946",
+    "attempts": 1,
+    "raw_response_archived": true,
+    "archive_ref": "entradas/411c9d20d55104d983a351dc70defd94fc39562367def2ba0887eab9a74f5946.gz.b64"
+  }
+]

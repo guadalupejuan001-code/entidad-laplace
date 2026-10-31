@@ -1,0 +1,93 @@
+{
+  "checked_at": "2026-10-28T04:58:01.316Z",
+  "site": "https://laplace-bitcoin-observatorio.guadalupejuan001.chatgpt.site",
+  "profile_sha256": "701d020305156ab3dbec2784144cd1bc55c23ce1ed1e7989605576c984f9bec3",
+  "assets": [
+    {
+      "path": "/",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/time-profile.json",
+      "status": 200,
+      "contentType": "application/json"
+    },
+    {
+      "path": "/temporal-engine.mjs",
+      "status": 200,
+      "contentType": "text/javascript"
+    },
+    {
+      "path": "/temporal-worker.mjs",
+      "status": 200,
+      "contentType": "text/javascript"
+    }
+  ],
+  "engine_matches_canonical": true,
+  "historical": {
+    "mode": "historical",
+    "date": "2026-10-10",
+    "fold": 5,
+    "decision_at": "2026-10-10T00:00:00.000Z",
+    "due_at": "2026-10-11T00:00:00.000Z",
+    "probability": 0.43333333333333335,
+    "calibrated_probability": 0.4,
+    "pattern": {
+      "type": "pair",
+      "terms": [
+        "CONFLICT_ESCALATION",
+        "RELIEF_ACCESS"
+      ]
+    },
+    "actual": 1,
+    "start_price": "82544.71",
+    "end_price": "82910.8",
+    "net_return_bps": 34.35051016594522,
+    "raw_correct": false,
+    "calibrated_correct": false,
+    "model_state_sha256": "d355b41031069c908f2c9539c5eb60dc23c7e9ca9363bef8cbda865072f25fba",
+    "forecasts_sha256": "993fefe742664c81195dd20e53272149a6707d329b7bf76f277423e0151b7ac2",
+    "narrative_themes": [
+      "CONFLICT_ESCALATION",
+      "DIPLOMATIC_COOPERATION",
+      "RELIEF_ACCESS",
+      "SANCTIONS"
+    ]
+  },
+  "future": {
+    "mode": "scenario",
+    "date": "2030-12-31",
+    "horizon_days": 1525,
+    "probability": 0.77197265625,
+    "positives": 3162,
+    "negatives": 934,
+    "paths": 4096,
+    "seed": 271828,
+    "daily_narrative_probability": 0.396078431372549,
+    "condition": {
+      "probability": 0.396078431372549,
+      "reference_probability": 0.43333333333333335,
+      "alpha": 13.466666666666667,
+      "beta": 20.53333333333333,
+      "simulation_daily_mean": 0.396078431372549,
+      "pattern": {
+        "type": "pair",
+        "terms": [
+          "CONFLICT_ESCALATION",
+          "RELIEF_ACCESS"
+        ]
+      },
+      "source": "narrative_pattern",
+      "support": 26
+    },
+    "future_observations": 0,
+    "model_state_sha256": "0ca5518069aa0934b3d3ad35907feee06670a07dbe7b0a483d8f70abffb749cc"
+  },
+  "browser_export_verified": true,
+  "calendar_verified": true,
+  "slider_verified": true,
+  "narrative_control_verified": true,
+  "future_observations": 0,
+  "live_prediction_validated": false
+}

@@ -1,0 +1,12 @@
+{
+  "audited_at": "2026-10-30T18:16:27.940Z",
+  "repo_ref": "3704478ee2fc26c27773c96b07c73d763912c617",
+  "events": 26,
+  "forecasts": 15,
+  "evaluated": 8,
+  "direction_hits": 2,
+  "price_hits": 0,
+  "summary_replayed_exactly": true,
+  "journal_sha256": "f22e34289f6dc5d0e0c84dcc88b4ff41d759d1fbdcc489264c345c9cf302c010",
+  "used_for_parameter_selection": false
+}

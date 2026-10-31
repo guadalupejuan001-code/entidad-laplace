@@ -1,0 +1,63 @@
+name: LAPLACE - Revision 2 en navegador real
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cierre-auditoria:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Pruebas de regresion y codigo reproducible
+        run: |
+          mkdir -p ci-panel
+          git rev-parse HEAD > ci-panel/commit.txt
+          git archive --format=zip --output=ci-panel/codigo-probado.zip HEAD
+          node --version > ci-panel/entorno.txt
+          set -o pipefail
+          npm run test:panel | tee ci-panel/unitarias.txt
+      - name: Medir mediante el servidor de produccion y verificar el sello completo
+        run: |
+          set -euo pipefail
+          export LAPLACE_PANEL_ARCHIVO="$RUNNER_TEMP/panel-final.json"
+          node panel/servidor.mjs > ci-panel/servidor.txt 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          for intento in 1 2 3 4 5 6 7 8; do
+            if curl --fail --silent http://127.0.0.1:4179/api/estado > ci-panel/estado-inicial.json; then break; fi
+            sleep 1
+          done
+          curl --fail --silent --show-error --max-time 65 -X POST http://127.0.0.1:4179/api/actualizar > ci-panel/actualizacion.json
+          curl --fail --silent http://127.0.0.1:4179/api/exportar > ci-panel/captura-red.json
+          node --input-type=module -e 'import{readFileSync,writeFileSync}from"node:fs";import assert from"node:assert/strict";import{validarCaptura,normalizarRegistro}from"./panel/registro.mjs";const c=JSON.parse(readFileSync("ci-panel/captura-red.json"));validarCaptura(c);const r=JSON.parse(readFileSync(process.env.LAPLACE_PANEL_ARCHIVO));normalizarRegistro(r);assert.deepEqual(r.ultima,c);const q={captura_real:true,fecha:c.at,fuentes:c.source_count,sello:c.capture_sha256,registro:r.schema};writeFileSync("ci-panel/conexion-real.json",JSON.stringify(q,null,2));console.log(JSON.stringify(q));'
+      - name: Preparar navegador solo para pruebas
+        run: |
+          npm install --prefix "$RUNNER_TEMP/laplace-pw" --no-audit --no-fund playwright@1.55.0
+          google-chrome --version >> ci-panel/entorno.txt
+      - name: Probar las cuatro secciones y las seis regresiones
+        run: |
+          set -o pipefail
+          export LAPLACE_PLAYWRIGHT="$RUNNER_TEMP/laplace-pw/node_modules/playwright"
+          export LAPLACE_CHROME="$(command -v google-chrome)"
+          export LAPLACE_AUDITORIA_CAPTURA="$GITHUB_WORKSPACE/ci-panel/captura-red.json"
+          export LAPLACE_AUDITORIA_SALIDA="$GITHUB_WORKSPACE/ci-panel/navegador"
+          node auditoria/panel-final.mjs | tee ci-panel/navegador-salida.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-panel-revision2
+          path: ci-panel/**
+          retention-days: 14
+          if-no-files-found: error

@@ -1,0 +1,17 @@
+{
+  "schema": "laplace.input.config.i001",
+  "mode": "local",
+  "host": "127.0.0.1",
+  "port": 8787,
+  "timescale": false,
+  "institutional_registry": "evidencia/pulso-20261030/resultado/registry.json.gz",
+  "journal": {"maxBytes": 4294967296, "maxQueuedBytes": 33554432, "commitMs": 3},
+  "sources": [
+    {"id": "coinbase/btc-usd", "transport": "http", "adapter": "coinbase_ticker", "product": "BTC-USD", "url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker", "interval_ms": 10000, "max_staleness_ms": 60000},
+    {"id": "fed/releases", "transport": "http", "adapter": "rss", "url": "https://www.federalreserve.gov/feeds/press_all.xml", "interval_ms": 60000, "max_staleness_ms": 600000},
+    {"id": "coinbase/ws", "enabled": false, "transport": "websocket", "adapter": "coinbase_ticker", "url": "wss://ws-feed.exchange.coinbase.com", "evidence_url": "https://docs.cdp.coinbase.com/exchange/websocket-feed/channels", "products": ["BTC-USD"], "interval_ms": 1000},
+    {"id": "macro/webhook", "enabled": false, "transport": "webhook", "adapter": "macro_json", "url": "https://fred.stlouisfed.org", "secret_env": "LAPLACE_MACRO_WEBHOOK_SECRET"},
+    {"id": "bitcoin/node", "enabled": false, "transport": "chain", "adapter": "chain_block", "network": "bitcoin", "rpc_url": "http://127.0.0.1:8332", "evidence_url": "https://bitcoin.org", "from_height": 0, "headers_env": {"Authorization": "BITCOIN_RPC_AUTHORIZATION"}, "interval_ms": 5000, "confirmations": 6, "max_reorg": 32, "minimum_raw": {"BTC": "100000000000"}},
+    {"id": "ethereum/node", "enabled": false, "transport": "chain", "adapter": "chain_block", "network": "ethereum", "rpc_url": "http://127.0.0.1:8545", "ws_url": "ws://127.0.0.1:8546", "evidence_url": "https://ethereum.org", "from_height": 0, "interval_ms": 5000, "max_reorg": 32, "minimum_raw": {"ETH": "1000000000000000000000"}, "tokens": []}
+  ]
+}

@@ -1,0 +1,54 @@
+name: LAPLACE U004 - capital y liquidez
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'universo/capital/**'
+      - 'universo/vintages-macro.mjs'
+      - 'tests/capital.test.mjs'
+      - 'tools/capital.mjs'
+      - '.github/workflows/capital-u004.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capital:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: 3d29556eff4d1079c791abab38e203fc209f1722
+          path: deps/mundo-X
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Compilar el runtime XI Ether original
+        run: |
+          cmake -S deps/mundo-X/quantum-runtime -B build-ether -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ether --target mundo_x_quantum --parallel 2
+      - name: Validar fuentes, cortes temporales, unidades y transporte
+        env:
+          MUNDO_X_QUANTUM: ./build-ether/mundo_x_quantum
+        run: |
+          node --check universo/capital/catalogo.mjs
+          node --check universo/capital/fuentes.mjs
+          node --check universo/capital/global.mjs
+          node --check tools/capital.mjs
+          node --test tests/capital.test.mjs tests/global.test.mjs tests/noticias-vintages.test.mjs
+      - name: Captura manual de fuentes reales
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          node tools/capital.mjs ci-capital
+          node tools/laplace.mjs verificar-universo-global ci-capital/captura.json ./build-ether/mundo_x_quantum > ci-capital/xi-ether.json
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name == 'workflow_dispatch'
+        with:
+          name: laplace-capital-u004
+          path: ci-capital/**
+          retention-days: 14

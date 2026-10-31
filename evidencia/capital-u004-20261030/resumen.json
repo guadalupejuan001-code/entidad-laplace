@@ -1,0 +1,85 @@
+{
+  "schema": "laplace-capital-summary-u004-v1",
+  "at": "2026-10-30T17:41:42.766Z",
+  "coverage": {
+    "known_signals": 121,
+    "domains": 3,
+    "groups": [
+      {
+        "group": "cot",
+        "status": "observed",
+        "signals": 112,
+        "sources_observed": 2,
+        "sources_failed": 0
+      },
+      {
+        "group": "treasury_curve",
+        "status": "observed",
+        "signals": 5,
+        "sources_observed": 1,
+        "sources_failed": 0
+      },
+      {
+        "group": "us_liquidity",
+        "status": "observed",
+        "signals": 4,
+        "sources_observed": 3,
+        "sources_failed": 0
+      }
+    ],
+    "observed_sources": 6,
+    "failed_sources": 0
+  },
+  "cot_markets": [
+    {
+      "code": "088691",
+      "date": "2026-10-20",
+      "dataset": "disaggregated"
+    },
+    {
+      "code": "067651",
+      "date": "2026-10-20",
+      "dataset": "disaggregated"
+    },
+    {
+      "code": "085692",
+      "date": "2026-10-20",
+      "dataset": "disaggregated"
+    },
+    {
+      "code": "002602",
+      "date": "2026-10-20",
+      "dataset": "disaggregated"
+    },
+    {
+      "code": "133741",
+      "date": "2026-10-20",
+      "dataset": "financial"
+    },
+    {
+      "code": "099741",
+      "date": "2026-10-20",
+      "dataset": "financial"
+    },
+    {
+      "code": "043602",
+      "date": "2026-10-20",
+      "dataset": "financial"
+    }
+  ],
+  "yield_curve_date": "2026-10-28",
+  "us_liquidity_date": "2026-10-28",
+  "global_liquidity_index": false,
+  "macro_journal": {
+    "capture_at": "2026-10-30T17:41:42.766Z",
+    "total_entries": 121,
+    "new_references": 48,
+    "revisions": 0,
+    "unchanged": 73,
+    "last_entry_sha256": "05f93dd98a360c39e312014397b7fb712823ed072b4616b44fdd82de7d07c9d9",
+    "exact_historical_release_time_available": false,
+    "availability_basis": "captura_conservada_por_laplace"
+  },
+  "prediction_inputs_enabled": false,
+  "capture_sha256": "2067ec0e8bce7a0e50e434001e1ebb33d3da88cd6993442a1b8a007df3a4f20b"
+}

@@ -1,0 +1,169 @@
+{
+  "schema": "laplace-btc-intradia-i015-v1",
+  "asset": "BTC-USD",
+  "horizon_minutes": 15,
+  "observed_price_usd": 80741.69,
+  "observed_at": "2026-10-29T18:14:38.100Z",
+  "known_at": "2026-10-29T18:14:39.525Z",
+  "calculated_at": "2026-10-29T18:14:39.559Z",
+  "target_at": "2026-10-29T18:29:38.100Z",
+  "projected_price_usd": 80741.69,
+  "projected_change_pct": 0,
+  "scenario_interval_usd": [
+    80546.85,
+    81007.6
+  ],
+  "scenario_interval_meaning": "Percentiles empiricos 10-90 de analogos, NO intervalo de confianza validado.",
+  "status": "referencia_sin_ventaja_validada",
+  "model_selected": "persistencia",
+  "model_candidate_price_usd": 80794.66,
+  "feature_window_minutes": 30,
+  "price_candles": 300,
+  "missing_bars": 0,
+  "latest_completed_candle_at": "2026-10-29T18:10:00.000Z",
+  "analog_count": 18,
+  "causal_event_model": "C001 no se extrapola a 15 minutos sin noticias y ticks cronologicos",
+  "backtest": {
+    "attempted": 48,
+    "scored": 48,
+    "model_mae_return_pct": 0.243697,
+    "reference_mae_return_pct": 0.233998,
+    "beats_persistence": false,
+    "qualification": "sin_ventaja_demostrada",
+    "calibration_caution": "Una sola ventana de observacion y evaluacion; no es certificacion fuera de muestra."
+  },
+  "random_sampling": false,
+  "causality_proven": false,
+  "live_trading_enabled": false,
+  "orders_executed": 0,
+  "warning": "Estimacion mecanica, no observacion del futuro ni promesa de beneficio.",
+  "input_sha256": "4829cb2fabb1cb3f86f90eee0f20b5dba57eb20b4448b8c86c73b80bebfc56ca",
+  "source": {
+    "quote_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+    "candles_url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=300",
+    "candles_raw_sha256": "a31fc44ef805087d096fd0e224dfb8c925fb71e0b985c1e1265b20b9d5a1d6a9"
+  },
+  "calculations": {
+    "formula": "P(t+15m)=P(t)*exp(r_analogo); sin mejora verificada r=0",
+    "candidate_log_return": 0.000655877,
+    "similarity": "distancia normalizada en momentum15, momentum5, volatilidad30, rango15, volumen relativo",
+    "selected_analogues": [
+      {
+        "decision_at": "2026-10-28T19:30:00.000Z",
+        "outcome_at": "2026-10-28T19:45:00.000Z",
+        "distance": 0.043572,
+        "return15_pct": 0.163196
+      },
+      {
+        "decision_at": "2026-10-29T17:30:00.000Z",
+        "outcome_at": "2026-10-29T17:45:00.000Z",
+        "distance": 0.045212,
+        "return15_pct": -0.235028
+      },
+      {
+        "decision_at": "2026-10-28T21:25:00.000Z",
+        "outcome_at": "2026-10-28T21:40:00.000Z",
+        "distance": 0.049295,
+        "return15_pct": -0.255962
+      },
+      {
+        "decision_at": "2026-10-29T09:25:00.000Z",
+        "outcome_at": "2026-10-29T09:40:00.000Z",
+        "distance": 0.06022,
+        "return15_pct": -0.142281
+      },
+      {
+        "decision_at": "2026-10-28T18:25:00.000Z",
+        "outcome_at": "2026-10-28T18:40:00.000Z",
+        "distance": 0.063929,
+        "return15_pct": 0.336302
+      },
+      {
+        "decision_at": "2026-10-29T05:10:00.000Z",
+        "outcome_at": "2026-10-29T05:25:00.000Z",
+        "distance": 0.084259,
+        "return15_pct": 0.073442
+      },
+      {
+        "decision_at": "2026-10-28T19:15:00.000Z",
+        "outcome_at": "2026-10-28T19:30:00.000Z",
+        "distance": 0.088062,
+        "return15_pct": 0.101603
+      },
+      {
+        "decision_at": "2026-10-29T04:40:00.000Z",
+        "outcome_at": "2026-10-29T04:55:00.000Z",
+        "distance": 0.09468,
+        "return15_pct": 0.326356
+      },
+      {
+        "decision_at": "2026-10-29T09:50:00.000Z",
+        "outcome_at": "2026-10-29T10:05:00.000Z",
+        "distance": 0.096029,
+        "return15_pct": -0.026407
+      },
+      {
+        "decision_at": "2026-10-29T02:55:00.000Z",
+        "outcome_at": "2026-10-29T03:10:00.000Z",
+        "distance": 0.09848,
+        "return15_pct": -0.019746
+      },
+      {
+        "decision_at": "2026-10-29T08:30:00.000Z",
+        "outcome_at": "2026-10-29T08:45:00.000Z",
+        "distance": 0.102948,
+        "return15_pct": -0.066414
+      },
+      {
+        "decision_at": "2026-10-28T17:50:00.000Z",
+        "outcome_at": "2026-10-28T18:05:00.000Z",
+        "distance": 0.103441,
+        "return15_pct": 0.207089
+      },
+      {
+        "decision_at": "2026-10-29T07:40:00.000Z",
+        "outcome_at": "2026-10-29T07:55:00.000Z",
+        "distance": 0.109462,
+        "return15_pct": -0.065263
+      },
+      {
+        "decision_at": "2026-10-29T02:25:00.000Z",
+        "outcome_at": "2026-10-29T02:40:00.000Z",
+        "distance": 0.110928,
+        "return15_pct": -0.301997
+      },
+      {
+        "decision_at": "2026-10-29T04:10:00.000Z",
+        "outcome_at": "2026-10-29T04:25:00.000Z",
+        "distance": 0.112258,
+        "return15_pct": 0.181376
+      },
+      {
+        "decision_at": "2026-10-29T15:25:00.000Z",
+        "outcome_at": "2026-10-29T15:40:00.000Z",
+        "distance": 0.112506,
+        "return15_pct": 0.038412
+      },
+      {
+        "decision_at": "2026-10-29T14:30:00.000Z",
+        "outcome_at": "2026-10-29T14:45:00.000Z",
+        "distance": 0.113975,
+        "return15_pct": 1.009726
+      },
+      {
+        "decision_at": "2026-10-28T21:55:00.000Z",
+        "outcome_at": "2026-10-28T22:10:00.000Z",
+        "distance": 0.114197,
+        "return15_pct": -0.106515
+      }
+    ]
+  },
+  "provenance": {
+    "repository": "guadalupejuan001-code/LaPlaceDIG",
+    "workflow_run_id": 40928929560,
+    "github_url": "https://github.com/guadalupejuan001-code/LaPlaceDIG/actions/runs/40928929560",
+    "source": "Coinbase Exchange via GitHub Actions runner",
+    "code_head_sha": "97922cb9488d7b93cc26bdfa1026e40a7f4ecc27",
+    "type": "snapshot_not_refresh"
+  }
+}

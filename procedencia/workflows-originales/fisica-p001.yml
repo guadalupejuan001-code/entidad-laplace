@@ -1,0 +1,83 @@
+name: LaPlaceDIG P001 - laboratorio fisico XI/Ether
+on:
+  push:
+    branches:
+      - feature/laplace-fisica-p001-20261028
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probar-fisica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Obtener LaPlaceDIG
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fijar REVERSE-PC que ejecuta XI Machine
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/REVERSE-PC
+          ref: 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          path: deps/reverse-pc
+          persist-credentials: false
+      - name: Fijar propietario original de Ether
+        uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/reverse-pc/deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Instalar dependencias I001/P001 fijadas
+        run: npm ci --no-audit --no-fund
+      - name: Comprobar hashes, gramática y casos sin binario
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/reverse-pc rev-parse HEAD)" = 01829217cfb0a3a704d37f0c0f66527a23ec149d
+          test "$(git -C deps/reverse-pc/deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node --check fisica/compilar.mjs
+          node --check tools/fisica.mjs
+          node --check tools/laplace.mjs
+          node --check tests/fisica.test.mjs
+          node --check tests/fisica-experimento.mjs
+          node --test tests/fisica.test.mjs
+      - name: Compilar REVERSE-PC original con el nucleo Ether fijado
+        run: |
+          set -euo pipefail
+          cmake -S deps/reverse-pc -B build-reverse -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build-reverse --target reverse_pc --parallel 2
+      - name: Probar billar fisico, impulso y lectura persistente de InverseMemory
+        env:
+          REVERSE_PC_BIN: ./build-reverse/reverse_pc
+        run: |
+          set -euo pipefail
+          node --test tests/fisica.test.mjs
+      - name: Contrastar futuro sellado con evento oculto y causa conocida
+        run: |
+          set -euo pipefail
+          mkdir -p ci-fisica
+          node tests/fisica-experimento.mjs ./build-reverse/reverse_pc ci-fisica/resultado.json
+      - name: Generar y ejecutar un programa fisico propio RXE hasta 10^12 segundos
+        run: |
+          set -euo pipefail
+          node tools/laplace.mjs --help | grep -q 'crear-fisica'
+          node tools/fisica.mjs ejemplo 1000000000000 ci-fisica/escena.xi > ci-fisica/manifiesto.json
+          build-reverse/reverse_pc compile ci-fisica/escena.xi ci-fisica/Laplace-Fisica-P001.rxe "LAPLACE FISICA P001"
+          build-reverse/reverse_pc inspect-rxe ci-fisica/Laplace-Fisica-P001.rxe > ci-fisica/rxe.json
+          build-reverse/reverse_pc init ci-fisica/inicio.rvp
+          build-reverse/reverse_pc run ci-fisica/Laplace-Fisica-P001.rxe ci-fisica/inicio.rvp ci-fisica/estado-final.rvp > ci-fisica/observacion.jsonl
+      - name: Guardar evidencia completa, snapshot y ejecutable
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LaPlaceDIG-P001-Mundo-Fisico-XI-RXE
+          path: ci-fisica/
+          retention-days: 30
+          if-no-files-found: warn

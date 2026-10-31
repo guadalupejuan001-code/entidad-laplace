@@ -1,0 +1,50 @@
+{
+  "schema": "laplace-x002-run-plan-v1",
+  "declared_at": "2026-10-30T18:08:40.778Z",
+  "cutoff": "2026-10-30T18:05:00.000Z",
+  "plan": {
+    "training_days": 14,
+    "validation_days": 3,
+    "calibration_days": 3,
+    "test_days": 5,
+    "horizons_minutes": [
+      15,
+      30,
+      60,
+      240,
+      1440
+    ],
+    "prior_strengths": [
+      1,
+      4,
+      16,
+      64
+    ],
+    "max_native_rows": 256,
+    "minimum_calibration_rows": 8,
+    "evaluation_stride": "horizon_nonoverlapping",
+    "training_sampling": "uniform_from_nonoverlapping_eligible_labels",
+    "selection_metric": "brier_on_common_supported_states",
+    "historical_availability": "exploratory_close_assumption_not_authenticated_vintages"
+  },
+  "partitions": {
+    "training": [
+      "2026-10-05T18:05:00.000Z",
+      "2026-10-19T18:05:00.000Z"
+    ],
+    "validation": [
+      "2026-10-19T18:05:00.000Z",
+      "2026-10-22T18:05:00.000Z"
+    ],
+    "calibration": [
+      "2026-10-22T18:05:00.000Z",
+      "2026-10-25T18:05:00.000Z"
+    ],
+    "test": [
+      "2026-10-25T18:05:00.000Z",
+      "2026-10-30T18:05:00.000Z"
+    ]
+  },
+  "selection_before_download": true,
+  "sha256": "74476c57fe22526f2e0c8dea2d7b2632dd3a42b3f24921a89d0b6cdb02bd8e9b"
+}

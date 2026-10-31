@@ -1,0 +1,67 @@
+{
+  "captured_at": "2026-10-30T18:38:27.939Z",
+  "health": {
+    "schema": "laplace.input.health.i001",
+    "at": "2026-10-30T18:38:27.939Z",
+    "mode": "local",
+    "role": "all",
+    "ready": true,
+    "wal": {
+      "durable_sequence": 5,
+      "bytes": 42559,
+      "queued_bytes": 0,
+      "capacity_bytes": 4294967296
+    },
+    "accepted": 2,
+    "published": 0,
+    "processed": 2,
+    "quarantined": 0,
+    "last_error": null,
+    "started_at": "2026-10-30T18:38:19.302Z",
+    "sources": {
+      "coinbase/btc-usd": {
+        "state": "healthy",
+        "last_success_at": "2026-10-30T18:38:26.054Z",
+        "last_received_at": "2026-10-30T18:38:26.048Z",
+        "stale": false
+      },
+      "fed/releases": {
+        "state": "healthy",
+        "last_success_at": "2026-10-30T18:38:25.703Z",
+        "last_received_at": "2026-10-30T18:38:25.692Z",
+        "stale": false
+      }
+    },
+    "institutions": {
+      "entities": 15787,
+      "assertions": 27093,
+      "reports": 4,
+      "registry_sha256": "310a502927a05f8572f60cf6bfa41252722cd95cfadf8c44c4e06ff322c096e4",
+      "training_executed": false
+    },
+    "storage": {
+      "engine": "embedded_postgresql",
+      "events": "43",
+      "quarantined": "0",
+      "pending_outbox": "0"
+    },
+    "capture_scope": "configured_sources_only",
+    "throughput_benchmark_completed": false
+  },
+  "event_types": {
+    "document": 20,
+    "narrative": 20,
+    "quote": 3
+  },
+  "panel_input_status": "activa",
+  "training_facts_prepared": 23,
+  "training_executed": false,
+  "native": {
+    "records": 3,
+    "batches": 1,
+    "exact_roundtrip": true
+  },
+  "production_deployed": false,
+  "blockchain_live_connections_enabled": false,
+  "timescale_running": false
+}

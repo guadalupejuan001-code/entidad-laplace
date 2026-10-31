@@ -1,0 +1,38 @@
+✔ U002 catalog expands coverage without exceeding the 4096-state contract (0.941656ms)
+✔ World Bank parser records latest available annual values with capture-time knowledge (0.946428ms)
+✔ global weather grid produces four numerical states per cell and retains exact coordinates in variables (1.053725ms)
+✔ USGS feed is reduced to global and eight-sector physical states without inventing locations (0.746418ms)
+✔ U002 compact Ether encoding preserves hundreds of world states deterministically (45.167192ms)
+✔ U002 round-trips hundreds of signals through original XI / Inverse Ether Memory (50.078629ms)
+✔ canonical ledger is lossless, stable and rejects duplicate identifiers (7.048553ms)
+✔ a past event published later remains invisible until publication (0.609435ms)
+✔ economic revisions preserve historically available version (0.631623ms)
+✔ baseline is computed only from prices known by cutoff, or abstains (2.702267ms)
+✔ missing publication time or forged future access is rejected (0.570386ms)
+✔ XI projection excludes later publications before it creates a program (4.798102ms)
+✔ original native XI/Ether round-trip conserves every available record (10.410054ms)
+✔ refines an existing JPM market entity and rejects conflicting strong identifiers (9.48944ms)
+✔ EX-21 imports group subsidiaries without inventing direct parents or ownership percentages (8.426601ms)
+✔ 13F preserves namespace-qualified rows and reconciles cover counts and dollar totals (15.166569ms)
+✔ sources retain first real capture time and reject retrospective relabelling (6.792954ms)
+✔ future SEC filings cannot become the selected original report (1.380286ms)
+✔ source discovery accepts both real EX-21 filename styles and records failures (2.122974ms)
+✔ archived SEC extraction is reproducible, idempotent and dates every relation by actual availability (15638.917327ms)
+✔ U001 acepta cualquier dominio, preserva conteos, hipotesis y hash reproducible (21.642321ms)
+✔ U001 prohíbe ids repetidos, datos sin fuentes y afirmaciones causales sin pruebas (5.026468ms)
+✔ profundidad y spread reales son magnitudes, no promesas predictivas (3.002266ms)
+✔ L2 con mas de 20 mil niveles mantiene el prefijo sin copiar el libro entero (23.789882ms)
+✔ trade lado maker, ventana observada y cobertura parcial (0.816799ms)
+✔ ticker externo se rechaza si llega con retraso o futuro no disponible (0.307043ms)
+✔ instrumento universal conecta I015 + cuatro mediciones, sin alterar el precio proyectado (136.31229ms)
+✔ si falla una fuente secundaria no se inventan mediciones (102.981409ms)
+✔ estado externo futuro queda retenido por corte sin filtración (80.341063ms)
+✔ Kp NOAA permite un nuevo dominio fisico sin inventar conexion con BTC (94.167697ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16056.248544
