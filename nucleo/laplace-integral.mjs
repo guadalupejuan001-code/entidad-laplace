@@ -39,15 +39,30 @@ export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,capture
   else
     ef004={status:'abstained',reason:'independent_ef002_history_unavailable',
       model_ready:false,production_activation_allowed:false};
-  const availability=modules.map(m=>({
-    id:m.id,category:m.category,
-    status:m.engine==='F001'?'executed':
-      m.engine==='field'?field.status:
-      m.engine==='EF004'?ef004.status:
-      m.engine==='world_audit'?
-        coverage.valid_at_cut?'observed_not_all_predictive':'no_valid_capture':
-      'code_not_executed_in_this_entrypoint'
-  }));
+  const groups=world?.coverage?.groups??world?.groups??[];
+  const countGroup=id=>Number(groups.find(g=>g.group===id)?.signals??0);
+  const availability=modules.map(m=>{
+    let status;
+    if(m.engine==='F001')status='executed';
+    else if(m.engine==='field')status=field.status;
+    else if(m.engine==='EF004')status=ef004.status;
+    else if(m.id==='C001')
+      status=coverage.etf_fund_flow_signals>0?'observed':'not_observed';
+    else if(m.id==='D001/D002')
+      status=countGroup('derivatives_d001')>0&&countGroup('swaps_otc_d002')>0?
+        'observed_in_archive':'incomplete_or_missing';
+    else if(m.id==='B001')
+      status=countGroup('bis_banking_b001')>0?'observed_in_archive':'not_observed';
+    else if(m.id==='K001')
+      status=countGroup('blockchain_defi_k001')>0?'observed_in_archive':'not_observed';
+    else if(m.id==='O001')
+      status=coverage.domains.some(d=>/finra|off.exchange|otc/i.test(d.domain))?
+        'observed_in_archive':'not_observed';
+    else if(m.engine==='world_audit')
+      status=coverage.valid_at_cut?'observed_not_all_predictive':'no_valid_capture';
+    else status='code_not_executed_in_this_entrypoint';
+    return {id:m.id,category:m.category,status};
+  });
   return {schema:INTEGRAL_SCHEMA,as_of:asOf,quote:fusion.quote,
     F001:fusion,laplace_field:field,world:coverage,EF004:ef004,
     modules:availability,global_price_predictive_skill_proven:false,

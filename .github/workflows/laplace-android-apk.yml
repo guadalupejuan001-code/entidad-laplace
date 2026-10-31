@@ -50,7 +50,8 @@ jobs:
           set -euo pipefail
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
-          node --test tests/laplace-financiero.test.mjs tests/laplace-integral.test.mjs
+          node --test tests/laplace-financiero.test.mjs
+          # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: Incluir última captura financiera EF002 con verificación de hashes
         run: |
           set -euo pipefail

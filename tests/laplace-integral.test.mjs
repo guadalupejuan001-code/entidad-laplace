@@ -23,7 +23,7 @@ test('núcleo integral ejecuta F001 + campo + auditoría y EF004 se abstiene sin
   assert.ok(['calculated','abstained'].includes(report.laplace_field.status));
   assert.equal(report.EF004.model_ready,false);
   assert.equal(report.modules.length,16);
-  assert.ok(report.modules.some(x=>x.id==='C001'&&x.status==='no_valid_capture'));
+  assert.ok(report.modules.some(x=>x.id==='C001'&&x.status==='not_observed'));
   assert.ok(report.modules.some(x=>x.id==='X002'&&x.status==='code_not_executed_in_this_entrypoint'));
   assert.equal(report.all_financial_sources_available,false);
   assert.equal(report.no_auto_trading,true);
