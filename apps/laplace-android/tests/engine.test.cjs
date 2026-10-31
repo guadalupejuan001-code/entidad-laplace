@@ -138,7 +138,7 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   assert.match(code,/api\.exchange\.coinbase\.com\/products\//);
   assert.match(code,/ASSETS\.contains\(asset\)/);
   assert.match(code,/Coinbase HTTP 429/);
-  assert.equal((code.match(/@JavascriptInterface/g)||[]).length,4);
+  assert.equal((code.match(/@JavascriptInterface/g)||[]).length,5);
   assert.match(code,/setAllowUniversalAccessFromFileURLs\(false\)/);
   assert.match(code,/setMixedContentMode\(WebSettings\.MIXED_CONTENT_NEVER_ALLOW\)/);
   assert.match(manifest,/android\.permission\.INTERNET/);

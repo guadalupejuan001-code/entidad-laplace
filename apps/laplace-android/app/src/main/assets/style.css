@@ -369,3 +369,16 @@ main{padding-bottom:90px}
 .quote-tile[data-live="true"]{border-color:#5bdbbf}
 .quote-tile[data-live="true"] strong{color:#bdffed}
 @media(prefers-reduced-motion:reduce){.live-pulse[data-state="live"]{animation:none}}
+
+
+/* LAPLACE 3.3 — valores XI originales, probabilidades crudas y trazabilidad. */
+.xn01-card{border-color:#345473;}
+.xn01-card .pde-primary{width:100%;margin:9px 0;}
+.xn01-stats strong{font-variant-numeric:tabular-nums;font-size:clamp(12px,3.5vw,16px);}
+#xn01Confidence{color:#80ecda;}
+.raw-details{margin-top:12px;padding:12px;border-radius:10px;
+  border:1px solid #345372;background:#081c2c;}
+.raw-details summary{cursor:pointer;font-size:12px;color:#9fe1f4;font-weight:650;}
+.raw-details pre{margin-top:12px;max-width:100%;max-height:450px;overflow:auto;
+  white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.45 ui-monospace,monospace;
+  color:#d8e9f3;font-variant-numeric:tabular-nums;}

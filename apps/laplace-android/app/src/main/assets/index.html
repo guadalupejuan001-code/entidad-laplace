@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE 3.2 · En Vivo</title>
+<meta name="theme-color" content="#07111e"><title>LAPLACE 3.3 · XI Original</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -13,7 +13,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>M001 · F001 · MERCADO EN VIVO 3.2</small></div>
+    <div><h1>LAPLACE</h1><small>M001 · F001 · XI/ETHER 3.3</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -149,6 +149,36 @@
       </article>
     </div>
 
+    <article class="card xn01-card">
+      <div class="section-head">
+        <div><small class="eyebrow">XN01 · XI/ETHER ORIGINAL</small>
+          <h2>Dirección y confianza interna</h2></div>
+        <span class="outline-tag">5 MIN · BTC</span>
+      </div>
+      <p>Usa el programa XI original sobre las últimas 64–240 velas cerradas de
+      Bitcoin. La confianza es una probabilidad interna del estado aprendido,
+      no el porcentaje de aciertos ni una garantía sobre el precio.</p>
+      <button type="button" class="pde-primary" id="xn01Run">Calcular dirección nativa XI</button>
+      <p class="helper" role="status" aria-live="polite" id="xn01Status">
+        Sin ejecución. Se usarán velas cerradas y el ejecutor XI/Ether original.
+      </p>
+      <div class="stats xn01-stats">
+        <div><span>Dirección a 5 minutos</span><strong id="xn01Direction">—</strong></div>
+        <div><span>Confianza interna</span><strong id="xn01Confidence">—</strong></div>
+        <div><span>P(subida) sin redondear</span><strong id="xn01PUp">—</strong></div>
+        <div><span>Soporte del estado</span><strong id="xn01Support">—</strong></div>
+        <div><span>Prior nativo</span><strong id="xn01Prior">—</strong></div>
+        <div><span>Filas entrenadas</span><strong id="xn01Rows">—</strong></div>
+      </div>
+      <details class="raw-details">
+        <summary>Mostrar registros XI crudos, sin sustituir ni suavizar la salida</summary>
+        <pre id="xn01Raw">Sin salida nativa todavía.</pre>
+      </details>
+    </article>
+    <details class="raw-details card">
+      <summary>Ver predicción M001 cruda: retornos, análogos y errores</summary>
+      <pre id="rawM001">Calcula M001 para mostrar sus valores originales.</pre>
+    </details>
     <article class="card chart-card">
       <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
       <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
@@ -250,6 +280,10 @@
       <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. Esta sección calcula exclusivamente Bitcoin; los datos mundiales provienen del último archivo fechado.</p>
       <div id="integralMetrics" class="stats pde-stats"></div>
       <div id="integralTable" class="integral-results"></div>
+      <details class="raw-details">
+        <summary>Mostrar las 14 predicciones crudas de F001 (sin redondeo de pantalla)</summary>
+        <pre id="rawF001">Sin cálculo F001.</pre>
+      </details>
     </article>
     <article class="card">
       <h2>Observaciones y módulos sin simulación</h2>

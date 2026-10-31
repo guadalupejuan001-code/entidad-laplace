@@ -39,13 +39,28 @@ const mock=[
   "stop(){window.LaplaceMobile.live({type:'status',state:'off',message:'Detenido en test'});}",
   "};})();"
 ].join('\n');
+
+const mockXN01=String.raw`
+window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
+ const bars=JSON.parse(encoded);
+ const result={
+  schema:'laplace-xn01-native-xi-v1',asset:'BTC-USD',
+  backend:'XI/Ether · NativeRuntime',direction:'subida',
+  confidence:0.54,probability_up:0.54,prior:0.51,
+  mask:13,support:14,training_rows:220,
+  program_sha256:'a'.repeat(64),output_sha256:'b'.repeat(64),
+  raw_register_output:'SIMULATED XI ONLY IN BROWSER TEST'
+ };
+ setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,xn01:result}),10);
+};`;
+
 const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
   '<style>'+read('style.css')+'</style>')
   .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
 const sources=['world.js','engine.js','math-pde.js','fusion-integral.js',
   'pde-panel.js','live-feed.js','app.js'];
 const loaded=removeSources.replace('</body>',
-  '<script>'+mock+'</script>'+
+  '<script>'+mock+mockXN01+'</script>'+
   sources.map(name=>'<script>'+read(name).replace(/<\/script>/g,'<\\/script>')+'</script>').join('')+
   '</body>');
 const chromePaths=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/chromium',
@@ -90,9 +105,14 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('#liveToggle').getAttribute('aria-pressed'),'true');
     assert.equal(await page.locator('#forecast').isDisabled(),false);
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
+    await page.locator('#xn01Run').click();
+    await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
+    assert.equal(await page.locator('#xn01PUp').innerText(),'0.54');
+    assert.match(await page.locator('#xn01Raw').textContent(),/SIMULATED XI ONLY/);
     await page.locator('#forecast').click();
     await page.waitForFunction(()=>document.querySelector('#estimate').textContent!=='—',{timeout:20000});
     assert.match(await page.locator('#relativeChange').innerText(),/%/);
+    assert.match(await page.locator('#rawM001').textContent(),/returnLog/);
     await page.locator('#train').click();
     assert.match(await page.locator('#noticeText').innerText(),/M001|patrones/i);
     await page.locator('#test').click();
@@ -128,6 +148,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     },{timeout:90000});
     assert.match(await page.locator('#integralStatus').innerText(),/F001 completado/);
     assert.equal(await page.locator('.integral-item').count(),14);
+    assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
     await page.locator('[data-tab="tests"]').click();
     await page.locator('#clearHistory').click();
