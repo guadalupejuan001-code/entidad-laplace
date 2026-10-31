@@ -189,3 +189,7 @@ CREATE TABLE IF NOT EXISTS laplace_fin_domain_catalog (
   semantic text NOT NULL, modules jsonb NOT NULL, notes text NOT NULL,
   contract_version text NOT NULL
 );
+
+-- EF005: eliminar el límite heredado por captura de 4096 estados.
+-- El archivo EF002 y los lotes XI mantienen sus propias protecciones de recursos.
+ALTER TABLE laplace_fin_captures DROP CONSTRAINT IF EXISTS laplace_fin_captures_state_count_check;

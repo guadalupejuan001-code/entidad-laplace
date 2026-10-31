@@ -14,7 +14,15 @@ const [command,sourceDirectory,outputDirectory,journalDirectory,...extra]=proces
 const usage='Uso: node tools/nucleo-demonio.mjs ejecutar ARCHIVO_EF002 OUTPUT_DIR [HISTORIAL_EF004]\n'+
   'Lee capturas verificadas de laplace-archivo; registra modelo o abstención.\n'+
   'Si se proporciona HISTORIAL_EF004, evalúa pronósticos anteriores vencidos.\n'+
-  'Sin credenciales, sin trading, sin afirmar leyes causales no demostradas.';
+  'Sin credenciales, sin trading, sin afirmar leyes causales no demostradas.\n'+
+  'Configurable: LAPLACE_DEMON_HORIZON_HOURS, LAPLACE_DEMON_MAX_STEPS, MAX_SIGNALS, MAX_TARGETS, MAX_PEERS.';
+const optionalBudget=(name,{zero=false}={})=>{
+  const s=process.env['LAPLACE_DEMON_'+name];
+  if(s===undefined||s==='')return null;
+  const v=Number(s);
+  need(Number.isSafeInteger(v)&&v>=(zero?0:1),name+' presupuesto inválido');
+  return v;
+};
 if(command==='--help'||!command){console.log(usage);process.exit(0)}
 else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
   console.error(usage);process.exitCode=2;
@@ -23,7 +31,7 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
     const archive=resolve(sourceDirectory),output=resolve(outputDirectory);
     need(output!==archive&&!output.startsWith(archive+'/'),
       'la salida debe estar fuera del archivo de capturas');
-    const paths=await descubrirManifiestosEF002(archive,{maxFiles:2500});
+    const paths=await descubrirManifiestosEF002(archive);
     const captures=[];
     for(const file of paths){
       const restored=await leerArchivoEF002(file);
@@ -32,7 +40,13 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
     captures.sort((a,b)=>a.at.localeCompare(b.at));
     need(new Set(captures.map(x=>x.capture_sha256)).size===captures.length,
       'capturas con hash repetido no se deben entrenar dos veces');
-    const model=aprenderNucleoEF004(captures);
+    const model=aprenderNucleoEF004(captures,{
+      horizonHours:Number(process.env.LAPLACE_DEMON_HORIZON_HOURS??24),
+      maxSteps:optionalBudget('MAX_STEPS'),
+      maxSignals:optionalBudget('MAX_SIGNALS'),
+      maxTargets:optionalBudget('MAX_TARGETS'),
+      maxPeers:optionalBudget('MAX_PEERS',{zero:true})
+    });
     await mkdir(join(output,'reportes'),{recursive:true});
     await mkdir(join(output,'pronosticos'),{recursive:true});
     await mkdir(join(output,'evaluaciones'),{recursive:true});
@@ -57,11 +71,9 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
         /^forecast-[a-f0-9]{64}\.json$/.test(x)).map(x=>join(location,x));}
       catch(error){if(error.code!=='ENOENT')throw error}
     }
-    need(previousFiles.length<=3000,'historia de pronosticos fuera de presupuesto');
     let evaluations=0,waiting=0,missing=0;
     for(const path of previousFiles.sort()){
       const raw=await readFile(path,'utf8');
-      need(raw.length<=8*1024*1024,'pronostico archivado excede presupuesto');
       const frozen=JSON.parse(raw);
       // Verificar sello incluso cuando la predicción aún no ha vencido.
       const outcome=evaluarPronosticoEF004(frozen,captures);
@@ -79,8 +91,12 @@ else if(command!=='ejecutar'||!sourceDirectory||!outputDirectory||extra.length){
       status:model.status,reason:model.reason??null,
       archive_count:captures.length,latest_capture_at:captures.at(-1)?.at??null,
       latest_capture_sha256:captures.at(-1)?.capture_sha256??null,
-      minimum_captures:48,contiguous_captures:model.consecutive_captures??
-        model.contiguous_captures??0,
+      minimum_captures:null,required_training_pairs:model.required_training_pairs??6,
+      required_validation_pairs:model.required_validation_pairs??2,
+      required_holdout_pairs:model.required_holdout_pairs??2,
+      fixed_capture_count_limit:false,
+      model_cadence_hours:model.cadence_hours??model.inferred_cadence_hours??null,
+      contiguous_captures:model.consecutive_captures??model.contiguous_captures??0,
       selected_targets:model.selected_targets??0,
       lagged_relationships:model.lagged_relationships??0,
       forecast_sha256:model.forecast_sha256??null,

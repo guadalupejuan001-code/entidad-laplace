@@ -14,7 +14,8 @@ Fecha: 31 de octubre de 2026. Conserva EF001, XI/Ether, I001 y V001.
 - Las fuentes faltantes, restringidas o con error no se convierten en
   cero. La clasificación B001/C001/D001/D002/K001 conserva su semántica.
 - Las consultas separan series por población BIS, moneda, unidad,
-  instrumento, mercado y contraparte. Pagina hasta 1024 estados.
+  instrumento, mercado y contraparte. EF005 mantiene un tamaño de página
+  por defecto, sin un tope máximo fijo por consulta.
 - Puede restaurar todos los manifiestos en una base PostgreSQL/PGlite
   nueva de manera idempotente.
 

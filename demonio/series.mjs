@@ -37,44 +37,54 @@ export function estadoDeCaptura(capture){
     snapshot_sha256:certified.snapshot_sha,state,rejected};
 }
 export function prepararHistoria(captures,{
-  cadenceHours=6,toleranceHours=2.75,minDistinct=2,maxCaptures=2500
+  cadenceHours=null,toleranceHours=null,minDistinct=2
 }={}){
-  need(Array.isArray(captures)&&captures.length<=maxCaptures,
-    'límite de capturas EF004 excedido');
-  need(Number.isInteger(cadenceHours)&&cadenceHours>=1&&cadenceHours<=24,
-    'cadencia de captura inválida');
-  need(typeof toleranceHours==='number'&&toleranceHours>=0&&
-    toleranceHours<cadenceHours,'tolerancia de captura inválida');
-  need(Number.isInteger(minDistinct)&&minDistinct>=1,'mínimo de capturas inválido');
+  need(Array.isArray(captures),'se requiere historia de capturas');
+  need(cadenceHours===null||(typeof cadenceHours==='number'&&
+    Number.isFinite(cadenceHours)&&cadenceHours>0),
+    'cadencia positiva o automática requerida');
+  need(toleranceHours===null||(Number.isFinite(toleranceHours)&&toleranceHours>=0),
+    'tolerancia debe ser no negativa');
+  need(Number.isSafeInteger(minDistinct)&&minDistinct>=1,
+    'mínimo estadístico inválido');
   const rows=captures.map(estadoDeCaptura).sort((a,b)=>a.at.localeCompare(b.at));
   const seen=new Set();
   for(const x of rows){
     need(!seen.has(x.at),'dos capturas con la misma hora: desambiguar antes de entrenar');
     seen.add(x.at);
   }
+  const gaps=[];
+  for(let i=1;i<rows.length;i++)
+    gaps.push((Date.parse(rows[i].at)-Date.parse(rows[i-1].at))/3600000);
+  const sorted=[...gaps].sort((a,b)=>a-b);
+  const median=sorted.length?(sorted.length%2?sorted[(sorted.length-1)/2]:
+    (sorted[sorted.length/2-1]+sorted[sorted.length/2])/2):null;
+  const inferred=cadenceHours??median;
+  const tolerance=toleranceHours??(inferred===null?null:inferred*.48);
   let start=0,broken=0;
   for(let i=1;i<rows.length;i++){
-    const diff=(Date.parse(rows[i].at)-Date.parse(rows[i-1].at))/3600000;
-    if(Math.abs(diff-cadenceHours)>toleranceHours){start=i;broken++}
+    if(Math.abs(gaps[i-1]-inferred)>tolerance){start=i;broken++}
   }
   const tail=rows.slice(start);
   return {schema:EF004_SERIES_SCHEMA,
     snapshots:tail,all_captures:rows.length,
     contiguous_captures:tail.length,discarded_due_to_gap:start,
-    gaps_detected:broken,cadence_hours:cadenceHours,
-    cadence_tolerance_hours:toleranceHours,
+    gaps_detected:broken,cadence_hours:inferred,
+    cadence_tolerance_hours:tolerance,
+    inferred_cadence:cadenceHours===null,
     enough_observations:tail.length>=minDistinct,
     as_of:tail.at(-1)?.at??null,
     provenance:tail.map(x=>({captured_at:x.at,capture_sha256:x.capture_sha256,
       snapshot_sha256:x.snapshot_sha256})),
+    no_fixed_capture_limit:true,
     never_retrodated:true,scope:'public_capture_snapshots_not_complete_world'};
 }
 export function extraerSeries(panel,{
-  minChanges=2,maxSeries=48,selectionEnd=panel?.snapshots?.length
+  minChanges=2,maxSeries=null,selectionEnd=panel?.snapshots?.length
 }={}){
   need(panel?.schema===EF004_SERIES_SCHEMA,'panel temporal desconocido');
-  need(Number.isInteger(maxSeries)&&maxSeries>=1&&maxSeries<=128,
-    'presupuesto de series inválido');
+  need(maxSeries===null||(Number.isSafeInteger(maxSeries)&&maxSeries>=1),
+    'presupuesto opcional de series inválido');
   const snapshots=panel.snapshots;
   need(Number.isInteger(selectionEnd)&&selectionEnd>=2&&selectionEnd<=snapshots.length,
     'corte de selección de series inválido');
@@ -103,11 +113,12 @@ export function extraerSeries(panel,{
       observed_times:v.rows.map(x=>x?.observed_at??null)});
   }
   eligible.sort((a,b)=>b.changes-a.changes||a.key.localeCompare(b.key));
-  return {eligible:eligible.slice(0,maxSeries),
-    excluded:[...excluded,...eligible.slice(maxSeries).map(x=>({
-      key:x.key,reason:'analysis_series_budget'}))],
+  const selectedCount=maxSeries===null?eligible.length:Math.min(maxSeries,eligible.length);
+  return {eligible:eligible.slice(0,selectedCount),
+    excluded:[...excluded,...eligible.slice(selectedCount).map(x=>({
+      key:x.key,reason:'user_defined_resource_budget'}))],
     total_unique:found.size,total_eligible:eligible.length,
-    selected:Math.min(eligible.length,maxSeries),
+    selected:selectedCount,no_fixed_series_limit:true,
     selection_end_index:selectionEnd-1,
     heldout_not_used_for_selection:true,
     all_raw_observations_retained_in_archives:true,

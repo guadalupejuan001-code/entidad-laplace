@@ -16,24 +16,25 @@ export function verificarPronosticoEF004(f){
   return true;
 }
 export function evaluarPronosticoEF004(pronostico,capturas,{
-  toleranceHours=2.75
+  toleranceHours=null
 }={}){
   verificarPronosticoEF004(pronostico);
-  need(Array.isArray(capturas)&&capturas.length<=2500,'historico fuera de presupuesto');
-  need(Number.isFinite(toleranceHours)&&toleranceHours>=0&&toleranceHours<=4,
+  need(Array.isArray(capturas),'historial de capturas inválido');
+  need(toleranceHours===null||(Number.isFinite(toleranceHours)&&toleranceHours>=0),
     'tolerancia de evaluación inválida');
+  const tolerance=toleranceHours??pronostico.cadence_hours*.48;
+  need(Number.isFinite(tolerance)&&tolerance>=0,'cadencia de pronóstico inválida');
   const target=Date.parse(pronostico.first_target_at),
     decision=Date.parse(pronostico.decision_at);
   need(Number.isFinite(target)&&Number.isFinite(decision)&&target>decision,
     'objetivo no posterior a decisión');
-  const later=capturas.map(estadoDeCaptura)
-    .filter(c=>Date.parse(c.at)>decision)
+  const later=capturas.filter(c=>Date.parse(c.at)>decision).map(estadoDeCaptura)
     .sort((a,b)=>a.at.localeCompare(b.at));
   const outcome=later.find(c=>Date.parse(c.at)>=target);
   if(!outcome)return {schema:EF004_EVAL,status:'waiting_for_outcome',
     forecast_sha256:pronostico.forecast_sha256,required_target_at:pronostico.first_target_at,
     evaluated:0,automatic_trading:false};
-  if(Date.parse(outcome.at)-target>toleranceHours*3600000)
+  if(Date.parse(outcome.at)-target>tolerance*3600000)
     return {schema:EF004_EVAL,status:'unscorable_missed_capture_window',
       forecast_sha256:pronostico.forecast_sha256,
       first_later_capture_at:outcome.at,evaluated:0,

@@ -26,7 +26,8 @@ con retardo. No son relaciones causales demostradas.
 
 El modelo calcula primero todas las siguientes diferencias del vector y
 DESPUÉS aplica juntas las actualizaciones. Puede evolucionar de forma
-condicional hasta cuatro pasos de seis horas, con bandas exploratorias
+condicional durante un horizonte configurable y con cadencia inferida de
+las observaciones (EF005); las bandas exploratorias
 que no se presentan como probabilidades calibradas.
 
 El ajuste EF004 se realiza con aritmética clásica JavaScript. La
@@ -48,13 +49,14 @@ Las series incompletas durante entrenamiento se excluyen de ese
 entrenamiento. Una serie sin actualizaciones no se trata como miles
 de observaciones nuevas: por ejemplo, BIS trimestral repetido.
 
-El ciclo requiere por defecto 48 capturas sucesivas de seis horas
-(con tolerancia de 2,75 horas). Esto suele implicar alrededor de 12 días
-si se cumplen cuatro capturas diarias. Si falta un ciclo o se rompe
+EF005 elimina la exigencia fija de 48 capturas y la cadencia fija de seis horas.
+El algoritmo infiere los intervalos observados y exige suficientes pares
+de entrenamiento, validación y test para los parámetros que intenta ajustar. Si falta un ciclo o se rompe
 la cadencia, se toma el segmento consecutivo reciente; no se interpola.
 
 La base y el archivo contienen todos los estados; este primer núcleo
-modela hasta 16 series y seis objetivos a la vez. Los demás estados
+analiza todas las series elegibles por defecto y puede incluir más objetivos,
+con presupuestos opcionales definidos por el usuario. Los demás estados
 no se transforman en valores artificiales.
 
 ## 4. Aprendizaje — comprobación — corrección
@@ -112,7 +114,7 @@ pero NO se usan para el aprendizaje de mercado en producción.
 
 La primera captura de EF002 registró 1.051 estados simultáneos.
 No son 1.051 transiciones independientes por variable. Mientras no existan
-48 capturas consecutivas con suficientes observaciones comparables,
+muestras de entrenamiento, validación y test suficientes según EF005,
 el resultado esperado y correcto es ABSTAINED, no un modelo fingido.
 
 Incluso después de formar un modelo, la habilitación de trading sigue

@@ -13,7 +13,6 @@ const ident=(x)=>identifier(x,'identificador EF001',500);
 const time=x=>utcTime(x);
 const hash=x=>{need(typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),'hash SHA256 invalido');return x};
 const json=x=>JSON.stringify(x);
-const MAX_BUDGET=4096;
 const COLUMNS={
   laplace_fin_observations:['assertion_sha','family','domain','subject_id','variable',
     'instrument_id','market_id','counterparty_id','jurisdiction','currency',
@@ -171,14 +170,35 @@ export async function guardarEvaluacion(tx,raw){
     scores:raw.scores,evidence:raw.evidence,model_selected_using_evaluation:false};
   return insert(tx,'laplace_fin_evaluations',{...body,evaluation_sha:recordSha(body)});
 }
+/* Importación U003 por paquetes SQL sin límite de cardinalidad global.
+ * El tamaño de cada paquete es control de memoria, no máximo de estados.
+ * Solo se usa después de validar los sellos y cada registro individual.
+ */
+async function insertarObservacionesPorLotes(tx,observations,{batchSize=256}={}){
+  const columns=COLUMNS.laplace_fin_observations;
+  const timestamps=new Set(['observed_at','known_at','published_at','valid_from','valid_to']);
+  const sql='INSERT INTO laplace_fin_observations ('+columns.join(',')+') '+
+    'SELECT '+columns.map(k=>'r.'+k).join(',')+
+    ' FROM jsonb_to_recordset($1::jsonb) AS r ('+
+    columns.map(k=>k+' '+(timestamps.has(k)?'timestamptz':
+      JSON_COLUMNS.has(k)?'jsonb':'text')).join(',')+
+    ') ON CONFLICT DO NOTHING RETURNING assertion_sha';
+  let total=0;
+  for(let start=0;start<observations.length;start+=batchSize){
+    const chunk=observations.slice(start,start+batchSize);
+    const result=await tx.query(sql,[JSON.stringify(chunk)]);
+    total+=result.rows.length;
+  }
+  return total;
+}
 export async function importarU003(store,capture){
   const c=normalizarCapturaU003(capture);
   const observations=capture.universal_state.states.map(x=>observacionU003(x,c.capture_sha));
   const coverage=normalizarCoberturasU003(capture);
   return store.transaction(async tx=>{
     const created=await insert(tx,'laplace_fin_captures',c);
-    let n=0,missing=0;
-    for(const o of observations)n+=Number(await insert(tx,'laplace_fin_observations',o));
+    const n=await insertarObservacionesPorLotes(tx,observations);
+    let missing=0;
     for(const item of coverage)missing+=Number(await insert(tx,'laplace_fin_coverage',item));
     return {capture_sha:c.capture_sha,snapshot_sha:c.snapshot_sha,
       added_observations:n,covered_sources:missing,created_capture:created,
@@ -229,8 +249,9 @@ const SERIES_DIMENSIONS="family,domain,subject_id,variable,source_id,unit,"+
 export async function consultarPaginaCorte(store,{asOf,limit=1024,offset=0,
   domain=null,family=null}={}){
   const cut=time(asOf);
-  need(Number.isInteger(limit)&&limit>0&&limit<=1024,'pagina limite 1..1024');
-  need(Number.isInteger(offset)&&offset>=0&&offset<=1000000,'paginacion fuera de presupuesto');
+  need(Number.isSafeInteger(limit)&&limit>=1&&limit<Number.MAX_SAFE_INTEGER,
+    'tamaño de página inválido');
+  need(Number.isSafeInteger(offset)&&offset>=0,'offset de página inválido');
   let where='',params=[cut,limit+1,offset];
   if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
   if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
@@ -242,28 +263,32 @@ export async function consultarPaginaCorte(store,{asOf,limit=1024,offset=0,
   return {as_of:cut,offset,limit,states:rows.slice(0,limit),
     next_offset:rows.length>limit?offset+limit:null,
     complete:rows.length<=limit,world_complete:false,
-    persisted_data_not_world_omniscience:true};
+    no_fixed_page_size_cap:true,persisted_data_not_world_omniscience:true};
 }
-export async function consultarCorte(store,{asOf,limit=4096,domain=null,family=null}={}){
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite de consulta 1..4096');
-  const params=[cut,budget+1];let where='';
+export async function consultarCorte(store,{asOf,limit=null,domain=null,family=null}={}){
+  const cut=time(asOf);
+  need(limit===null||(Number.isSafeInteger(limit)&&limit>=1&&
+    limit<Number.MAX_SAFE_INTEGER),'presupuesto opcional de consulta inválido');
+  const params=[cut];let where='';
   if(domain){where+=' AND domain=$'+(params.length+1);params.push(ident(domain))}
   if(family){where+=' AND family=$'+(params.length+1);params.push(ident(family))}
   const query='SELECT DISTINCT ON ('+SERIES_DIMENSIONS+') * '+
     'FROM laplace_fin_observations WHERE known_at<=$1 AND observed_at<=$1 '+where+
-    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC LIMIT $2';
+    ' ORDER BY '+SERIES_DIMENSIONS+',observed_at DESC,known_at DESC,assertion_sha DESC'+
+    (limit===null?'':' LIMIT $'+(params.length+1));
+  if(limit!==null)params.push(limit+1);
   const rows=(await store.db.query(query,params)).rows;
-  need(rows.length<=budget,'corte excede presupuesto; dividir por familia/dominio');
+  need(limit===null||rows.length<=limit,'corte excede presupuesto configurado');
   return {as_of:cut,known_series:rows.length,states:rows,
     temporal_policy:'observed_at_and_known_at_at_or_before_cutoff',
     different_sources_not_summed:true,global_coverage_complete:false,
-    prediction_activated:false};
+    no_fixed_query_limit:true,prediction_activated:false};
 }
 export async function consultarEstadosDispersos(store,
-  {asOf,scenario_id=null,limit=4096}={}){
-  const cut=time(asOf),budget=Number(limit);
-  need(Number.isInteger(budget)&&budget>0&&budget<=MAX_BUDGET,'limite disperso invalido');
+  {asOf,scenario_id=null,limit=null}={}){
+  const cut=time(asOf);
+  need(limit===null||(Number.isSafeInteger(limit)&&limit>=1&&
+    limit<Number.MAX_SAFE_INTEGER),'presupuesto disperso opcional inválido');
   if(scenario_id){
     ident(scenario_id);
     const scenario=(await store.db.query('SELECT created_at FROM laplace_fin_scenarios WHERE scenario_id=$1',[scenario_id])).rows[0];
@@ -275,20 +300,27 @@ export async function consultarEstadosDispersos(store,
     'CASE WHEN d.scenario_id=$2 THEN 1 ELSE 0 END DESC,d.known_at DESC,d.delta_sha DESC) AS priority '+
     'FROM laplace_fin_sparse_deltas d WHERE d.known_at<=$1 AND d.observed_at<=$1 '+
     'AND (d.scenario_id IS NULL OR d.scenario_id=$2)) q '+
-    'WHERE priority=1 ORDER BY state_key,logical_address LIMIT $3';
-  const rows=(await store.db.query(query,[cut,scenario_id,budget+1])).rows;
-  need(rows.length<=budget,'estado disperso excede presupuesto de materializacion');
+    'WHERE priority=1 ORDER BY state_key,logical_address'+
+    (limit===null?'':' LIMIT $3');
+  const rows=(await store.db.query(query,limit===null?[cut,scenario_id]:
+    [cut,scenario_id,limit+1])).rows;
+  need(limit===null||rows.length<=limit,
+    'estado disperso excede presupuesto configurado');
   return {as_of:cut,scenario_id,materialized_entries:rows.length,
     states:rows.map(({priority,...r})=>r),
     representation:'sparse_overrides_no_dense_state',
+    no_fixed_sparse_materialization_cap:true,
     full_space_materialized:false,physical_qubits_allocated:0};
 }
-export async function coberturaCorte(store,{asOf,limit=4096}={}){
-  const cut=time(asOf);need(Number.isInteger(limit)&&limit>=1&&limit<=MAX_BUDGET,'limite invalido');
-  const rows=(await store.db.query('SELECT DISTINCT ON (family,source_id) * FROM laplace_fin_coverage '+
-    'WHERE known_at<=$1 ORDER BY family,source_id,known_at DESC,coverage_sha DESC LIMIT $2',
-    [cut,limit+1])).rows;
-  need(rows.length<=limit,'cobertura extensa; paginar');
+export async function coberturaCorte(store,{asOf,limit=null}={}){
+  const cut=time(asOf);
+  need(limit===null||(Number.isSafeInteger(limit)&&limit>=1&&
+    limit<Number.MAX_SAFE_INTEGER),'límite de cobertura opcional inválido');
+  const query='SELECT DISTINCT ON (family,source_id) * FROM laplace_fin_coverage '+
+    'WHERE known_at<=$1 ORDER BY family,source_id,known_at DESC,coverage_sha DESC'+
+    (limit===null?'':' LIMIT $2');
+  const rows=(await store.db.query(query,limit===null?[cut]:[cut,limit+1])).rows;
+  need(limit===null||rows.length<=limit,'cobertura excede presupuesto configurado');
   return {as_of:cut,sources:rows,complete_world:false,
     available:rows.filter(x=>x.availability==='observed').length,
     restricted_or_missing:rows.filter(x=>x.availability!=='observed').length};

@@ -126,7 +126,8 @@ La base no materializa 2^60 celdas de manera densa.
 Guarda coordenadas lógicas en texto decimal (hasta 300 dígitos),
 una ley identificada por hash y deltas que especifican set/unset/unknown,
 el tiempo y su procedencia. Una lectura devuelve sólo las excepciones
-necesarias según el corte y la rama; rechaza un presupuesto superior a 4096.
+necesarias según el corte y la rama. EF005 eliminó el techo global de 4.096,
+con lecturas completas o paginadas y lotes de materialización física segura.
 La complejidad de una consulta es proporcional a los deltas indexados
 seleccionados, no al tamaño de un espacio lógico imaginado.
 
@@ -147,7 +148,8 @@ compatibles con universo/ether-global.mjs:
 - Los números U003, que ya llegaron como float64, se marcan como
   aproximaciones, no se reinterpretan como precisión absoluta.
 - Se conservan en un diccionario el origen, instrumento, unidad y población.
-- Hasta 1024 registros por lote, 32.784 bytes de materialización máxima
+- Hasta 1024 registros por lote físico, sin máximo en número total de lotes;
+  32.784 bytes de materialización máxima por lote
   por lote usando el serializador XI original.
 - La prueba de round-trip usa el ejecutor mundo_x_quantum fijado por commit.
 

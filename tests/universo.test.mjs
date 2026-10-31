@@ -27,7 +27,9 @@ test('U001 prohíbe ids repetidos, datos sin fuentes y afirmaciones causales sin
   assert.throws(()=>observation({...rec('b'),source_url:'http://bad.example'}),/HTTPS/);
   assert.throws(()=>observation({...rec('b'),observed_at:'2026-10-29T18:10:00Z'}),/todavia/);
   assert.throws(()=>causalHypothesis({id:'h',from:'a',to:'b',label:'ley',type:'causa_probada'}),/hipotesis/);
-  assert.throws(()=>universeSnapshot(Array.from({length:4097},(_,i)=>rec('x'+i)),{cutoff:stamp}),/4096/);
+  const large=universeSnapshot(Array.from({length:4097},(_,i)=>rec('x'+i)),{cutoff:stamp});
+  assert.equal(large.known_states,4097);
+  assert.equal(verifyUniverseSnapshot(large),true);
 });
 const levels=()=>({
   sequence:456,bids:Array.from({length:15},(_,i)=>[(80700-i).toFixed(2),'0.1','1']),

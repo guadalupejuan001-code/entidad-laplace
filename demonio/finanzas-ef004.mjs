@@ -44,7 +44,7 @@ function solve(A,b){
 }
 function fitRidge(X,y,features,lambda){
   const N=X.length,n=features.length;
-  need(N===y.length&&N>=20,'aprendizaje insuficiente');
+  need(N===y.length&&N>=Math.max(6,3*n),'muestras insuficientes para variables del modelo');
   const means=Array.from({length:n},(_,j)=>mean(X.map(x=>x[j])));
   const devs=Array.from({length:n},(_,j)=>Math.max(1e-9,std(X.map(x=>x[j]))));
   const x=X.map(r=>r.map((v,j)=>(v-means[j])/devs[j]));
@@ -109,31 +109,40 @@ function abstain(reason,details={}){
     trajectory:[],...details};
 }
 export function aprenderNucleoEF004(captures,{
-  cadenceHours=6,toleranceHours=2.75,minCaptures=48,
-  maxSignals=16,maxTargets=6,maxPeers=3,maxSteps=4,
-  minimumValidation=8,minimumHoldout=8
+  cadenceHours=null,toleranceHours=null,
+  maxSignals=null,maxTargets=null,maxPeers=null,
+  maxSteps=null,horizonHours=24,
+  minimumTraining=6,minimumValidation=2,minimumHoldout=2
 }={}){
-  need(Number.isInteger(minCaptures)&&minCaptures>=30&&minCaptures<=2000,
-    'mínimo de capturas inválido');
-  need(Number.isInteger(maxSignals)&&maxSignals>=2&&maxSignals<=48,
-    'número de señales inválido');
-  need(Number.isInteger(maxTargets)&&maxTargets>=1&&maxTargets<=12,
-    'número de objetivos inválido');
-  need(Number.isInteger(maxPeers)&&maxPeers>=0&&maxPeers<=6,
-    'número de relaciones inválido');
-  need(Number.isInteger(maxSteps)&&maxSteps>=1&&maxSteps<=8,
-    'horizonte inválido');
+  // Ningún tope fijo de señales, objetivos, capturas, antigüedad u horizonte.
+  // Solo se admite un presupuesto de recursos opt-in y criterios de evidencia.
+  for(const [label,value] of [['maxSignals',maxSignals],['maxTargets',maxTargets],
+      ['maxPeers',maxPeers],['maxSteps',maxSteps]])
+    need(value===null||(Number.isSafeInteger(value)&&value>=
+      (label==='maxPeers'?0:1)),label+' presupuesto opcional inválido');
+  for(const [label,value] of [['minimumTraining',minimumTraining],
+      ['minimumValidation',minimumValidation],['minimumHoldout',minimumHoldout]])
+    need(Number.isSafeInteger(value)&&value>=1,label+' muestras requeridas inválidas');
+  need(Number.isFinite(horizonHours)&&horizonHours>0,'horizonte positivo requerido');
   const panel=prepararHistoria(captures,{cadenceHours,toleranceHours});
   const N=panel.contiguous_captures,P=N-2,trainEnd=Math.floor(P*.60),
     valEnd=trainEnd+Math.floor(P*.20);
-  if(N<minCaptures||trainEnd<20||valEnd-trainEnd<minimumValidation||
+  if(trainEnd<minimumTraining||valEnd-trainEnd<minimumValidation||
     P-valEnd<minimumHoldout)
     return abstain('insufficient_independent_capture_history',{
       captures_seen:panel.all_captures,contiguous_captures:N,
-      minimum_captures:minCaptures,discarded_due_to_gap:panel.discarded_due_to_gap,
-      as_of:panel.as_of,note:'Una captura no permite aprender transiciones'});
+      minimum_captures:null,required_training_pairs:minimumTraining,
+      required_validation_pairs:minimumValidation,
+      required_holdout_pairs:minimumHoldout,
+      observed_training_pairs:Math.max(0,trainEnd),
+      observed_validation_pairs:Math.max(0,valEnd-trainEnd),
+      observed_holdout_pairs:Math.max(0,P-valEnd),
+      discarded_due_to_gap:panel.discarded_due_to_gap,
+      inferred_cadence_hours:panel.cadence_hours,
+      as_of:panel.as_of,note:'El umbral proviene de datos mínimos para estimar y comprobar el modelo, no 48 capturas fijas'});
   const trainingSnapshots=trainEnd+2;
-  const select=extraerSeries(panel,{minChanges:4,maxSeries:maxSignals,
+  const neededChanges=Math.max(2,Math.ceil(trainEnd*.08));
+  const select=extraerSeries(panel,{minChanges:neededChanges,maxSeries:maxSignals,
     selectionEnd:trainingSnapshots});
   if(select.eligible.length<2)
     return abstain('insufficient_multivariate_observable_transitions',{
@@ -147,7 +156,15 @@ export function aprenderNucleoEF004(captures,{
     const deltas=z.slice(1).map((v,i)=>v===null||z[i]===null?null:v-z[i]);
     series.set(s.key,{...s,scale,z,deltas});
   }
-  const targets=targetOrder(series,Math.min(maxTargets,series.size));
+  const targets=targetOrder(series,maxTargets===null?series.size:
+    Math.min(maxTargets,series.size));
+  const peerBudget=Math.min(maxPeers??Math.max(1,Math.floor(Math.sqrt(trainEnd))),
+    Math.max(1,Math.floor(trainEnd/3)-1));
+  const cadence=panel.cadence_hours;
+  const steps=maxSteps??Math.max(1,Math.ceil(horizonHours/cadence));
+  need(Number.isSafeInteger(steps)&&steps>=1,'horizonte excede precisión de pasos');
+  need(Date.parse(panel.as_of)+steps*cadence*3600000<=8.64e15,
+    'horizonte fuera del calendario JS');
   const specs=[],edges=[];
   for(const target of targets){
     const y=Array.from({length:trainEnd},(_,i)=>target.deltas[i+1]);
@@ -155,7 +172,7 @@ export function aprenderNucleoEF004(captures,{
       .map(s=>({key:s.key,correlation:corr(s.deltas.slice(0,trainEnd),y)}))
       .filter(p=>Math.abs(p.correlation)>=.15)
       .sort((a,b)=>Math.abs(b.correlation)-Math.abs(a.correlation)||
-        a.key.localeCompare(b.key)).slice(0,maxPeers);
+        a.key.localeCompare(b.key)).slice(0,peerBudget);
     const variants=[{kind:'self',keys:[target.key]}];
     if(peers.length)variants.push({kind:'joint',keys:[target.key,...peers.map(p=>p.key)]});
     const candidates=[];
@@ -214,7 +231,7 @@ export function aprenderNucleoEF004(captures,{
   let z=new Map([...series].map(([k,s])=>[k,s.z.at(-1)])),
     changes=new Map([...series].map(([k,s])=>[k,s.deltas.at(-1)]));
   const path=[];
-  for(let step=1;step<=maxSteps;step++){
+  for(let step=1;step<=steps;step++){
     const nextZ=new Map(z),nextChanges=new Map([...z].map(([key])=>[key,0]));
     const states=[];
     for(const spec of specs){
@@ -243,7 +260,7 @@ export function aprenderNucleoEF004(captures,{
     // la predicción de otro durante el mismo paso.
     z=nextZ;changes=nextChanges;
     path.push({step,target_at:new Date(Date.parse(panel.as_of)+
-      step*cadenceHours*3600000).toISOString(),
+      step*cadence*3600000).toISOString(),
       states,simultaneous_update:true,unobserved_future:true});
   }
   const body={schema:EF004_VERSION,status:'experimental_model_frozen',
@@ -251,7 +268,10 @@ export function aprenderNucleoEF004(captures,{
     input_capture_sha256:panel.snapshots.at(-1).capture_sha256,
     input_snapshot_sha256:panel.snapshots.at(-1).snapshot_sha256,
     decision_at:panel.as_of,first_target_at:path[0].target_at,
-    cadence_hours:cadenceHours,consecutive_captures:N,
+    cadence_hours:cadence,consecutive_captures:N,
+    cadence_inferred:panel.inferred_cadence,
+    no_hard_capture_series_target_or_horizon_caps:true,
+    effective_peer_budget_from_sample_size:peerBudget,
     total_archived_captures:panel.all_captures,
     selected_targets:specs.length,lagged_relationships:edges.length,
     model:modelInfo,trajectory:path,
