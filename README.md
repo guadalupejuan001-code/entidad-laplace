@@ -6,6 +6,27 @@ Repositorio independiente del programa experimental Laplace: estados, señales, 
 
 ---
 
+## C001 — Flujos públicos de fondos (experimental)
+
+Nuevo módulo separado `universo/fondos/`: extracción de informes SEC
+NPORT-P/NPORT-P/A de SPY y SPYM, sumas exactas en centavos y
+`known_at` para capturas reproducibles. No confundir flujos N-PORT con
+creaciones diarias de ETF ni con variaciones de precio. IBIT utiliza
+10-Q/10-K y queda pendiente de un adaptador específico.
+
+```bash
+npm run test:fondos
+# Solo con un User-Agent SEC identificable y contacto real en el entorno:
+SEC_USER_AGENT="Organizacion contacto@dominio.org" npm run fondos:c001 -- --out=registros/etf/c001.json
+```
+
+C001 y D002 requieren validación de Node y fuentes reales en este nuevo
+repositorio: GitHub Actions permanece afectado por la incidencia #6.
+[Diseño y límites de C001](docs/ETF_FONDOS_C001.md).
+[Swaps públicos D002](docs/SWAPS_OTC_D002.md).
+
+---
+
 # LaPlaceDIG
 
 ## X002 — entrenamiento y recalibración verificables
