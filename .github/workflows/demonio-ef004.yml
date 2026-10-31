@@ -1,0 +1,100 @@
+name: Entidad Laplace EF004 - Aprendizaje continuo del Demonio
+on:
+  workflow_run:
+    workflows:
+      - Entidad Laplace EF002 - Captura financiera publica periodica
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'demonio/**'
+      - 'tools/nucleo-demonio.mjs'
+      - '.github/workflows/demonio-ef004.yml'
+  schedule:
+    - cron: '47 4,10,16,22 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: laplace-ef004-model-history
+  cancel-in-progress: false
+jobs:
+  learn-observe-and-verify:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/checkout@v4
+        with:
+          ref: laplace-archivo
+          path: deps/archivo
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Dependencias y pruebas del predictor temporal
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run test:ef004
+      - name: Obtener pronosticos ya congelados de la rama historica
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/ef004-diario"
+          if git ls-remote --exit-code --heads origin laplace-modelos >/dev/null; then
+            git fetch origin refs/heads/laplace-modelos:refs/remotes/origin/laplace-modelos
+            git worktree add --detach "$RUNNER_TEMP/ef004-diario" refs/remotes/origin/laplace-modelos
+          fi
+      - name: Validar archivo y ejecutar aprendizaje o abstencion
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/ef004-output"
+          node tools/nucleo-demonio.mjs ejecutar \
+            deps/archivo/capturas "$RUNNER_TEMP/ef004-output" "$RUNNER_TEMP/ef004-diario"
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const p=readFileSync(process.env.RUNNER_TEMP+"/ef004-output/resumen.json","utf8");
+            const x=JSON.parse(p);
+            assert.ok(x.archive_count>=1,"No se debe inventar una captura");
+            assert.equal(x.no_synthetic_data_used_for_live_cycle,true);
+            assert.equal(x.automatic_trading,false);
+            assert.equal(x.production_activation_allowed,false);
+            assert.ok(["abstained","experimental_model_frozen"].includes(x.status));
+            console.log(JSON.stringify(x));
+          '
+      - name: Conservar registro reproducible del ciclo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laplace-ef004-journal
+          path: ${{ runner.temp }}/ef004-output/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Guardar aprendizaje/abstencion sin sobreescribir ningun pronostico
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin laplace-modelos >/dev/null; then
+            git switch -c laplace-modelos --track origin/laplace-modelos
+          else
+            git switch --orphan laplace-modelos
+            git rm -rf --quiet . || true
+            printf '%s\n' '# Laplace - diario verificable EF004' \
+              'Pronosticos congelados y evaluaciones separadas.' \
+              'No prueba conocimiento perfecto ni ventaja financiera.' > README.md
+          fi
+          mkdir -p reportes pronosticos evaluaciones
+          cp -an "$RUNNER_TEMP/ef004-output/reportes/." reportes/
+          cp -an "$RUNNER_TEMP/ef004-output/pronosticos/." pronosticos/
+          cp -an "$RUNNER_TEMP/ef004-output/evaluaciones/." evaluaciones/
+          git add -- README.md reportes pronosticos evaluaciones
+          if ! git diff --cached --quiet; then
+            git commit -m "data(EF004): ciclo de aprendizaje, abstencion o validacion futura"
+            git push origin HEAD:refs/heads/laplace-modelos
+          else
+            echo "EF004: ciclo identico ya conservado"
+          fi
