@@ -201,6 +201,44 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('.integral-item').count(),14);
     assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
+    // Mercado bursátil: datos del mock exclusivamente para interacción.
+    // La API de Yahoo real se comprueba aparte en Android (sin inventar éxito).
+    await page.locator('[data-tab="panel"]').click();
+    await page.selectOption('#asset','AAPL');
+    assert.match(await page.locator('#selectedMarketTag').innerText(),/ACCIÓN/);
+    assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/stocks\/aapl\//);
+    await page.waitForFunction(()=>document.querySelector('#selectedQuote').textContent!=='—'&&
+      !document.querySelector('#refresh').disabled,null,{timeout:25000});
+    assert.match(await page.locator('#selectedProvider').innerText(),/YAHOO|SIMULACION/i);
+    await page.locator('#favoriteToggle').click();
+    assert.equal(await page.locator('#favoriteToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('#favoriteToggle').click();
+    assert.equal(await page.locator('#favoriteToggle').getAttribute('aria-pressed'),'true');
+    await page.locator('#refreshQuote').click();
+    await page.waitForFunction(()=>!document.querySelector('#refreshQuote').disabled,null,{timeout:10000});
+    await page.locator('#autoQuoteToggle').click();
+    assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'true');
+    await page.locator('#autoQuoteToggle').click();
+    assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('#smartRun').click();
+    await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',
+      null,{timeout:25000});
+    assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete');
+    assert.match(await page.locator('#smartExplain').innerText(),/bursátil|sesión/i);
+    await page.locator('[data-tab="integral"]').click();
+    assert.match(await page.locator('#integralMode').innerText(),/16 PLAZOS/);
+    await page.locator('#integralRun').click();
+    await page.waitForFunction(()=>!document.querySelector('#integralRun').disabled,
+      null,{timeout:90000});
+    assert.match(await page.locator('#integralStatus').innerText(),/M001 AAPL/);
+    assert.equal(await page.locator('#integralTable .integral-item').count(),16);
+    assert.match(await page.locator('#mareaIntro').innerText(),/Bitcoin|M003/);
+    assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
+    assert.equal(await page.locator('#xn01Run').isDisabled(),true);
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.7-ACCIONES-SIMULADO.png')});
+    await page.locator('[data-tab="panel"]').click();
+    await page.selectOption('#asset','BTC-USD');
+    await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
     await page.locator('[data-tab="tests"]').click();
     await page.locator('#validationRun').click();
     assert.match(await page.locator('#validationStatus').innerText(),/Evaluados|Validación/i);
@@ -229,7 +267,9 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
       capabilities:20,smartAnalysis:true,moduleFilters:true,validationNow:true,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
-      stream:true,livePauseResume:true,streamOutOfOrderIgnored:true,jsErrors:errors.length}));
+      stream:true,stockQuotes:true,assetCount:31,stockMultiHorizon:true,
+      robinhoodLink:true,localFavorites:true,livePauseResume:true,
+      streamOutOfOrderIgnored:true,jsErrors:errors.length}));
   }finally{
     await browser.close();
   }
