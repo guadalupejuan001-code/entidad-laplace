@@ -8,6 +8,8 @@ const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
 const Markets=window.LaplaceMarkets;
 const Marea=window.LAPLACE_MAREA??null;
+const Regime=window.LaplaceRegime;
+const RegimeArchive=window.LAPLACE_M004_EVIDENCE??null;
 const F=window.LaplaceIntegral;
 const Live=window.LaplaceLiveMath;
 const STORAGE='laplace-mobile-forecasts-v2';
@@ -52,6 +54,7 @@ let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let lastHistoryError=null;
 let xn01Busy=false,xn01Result=null;
 let integralResult=null,integralBusy=false;
+let regimeResult=null,regimeBusy=false,regimeCacheKey=null;
 let smartBusy=false,validationBusy=false;
 let loading=false,sequence=0,latestTest=null;
 const tickerStream=Live.createTracker();
@@ -92,6 +95,9 @@ function setActionAvailability(){
   $('refresh').disabled=loading;
   $('refresh').textContent=loading?'Consultando datos…':'Actualizar datos';
   $('integralRun').disabled=integralBusy;
+  if($('regimeStudy'))$('regimeStudy').disabled=loading||regimeBusy||!ready;
+  if($('regimeStudy'))$('regimeStudy').textContent=regimeBusy?
+    'Evaluando períodos históricos…':'Comprobar si el régimen ayuda a predecir la amplitud';
   $('xn01Run').disabled=xn01Busy||asset!=='BTC-USD';
   $('xn01Run').textContent=xn01Busy?'Ejecutando XI original…':'Calcular dirección nativa XI';
   const quick=$('smartRun');
@@ -358,6 +364,101 @@ function renderF002(){
     left.append(name,detail);row.append(left,state);$('f002Coverage').appendChild(row);
   }
   $('f002Raw').textContent=JSON.stringify(report,null,2);
+}
+/* M004 no sustituye M001. El estado describe solamente el último cierre
+ * de la fuente elegida, y el test posterior de amplitud es retrospectivo. */
+function renderRegime(){
+  const tag=$('regimeTag'),vol=$('regimeVol'),trend=$('regimeTrend'),
+    activity=$('regimeActivity'),info=$('regimeStatus'),score=$('regimeEvidence');
+  if(!tag||!Regime)return;
+  const validHistory=Boolean(history?.length&&historyGranularity===granularityNow());
+  const newKey=validHistory?asset+'|'+minutes+'|'+history.length+'|'+
+    history.at(-1).time:null;
+  if(newKey!==regimeCacheKey){regimeResult=null;regimeCacheKey=newKey}
+  let observed=null;
+  if(validHistory)observed=Regime.currentRegime(history,{
+    granularity:historyGranularity,equity:isEquity(),
+    cutoff:new Date().toISOString()});
+  const ready=observed?.status==='observed_regime';
+  tag.textContent=ready?'OBSERVADO · HISTÓRICO':'SIN ESTADO VÁLIDO';
+  vol.textContent=ready?observed.regime.volatility_label:'—';
+  trend.textContent=ready?observed.regime.trend_label:'—';
+  activity.textContent=ready?(observed.regime.activity==='high'?'Elevada':'Habitual'):'—';
+  tag.dataset.state=ready?'measured':'abstained';
+  if(ready){
+    const last=history.at(-1),fresh=marketTimeStatus(last.time+historyGranularity,
+      historyGranularity),t=observed.observed_last_close_at;
+    info.textContent='Estado calculado con velas de '+Markets.sourceLabel(asset)+
+      ' · último cierre '+new Date(t).toLocaleString('es-MX')+
+      ' · '+(fresh.valid?fresh.label:'datos antiguos')+
+      '. Las etiquetas no implican causalidad ni señalan un precio futuro.';
+  }else info.textContent='M004 no detectó un estado utilizable: '+
+    (observed?.reason??'actualiza velas cerradas del horizonte elegido')+
+    '. Las ausencias no se convierten en señales.';
+  if(regimeResult){
+    const x=regimeResult,a=x.aggregate;
+    const change=a.model_mae_bps!==null&&a.unconditional_mae_bps!==null?
+      'MAE amplitud: M004 '+a.model_mae_bps+' pb; referencia histórica '+
+      a.unconditional_mae_bps+' pb. ':'';
+    const why=x.status==='retrospective_candidate_only'?
+      'Posible ventaja solo retrospectiva, pendiente de pruebas prospectivas.':
+      x.status==='no_stable_incremental_edge'?
+      'No se confirmó mejora consistente contra la referencia.':
+      'Insuficientes resultados históricos separados para validar.';
+    score.textContent=asset+' · '+label(minutes)+' · '+
+      x.independent_test_cases+' resultados evaluados. '+change+why+
+      ' Nunca se altera la proyección de precio M001/F001.';
+  }else{
+    const btc=RegimeArchive?.source?.asset==='BTC-USD'?
+      RegimeArchive.horizons?.find(x=>x.minutes===5):null;
+    score.textContent=btc?
+      'Experimento histórico BTC 5 min: '+btc.test_cases+
+      ' casos, error M004 '+btc.oos_model_mae_bps+
+      ' pb frente a '+btc.oos_baseline_mae_bps+
+      ' pb de referencia. Es retrospectivo, no de '+asset+'.':
+      'Aún sin prueba para '+asset+' en '+label(minutes)+'.';
+  }
+  if(!regimeResult)
+    $('regimeRaw').textContent=JSON.stringify({
+      schema:'laplace-m004-ui-audit-v1',asset,minutes,
+      current:observed,archive_result:asset==='BTC-USD'?RegimeArchive:null,
+      experimental_only:true,production_activation_allowed:false
+    },null,2);
+}
+async function runRegimeStudy(){
+  if(regimeBusy||loading)return;
+  const selected=asset,period=minutes;
+  regimeBusy=true;setActionAvailability();
+  $('regimeEvidence').textContent='Separando pasado, validación y pruebas posteriores…';
+  try{
+    await ensureAnalysisHistory();
+    if(asset!==selected||minutes!==period)throw Error(
+      'Cambió el mercado o el plazo durante la consulta; vuelve a estudiar.');
+    // El cálculo utiliza el mismo historial ya aceptado por el puente HTTPS.
+    const result=Regime.evaluateRegimes(history,{
+      granularity:historyGranularity,equity:isEquity(),horizonMinutes:minutes,
+      cutoff:new Date().toISOString()});
+    regimeCacheKey=asset+'|'+minutes+'|'+history.length+'|'+history.at(-1).time;
+    regimeResult=result;
+    $('regimeRaw').textContent=JSON.stringify({
+      ...result,folds:result.folds.map(x=>({...x,
+        test_cases:x.test_cases?{
+          total:x.test_cases.length,first:x.test_cases.slice(0,3),
+          last:x.test_cases.slice(-3),
+          note:'Casos intermedios evaluados para las métricas, omitidos en pantalla móvil'
+        }:[]}))
+    },null,2);
+    renderRegime();
+  }catch(e){
+    regimeResult=null;renderRegime();
+    $('regimeEvidence').textContent='M004 se abstuvo: '+String(e.message??e)+
+      '. No se creó una predicción nueva ni una confianza ficticia.';
+    $('regimeRaw').textContent=JSON.stringify({
+      schema:'laplace-m004-ui-audit-v1',status:'abstained',
+      asset:selected,horizon:period,reason:String(e.message??e),
+      production_activation_allowed:false
+    },null,2);
+  }finally{regimeBusy=false;setActionAvailability()}
 }
 function renderMarea(){
   const root=$('mareaMetrics');if(!root)return;
@@ -752,6 +853,7 @@ function useHorizon(value){
   if(!E.HORIZONS.some(h=>h.minutes===m))return;
   const previous=historyGranularity;
   minutes=m;analysis=null;lastForecast=null;
+  regimeResult=null;regimeCacheKey=null;
   $('horizonSelect').value=String(m);
   for(const b of document.querySelectorAll('[data-minutes]')){
     const selected=Number(b.dataset.minutes)===m;
@@ -773,7 +875,7 @@ function useHorizon(value){
   smartMessage('idle','PLAZO SELECCIONADO',
     'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
     asset.replace('-','/'));
-  renderSignals();drawChart();setActionAvailability();
+  renderSignals();renderRegime();drawChart();setActionAvailability();
 }
 function remote(request){
   return new Promise((resolve,reject)=>{
@@ -898,7 +1000,7 @@ async function refresh(){
       connection(isEquity()?'REFERENCIA HISTÓRICA':'VELAS LISTAS',true);
       status('Historial público descargado y ordenado. Pulsa Analizar o Proyectar.','success');
     }
-    evaluateHistory();renderSignals();drawChart();
+    evaluateHistory();renderSignals();renderRegime();drawChart();
   }catch(error){
     if(epoch===refreshEpoch){
       connection('HISTORIAL NO DISPONIBLE');
@@ -908,7 +1010,7 @@ async function refresh(){
       history=null;historyGranularity=null;forgetEstimate();
       lastHistoryError=String(error.message);
       $('chartComment').textContent='No hay datos de mercado para graficar: '+error.message;
-      renderSignals();drawChart();
+      renderSignals();renderRegime();drawChart();
     }
   }finally{
     await Promise.allSettled(quotePromises);
@@ -1398,6 +1500,7 @@ function changeAsset(next){
   marketChoice();integralResult=null;renderIntegral();
   try{localStorage.setItem('laplace-last-asset',asset)}catch(error){}
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
+  regimeResult=null;regimeCacheKey=null;renderRegime();
   xn01Result=null;renderXN01();
   $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
     'XN01 XI/Ether original solo BTC; no se simula para otros activos.';
@@ -1454,6 +1557,7 @@ $('jumpSignals').addEventListener('click',()=>{show('signals');renderSignals()})
 $('jumpValidation').addEventListener('click',()=>show('tests'));
 $('smartRun').addEventListener('click',runSmart);
 $('validationRun').addEventListener('click',runValidation);
+$('regimeStudy').addEventListener('click',runRegimeStudy);
 $('clearHistory').addEventListener('click',()=>{
   log=[];persist();renderHistory();
   status('Registro local limpiado. No se alteraron datos del proveedor.','success');
@@ -1496,10 +1600,10 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.7',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'3.8',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
-    'worldShowMore','jumpSignals']};
+    'worldShowMore','jumpSignals','regimeStudy']};
 setTimeout(refresh,200);
 })();

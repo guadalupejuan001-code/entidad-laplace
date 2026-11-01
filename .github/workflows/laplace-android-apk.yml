@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.7 - Mercados, 16 horizontes y M003
+name: LAPLACE Android 3.8 - Regímenes M004 y validación retrospectiva
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -7,6 +7,7 @@ on:
       - 'prediccion/conjunta-f002.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
+      - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
       - '.github/workflows/laplace-android-apk.yml'
   pull_request:
     paths:
@@ -14,6 +15,7 @@ on:
       - 'prediccion/conjunta-f002.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
+      - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
       - '.github/workflows/laplace-android-apk.yml'
   workflow_dispatch:
 permissions:
@@ -77,6 +79,7 @@ jobs:
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
           node --test tests/marea-m003.test.mjs
+          node --test apps/laplace-android/tests/regime-m004.test.cjs
           node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
@@ -144,6 +147,24 @@ jobs:
             assert.equal(m.changes_f001_or_m001,false);
             assert.ok(m.study.every(x=>x.status==="no_reproducible_edge_detected"));
           '
+      - name: Incorporar estados M004 sobre archivo X002 auténtico
+        run: |
+          set -euo pipefail
+          node apps/laplace-android/prepare-regime.mjs
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const t=readFileSync("apps/laplace-android/app/src/main/assets/m004-evidence.js","utf8");
+            const m=JSON.parse(t.replace(/^window.LAPLACE_M004_EVIDENCE = /,"").trim().replace(/;$/,""));
+            assert.equal(m.schema,"laplace-m004-android-retrospective-v1");
+            assert.equal(m.source.bars,7488);
+            assert.equal(m.horizons.length,3);
+            assert.ok(m.horizons.every(x=>x.test_cases>0));
+            assert.equal(m.prospectively_validated,false);
+            assert.equal(m.can_generate_production_price,false);
+            assert.equal(m.automatic_trading,false);
+            console.log(JSON.stringify(m.horizons));
+          '
       - name: Prueba de interacción real de todos los controles en Chromium
         run: |
           set -euo pipefail
@@ -153,7 +174,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-3-7-PREVIEWS-SIMULADAS
+          name: LAPLACE-3-8-PREVIEWS-SIMULADAS
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -188,6 +209,8 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/world.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/fusion-integral.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/live-feed.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/regime-m004.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/m004-evidence.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/liblaplace_xi.so'
           unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
@@ -195,14 +218,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.multi37'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.regime38'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.7'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.8'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-7-MULTIMERCADO-31-ACTIVOS
+          name: LAPLACE-ANDROID-V3-8-M004-REGIMENES
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
