@@ -101,6 +101,22 @@ test('cinco capturas no prueban precisión, ni generan precios ficticios',()=>{
   assert.equal(result.automatic_trading,false);
   assert.equal(result.prospectively_validated,false);
 });
+test('capturas a cinco minutos no duplican un resultado del horizonte de seis horas',()=>{
+  const original=synthetic(20),one=structuredClone(original[5]);
+  const late=stamp(Date.parse(one.at)+5*60000);
+  const rows=one.universal_state.states.map(x=>({
+    ...x,id:x.id+'-nearby',observed_at:late,known_at:late,
+    value:x.value*(x.variable==='BTC_USD_spot'?1.00001:1)
+  }));
+  const nearby=sellarCaptura({...one,at:late,
+    universal_state:universeSnapshot(rows,{cutoff:late})});
+  const baseline=prepararPanelF002(original);
+  const combined=prepararPanelF002([...original,nearby]);
+  assert.ok(combined.skipped_correlated_decisions>=1);
+  assert.ok(combined.matched_outcomes<=baseline.matched_outcomes+1);
+  const keys=combined.historical_pairs.map(r=>r.outcome_capture_sha256);
+  assert.equal(new Set(keys).size,keys.length,'No duplicar capturas como labels');
+});
 test('etiquetas de precio estancadas nunca se cuentan como resultados futuros',()=>{
   const s=prepararPanelF002(synthetic(60,{stalePrice:true}));
   assert.equal(s.matched_outcomes,0);
