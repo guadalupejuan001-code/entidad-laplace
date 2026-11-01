@@ -365,7 +365,8 @@ function renderIntegral(){
   const result=integralResult;
   if(!result){
     const p=document.createElement('p');
-    p.textContent='Todavía no hay un cálculo. Pulsa el botón para consultar BTC y ejecutar F001.';
+    p.textContent='Elige un activo y ejecuta sus horizontes. '+ 
+      'F001 original corresponde solo a BTC; otros mercados usan M001.';
     table.appendChild(p);
     const row=document.createElement('div');row.className='signal-row';
     const text=document.createElement('small');
@@ -377,7 +378,8 @@ function renderIntegral(){
   }
   const {fusion,field,audit,errors}=result;
   const info=[
-    ['Horizontes F001',fusion.horizons.length],
+    [result.marketMode==='multiasset'?'Horizontes M001':'Horizontes F001',
+      fusion.horizons.length],
     ['Con candidatos',fusion.horizons.filter(h=>h.price_candidate!==null).length],
     ['Operador Lφ=0',field.status],
     ['Anclas del campo',field.available_candidate_anchors],
@@ -397,7 +399,8 @@ function renderIntegral(){
     label.textContent=E.HORIZONS.find(h=>h.minutes===row.minutes)?.label??row.minutes+' min';
     statusText.textContent=row.price_candidate===null?'Sin candidato':
       money(row.price_candidate);
-    detail.textContent='F001 · '+row.status+' · '+row.analogs+' análogos'+
+    detail.textContent=(result.marketMode==='multiasset'?'M001 · ':'F001 · ')+
+      row.status+' · '+row.analogs+' análogos'+
       (row.return_pct!==null?' · retorno '+number(row.return_pct)+' %':'');
     element.append(label,statusText,detail);table.appendChild(element);
   }
@@ -411,9 +414,10 @@ function renderIntegral(){
     executed:{f001:true,xn01:!!xn01Result,m001Diary:log.length},
     asOf:new Date().toISOString()});
   const groups=[
-    ['F001 · cálculo actual',fusion.horizons.length+' horizontes · '+
+    [result.marketMode==='multiasset'?'M001 · multimercado':'F001 · cálculo actual',
+      fusion.horizons.length+' horizontes · '+
       fusion.horizons.filter(x=>x.price_candidate!==null).length+' candidatos, sin validación prospectiva'],
-    ['Campo Laplace',domain],
+    [result.marketMode==='multiasset'?'Campo Laplace · no aplicado':'Campo Laplace',domain],
     ['Auditoría EF002',audit.valid_at_cut+' estados válidos al corte; '+errors.length+' problemas de descarga'],
     ...snapshot.items.map(x=>[x.id+' · '+x.title,x.state+' · '+x.reason])
   ];
@@ -425,36 +429,121 @@ function renderIntegral(){
     modules.appendChild(row);
   }
 }
+/* BTC conserva F001 sin modificar; todos los demás activos usan
+ * analogía M001 sobre 3 resoluciones. Ningún retorno genera trading.
+ */
+async function runGenericHorizons(chosen){
+  const resolutions=[300,3600,86400],request=await Promise.allSettled(
+    resolutions.map(g=>remote({kind:'history',asset:chosen,granularity:g,
+      days:E.historyConfig(chosen,g===300?5:g===3600?720:1440).days})));
+  if(asset!==chosen)throw Error('Cambiaste de activo mientras consultábamos las fuentes.');
+  const series={},errors=[];
+  for(let i=0;i<3;i++){
+    const entry=request[i],g=resolutions[i];
+    if(entry.status==='fulfilled')series[g]=entry.value;
+    else{
+      series[g]=[];
+      errors.push('Velas '+(g===300?'5m':g===3600?'1h':'diarias')+
+        ': '+String(entry.reason?.message??entry.reason));
+    }
+  }
+  const horizons=E.HORIZONS.map(h=>{
+    const g=E.selectResolution(h.minutes,chosen),bars=series[g];
+    if(bars.length<70)
+      return {minutes:h.minutes,granularity:g,status:'sin_fuente_suficiente',
+        price_candidate:null,return_pct:null,analogs:0,
+        reason:'Sin datos válidos para esta resolución'};
+    try{
+      const model=E.analyze(bars,{asset:chosen,granularity:g,
+        horizonMinutes:h.minutes});
+      if(!model.ready)return {minutes:h.minutes,granularity:g,
+        status:'soporte_insuficiente',reason:model.reason,
+        price_candidate:null,return_pct:null,analogs:model.patterns,
+        validation:model.validation};
+      const last=bars.at(-1),fresh=marketTimeStatus(last.time+g,g);
+      if(!fresh.valid)return {minutes:h.minutes,granularity:g,
+        status:'datos_antiguos',price_candidate:null,return_pct:null,
+        analogs:model.patterns,reason:fresh.label};
+      const estimate=E.forecast(model,{basePrice:last.close,
+        sourceTime:last.time+g,
+        sourceType:Markets.isEquity(chosen)?
+          'último cierre bursátil · tiempo de negociación':
+          'último cierre crypto · Coinbase'});
+      return {minutes:h.minutes,granularity:g,status:'candidato_experimental',
+        price_candidate:estimate.estimate,
+        return_pct:100*estimate.relativeChange,analogs:model.patterns,
+        forecast_time:estimate.forecastTime,
+        time_semantics:estimate.timeSemantics,
+        range_low:estimate.lower,range_high:estimate.upper,
+        provider:model.source,validation:model.validation,
+        prospective_validation:false};
+    }catch(e){
+      return {minutes:h.minutes,granularity:g,
+        status:'abstained',reason:String(e?.message??e),
+        price_candidate:null,return_pct:null,analogs:0};
+    }
+  });
+  const asOf=new Date().toISOString();
+  return {marketMode:'multiasset',asset:chosen,errors,
+    fusion:{schema:'laplace-m001-multimarket-horizons-v1',horizons,asset:chosen,
+      interpretation:Markets.isEquity(chosen)?
+        'trading_bars_or_sessions_not_calendar_time':'calendar_time',
+      source:Markets.sourceLabel(chosen),
+      no_trading:true,prospectively_validated:false},
+    field:{status:'not_applied',reason:
+      'Operador armónico F001 exclusivamente BTC; no se trasladan coeficientes a otros activos.',
+      available_candidate_anchors:0},
+    audit:F.auditarUniversoLaplace(W,{asOf})};
+}
 async function runIntegral(){
   if(integralBusy)return;
+  const chosen=asset,btc=chosen==='BTC-USD';
   integralBusy=true;setActionAvailability();
-  $('integralRun').textContent='Consultando Bitcoin…';
+  $('integralRun').textContent='Calculando '+chosen+'…';
   $('integralStatus').dataset.state='info';
-  $('integralStatus').textContent='F001 usa BTC/USD exclusivamente. Solicitando velas de 5 minutos, 1 hora y 1 día…';
+  $('integralStatus').textContent=btc?
+    'F001 original Bitcoin · consultando 5 minutos, 1 hora y 1 día…':
+    'M001 · consultando tres resoluciones para '+chosen+
+      ' · '+(Markets.isEquity(chosen)?'datos bursátiles indicativos':'Coinbase')+'.';
   try{
     if(!F||!window.LaplacePDE?.resolverLaplaceGrafo)
-      throw Error('El motor F001 o Laplace no se cargó correctamente.');
+      throw Error('El motor matemático no se cargó correctamente.');
+    if(!btc){
+      integralResult=await runGenericHorizons(chosen);
+      const {fusion,errors}=integralResult;
+      $('rawF001').textContent=JSON.stringify({
+        ...integralResult,source_is_not_robinhood:true,
+        not_same_calibrated_model_as_f001_btc:true,
+        cannot_trade:true,no_calendar_due_time_for_equity:Markets.isEquity(chosen)
+      },null,2);
+      $('integralStatus').dataset.state=errors.length?'info':'success';
+      $('integralStatus').textContent='M001 '+chosen+': '+
+        fusion.horizons.filter(h=>h.price_candidate!==null).length+
+        '/16 escenarios experimentales. '+errors.length+' fuentes incompletas. '+
+        (Markets.isEquity(chosen)?
+          'Plazos bursátiles por velas/sesiones, no tiempos calendario. ':'')+
+        'Sin pruebas prospectivas ni cuenta Robinhood.';
+      show('integral');renderIntegral();renderCapabilities();
+      return;
+    }
     const tasks=[
       ...[300,3600,86400].map(granularity=>
         remote({kind:'history',asset:'BTC-USD',granularity,
           days:F.HISTORIA_REQUERIDA[granularity].days})),
       remote({kind:'quote',asset:'BTC-USD'})
     ];
-    const r=await Promise.allSettled(tasks);
+    const response=await Promise.allSettled(tasks);
+    if(asset!==chosen)throw Error('Cambiaste de activo mientras se calculaba F001.');
     const problems=[],series={};
     for(let i=0;i<3;i++){
-      const k=[300,3600,86400][i],entry=r[i];
+      const g=[300,3600,86400][i],entry=response[i];
       if(entry.status==='fulfilled')
-        series[k]=entry.value.map(x=>[
-          x.time,x.low,x.high,x.open,x.close,x.volume]);
-      else{
-        series[k]=[];
-        problems.push(F.HISTORIA_REQUERIDA[k].days+' días: '+String(entry.reason?.message));
-      }
+        series[g]=entry.value.map(x=>[x.time,x.low,x.high,x.open,x.close,x.volume]);
+      else {series[g]=[];problems.push('Histórico '+g+': '+String(entry.reason?.message));}
     }
-    if(r[3].status!=='fulfilled')
-      throw Error('Ticker BTC no disponible: '+String(r[3].reason?.message));
-    const q=r[3].value,asOf=new Date().toISOString();
+    if(response[3].status!=='fulfilled')throw Error('Ticker BTC no disponible: '+
+      String(response[3].reason?.message));
+    const q=response[3].value,asOf=new Date().toISOString();
     const quote={asset:'BTC-USD',value:q.price,observed_at:q.time,
       known_at:new Date(q.receivedAt).toISOString()};
     const world=W?.states?{at:W.captured_at,
@@ -465,30 +554,29 @@ async function runIntegral(){
       quotePrice:q.price,asset:'BTC-USD',
       solver:window.LaplacePDE.resolverLaplaceGrafo});
     const audit=F.auditarUniversoLaplace(W,{asOf});
-    integralResult={fusion,field,audit,errors:problems};
+    integralResult={fusion,field,audit,errors:problems,marketMode:'btc_original',asset:chosen};
     $('rawF001').textContent=JSON.stringify({
       schema:'laplace-f001-raw-binary64-v1',as_of:asOf,
       quote,errors:problems,fusion,laplace_field:field,
       world_audit:audit,known_source:'prediccion/fusion-temporal.mjs',
-      disclaimer:'Valores raw_diagnostics previos a redondeo; sin evidencia de rentabilidad'
+      disclaimer:'Valores crudos sin redondeo; sin evidencia de rentabilidad'
     },null,2);
     $('integralStatus').dataset.state='success';
-    $('integralStatus').textContent='F001 completado con '+
-      fusion.horizons.filter(x=>x.price_candidate!==null).length+
-      ' candidatos de '+fusion.horizons.length+' horizontes. Campo Laplace: '+
-      field.status+'. '+problems.length+' fuentes incompletas. No se confundió '+
-      'el archivo mundial con información en vivo.';
+    $('integralStatus').textContent='F001 original BTC: '+
+      fusion.horizons.filter(h=>h.price_candidate!==null).length+
+      ' candidatos de 14 horizontes. Campo Laplace '+field.status+
+      '. '+problems.length+' fuentes incompletas. Sin trading.';
     show('integral');renderIntegral();renderCapabilities();
   }catch(error){
     $('integralStatus').dataset.state='error';
-    $('integralStatus').textContent='No se pudo completar F001: '+error.message+
-      '. Verifica Internet y vuelve a intentar.';
+    $('integralStatus').textContent='El análisis de '+chosen+' no pudo completarse: '+
+      error.message;
     integralResult=null;
-    $('rawF001').textContent='F001 no emitió resultado: '+error.message;
+    $('rawF001').textContent='Sin resultado verificable: '+error.message;
     renderIntegral();renderCapabilities();
   }finally{
     integralBusy=false;setActionAvailability();
-    $('integralRun').textContent='Calcular los 14 horizontes de Bitcoin';
+    $('integralRun').textContent='Calcular horizontes del activo seleccionado';
   }
 }
 
