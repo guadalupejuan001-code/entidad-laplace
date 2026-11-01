@@ -191,7 +191,11 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const x=Number((await page.locator('#graphValue').innerText()).replace(',','.'));
     assert.ok(Math.abs(x-25)<.01,'Grafo dejó de calcular al pulsar botón: '+x);
     await page.locator('[data-tab="integral"]').click();
-    assert.match(await page.locator('#f002Status').innerText(),/sin informe|Sin resultado|se abstuvo|experimental/i);
+    assert.match(await page.locator('#integral > article.card').first().innerText(),
+      /Horizontes|F001|Cálculo de horizontes/);
+    assert.equal(await page.locator('#integral > details.advanced-fold').count(),2);
+    assert.equal(await page.locator('#integral > details.advanced-fold[open]').count(),0);
+    assert.match(await page.locator('#f002Status').textContent(),/sin informe|Sin resultado|se abstuvo|experimental/i);
     await page.locator('#integralRun').click();
     await page.waitForFunction(()=>{
       const t=document.querySelector('#integralStatus').textContent;
@@ -232,7 +236,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
       null,{timeout:90000});
     assert.match(await page.locator('#integralStatus').innerText(),/M001 AAPL/);
     assert.equal(await page.locator('#integralTable .integral-item').count(),16);
-    assert.match(await page.locator('#mareaIntro').innerText(),/Bitcoin|M003/);
+    assert.match(await page.locator('#mareaIntro').textContent(),/Bitcoin|M003/);
     assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
     assert.equal(await page.locator('#xn01Run').isDisabled(),true);
     await page.screenshot({path:path.join(captures,'LAPLACE-3.7-ACCIONES-SIMULADO.png')});
