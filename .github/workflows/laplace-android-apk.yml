@@ -1,13 +1,17 @@
-name: LAPLACE Android 3.5 - Centro de análisis amigable XI F001
+name: LAPLACE Android 3.6 - F002 fuentes conjuntas y validación
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
     paths:
       - 'apps/laplace-android/**'
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   pull_request:
     paths:
       - 'apps/laplace-android/**'
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   workflow_dispatch:
 permissions:
@@ -173,14 +177,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.ux35'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.f002'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.5'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.6'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-5-INSTALACION-PARALELA
+          name: LAPLACE-ANDROID-V3-6-F002-CONJUNTO-AUDITADO
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
