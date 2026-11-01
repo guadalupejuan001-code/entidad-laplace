@@ -254,8 +254,75 @@ async function runXN01(){
  * se lee desde la captura EF002 verificable. La ecuación no sustituye
  * el candidato y no puede entrenar EF004 sin tiempo independiente.
  */
+/* F002: estado de un cálculo REAL en CI con historia EF002, no predicción
+ * telefónica fabricada a partir de sólo una captura. */
+function renderF002(){
+  if(!$('f002Status'))return;
+  const report=W?.f002_report??null;
+  const reason={
+    insufficient_verified_market_outcomes:'Faltan resultados futuros verificables',
+    insufficient_nonoverlapping_train_validation_holdout:
+      'Faltan datos separados para entrenamiento, validación y holdout',
+    no_confirmed_out_of_sample_advantage:
+      'No superó de forma consistente al precio de persistencia',
+    latest_verified_price_unavailable:'La cotización BTC no está suficientemente actualizada',
+    snapshot_not_fresh_at_publication:
+      'La captura ya era antigua cuando se ejecutó el experimento'
+  };
+  $('f002Coverage').replaceChildren();$('f002Metrics').replaceChildren();
+  if(!report){
+    $('f002Status').textContent='F002 sin informe vinculado a esta captura. '+
+      'El motor del servidor no debe sustituirse por una simulación local.';
+    $('f002Raw').textContent='No hay un resultado conjunto verificable empaquetado.';
+    $('worldF002Status').textContent='F002 conjunto: sin cálculo archivado disponible.';
+    return;
+  }
+  const ready=report.status==='experimental_shadow_frozen';
+  const why=reason[report.reason]??report.reason??'Sin motivo registrado';
+  $('f002Status').dataset.state=ready?'success':'info';
+  $('f002Status').textContent=ready?
+    'F002 produjo un candidato experimental shadow de '+
+      money(Number(report.experimental_price))+
+      '. Se obtuvo en el servidor sobre fuentes archivadas; sin certificación prospectiva.':
+    'F002 se abstuvo: '+why+'. Los datos no permiten emitir un precio conjunto validado.';
+  $('worldF002Status').textContent='F002 conjunto · '+
+    report.source_series+' series, '+report.matched_verified_outcomes+
+    ' resultados futuros comparables · '+(ready?'experimental':'sin candidato validado')+
+    '. Corte de archivo '+(W?.captured_at??'no disponible')+'.';
+  const rows=[
+    ['Series detectadas',report.source_series],
+    ['Dominios',report.domains],
+    ['Etiquetas futuras',report.matched_verified_outcomes],
+    ['Capturas',report.archive_count],
+    ['Pares de entrenamiento',report.training_pairs],
+    ['Pares de validación',report.validation_pairs],
+    ['Pares de holdout',report.holdout_pairs]
+  ];
+  for(const [title,value] of rows){
+    const item=document.createElement('div'),label=document.createElement('span'),
+      amount=document.createElement('strong');
+    label.textContent=title;amount.textContent=String(value??0);
+    item.append(label,amount);$('f002Metrics').appendChild(item);
+  }
+  for(const group of report.input_coverage??[]){
+    const row=document.createElement('div'),left=document.createElement('div'),
+      name=document.createElement('strong'),detail=document.createElement('small'),
+      state=document.createElement('span');
+    row.className='signal-row';
+    name.textContent=group.group;
+    detail.textContent=String(group.fresh)+' cambios recientes de '+
+      String(group.seen)+' series visibles · '+String(group.repeated)+
+      ' sin medición nueva';
+    state.className='outline-tag';
+    state.textContent=group.status==='new_data'?'CAMBIOS VERIFICADOS':
+      group.status==='no_new_verified_values'?'SIN CAMBIOS NUEVOS':'SIN FUENTE';
+    left.append(name,detail);row.append(left,state);$('f002Coverage').appendChild(row);
+  }
+  $('f002Raw').textContent=JSON.stringify(report,null,2);
+}
 function renderIntegral(){
   const table=$('integralTable'),modules=$('integralModules'),metrics=$('integralMetrics');
+  renderF002();
   if(!table||!modules||!metrics)return;
   table.replaceChildren();modules.replaceChildren();metrics.replaceChildren();
   const result=integralResult;
@@ -924,7 +991,7 @@ function renderWorld(){
     cnt.textContent=group.signals+' señales';cnt.className='outline-tag';
     l.append(k,d);row.append(l,cnt);groups.appendChild(row);
   }
-  renderWorldObservations();renderCapabilities();
+  renderWorldObservations();renderCapabilities();renderF002();
 }
 function renderWorldObservations(){
   const target=$('worldObservations');target.replaceChildren();
