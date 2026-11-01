@@ -190,6 +190,51 @@ export function prepararPanelF002(captures,{
       snapshot_sha256:x.snapshot_sha256})),
     missing_inputs_not_market_zero:true};
 }
+/* Auditoría ORIGINAL sin descartar ni redondear las señales individuales.
+ * El modelo reducido nunca reemplaza este registro de medidas crudas.
+ * No se incluyen URLs con query strings que pudieran revelar credenciales.
+ */
+export function trazaOriginalF002(captures){
+  const ordered=snapshotList(captures);
+  if(!ordered.length)return {schema:'laplace-f002-raw-state-trace-v1',
+    status:'no_archive',signals:[],observed_states:0};
+  const now=ordered.at(-1),previous=ordered.length>1?ordered.at(-2):null;
+  const keys=new Set([...now.state.keys(),...(previous?.state.keys()??[])]);
+  const rows=[];
+  for(const key of [...keys].sort()){
+    const cur=now.state.get(key)??null,pre=previous?.state.get(key)??null,
+      selected=cur??pre,group=grupoF002(selected.domain);
+    const observed=cur?Date.parse(cur.observed_at):null;
+    const older=pre?Date.parse(pre.observed_at):null;
+    let status,normalized=null;
+    if(!cur)status='not_in_latest_capture';
+    else if(!pre)status='new_series_without_previous';
+    else if(observed<=older)status='observation_not_new';
+    else{
+      status='new_verified_observation';
+      normalized=clamp(2*(cur.value-pre.value)/
+        Math.max(1e-12,Math.abs(cur.value)+Math.abs(pre.value)),-2,2);
+    }
+    rows.push({series_key:key,group,domain:selected.domain,
+      variable:selected.variable,unit:selected.unit,
+      source_hostname:new URL(selected.source_url).hostname,
+      status,previous_value:pre?.value??null,
+      current_value:cur?.value??null,
+      previous_observed_at:pre?.observed_at??null,
+      current_observed_at:cur?.observed_at??null,
+      current_known_at:cur?.known_at??null,
+      normalized_change:normalized});
+  }
+  const body={schema:'laplace-f002-raw-state-trace-v1',
+    at:now.at,capture_sha256:now.capture_sha256,
+    previous_capture_sha256:previous?.capture_sha256??null,
+    source_series_all_latest_or_previous:rows.length,
+    observed_states:now.state.size,
+    unrounded_original_values_retained:true,
+    missing_is_not_zero:true,
+    signals:rows};
+  return {...body,trace_sha256:digest(body)};
+}
 function solve(A,b){
   const n=b.length,rows=A.map((x,i)=>[...x,b[i]]);
   for(let k=0;k<n;k++){
