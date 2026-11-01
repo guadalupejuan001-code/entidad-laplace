@@ -17,7 +17,7 @@ const HORIZONS=Object.freeze([
   {minutes:10080,label:'7 días'},{minutes:20160,label:'14 días'},
   {minutes:43200,label:'30 días'},{minutes:129600,label:'90 días'}
 ]);
-const Markets=root.LaplaceMarkets;
+const Markets=root.LaplaceMarkets??(typeof require==='function'?require('./market-universe.js'):null);
 const ALLOWED_ASSETS=Object.freeze(Markets?.assets??['BTC-USD','ETH-USD','SOL-USD']);
 const HISTORICAL_CONFIG=Object.freeze({
   300:Object.freeze({days:14,label:'5 min',expectedMax:4032}),
