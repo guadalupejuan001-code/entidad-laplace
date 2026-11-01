@@ -6,7 +6,7 @@ const root=path.resolve(__dirname,'../app/src/main/assets');
 const read=x=>fs.readFileSync(path.join(root,x),'utf8');
 test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=>{
   const html=read('index.html');
-  for(const tab of ['panel','signals','tests','world','equation','integral'])
+  for(const tab of ['panel','tests','world','equation','integral'])
     assert.ok(html.includes('data-tab="'+tab+'"'));
   for(const code of ['BTC-USD','ETH-USD','SOL-USD'])
     assert.ok(html.includes('data-quote-asset="'+code+'"'));
@@ -25,11 +25,17 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
   assert.ok(html.includes('src="live-feed.js"'));
   assert.ok(html.includes('id="horizonSelect"'));
   assert.ok(html.indexOf('class="card selector"')<html.indexOf('class="hero"'));
-  assert.ok(html.indexOf('class="actions"')<html.indexOf('class="two-metrics"'));
+  assert.ok(html.indexOf('class="actions legacy-actions"')<html.indexOf('class="two-metrics"'));
+  for(const id of ['smartRun','smartResult','validationRun','capabilityFilter','jumpSignals'])
+    assert.ok(html.includes('id="'+id+'"'),id);
+  assert.match(html,/details class="advanced-actions"/);
 });
 test('La UI separa ticker, velas, referencia y candidato; no simula datos mundiales',()=>{
   const app=read('app.js'),world=fs.readFileSync(path.resolve(__dirname,'../prepare-world.mjs'),'utf8');
   assert.match(app,/function refresh\(\)/);
+  assert.match(app,/async function runSmart\(\)/);
+  assert.match(app,/async function runValidation\(\)/);
+  assert.match(app,/function smartMessage\(/);
   assert.match(app,/const epoch=\+\+refreshEpoch,requested=asset,m=minutes/);
   assert.match(app,/epoch!==refreshEpoch\|\|requested!==asset\|\|m!==minutes/);
   assert.match(app,/fetchCandles\(id,request\.asset,request\.granularity,request\.days\)/);
@@ -47,7 +53,7 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(app,/window\.LaplaceUIHealth/);
   assert.match(app,/setActionAvailability/);
   assert.match(app,/aplicarLaplaceAHorizontes/);
-  assert.match(app,/Sin ticker disponible/);
+  assert.match(app,/Sin precio verificable/);
   assert.match(app,/no se fabrica predicción/i);
   assert.match(world,/verifyUniverseSnapshot/);
   assert.match(world,/verificarSelloCaptura/);

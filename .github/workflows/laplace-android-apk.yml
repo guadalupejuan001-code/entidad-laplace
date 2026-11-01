@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.4 - XN01 F001 y auditoría de 20 grupos
+name: LAPLACE Android 3.5 - Centro de análisis amigable XI F001
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -112,6 +112,13 @@ jobs:
           node --check apps/laplace-android/app/src/main/assets/app.js
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
           node apps/laplace-android/tests/browser-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LAPLACE-3-5-PREVIEWS-SIMULADAS
+          path: apps/laplace-android/build/ux-previews/*.png
+          if-no-files-found: warn
+          retention-days: 7
       - name: Verificar ejecutor XI auténtico, paridad de plantilla y overlay Ether
         run: |
           set -euo pipefail
@@ -153,7 +160,7 @@ jobs:
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-4-20-MODULOS-AUDITADOS
+          name: LAPLACE-ANDROID-V3-5-UX-INTELIGENTE
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

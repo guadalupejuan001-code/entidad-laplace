@@ -77,7 +77,9 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.setContent(loaded,{waitUntil:'domcontentloaded'});
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
-    assert.equal(await page.locator('[data-tab]').count(),6);
+    assert.equal(await page.locator('[data-tab]').count(),5);
+    const navHeight=await page.locator('.tabs').evaluate(el=>el.getBoundingClientRect().height);
+    assert.ok(navHeight>=55&&navHeight<=100,'Barra móvil fuera de escala: '+navHeight);
     assert.equal(await page.locator('[data-minutes]').count(),16);
     assert.equal(await page.locator('#horizonSelect option').count(),16);
     // La carga inicial está simulada, pero el controller debe recibir datos.
@@ -86,10 +88,14 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#quoteBTC').innerText(),/61/);
     await page.waitForFunction(()=>document.querySelector('#liveStatus').textContent==='WebSocket conectado',null,{timeout:10000});
     assert.match(await page.locator('#liveCount').innerText(),/3 operaciones/);
-    assert.match(await page.locator('#quoteBTCStatus').innerText(),/WEB SOCKET/);
-    assert.match(await page.locator('#quoteETHStatus').innerText(),/WEB SOCKET/);
-    assert.match(await page.locator('#quoteSOLStatus').innerText(),/WEB SOCKET/);
+    assert.match(await page.locator('#quoteBTCStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteETHStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteSOLStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteBTC').innerText(),/61,\d+/);
+    await page.locator('#marketDetails > summary').click();
     assert.match(await page.locator('#liveGraphLabel').innerText(),/operaci/);
+    assert.match(await page.locator('#quoteTrace').innerText(),/Fuente.*Coinbase/i);
+    await page.locator('#marketDetails > summary').click();
     const prevBTC=await page.locator('#quoteBTC').innerText();
     await page.evaluate(()=>{
       window.LaplaceMobile.live({type:'ticker',asset:'BTC-USD',price:999,
@@ -114,10 +120,22 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
         await page.locator('#noticeText').innerText());
     }
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
+    await page.locator('#smartRun').click();
+    await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',null,{timeout:20000});
+    assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete',
+      'El botón principal debe producir un candidato real desde M001');
+    assert.match(await page.locator('#smartSummary').innerText(),/USD|\$/);
+    assert.match(await page.locator('#smartExplain').innerText(),/persistencia|muestras/i);
+    const captures=path.resolve(__dirname,'../build/ux-previews');
+    fs.mkdirSync(captures,{recursive:true});
+    await page.locator('[data-tab="panel"]').click();
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.5-MOVIL-SIMULADO.png')});
+    await page.locator('.xn01-card > summary').click();
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
     assert.equal(await page.locator('#xn01PUp').innerText(),'0.54');
     assert.match(await page.locator('#xn01Raw').textContent(),/SIMULATED XI ONLY/);
+    await page.locator('.advanced-actions > summary').click();
     await page.locator('#forecast').click();
     await page.waitForFunction(()=>document.querySelector('#estimate').textContent!=='—',{timeout:20000});
     assert.match(await page.locator('#relativeChange').innerText(),/%/);
@@ -135,8 +153,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('[data-minutes="60"]').getAttribute('aria-pressed'),'true');
     // Mismo paso de vela: el botón mantiene datos válidos sin recargar Internet.
     assert.equal(await page.locator('#forecast').isDisabled(),false);
-    await page.locator('[data-tab="signals"]').click();
+    await page.locator('[data-tab="world"]').click();
+    await page.locator('#jumpSignals').click();
     assert.equal(await page.locator('#signals').isVisible(),true);
+    assert.equal(await page.locator('[data-tab="world"]').getAttribute('aria-current'),'page');
     await page.locator('[data-tab="world"]').click();
     assert.equal(await page.locator('#world').isVisible(),true);
     await page.locator('#worldSearch').fill('BTC');
@@ -148,6 +168,16 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),1);
     await page.locator('#capabilityQuery').fill('');
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
+    await page.locator('#capabilityFilter').selectOption('usable');
+    const usable=await page.locator('#capabilityRows .signal-row').count();
+    assert.ok(usable>0&&usable<20,'Filtrar fuentes debe cambiar la lista realmente');
+    await page.locator('#capabilityFilter').selectOption('pending');
+    assert.ok(await page.locator('#capabilityRows .signal-row').count()>0);
+    await page.locator('#capabilityRefresh').click();
+    assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.5-FUENTES-SIMULADO.png')});
+    const overflowSources=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+    assert.ok(overflowSources<=3,'Fuentes desbordan ancho de 393 px: '+overflowSources);
     await page.locator('[data-tab="equation"]').click();
     await page.selectOption('#pdePreset','quadratic');
     await page.locator('#pdeSolve').click();
@@ -167,6 +197,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
     await page.locator('[data-tab="tests"]').click();
+    await page.locator('#validationRun').click();
+    assert.match(await page.locator('#validationStatus').innerText(),/Evaluados|Validación/i);
     await page.locator('#clearHistory').click();
     assert.match(await page.locator('#history').innerText(),/Sin candidatos/);
     // Cambiar resolución exige otro lote y desactiva botones hasta recibirlo.
@@ -180,6 +212,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,{timeout:25000});
     assert.match(await page.locator('#noticeText').innerText(),/HTTP 429/i);
     assert.equal(await page.locator('#forecast').isDisabled(),true);
+    await page.locator('#smartRun').click();
+    await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state==='error',null,{timeout:10000});
+    assert.match(await page.locator('#smartExplain').innerText(),/HTTP 429/i);
+    assert.equal(await page.locator('#estimate').innerText(),'—');
     // Pantalla estrecha: no se permite navegación horizontal recortada.
     await page.setViewportSize({width:320,height:750});
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
@@ -187,7 +223,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.deepEqual(errors,[],'La interfaz emitió errores Javascript');
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
-      capabilities:20,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
+      capabilities:20,smartAnalysis:true,moduleFilters:true,validationNow:true,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
       stream:true,livePauseResume:true,streamOutOfOrderIgnored:true,jsErrors:errors.length}));
   }finally{
     await browser.close();

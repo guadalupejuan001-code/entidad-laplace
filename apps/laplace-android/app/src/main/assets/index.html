@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE 3.4 · Integración auditable</title>
+<meta name="theme-color" content="#090c16"><title>LAPLACE 3.5 · Centro de análisis</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -13,18 +13,23 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>M001 · F001 · XI/ETHER · AUDITORÍA 3.4</small></div>
+    <div><h1>LAPLACE</h1><small>OBSERVATORIO FINANCIERO · 3.5</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
 <main>
-  <nav class="tabs" aria-label="Secciones de Laplace">
-    <button type="button" data-tab="panel" aria-current="page">Mercado</button>
-    <button type="button" data-tab="signals">Señales</button>
-    <button type="button" data-tab="tests">Pruebas</button>
-    <button type="button" data-tab="integral">F001 · BTC</button>
-    <button type="button" data-tab="world">Datos</button>
-    <button type="button" data-tab="equation">Ecuación</button>
+  <div class="workspace-head">
+    <div><small>ESTACIÓN DE ANÁLISIS</small>
+      <h2>Mercado, modelos y evidencia.</h2>
+      <p>Un cálculo claro. Datos verificables. Nada de señales inventadas.</p></div>
+    <span class="lab-chip">LABORATORIO · NO TRADING</span>
+  </div>
+  <nav class="tabs" aria-label="Navegación principal de Laplace">
+    <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Inicio</button>
+    <button type="button" data-tab="integral"><span class="tab-symbol" aria-hidden="true">⌁</span>Multiplazo</button>
+    <button type="button" data-tab="tests"><span class="tab-symbol" aria-hidden="true">▤</span>Validación</button>
+    <button type="button" data-tab="world"><span class="tab-symbol" aria-hidden="true">◈</span>Fuentes</button>
+    <button type="button" data-tab="equation"><span class="tab-symbol" aria-hidden="true">∇</span>Laboratorio</button>
   </nav>
 
   <div id="notice" class="status-banner" role="status" aria-live="polite">
@@ -61,6 +66,8 @@
         </button>
       </div>
       <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
+      <details id="marketDetails" class="market-details">
+        <summary>Ver operaciones recientes y procedencia</summary>
       <div class="live-sparkline-block">
         <div class="live-graph-head">
           <strong>Operaciones recientes <span id="liveGraphAsset">BTC/USD</span></strong>
@@ -69,7 +76,9 @@
         <canvas id="liveChart" height="108" aria-label="Últimas operaciones recibidas en tiempo real"></canvas>
       </div>
       <p id="livePreview" class="live-preview">El precio se actualiza al llegar una operación. El cálculo M001 usa velas cerradas y solo recalcula un escenario indicativo si ya existe un modelo.</p>
-      <div class="quick-guide">1. Elige activo y tiempo <span>→</span> 2. Actualiza <span>→</span> 3. Proyecta</div>
+        <small id="quoteTrace" class="helper">Sin trazas de cotización.</small>
+      </details>
+      <div class="quick-guide">Escoge un activo y pulsa «Analizar ahora». El sistema se encarga de comprobar el historial.</div>
     </article>
     <article class="card selector">
       <div class="section-head"><div><small class="eyebrow">ACTIVO</small><h2>Mercado de referencia</h2></div><span class="outline-tag">SPOT · USD</span></div>
@@ -130,12 +139,38 @@
       <p class="fineprint">M001 usa patrones históricos. Plazos muy largos pueden mostrar «sin datos suficientes» en vez de una cifra inventada.</p>
     </article>
 
-    <div class="actions">
+    <article class="card decision-deck">
+      <div class="section-head">
+        <div><small class="eyebrow">ANÁLISIS ASISTIDO · M001</small><h2>Una acción. Resultado y evidencia.</h2></div>
+        <span class="outline-tag">SIN ÓRDENES</span>
+      </div>
+      <div class="smart-actions">
+        <button id="smartRun" class="smart-action" type="button">
+          <span class="smart-action-symbol" aria-hidden="true">◈</span>
+          <span><strong>Analizar ahora</strong><small>Consulta, patrones y proyección</small></span>
+          <span class="smart-arrow" aria-hidden="true">→</span>
+        </button>
+        <button id="jumpValidation" class="smart-secondary" type="button">Ver validación</button>
+      </div>
+      <div class="smart-result" id="smartResult" data-state="idle" role="status" aria-live="polite">
+        <div class="smart-result-head">
+          <span id="smartBadge">PREPARADO</span>
+          <span id="smartEvidence">M001 · analógico</span>
+        </div>
+        <strong id="smartSummary">Elige un activo y un plazo.</strong>
+        <p id="smartExplain">Laplace obtendrá las velas verificables y calculará un candidato únicamente si existe soporte histórico suficiente.</p>
+      </div>
+      <details class="advanced-actions">
+        <summary>Herramientas técnicas y pruebas individuales</summary>
+        <div class="actions legacy-actions">
       <button id="forecast" class="main-action" type="button"><span class="action-icon">⌁</span><b>Proyectar precio</b><small>Calcular candidato M001</small></button>
       <button id="train" type="button"><span class="action-icon">◎</span><b>Analizar</b><small>Ver patrones</small></button>
       <button id="test" type="button"><span class="action-icon">◇</span><b>Probar</b><small>Histórico</small></button>
       <button id="evaluate" type="button"><span class="action-icon">▥</span><b>Evaluar</b><small>Errores</small></button>
     </div>
+        <p class="fineprint">Estos controles ejecutan pasos separados del mismo M001. Para un flujo completo utiliza «Analizar ahora».</p>
+      </details>
+    </article>
 
     <p id="inlineStatus" class="action-feedback" role="status" aria-live="polite">Los controles se activarán cuando lleguen datos verificables.</p>
 
@@ -149,7 +184,15 @@
       </article>
     </div>
 
-    <article class="card xn01-card">
+    <article class="card chart-card">
+      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
+      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
+      <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
+      <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
+    </article>
+
+    <details class="card xn01-card advanced-fold">
+      <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Motor original · ejecutar por separado</small></summary>
       <div class="section-head">
         <div><small class="eyebrow">XN01 · XI/ETHER ORIGINAL</small>
           <h2>Dirección y confianza interna</h2></div>
@@ -174,19 +217,14 @@
         <summary>Mostrar registros XI crudos, sin sustituir ni suavizar la salida</summary>
         <pre id="xn01Raw">Sin salida nativa todavía.</pre>
       </details>
-    </article>
+    </details>
     <details class="raw-details card">
       <summary>Ver predicción M001 cruda: retornos, análogos y errores</summary>
       <pre id="rawM001">Calcula M001 para mostrar sus valores originales.</pre>
     </details>
-    <article class="card chart-card">
-      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
-      <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
-      <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
-      <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
-    </article>
 
-    <article class="card audit-card">
+    <details class="card audit-card advanced-fold">
+      <summary><span>Métricas de validación M001</span><small>Errores y referencia de persistencia</small></summary>
       <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
       <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
       <div class="stats">
@@ -196,7 +234,7 @@
         <div><span>Referencia de persistencia</span><strong id="baselineError">—</strong></div>
       </div>
       <p class="fineprint">M001 calcula análogos de mercado sin imponer un movimiento mínimo ni sustituir el resultado por persistencia. EF004 y los datos mundiales se muestran separados mientras no tengan validación temporal suficiente. Sin trading.</p>
-    </article>
+    </details>
     <div class="hero">
       <div class="hero-caption"><span class="eyebrow">IDENTIDAD VISUAL · NO ES LA PREDICCIÓN</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
       <svg class="portal" viewBox="0 0 640 310" role="img" aria-label="Ojo triangular con vórtice central y corrientes de datos">
@@ -258,6 +296,9 @@
 
   <section id="tests" class="tabpage" hidden>
     <article class="card"><div class="section-head"><div><small class="eyebrow">M001 · VALIDACIÓN</small><h2>Pruebas retrospectivas</h2></div><span class="outline-tag">RETROSPECTIVO</span></div>
+      <p>Compara el error de M001 contra mantener el precio inicial. No es una garantía de desempeño futuro.</p>
+      <button id="validationRun" type="button" class="pde-primary">Calcular validación del activo elegido</button>
+      <p id="validationStatus" class="helper" role="status">Sin evaluación nueva.</p>
       <div id="testResults"><p>Actualiza las velas y pulsa Probar. Se usarán resultados históricos posteriores a cada decisión.</p></div>
     </article>
     <article class="card"><h2>Registro local</h2><p>Los candidatos emitidos se guardan en el dispositivo. Solo se evalúan cuando llegan nuevas velas cerradas del intervalo de su objetivo. Los registros nunca se convierten en aciertos ficticios.</p><div id="history" class="history"></div>
@@ -270,12 +311,12 @@
       <div class="section-head">
         <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
           <h2>F001 · Cálculo multiescala BTC</h2></div>
-        <span class="outline-tag">CÁLCULO VERIFICABLE</span>
+        <span class="outline-tag">14 PLAZOS · BTC</span>
       </div>
       <p>Ejecuta el F001 original con 14 horizontes de BTC, audita el archivo financiero
       y aplica Lφ = 0 a los retornos logarítmicos. Las fronteras son candidatos
       experimentales, no precios observados del futuro.</p>
-      <button id="integralRun" class="pde-primary" type="button">Consultar y calcular F001 para BTC</button>
+      <button id="integralRun" class="pde-primary" type="button">Calcular los 14 horizontes de Bitcoin</button>
       <p class="fineprint">F001 solo Bitcoin · 14 horizontes · Datos SEC/EF004 se muestran según disponibilidad, sin cálculos ficticios.</p>
       <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. Esta sección calcula exclusivamente Bitcoin; los datos mundiales provienen del último archivo fechado.</p>
       <div id="integralMetrics" class="stats pde-stats"></div>
@@ -350,6 +391,12 @@
     </article>
   </section>
   <section id="world" class="tabpage" hidden>
+    <div class="source-intro">
+      <div><small class="eyebrow">ARCHIVO Y PROCEDENCIA</small>
+        <h2>Qué sabe Laplace realmente</h2>
+        <p>Separa los datos capturados del código disponible y de las funciones que sí se ejecutaron.</p></div>
+      <button id="jumpSignals" type="button" class="smart-secondary">Ver señales M001</button>
+    </div>
     <article class="card"><div class="section-head"><div><small class="eyebrow">EF002 · EF005</small><h2>Estados reales y procedencia</h2></div><span class="outline-tag">SNAPSHOT</span></div>
       <div class="two-metrics world-metrics">
         <div class="metric"><small>ESTADOS ARCHIVADOS</small><strong id="worldStates">—</strong></div>
@@ -377,9 +424,16 @@
       las fuentes que llegaron realmente a la APK y la abstención del modelo cuando falte historia.</p>
       <p id="capabilitySummary" class="helper">Sin auditoría local.</p>
       <p id="ef004Report" class="fineprint">EF004: sin informe local.</p>
-      <label class="pde-label" for="capabilityQuery">Filtrar módulo, fuente o motivo</label>
+      <label class="pde-label" for="capabilityQuery">Encontrar un componente</label>
       <input id="capabilityQuery" type="search" placeholder="EF004, DeFi, FINRA, XI...">
-      <button id="capabilityRefresh" type="button" class="pde-primary secondary">Auditar los 20 módulos</button>
+      <div class="source-controls">
+        <select id="capabilityFilter" aria-label="Filtrar por estado">
+          <option value="all">Todos los componentes</option>
+          <option value="usable">Ejecutados u observados</option>
+          <option value="pending">No conectados o parciales</option>
+        </select>
+        <button id="capabilityRefresh" type="button" class="secondary">Restablecer</button>
+      </div>
       <div id="capabilityRows" class="signal-rows" aria-live="polite"></div>
       <details class="raw-details">
         <summary>Inventario completo en JSON, sin ocultar fallos</summary>

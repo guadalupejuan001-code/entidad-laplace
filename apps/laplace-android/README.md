@@ -5,6 +5,41 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 3.5 — centro de análisis y navegación inteligente
+
+**Objetivo:** quitar fricción y botones redundantes sin cambiar el cálculo original.
+
+- Cinco destinos: **Inicio, Multiplazo, Validación, Fuentes y Laboratorio**;
+  página de señales M001 accesible desde Fuentes y herramientas individuales
+  ocultas por defecto en un panel técnico ampliable.
+- **Analizar ahora** es el único botón primario. Verifica que haya velas
+  cerradas frescas (o las recupera), ejecuta el M001 canónico, y sólo emite
+  y guarda un candidato si dispone de soporte histórico real. El resultado
+  describe precio de referencia, plazo, patrones, evaluación retrospectiva,
+  comparativa frente a persistencia y fuente; ante fallos se abstiene.
+- **Validación** ahora tiene acción propia. Recupera series si faltan,
+  ejecuta evaluación cronológica M001 y comprueba los pronósticos locales
+  únicamente después de alcanzado su objetivo.
+- **Fuentes** permite buscar y filtrar 20 capacidades por funcionamiento
+  real: ejecutadas/observadas frente a no conectadas o parciales; el botón
+  Restablecer cambia los filtros, no simula una actualización remota.
+- XN01 nativo y los controles de análisis manual permanecen accesibles
+  dentro de los detalles técnicos. El módulo XI no se ejecuta
+  automáticamente sobre ETH/SOL ni se reemplaza con JavaScript.
+- La interfaz informa cuando una respuesta de Coinbase falla o los datos
+  son antiguos. No inventa cotizaciones, probabilidades ni datos SEC.
+  Estilo de estación financiera de alto contraste, navegación móvil inferior,
+  foco accesible y movimiento reducido para usuarios que lo solicitan.
+- Se prueba con Chromium/Playwright y velas claramente SIMULADAS en el
+  harness de interfaz, mientras que la APK real usa el puente Android
+  existente. Las capturas visuales del test **no representan precios reales**.
+- versionCode 10 · versionName 3.5.0-INTELLIGENT-UX.
+
+**Alcance honesto:** la versión 3.5 es una mejora de operatividad e interfaz.
+No añade un modelo aprendido EF004, ni conectores L2/L3 o SEC de pago.
+Los 20 módulos siguen auditados pero no se convierten en 20 pronosticadores
+solamente por visualizarlos.
+
 ## Android 3.4 — Integración auditable de las 20 capacidades
 
 - **Un único inventario canónico** en `nucleo/registro-capacidades.mjs`, utilizado

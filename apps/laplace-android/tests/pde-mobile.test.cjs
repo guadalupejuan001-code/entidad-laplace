@@ -77,8 +77,8 @@ test('APK tiene versionCode incrementado y sin permisos adicionales',()=>{
   const gradle=fs.readFileSync(path.resolve(__dirname,'../app/build.gradle'),'utf8');
   const java=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/java/com/entidadlaplace/mobile/MainActivity.java'),'utf8');
-  assert.match(gradle,/versionCode 9/);
-  assert.match(gradle,/versionName '3\.4\.0-20-MODULOS-AUDITADOS'/);
+  assert.match(gradle,/versionCode 10/);
+  assert.match(gradle,/versionName '3\.5\.0-INTELLIGENT-UX'/);
   assert.equal((java.match(/@JavascriptInterface/g)||[]).length,5);
   assert.ok(!read('pde-panel.js').includes('LaplaceBridge'));
 });
