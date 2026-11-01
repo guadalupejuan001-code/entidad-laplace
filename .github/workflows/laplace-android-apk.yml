@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.3 - XN01 nativo original y pronósticos crudos
+name: LAPLACE Android 3.4 - XN01 F001 y auditoría de 20 grupos
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -24,6 +24,11 @@ jobs:
         with:
           ref: laplace-archivo
           path: world_archive
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: laplace-modelos
+          path: model_archive
           persist-credentials: false
       # Compile ORIGINAL XI/Ether from exact reviewed, pinned dependency.
       - uses: actions/checkout@v4
@@ -58,18 +63,20 @@ jobs:
             "$SDK/cmdline-tools/16.0/bin/sdkmanager" --install 'platforms;android-35' 'build-tools;35.0.0'
           fi
           test -e "$SDK/platforms/android-35/android.jar"
+      - name: Instalar dependencias del núcleo de Laplace
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
           set -euo pipefail
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
-          node --test tests/laplace-financiero.test.mjs
+          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: Incluir última captura financiera EF002 con verificación de hashes
         run: |
           set -euo pipefail
-          node apps/laplace-android/prepare-world.mjs world_archive/capturas
+          node apps/laplace-android/prepare-world.mjs world_archive/capturas model_archive/reportes
       - name: Verificar que el archivo EF002 contiene estados auténticos
         run: |
           node --input-type=module -e '
@@ -83,6 +90,13 @@ jobs:
             assert.ok(w.states.every(s=>s.id&&s.known_at&&s.observed_at&&s.source_url));
             assert.equal(w.forecast_model_uses_world,false);
             assert.equal(w.automatic_trading,false);
+            assert.equal(w.archive_manifests_count,w.history.length);
+            assert.equal(w.history_index_complete,true);
+            assert.equal(w.state_history_on_device,false);
+            assert.equal(w.ef004_report?.verification,"real_archives_only_not_synthetic");
+            assert.equal(w.ef004_report?.status,"abstained");
+            assert.equal(w.ef004_report?.archive_count,undefined);
+            assert.equal(w.ef004_report?.model_ready,false);
             console.log("EF002:",w.states_count,"estados,",w.archive_manifests_count,"archivos.");
           '
       - name: Prueba de interacción real de todos los controles en Chromium

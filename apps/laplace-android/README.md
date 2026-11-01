@@ -5,6 +5,40 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+## Android 3.4 — Integración auditable de las 20 capacidades
+
+- **Un único inventario canónico** en `nucleo/registro-capacidades.mjs`, utilizado
+  por el ejecutor Node y empaquetado sin bifurcar sus reglas a WebView.
+- La pestaña Datos muestra los **20 grupos del informe de pérdidas**,
+  con estado diferenciado: ejecutado, observado en archivo, parcial,
+  abstención, no ejecutado o no observado. Incluye el código de origen,
+  razón concreta y JSON completo inspeccionable.
+- Se ejecutan realmente en Android los módulos que ya tienen runtime:
+  XN01 mediante XI/Ether nativo (tras solicitarlo), M001 y F001 históricos,
+  la auditoría EF002 y el Laplaciano de grafo. No se reetiquetan como
+  ejecutados los colectores que sólo existen en Node.
+- EF002 ahora verifica **todos los manifiestos del archivo** al construir
+  el APK y conserva su índice cronológico y hashes, más el estado completo
+  de la captura más reciente. En el teléfono no se duplica el almacén
+  bitemporal EF001/EF005 íntegro; el archivo original sigue en
+  `laplace-archivo`. Las observaciones se pueden recorrer por páginas
+  de 100, no quedan ocultas tras el límite visual antiguo de 40.
+- El constructor integra el reporte EF004 de `laplace-modelos` **solo**
+  si corresponde al archivo verificado. Expone pares de entrenamiento,
+  validación y capturas contiguas. Un reporte de abstención sigue siendo
+  abstención, no inventa aprendizaje.
+- Las fuentes BIS, DeFi, derivados, FINRA y ETF no se añaden al valor
+  central F001 sin continuidad, unidades comparables y evidencia
+  prospectiva. L2/L3 y acciones SPY/AAPL/NVDA siguen necesitando
+  datos autorizados y ejecutor; EF003 requiere un escenario y EF001.
+- Reglas de regresión: 20 IDs únicos, identidad de fuente en bundle,
+  pruebas Node, controles de panel Chromium y compilación Android.
+  Ningún pronóstico es orden de trading ni mejora demostrada.
+
+**Alcance:** se recupera la conexión de **observabilidad y procedencia**
+de los 20 grupos; no se afirma la ejecución predictiva de los 20 en
+Android, ni que exista cobertura financiera mundial completa.
+
 ## Android 3.2 — Coinbase WebSocket en vivo
 - Fuente pública: wss://ws-feed.exchange.coinbase.com; canales ticker y
   heartbeat para BTC-USD, ETH-USD y SOL-USD. Sin credenciales.

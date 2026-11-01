@@ -82,3 +82,49 @@ medir los resultados. La decisión V001 sigue NO_GO_MODEL_PRODUCTION.
    válida y continuidad 5m.
 5. Recolectores históricos y vintages ETF, FINRA, D001/D002, BIS y
    blockchain antes de activar aprendizaje conjunto EF004.
+
+## Seguimiento de integración Android 3.4 (31-oct-2026)
+
+Esta auditoría describe la pérdida histórica en Android 3.2. La rama de
+recuperación 3.3 ya restauró XN01 nativo y sus registros, más la salida
+`raw_diagnostics` F001. La integración 3.4 no reescribe esos motores.
+
+La matriz de veinte grupos ahora se genera desde un solo archivo canónico
+(`nucleo/registro-capacidades.mjs`) en dos lugares: el núcleo integral Node
+y el panel de la APK. Así se puede comprobar qué módulo **existe**, cuál
+**observó** un dato y cuál **se ejecutó**. Cada grupo publica un motivo
+e identificación de archivo, sin etiquetar la presencia de código como
+aprendizaje real.
+
+El empaquetador EF002 verifica todos los manifiestos archivados, exporta
+el índice cronológico íntegro (hashes, fecha y conteo) y los estados de la
+última captura. El almacenamiento bitemporal EF001/EF005 y sus valores
+históricos íntegros siguen en la rama `laplace-archivo`, no dentro de la
+APK. No se puede reconstruir una historia multivariante completa a partir
+del índice de manifiestos, ni llamar a eso motor predictivo integrado.
+
+El reporte EF004 de `laplace-modelos` se incorpora cuando coincide con
+el archivo, mostrando tanto abstenciones como pares realmente existentes.
+A fecha de corte de esta integración existían tres capturas y sólo un
+segmento temporal continuo. No se estimaron transiciones suficientes para
+certificar un modelo independiente ni pronósticos financieros futuros.
+
+### Dependencias que todavía impiden una integración predictiva completa
+
+- **Ingesta continua y autorizada** para ETF/SEC, FINRA, derivados, BIS,
+  blockchain, mercado bursátil y microestructura; límites de publicación,
+  licencias y credenciales no se transforman en datos inventados.
+- **Archivo y sincronización** de series completas EF001/EF005 entre
+  backend y dispositivo; este cambio incluye el índice y la procedencia,
+  no una base de datos global móvil.
+- **Ejecución de módulos condicionados**: EF003 necesita escenario
+  declarado y observaciones financieras exactas. X002/XG01 requieren
+  train/validación/holdout fuera de muestra. EF004 requiere capturas
+  consecutivas suficientes. No se sustituyen por aproximaciones de UI.
+- **Resultados predictivos**: BIS, DeFi o tasas no deben alterar la salida
+  central F001 por mera coexistencia. Se exige mejora prospectiva
+  registrada y replicable frente a persistencia; el estado V001 sigue
+  NO_GO_MODEL_PRODUCTION.
+
+Por tanto, la restauración de observabilidad de los 20 grupos sí es
+trazable, pero **no equivale a tener 20 motores predictores completos**.

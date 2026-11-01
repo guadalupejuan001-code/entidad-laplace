@@ -20,6 +20,10 @@ test('F001 canónico Android tiene 14 horizontes de 5m a 90d',()=>{
  assert.deepEqual(Array.from(f.HORIZON_PLAN,x=>x.minutes),
    [5,15,30,60,120,240,480,720,1440,4320,10080,20160,43200,129600]);
  assert.equal(f.LAPLACE_FIN_VERSION,'laplace-financial-field-v1');
+ assert.equal(f.CAPABILITY_CATALOG.length,20);
+ const capabilities=f.resumirCapacidades();
+ assert.equal(capabilities.items.length,20);
+ assert.equal(capabilities.counts.executed,0);
 });
 test('F001 + campo financiero real en WebView no modifican los precios candidato',()=>{
  const end=Date.parse('2026-10-31T16:00:00Z')/1000;
@@ -43,6 +47,11 @@ test('la app no inventa fuentes: la matemática y los controles están conectado
  assert.ok(html.indexOf('fusion-integral.js')<html.indexOf('app.js'));
  assert.match(html,/data-tab="integral"/);
  assert.match(html,/id="integralRun"/);
+ assert.match(html,/id="capabilityQuery"/);
+ assert.match(html,/id="capabilityRefresh"/);
+ assert.match(html,/id="worldShowMore"/);
+ assert.match(app,/function renderCapabilities\(\)/);
+ assert.match(app,/F\.resumirCapacidades/);
  assert.equal((html.match(/data-minutes="\d+"/g)||[]).length,16);
  assert.match(app,/async function runIntegral\(\)/);
  assert.match(app,/F\.fusionTemporal/);
@@ -54,7 +63,7 @@ test('el archivo F001 empaquetado coincide con el código del repositorio',()=>{
  const root=path.resolve(__dirname,'../../..');
  const strip=s=>s.replace(/\bexport\s+(?=(?:const|function|async function)\s)/g,'');
  const bundle=read('fusion-integral.js');
- for(const file of ['prediccion/fusion-temporal.mjs','ecuacion/laplace-financiero.mjs']){
+ for(const file of ['prediccion/fusion-temporal.mjs','ecuacion/laplace-financiero.mjs','nucleo/registro-capacidades.mjs']){
   const code=strip(fs.readFileSync(path.resolve(root,file),'utf8'));
   assert.ok(bundle.includes(code));
  }

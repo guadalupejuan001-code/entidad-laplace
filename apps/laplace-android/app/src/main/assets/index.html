@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07111e"><title>LAPLACE 3.3 · XI Original</title>
+<meta name="theme-color" content="#07111e"><title>LAPLACE 3.4 · Integración auditable</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -13,7 +13,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>M001 · F001 · XI/ETHER 3.3</small></div>
+    <div><h1>LAPLACE</h1><small>M001 · F001 · XI/ETHER · AUDITORÍA 3.4</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -365,9 +365,28 @@
       <input id="worldSearch" type="search" placeholder="BTC, empleo, tasas, volumen..." aria-label="Filtrar estados financieros">
       <p id="worldMatches" class="helper">Sin estados cargados.</p>
       <div id="worldObservations" class="world-observations"></div>
+      <button type="button" id="worldShowMore" class="pde-primary secondary" hidden>Mostrar más estados verificados</button>
       <div id="worldGroups" class="group-list"></div>
       <p class="fineprint">Archivo EF002 verificado y fechado, NO lectura mundial en tiempo real. Los datos nuevos se presentan de forma verificable. EF004 no se considera entrenado sin suficientes transiciones independientes; no se inventa su resultado.</p>
       <a href="https://github.com/guadalupejuan001-code/entidad-laplace" class="external">Consultar repositorio de Laplace</a>
+    </article>
+    <article class="card">
+      <div class="section-head"><div><small class="eyebrow">AUDITORÍA DE CAPACIDADES</small>
+        <h2>Integración de 20 componentes</h2></div><span class="outline-tag">TRAZA REAL</span></div>
+      <p>Observado, ejecutado y validado son estados diferentes. El panel muestra el código recuperado,
+      las fuentes que llegaron realmente a la APK y la abstención del modelo cuando falte historia.</p>
+      <p id="capabilitySummary" class="helper">Sin auditoría local.</p>
+      <p id="ef004Report" class="fineprint">EF004: sin informe local.</p>
+      <label class="pde-label" for="capabilityQuery">Filtrar módulo, fuente o motivo</label>
+      <input id="capabilityQuery" type="search" placeholder="EF004, DeFi, FINRA, XI...">
+      <button id="capabilityRefresh" type="button" class="pde-primary secondary">Auditar los 20 módulos</button>
+      <div id="capabilityRows" class="signal-rows" aria-live="polite"></div>
+      <details class="raw-details">
+        <summary>Inventario completo en JSON, sin ocultar fallos</summary>
+        <pre id="capabilityRaw">Aún no auditado.</pre>
+      </details>
+      <p class="fineprint">El índice EF002 es verificable; el historial de valores completo permanece
+      en el repositorio de archivo. Ni BIS, ni FINRA, ni DeFi predicen el precio desde una sola captura.</p>
     </article>
   </section>
   <footer>LAPLACE · DEMONIO DIGITAL · INVESTIGACIÓN · NO TRADING</footer>
