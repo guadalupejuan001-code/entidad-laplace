@@ -139,6 +139,18 @@ test('evaluación posterior rechaza pronóstico alterado, sin ver el futuro ante
   const hacked={...evaluation,actual_price:evaluation.actual_price*1.1};
   assert.throws(()=>resumirValidacionProspectivaF002([hacked]),/modificada/);
 });
+test('una corrida tardía no puede fingir haber pronosticado antes del resultado',()=>{
+  const caps=synthetic(115);
+  const after=stamp(BASE+115*6*HOUR+2*HOUR);
+  const stale=ejecutarPrediccionF002(caps,{issuedAt:after});
+  assert.equal(stale.status,'abstained');
+  assert.equal(stale.reason,'snapshot_not_fresh_at_publication');
+  assert.equal(stale.forecast,undefined);
+  const past=ejecutarPrediccionF002(caps);
+  assert.equal(past.forecast.issued_at,past.forecast.decision_at);
+  const tampered={...past.forecast,issued_at:after};
+  assert.throws(()=>verificarPronosticoF002(tampered),/alterado/);
+});
 test('archivo duplicado o captura con sello inválido rechaza todo el entrenamiento',()=>{
   const caps=synthetic(3);
   assert.throws(()=>prepararPanelF002([caps[0],caps[0]]),/duplicadas/);
