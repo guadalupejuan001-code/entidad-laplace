@@ -137,7 +137,7 @@ function updateLiveBanner(){
   const tracked=Markets?.isCrypto(asset)&&['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
   const q=tickerStream.quote(tracked);
   const fresh=q&&tickerStream.isFresh(tracked);
-  $('liveAge').textContent=q?('Último '+tracked.replace('-USD','')+' · '
+  $('liveAge').textContent=q?('Último '+tracked.replace('-USD','')+' · '+
     liveTimeAgo(q.observedAt)+(fresh?' · activo':' · no actualizado')):
     'Sin operación en vivo de '+tracked.replace('-USD','');
   $('liveToggle').textContent=liveEnabled?'Detener':'Activar';
