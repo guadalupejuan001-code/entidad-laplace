@@ -88,8 +88,16 @@ test('R001 comprueba transiciones y magnitud con tres tests fuera de ajuste',()=
   assert.equal(fold.magnitude_model.no_future_labels_used,true);
   assert.ok(fold.magnitude_score.conditional_mae_bps>=0);
   assert.ok(fold.magnitude_score.unconditional_mae_bps>=0);
+  assert.equal(fold.magnitude_score.bootstrap_interval.repetitions,300);
+  assert.equal(fold.magnitude_score.bootstrap_interval.block_size,12);
+  assert.ok(Number.isFinite(fold.magnitude_score.bootstrap_interval.lower_bps));
+  assert.ok(Number.isFinite(fold.magnitude_score.bootstrap_interval.upper_bps));
+  assert.ok(fold.magnitude_score.bootstrap_interval.lower_bps<=
+    fold.magnitude_score.bootstrap_interval.upper_bps);
   assert.ok(fold.score.conditional_brier>=0);
   assert.ok(fold.score.unconditional_brier>=0);
+  assert.ok(fold.score.always_stay_brier>=0);
+  assert.ok(Number.isFinite(fold.score.relative_gain_vs_always_stay));
   assert.equal(fold.cases.length,fold.test_pairs);
   assert.ok(Date.parse(fold.holdout_start)>=Date.parse(fold.decision_cutoff));
   for(const name of REGIMES){
