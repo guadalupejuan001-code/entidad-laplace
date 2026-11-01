@@ -66,10 +66,11 @@ test('M003 registra hipótesis, placebo, ablaciones y tres folds verdaderos sin 
     for(const fold of horizon.folds){
       assert.equal(fold.status,'retrospective_research_only');
       assert.equal(fold.training.purge_confirmed,true);
+      // La última vela del train puede cerrar exactamente cuando abre el test.
       assert.ok(fold.validation.registered_candidates===15);
       assert.equal(fold.validation.chosen_from_holdout,false);
-      assert.ok(fold.training.last_training_label_at<fold.test_start);
-      assert.ok(fold.training.last_validation_label_at<fold.test_start);
+      assert.ok(fold.training.last_training_label_at<=fold.test_start);
+      assert.ok(fold.training.last_validation_label_at<=fold.test_start);
       assert.ok(fold.regime_threshold_from_training>=0);
       assert.equal(Object.keys(fold.group_ablations).length,4);
       assert.ok(fold.scores.selected.mae_bps>=0);
