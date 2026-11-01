@@ -670,3 +670,39 @@ html{scroll-padding-bottom:105px}
     scroll-margin-bottom:118px;scroll-margin-top:20px
   }
 }
+
+/* 3.5 UI follow-up: precios realmente legibles y fuentes sin desbordamiento. */
+.market-details{margin-top:11px;border-top:1px solid #405668;padding-top:5px}
+.market-details>summary{
+  padding:10px 0;color:#bcebd9;cursor:pointer;
+  font-size:11px;font-weight:750;letter-spacing:.012em
+}
+.market-details[open] .live-sparkline-block{margin-top:9px}
+.market-details .live-preview{margin:10px 0}
+.market-details #quoteTrace{margin-top:8px;color:#adbed0}
+.quote-tile>strong{font-size:clamp(17px,4.6vw,28px);
+  font-variant-numeric:tabular-nums;letter-spacing:-.055em}
+.quote-tile>small{font-size:9px;letter-spacing:.015em}
+.quote-grid .quote-tile{gap:4px}
+.signal-row,.group-row,.history-row{
+  min-width:0;grid-template-columns:minmax(0,1fr) auto
+}
+.signal-row>div,.group-row>div,.history-row>div{
+  min-width:0;max-width:100%;overflow-wrap:anywhere
+}
+.signal-row strong,.signal-row small,.group-row strong,.group-row small,
+.history-row strong,.history-row small{
+  white-space:normal;overflow-wrap:anywhere;word-break:normal;
+}
+#capabilityRows .signal-row{align-items:start}
+#capabilityRows .outline-tag{max-width:100%;white-space:normal}
+@media(max-width:739px){
+  #capabilityRows .signal-row{
+    display:flex;flex-direction:column;align-items:flex-start;gap:8px
+  }
+  #capabilityRows .signal-row>div{width:100%}
+  #capabilityRows .outline-tag{
+    align-self:flex-start;font-size:9px;
+    padding:5px 9px;border:1px solid #4b6872;border-radius:7px
+  }
+}
