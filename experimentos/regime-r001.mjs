@@ -131,6 +131,29 @@ function probabilities(train){
  return {counts,totals,conditional:smoothed,global:globalProb,
   alpha,trained_transitions:train.length};
 }
+function magnitudeModel(train){
+ const magnitude=arr=>arr.length?q(arr.map(x=>x.observed_next_abs_log_return),.5):null;
+ const unconditional=magnitude(train),buckets={};
+ for(const regime of REGIMES){
+  const grouped=train.filter(x=>x.from===regime);
+  buckets[regime]={support:grouped.length,
+   median_abs_log_return:grouped.length>=30?magnitude(grouped):unconditional,
+   fallback:grouped.length<30};
+ }
+ return {baseline_median_abs_log_return:unconditional,buckets,
+  trained_labels:train.length,feature:'current_regime_only',
+  no_future_labels_used:true};
+}
+function magnitudeScore(test,model){
+ const errors=test.map(x=>Math.abs(model.buckets[x.from].
+  median_abs_log_return-x.observed_next_abs_log_return)*10000);
+ const base=test.map(x=>Math.abs(model.baseline_median_abs_log_return-
+  x.observed_next_abs_log_return)*10000);
+ return {n:test.length,conditional_mae_bps:round(avg(errors)),
+  unconditional_mae_bps:round(avg(base)),
+  paired_wins:errors.filter((e,i)=>e<base[i]).length,
+  relative_gain:avg(base)>0?round(1-avg(errors)/avg(base)):null};
+}
 function brier(pred,actual){
  return REGIMES.reduce((sum,regime)=>
   sum+(pred[regime]-Number(regime===actual))**2,0);
@@ -165,7 +188,8 @@ export function auditRegimeTransitions(raw,{cutoff=null}={}){
    folds.push({status:'abstained',reason:'insufficient_independent_transition_history',
      train:train.length,test:test.length});continue;
   }
-  const model=probabilities(train),score=errors(test,model);
+  const model=probabilities(train),score=errors(test,model),
+    amplitude=magnitudeModel(train),amplitude_score=magnitudeScore(test,amplitude);
   const lastTrain=train.at(-1),firstTest=test[0];
   required(lastTrain.realized_index<=firstTest.decided_index,
     'fuga temporal en transición R001');
@@ -174,13 +198,16 @@ export function auditRegimeTransitions(raw,{cutoff=null}={}){
     decision_cutoff:toISO(lastTrain.realized_index===undefined?0:
       detector.states.find(x=>x.original_index===lastTrain.realized_index)?.at??0),
     holdout_start:firstTest.decided_at,holdout_end:test.at(-1).realized_at,
-    model,score,
+    model,score,magnitude_model:amplitude,magnitude_score:amplitude_score,
     first_holdout_prediction:model.conditional[firstTest.from],
     first_holdout_actual:firstTest.to,
     cases:test.map(x=>({from:x.from,to:x.to,decided_at:x.decided_at,
       realized_at:x.realized_at,
       conditional_brier:round(brier(model.conditional[x.from],x.to)),
-      unconditional_brier:round(brier(model.global,x.to))})),
+      unconditional_brier:round(brier(model.global,x.to)),
+      realized_abs_bps:round(x.observed_next_abs_log_return*10000),
+      conditional_magnitude_bps:round(amplitude.buckets[x.from].median_abs_log_return*10000),
+      unconditional_magnitude_bps:round(amplitude.baseline_median_abs_log_return*10000)})),
     no_holdout_selection:true,production_activation_allowed:false});
  }
  const evaluated=folds.filter(x=>x.status==='retrospective_evaluation_only'),
