@@ -28,7 +28,7 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
     for(const path of paths)captures.push((await leerArchivoEF002(path)).capture);
     captures.sort((a,b)=>a.at.localeCompare(b.at));
     const version=sha(await readFile(new URL('../prediccion/conjunta-f002.mjs',import.meta.url)));
-    const model=ejecutarPrediccionF002(captures);
+    const model=ejecutarPrediccionF002(captures,{issuedAt:new Date().toISOString()});
     const outputSubdirs=['informes-f002','pronosticos-f002','evaluaciones-f002'];
     for(const folder of outputSubdirs)await mkdir(join(output,folder),{recursive:true});
     const tail=captures.at(-1).capture_sha256,policy=version.slice(0,12);
