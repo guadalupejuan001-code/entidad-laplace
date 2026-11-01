@@ -104,6 +104,17 @@ test('si la historia no contiene los cortes requeridos, M003 se abstiene',()=>{
   assert.ok(report.experiments.every(e=>e.status==='insufficient_independent_evidence'));
   assert.ok(report.experiments.every(e=>e.folds.every(x=>x.status==='abstained')));
 });
+test('un hueco de velas no desplaza las fechas UTC de entrenar ni los 3 tests',()=>{
+  const original=candles(),broken=original.filter((_,i)=>i!==500);
+  const before=investigarMarea(original,{cutoff:cutoff(original),horizons:[12]});
+  const after=investigarMarea(broken,{cutoff:cutoff(original),horizons:[12]});
+  const base=before.experiments[0].folds,missing=after.experiments[0].folds;
+  assert.equal(after.gaps,1);
+  assert.equal(base.length,3);
+  assert.deepEqual(base.map(x=>x.test_start),missing.map(x=>x.test_start));
+  assert.deepEqual(base.map(x=>x.test_end_exclusive),missing.map(x=>x.test_end_exclusive));
+  assert.ok(missing.every(x=>x.status==='retrospective_research_only'));
+});
 test('no aceptar etiquetas, índices o proyecciones ajenas al modelo',()=>{
   const rows=candles(2),p=prepararVelasMarea(rows,{cutoff:cutoff(rows)});
   const samples=muestrasMarea(p,1),indexes=[0,1,2];
