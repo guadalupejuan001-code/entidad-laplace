@@ -47,6 +47,13 @@ test('la app no inventa fuentes: la matemática y los controles están conectado
  assert.ok(html.indexOf('fusion-integral.js')<html.indexOf('app.js'));
  assert.match(html,/data-tab="integral"/);
  assert.match(html,/id="integralRun"/);
+ assert.match(html,/id="f002Status"/);
+ assert.match(html,/id="f002Metrics"/);
+ assert.match(html,/id="f002Coverage"/);
+ assert.match(html,/id="f002Raw"/);
+ assert.match(html,/id="worldF002Status"/);
+ assert.match(app,/function renderF002\(\)/);
+ assert.match(app,/W\?\.f002_report/);
  assert.match(html,/id="capabilityQuery"/);
  assert.match(html,/id="capabilityRefresh"/);
  assert.match(html,/id="worldShowMore"/);

@@ -138,9 +138,63 @@ if(reports.length){
     as_of:report.as_of,source_branch:'laplace-modelos',report_name:name,
     verification:report.verification};
 }else world.ef004_report=null;
+// F002: cálculo conjunto verificado sobre exactamente ESTE archivo.
+// No se toma un informe antiguo como si fuese una predicción vigente.
+const f002Directory=resolve(process.argv[4]??'model_archive/informes-f002');
+const f002Candidates=[];
+if(existsSync(f002Directory)){
+  for(const name of readdirSync(f002Directory).filter(x=>/^status-[a-f0-9]{64}-[a-f0-9]{12}\.json$/.test(x))){
+    let report;
+    try{report=JSON.parse(readFileSync(join(f002Directory,name),'utf8'));}catch{continue}
+    if(report.schema!=='laplace-f002-joint-archive-v1'||
+      report.verified_real_archives_only!==true||
+      report.archive_manifests_verified!==files.length||
+      !Array.isArray(report.supplemental_evidence_verified)||
+      report.archive_count!==files.length+report.supplemental_evidence_verified.length||
+      report.input_capture_sha256!==latest.capture.capture_sha256||
+      report.production_activation_allowed!==false||
+      report.automatic_trading!==false||
+      report.central_f001_price_modified!==false||
+      !/^[a-f0-9]{64}$/.test(report.model_source_sha256??'')||
+      !['abstained','experimental_shadow_frozen'].includes(report.status))continue;
+    f002Candidates.push({name,report});
+  }
+}
+f002Candidates.sort((a,b)=>a.name.localeCompare(b.name));
+if(f002Candidates.length){
+  const {name,report}=f002Candidates.at(-1);
+  // La APK muestra un diagnóstico, NO copia el motor del servidor ni
+  // reetiqueta F001 como una predicción multifuente validada.
+  world.f002_report={
+    schema:report.schema,status:report.status,reason:report.reason??null,
+    archive_count:report.archive_count,
+    archive_manifests_verified:report.archive_manifests_verified,
+    supplemental_evidence_verified:report.supplemental_evidence_verified.length,
+    source_series:report.distinct_source_series,
+    domains:report.observed_domains,
+    matched_verified_outcomes:report.matched_outcomes,
+    training_pairs:report.training?.observed_training_pairs??
+      report.observed_training_pairs??0,
+    validation_pairs:report.training?.observed_validation_pairs??
+      report.observed_validation_pairs??0,
+    holdout_pairs:report.training?.observed_holdout_pairs??
+      report.observed_holdout_pairs??0,
+    source_groups:report.source_groups??[],
+    input_coverage:report.input_coverage??[],
+    prospectively_validated:false,
+    central_f001_price_modified:false,
+    production_activation_allowed:false,automatic_trading:false,
+    model_source_sha256:report.model_source_sha256,
+    capture_sha256:latest.capture.capture_sha256,
+    report_filename:name,source_branch:'laplace-modelos',
+    experimental_price:report.status==='experimental_shadow_frozen'?
+      report.forecast?.estimated_price_unrounded??null:null
+  };
+}else world.f002_report=null;
 const output=join(scriptDir,'app/src/main/assets/world.js');
 writeFileSync(output,'window.LAPLACE_WORLD = '+JSON.stringify(world)+';\n');
 console.log(JSON.stringify({verified:true,states:states.length,domains:world.domains,
   groups:world.groups.length,archives:files.length,history:world.snapshots_verified,
-  changes:observedChanges.length,ef004:world.ef004_report?.status??'no_report',
+  changes:observedChanges.length,f002:world.f002_report?.status??'no_report',
+  ef004:world.ef004_report?.status??'no_report',
   sha:world.capture_sha256,size:readFileSync(output).length}));

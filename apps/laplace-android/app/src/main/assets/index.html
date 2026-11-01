@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090c16"><title>LAPLACE 3.5 · Centro de análisis</title>
+<meta name="theme-color" content="#090c16"><title>LAPLACE 3.6 · F002 conjunto</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="engine.js" defer></script>
@@ -13,7 +13,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>OBSERVATORIO FINANCIERO · 3.5</small></div>
+    <div><h1>LAPLACE</h1><small>OBSERVATORIO FINANCIERO · 3.6</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -307,6 +307,26 @@
 
 
   <section id="integral" class="tabpage" hidden>
+    <article class="card" aria-label="Predictor conjunto experimental F002">
+      <div class="section-head">
+        <div><small class="eyebrow">F002 · ARCHIVO CONJUNTO Y PREDICCIÓN COMPROBABLE</small>
+          <h2>Qué calculó el mundo financiero</h2></div>
+        <span class="outline-tag">TRAZA CONJUNTA</span>
+      </div>
+      <p>F002 transforma los cambios de todas las series públicas archivadas en
+      familias comparables. Entrena con orden cronológico y separa validación,
+      holdout y resultados prospectivos. No modifica el precio original F001.</p>
+      <p id="f002Status" class="pde-status" role="status">Sin resultado conjunto empaquetado.</p>
+      <div id="f002Metrics" class="stats pde-stats"></div>
+      <div id="f002Coverage" class="signal-rows"></div>
+      <details class="raw-details">
+        <summary>Ver auditoría completa F002 y límites del entrenamiento</summary>
+        <pre id="f002Raw">Sin archivo F002.</pre>
+      </details>
+      <p class="fineprint">Informe generado sobre capturas reales durante la compilación.
+      Si falta historia, F002 se abstiene. No es pronóstico en tiempo real ni
+      señal de inversión; los modelos en el servidor requieren pruebas futuras.</p>
+    </article>
     <article class="card">
       <div class="section-head">
         <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
@@ -404,6 +424,7 @@
       </div>
       <p id="worldTime" class="helper">Archivo no integrado.</p>
       <div id="worldHistory" class="world-history"></div>
+      <p id="worldF002Status" class="helper">F002 conjunto: sin informe archivado.</p>
       <div class="stats world-kpis">
         <div><span>Fuentes observadas</span><strong id="worldSourceCount">—</strong></div>
         <div><span>Capturas históricas</span><strong id="worldCaptureCount">—</strong></div>

@@ -7,6 +7,7 @@
  */
 import {fusionTemporal} from '../prediccion/fusion-temporal.mjs';
 import {aprenderNucleoEF004} from '../demonio/finanzas-ef004.mjs';
+import {ejecutarPrediccionF002} from '../prediccion/conjunta-f002.mjs';
 import {resolverLaplaceGrafo} from '../ecuacion/laplace-grafo.mjs';
 import {resumirCapacidades} from './registro-capacidades.mjs';
 import {aplicarLaplaceAHorizontes,auditarUniversoLaplace} from '../ecuacion/laplace-financiero.mjs';
@@ -23,6 +24,14 @@ export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,capture
   else
     ef004={status:'abstained',reason:'independent_ef002_history_unavailable',
       model_ready:false,production_activation_allowed:false};
+  // F002 usa el archivo bitemporal sólo cuando está disponible. En Android
+  // sin archivo completo se abstiene, no altera el precio central F001.
+  const f002=Array.isArray(captures)&&captures.length?
+    ejecutarPrediccionF002(captures):{
+      status:'abstained',reason:'verified_ef002_archive_history_not_provided',
+      model_ready:false,production_activation_allowed:false,
+      prospectively_validated:false,central_f001_price_modified:false,
+      automatic_trading:false};
   // Un solo registro de capacidades para CLI, pruebas y APK.
   // Disponibilidad de código NO equivale a observación ni ejecución real.
   const capabilities=resumirCapacidades({world,ef004,
@@ -32,7 +41,7 @@ export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,capture
     reason:x.reason,source:x.source
   }));
   return {schema:INTEGRAL_SCHEMA,as_of:asOf,quote:fusion.quote,
-    F001:fusion,laplace_field:field,world:coverage,EF004:ef004,
+    F001:fusion,F002:f002,laplace_field:field,world:coverage,EF004:ef004,
     modules:availability,capabilities,global_price_predictive_skill_proven:false,
     all_financial_sources_available:false,no_auto_trading:true};
 }

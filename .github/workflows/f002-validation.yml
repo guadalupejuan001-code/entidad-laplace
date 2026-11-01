@@ -1,0 +1,83 @@
+name: Laplace F002 - Validación predictiva conjunta del archivo EF002
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
+      - 'tests/conjunta-f002.test.mjs'
+      - '.github/workflows/f002-validation.yml'
+  pull_request:
+    paths:
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
+      - 'tests/conjunta-f002.test.mjs'
+      - '.github/workflows/f002-validation.yml'
+      - 'nucleo/laplace-integral.mjs'
+      - 'apps/laplace-android/prepare-world.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  no-leakage-and-real-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          ref: laplace-archivo
+          path: deps/archivo
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Dependencias fijadas y sintaxis
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check prediccion/conjunta-f002.mjs
+          node --check tools/conjunta-f002.mjs
+          node --check tests/conjunta-f002.test.mjs
+      - name: Regresiones modelos, holdout temporal y sellos
+        run: |
+          set -euo pipefail
+          node --test tests/conjunta-f002.test.mjs
+          node --test tests/demonio-ef004.test.mjs tests/demonio-evaluacion-ef004.test.mjs tests/laplace-integral.test.mjs
+      - name: Ejecutar F002 sobre archivos EF002 auténticos (no mocks)
+        env:
+          LAPLACE_F002_INCLUDE_LEGACY: 'true'
+        run: |
+          set -euo pipefail
+          node tools/conjunta-f002.mjs ejecutar deps/archivo/capturas "$RUNNER_TEMP/f002-real" > "$RUNNER_TEMP/f002-result.json"
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const x=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/f002-result.json","utf8"));
+            assert.ok(x.archive_count>=1);
+            assert.equal(x.verified_real_archives_only,true);
+            assert.equal(x.production_activation_allowed,false);
+            assert.equal(x.automatic_trading,false);
+            assert.equal(x.central_f001_price_modified,false);
+            const trace=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/f002-real/"+x.raw_trace_filename,"utf8"));
+            assert.equal(trace.trace_sha256,x.raw_trace_sha256);
+            assert.equal(trace.source_series_all_latest_or_previous,x.raw_trace_series);
+            assert.ok(trace.signals.every(s=>Object.hasOwn(s,"current_value")&&
+              Object.hasOwn(s,"previous_value")&&Object.hasOwn(s,"status")));
+            assert.ok(trace.signals.length>500,"No se deben perder fuentes originales en la agregación");
+            assert.ok(["abstained","experimental_shadow_frozen"].includes(x.status));
+            if(x.matched_verified_outcomes<42){
+              assert.equal(x.status,"abstained");
+              assert.equal(x.forecast_sha256,null);
+            }
+            console.log(JSON.stringify({archives:x.archive_count,observed_series:x.observed_source_series,
+              valid_pairs:x.matched_verified_outcomes,status:x.status,reason:x.reason,
+              prospective:x.prospective_scorecard}));
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-f002-real-validation
+          path: ${{ runner.temp }}/f002-real/
+          retention-days: 21
+          if-no-files-found: warn

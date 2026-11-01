@@ -1,13 +1,17 @@
-name: LAPLACE Android 3.5 - Centro de análisis amigable XI F001
+name: LAPLACE Android 3.6 - F002 fuentes conjuntas y validación
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
     paths:
       - 'apps/laplace-android/**'
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   pull_request:
     paths:
       - 'apps/laplace-android/**'
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   workflow_dispatch:
 permissions:
@@ -70,13 +74,20 @@ jobs:
           set -euo pipefail
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
-          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs
+          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
-      - name: Incluir última captura financiera EF002 con verificación de hashes
+      - name: F002 · ejecutar predictor conjunto verificable sobre archivo verdadero
+        env:
+          LAPLACE_F002_INCLUDE_LEGACY: 'true'
         run: |
           set -euo pipefail
-          node apps/laplace-android/prepare-world.mjs world_archive/capturas model_archive/reportes
+          mkdir -p "$RUNNER_TEMP/f002-build"
+          node tools/conjunta-f002.mjs ejecutar world_archive/capturas "$RUNNER_TEMP/f002-build" model_archive > "$RUNNER_TEMP/f002-build/run.json"
+      - name: Incluir última captura financiera EF002 y estado F002
+        run: |
+          set -euo pipefail
+          node apps/laplace-android/prepare-world.mjs world_archive/capturas model_archive/reportes "$RUNNER_TEMP/f002-build/informes-f002"
       - name: Verificar que el archivo EF002 contiene estados auténticos
         run: |
           node --input-type=module -e '
@@ -94,9 +105,18 @@ jobs:
             assert.equal(w.history_index_complete,true);
             assert.equal(w.state_history_on_device,false);
             assert.equal(w.ef004_report?.verification,"real_archives_only_not_synthetic");
-            assert.equal(w.ef004_report?.status,"abstained");
+            assert.ok(["abstained","experimental_model_frozen"].includes(w.ef004_report?.status));
             assert.equal(w.ef004_report?.archive_count,undefined);
-            assert.equal(w.ef004_report?.model_ready,false);
+            assert.ok(["abstained","experimental_model_frozen"].includes(w.ef004_report?.status));
+            assert.equal(w.f002_report?.schema,"laplace-f002-joint-archive-v1");
+            assert.equal(w.f002_report?.capture_sha256,w.capture_sha256);
+            assert.equal(w.f002_report?.archive_manifests_verified,w.archive_manifests_count);
+            assert.equal(w.f002_report?.archive_count,
+              w.archive_manifests_count+w.f002_report?.supplemental_evidence_verified);
+            assert.equal(w.f002_report?.automatic_trading,false);
+            assert.equal(w.f002_report?.production_activation_allowed,false);
+            assert.equal(w.f002_report?.central_f001_price_modified,false);
+            assert.ok(w.f002_report?.source_series>=0);
             const swaps=w.groups.find(x=>x.group==="swaps_otc_d002");
             const sources=w.source_summary.find(x=>x.group==="swaps_otc_d002");
             if(swaps?.signals>0){
@@ -157,14 +177,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.ux35'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.f002'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.5'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.6'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-5-INSTALACION-PARALELA
+          name: LAPLACE-ANDROID-V3-6-F002-CONJUNTO-AUDITADO
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
