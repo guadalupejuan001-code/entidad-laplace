@@ -70,6 +70,46 @@ con emisión y resultado congelados antes de usar el conocimiento.
 
 M003 nunca cambia los precios de F001 o F002 y no entrega órdenes.
 
+
+## Resultado del primer diagnóstico sobre capturas auténticas
+
+Prueba GitHub Actions (2026-11-01) sobre las 7,488 velas Coinbase
+capturadas por X002, 26 días de datos:
+
+| Horizonte | Casos test no solapados | Error persistencia (pb) | Error modelo elegido (pb) | Error modelo solo inercia (pb) |
+| --- | ---: | ---: | ---: | ---: |
+| 5 minutos | 3,453 | 7.4366 | 7.4366 | 7.4351 |
+| 15 minutos | 1,149 | 12.5534 | 12.5534 | 12.5676 |
+| 60 minutos | 285 | 25.6714 | 25.6714 | 25.8127 |
+
+Los 4,887 casos se distribuyen entre tres horizontes con retornos
+compartidos en parte; NO son 4,887 resultados globalmente independientes.
+El selector de validación eligió **ningún grupo adicional** en los
+nueve ajustes (tres folds × tres horizontes), por no alcanzar el
+umbral predefinido de mejora. Estado de los tres horizontes:
+no_reproducible_edge_detected. No se encontraron pruebas suficientes
+de valor direccional adicional a persistencia dentro de esta ventana.
+
+La estratificación por volatilidad previa al test mostró mayor magnitud
+futura de retornos absolutos en el grupo de mayor volatilidad:
+
+| Horizonte | Baja volatilidad: amplitud media (pb) | Alta volatilidad: amplitud media (pb) |
+| --- | ---: | ---: |
+| 5 min | 5.53 | 9.09 |
+| 15 min | 9.70 | 15.02 |
+| 60 min | 19.99 | 30.78 |
+
+Estos números son la MAE de persistencia dentro de cada régimen,
+o sea una aproximación a la amplitud del desplazamiento. Los umbrales
+se estimaron únicamente con las barras de entrenamiento de cada fold.
+Son **asociaciones retrospectivas**: sugieren que merece estudiarse
+la previsión de rango/volatilidad ANTES de insistir en dirección y
+precio puntual. No establecen una ley causal ni un intervalo calibrado.
+
+La conclusión útil de este ciclo es negativa para dirección, y
+prometedora como **hipótesis de incertidumbre**. El código no activa
+ninguna señal en los motores operativos.
+
 ## De precedencia a mecanismos
 
 La siguiente pregunta exige condiciones más exigentes que un predictor:
