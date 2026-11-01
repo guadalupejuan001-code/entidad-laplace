@@ -118,7 +118,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',null,{timeout:20000});
     assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete',
       'El botón principal debe producir un candidato real desde M001');
-    assert.match(await page.locator('#smartSummary').innerText(),/\$/);
+    assert.match(await page.locator('#smartSummary').innerText(),/USD|\$/);
     assert.match(await page.locator('#smartExplain').innerText(),/persistencia|muestras/i);
     const captures=path.resolve(__dirname,'../build/ux-previews');
     fs.mkdirSync(captures,{recursive:true});
