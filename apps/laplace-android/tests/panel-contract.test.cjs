@@ -53,7 +53,7 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(app,/window\.LaplaceUIHealth/);
   assert.match(app,/setActionAvailability/);
   assert.match(app,/aplicarLaplaceAHorizontes/);
-  assert.match(app,/Sin precio verificable/);
+  assert.match(app,/Sin referencia disponible/);
   assert.match(app,/no se fabrica predicción/i);
   assert.match(world,/verifyUniverseSnapshot/);
   assert.match(world,/verificarSelloCaptura/);
