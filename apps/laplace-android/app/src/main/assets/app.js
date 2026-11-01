@@ -59,6 +59,8 @@ let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
 let log=[];
 let favorites=new Set(['BTC-USD','ETH-USD','AAPL','NVDA','SPY']);
+let autoQuoteEnabled=false,selectedQuoteBusy=false,lastQuoteAt=0;
+try{autoQuoteEnabled=localStorage.getItem('laplace-auto-quote-v1')==='yes';}catch(error){}
 try{const raw=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');
  if(Array.isArray(raw))favorites=new Set(raw.filter(s=>Markets?.BY_SYMBOL[s]));}catch(error){}
 let worldVisibleLimit=100;
@@ -649,6 +651,36 @@ function marketChoice(){
       'M001 ejecuta 16 horizontes de criptomonedas con Coinbase. '+ 
       'No está calibrado con pruebas prospectivas independientes.';
   renderFavoriteAssets();
+  updateQuoteControls();
+}
+function updateQuoteControls(){
+  const auto=$('autoQuoteToggle'),manual=$('refreshQuote');
+  auto.setAttribute('aria-pressed',String(autoQuoteEnabled));
+  auto.textContent=autoQuoteEnabled?'Auto 2 min · activado':'Auto 2 min · desactivado';
+  manual.disabled=selectedQuoteBusy;
+  manual.textContent=selectedQuoteBusy?'Consultando precio…':'Actualizar precio';
+}
+async function refreshSelectedQuote({silent=false}={}){
+  if(selectedQuoteBusy)return;
+  const requested=asset;selectedQuoteBusy=true;updateQuoteControls();
+  try{
+    const quote=await remote({kind:'quote',asset:requested});
+    if(asset!==requested)return;
+    lastQuoteAt=Date.now();
+    const previous=quotes.get(requested);
+    if(!(previous?.isLive&&tickerStream.isFresh(requested)))quotes.set(requested,quote);
+    renderQuotes();
+    if(!silent)status('Precio recibido de '+(quote.source??Markets.sourceLabel(asset))+
+      '. No representa el precio de ejecución en Robinhood.','success');
+  }catch(e){
+    if(asset===requested){
+      const existing=quotes.get(requested);
+      if(!existing?.isLive)quotes.delete(requested);
+      renderQuotes();
+      status('Cotización '+requested+' no disponible: '+e.message+
+        ' · No se utilizó un precio ficticio.','error');
+    }
+  }finally{selectedQuoteBusy=false;updateQuoteControls()}
 }
 function renderFavoriteAssets(){
   const node=$('favoriteAssets');node.replaceChildren();
@@ -829,6 +861,7 @@ async function refresh(){
       const previous=quotes.get(code);
       if(!(previous?.isLive&&tickerStream.isFresh(code)))
         quotes.set(code,q);
+      if(code===asset)lastQuoteAt=Date.now();
       renderQuotes();
     }catch(error){
       if(epoch!==refreshEpoch)return;
@@ -1383,6 +1416,14 @@ for(const b of document.querySelectorAll('[data-quote-asset]'))
   b.addEventListener('click',()=>changeAsset(b.dataset.quoteAsset));
 $('asset').addEventListener('change',()=>changeAsset($('asset').value));
 $('refresh').addEventListener('click',refresh);
+$('refreshQuote').addEventListener('click',()=>refreshSelectedQuote());
+$('autoQuoteToggle').addEventListener('click',()=>{
+  autoQuoteEnabled=!autoQuoteEnabled;lastQuoteAt=Date.now();
+  try{localStorage.setItem('laplace-auto-quote-v1',autoQuoteEnabled?'yes':'no')}catch(error){}
+  updateQuoteControls();
+  status(autoQuoteEnabled?'Actualización de precios activada cada 2 min mientras usas la APK.':
+    'Actualización periódica de precios desactivada.','info');
+});
 $('favoriteToggle').addEventListener('click',()=>{
   if(favorites.has(asset))favorites.delete(asset);
   else if(favorites.size<12)favorites.add(asset);
@@ -1448,6 +1489,9 @@ if(window.LaplaceLiveBridge){
   updateLiveBanner();
 }
 window.setInterval(()=>{
+  if(autoQuoteEnabled&&document.visibilityState==='visible'&&
+    Date.now()-lastQuoteAt>120000&&!loading&&!integralBusy)
+    refreshSelectedQuote({silent:true});
   updateLiveBanner();
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
