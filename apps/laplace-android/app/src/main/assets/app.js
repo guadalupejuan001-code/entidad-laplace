@@ -357,9 +357,37 @@ function renderF002(){
   }
   $('f002Raw').textContent=JSON.stringify(report,null,2);
 }
+function renderMarea(){
+  const root=$('mareaMetrics');if(!root)return;
+  root.replaceChildren();
+  if(Marea?.schema!=='laplace-marea-m003-mobile-summary-v1'){
+    $('mareaIntro').textContent='No se incorporó un mapa M003 verificado. '+
+      'Esta app no inventa relaciones predictivas.';
+    $('mareaRaw').textContent='Sin informe M003.';
+    return;
+  }
+  $('mareaIntro').textContent='Investigación M003 sobre '+
+    Marea.history_bars.toLocaleString('es-MX')+
+    ' velas históricas Bitcoin; no se aplica a '+asset+
+    ' ni modifica el precio de F001. Cierres históricos conocidos por suposición.';
+  for(const x of Marea.study){
+    const row=document.createElement('div'),time=document.createElement('strong'),
+      value=document.createElement('span'),meta=document.createElement('small');
+    row.className='integral-item';
+    time.textContent=x.minutes+' min · BTC';
+    value.textContent=x.status==='no_reproducible_edge_detected'?
+      'Sin ventaja repetible':'Hipótesis solo histórica';
+    meta.textContent=x.independent_horizon_outcomes+
+      ' casos retrospectivos · persistencia '+x.baseline_mae_bps+
+      ' pb · seleccionado '+x.selected_mae_bps+
+      ' pb · sin causalidad demostrada';
+    row.append(time,value,meta);root.appendChild(row);
+  }
+  $('mareaRaw').textContent=JSON.stringify(Marea,null,2);
+}
 function renderIntegral(){
   const table=$('integralTable'),modules=$('integralModules'),metrics=$('integralMetrics');
-  renderF002();
+  renderF002();renderMarea();
   if(!table||!modules||!metrics)return;
   table.replaceChildren();modules.replaceChildren();metrics.replaceChildren();
   const result=integralResult;
@@ -394,15 +422,15 @@ function renderIntegral(){
   }
   for(const row of fusion.horizons){
     const element=document.createElement('div');element.className='integral-item';
-    const label=document.createElement('strong'),statusText=document.createElement('span'),
+    const period=document.createElement('strong'),statusText=document.createElement('span'),
       detail=document.createElement('small');
-    label.textContent=label(row.minutes);
+    period.textContent=label(row.minutes);
     statusText.textContent=row.price_candidate===null?'Sin candidato':
       money(row.price_candidate);
     detail.textContent=(result.marketMode==='multiasset'?'M001 · ':'F001 · ')+
       row.status+' · '+row.analogs+' análogos'+
       (row.return_pct!==null?' · retorno '+number(row.return_pct)+' %':'');
-    element.append(label,statusText,detail);table.appendChild(element);
+    element.append(period,statusText,detail);table.appendChild(element);
   }
   const domain=field.status==='calculated'?
     'Lφ = 0: '+field.available_candidate_anchors+' fronteras experimentales; '+
