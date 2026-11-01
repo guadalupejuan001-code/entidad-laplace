@@ -9,6 +9,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {verifyUniverseSnapshot} from '../../universo/estados.mjs';
 import {verificarSelloCaptura} from '../../universo/integridad.mjs';
+import {resumirFuentesEF002} from '../../estado-financiero/resumen-fuentes.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const scriptDir=dirname(fileURLToPath(import.meta.url));
@@ -78,7 +79,6 @@ for(const state of states){
     });
   }
 }
-const summary=latest.manifest.summary??{};
 const world={
   schema:'laplace-android-world-ef002-verified-v2',
   captured_at:latest.capture.at,states_count:states.length,
@@ -95,7 +95,7 @@ const world={
   groups:(latest.capture.coverage?.groups??[]).map(g=>({
     group:String(g.group),signals:Number(g.signals??0),status:String(g.status)
   })).sort((a,b)=>b.signals-a.signals),
-  source_summary:(summary.source_summary??[]).map(g=>({
+  source_summary:resumirFuentesEF002(latest.capture.source_status??[]).map(g=>({
     group:g.group,observed_sources:g.observed_sources,
     failed_sources:g.failed_sources,restricted_sources:g.restricted_sources,
     signal_count:g.signal_count
