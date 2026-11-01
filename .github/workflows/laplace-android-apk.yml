@@ -63,6 +63,8 @@ jobs:
             "$SDK/cmdline-tools/16.0/bin/sdkmanager" --install 'platforms;android-35' 'build-tools;35.0.0'
           fi
           test -e "$SDK/platforms/android-35/android.jar"
+      - name: Instalar dependencias del núcleo de Laplace
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
           set -euo pipefail
