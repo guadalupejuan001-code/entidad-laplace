@@ -8,6 +8,8 @@ const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
 const Markets=window.LaplaceMarkets;
 const Marea=window.LAPLACE_MAREA??null;
+const Regime=window.LaplaceRegime;
+const RegimeArchive=window.LAPLACE_M004_EVIDENCE??null;
 const F=window.LaplaceIntegral;
 const Live=window.LaplaceLiveMath;
 const STORAGE='laplace-mobile-forecasts-v2';
@@ -52,6 +54,7 @@ let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let lastHistoryError=null;
 let xn01Busy=false,xn01Result=null;
 let integralResult=null,integralBusy=false;
+let regimeResult=null,regimeBusy=false,regimeCacheKey=null;
 let smartBusy=false,validationBusy=false;
 let loading=false,sequence=0,latestTest=null;
 const tickerStream=Live.createTracker();
@@ -92,6 +95,9 @@ function setActionAvailability(){
   $('refresh').disabled=loading;
   $('refresh').textContent=loading?'Consultando datos…':'Actualizar datos';
   $('integralRun').disabled=integralBusy;
+  if($('regimeStudy'))$('regimeStudy').disabled=loading||regimeBusy||!ready;
+  if($('regimeStudy'))$('regimeStudy').textContent=regimeBusy?
+    'Evaluando períodos históricos…':'Comprobar si el régimen ayuda a predecir la amplitud';
   $('xn01Run').disabled=xn01Busy||asset!=='BTC-USD';
   $('xn01Run').textContent=xn01Busy?'Ejecutando XI original…':'Calcular dirección nativa XI';
   const quick=$('smartRun');
@@ -752,6 +758,7 @@ function useHorizon(value){
   if(!E.HORIZONS.some(h=>h.minutes===m))return;
   const previous=historyGranularity;
   minutes=m;analysis=null;lastForecast=null;
+  regimeResult=null;regimeCacheKey=null;
   $('horizonSelect').value=String(m);
   for(const b of document.querySelectorAll('[data-minutes]')){
     const selected=Number(b.dataset.minutes)===m;
@@ -773,7 +780,7 @@ function useHorizon(value){
   smartMessage('idle','PLAZO SELECCIONADO',
     'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
     asset.replace('-','/'));
-  renderSignals();drawChart();setActionAvailability();
+  renderSignals();renderRegime();drawChart();setActionAvailability();
 }
 function remote(request){
   return new Promise((resolve,reject)=>{
@@ -898,7 +905,7 @@ async function refresh(){
       connection(isEquity()?'REFERENCIA HISTÓRICA':'VELAS LISTAS',true);
       status('Historial público descargado y ordenado. Pulsa Analizar o Proyectar.','success');
     }
-    evaluateHistory();renderSignals();drawChart();
+    evaluateHistory();renderSignals();renderRegime();drawChart();
   }catch(error){
     if(epoch===refreshEpoch){
       connection('HISTORIAL NO DISPONIBLE');
@@ -908,7 +915,7 @@ async function refresh(){
       history=null;historyGranularity=null;forgetEstimate();
       lastHistoryError=String(error.message);
       $('chartComment').textContent='No hay datos de mercado para graficar: '+error.message;
-      renderSignals();drawChart();
+      renderSignals();renderRegime();drawChart();
     }
   }finally{
     await Promise.allSettled(quotePromises);
@@ -1398,6 +1405,7 @@ function changeAsset(next){
   marketChoice();integralResult=null;renderIntegral();
   try{localStorage.setItem('laplace-last-asset',asset)}catch(error){}
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
+  regimeResult=null;regimeCacheKey=null;renderRegime();
   xn01Result=null;renderXN01();
   $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
     'XN01 XI/Ether original solo BTC; no se simula para otros activos.';
@@ -1454,6 +1462,7 @@ $('jumpSignals').addEventListener('click',()=>{show('signals');renderSignals()})
 $('jumpValidation').addEventListener('click',()=>show('tests'));
 $('smartRun').addEventListener('click',runSmart);
 $('validationRun').addEventListener('click',runValidation);
+$('regimeStudy').addEventListener('click',runRegimeStudy);
 $('clearHistory').addEventListener('click',()=>{
   log=[];persist();renderHistory();
   status('Registro local limpiado. No se alteraron datos del proveedor.','success');
@@ -1496,10 +1505,10 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.7',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'3.8',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
-    'worldShowMore','jumpSignals']};
+    'worldShowMore','jumpSignals','regimeStudy']};
 setTimeout(refresh,200);
 })();
