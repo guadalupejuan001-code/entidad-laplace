@@ -78,6 +78,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
+    const navHeight=await page.locator('.tabs').evaluate(el=>el.getBoundingClientRect().height);
+    assert.ok(navHeight>=55&&navHeight<=100,'Barra móvil fuera de escala: '+navHeight);
     assert.equal(await page.locator('[data-minutes]').count(),16);
     assert.equal(await page.locator('#horizonSelect option').count(),16);
     // La carga inicial está simulada, pero el controller debe recibir datos.
@@ -174,6 +176,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('#capabilityRefresh').click();
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
     await page.screenshot({path:path.join(captures,'LAPLACE-3.5-FUENTES-SIMULADO.png')});
+    const overflowSources=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+    assert.ok(overflowSources<=3,'Fuentes desbordan ancho de 393 px: '+overflowSources);
     await page.locator('[data-tab="equation"]').click();
     await page.selectOption('#pdePreset','quadratic');
     await page.locator('#pdeSolve').click();
