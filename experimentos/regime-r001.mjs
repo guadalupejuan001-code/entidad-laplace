@@ -147,7 +147,7 @@ function magnitudeModel(train){
 /* Diagnóstico por bloques continuos: incertidumbre por autocorrelación.
  * No es certificación estadística ni prueba prospectiva.
  */
-function blockBootstrap(differences,{repetitions=300,blockSize=12}={}){
+function blockBootstrap(differences,{repetitions=300,blockSize=72}={}){
  const n=differences.length;
  if(n<30)return {status:'insufficient',lower_bps:null,upper_bps:null};
  let seed=0x9e3779b9;
