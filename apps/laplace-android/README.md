@@ -5,6 +5,17 @@ Entidad Laplace: ojo triangular y vórtice central como identidad estética
 de entrada de señales. No instala REVERSE-PC ni reemplaza los modelos
 científicos del repositorio principal.
 
+### Instalación de pruebas 3.5
+
+La APK de depuración se instala como **LAPLACE 3.5** con identificador
+`com.entidadlaplace.mobile.ux35`, diferente del identificador de la
+3.4. Los certificados de depuración de GitHub Actions pueden cambiar,
+por lo que una actualización directa fallaría con "App no instalada".
+Esta variante se instala **junto a 3.4** sin desinstalarla: conserva
+el historial de la aplicación antigua en su propio espacio. Los
+registros M001 no se migran entre aplicaciones ni se prometen como
+datos sincronizados. Requiere Android ARM64 (arm64-v8a), API 26+.
+
 ## Android 3.5 — centro de análisis y navegación inteligente
 
 **Objetivo:** quitar fricción y botones redundantes sin cambiar el cálculo original.
