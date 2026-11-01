@@ -18,6 +18,7 @@ const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
 const label=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
 let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
+let lastHistoryError=null;
 let xn01Busy=false,xn01Result=null;
 let integralResult=null,integralBusy=false;
 let smartBusy=false,validationBusy=false;
@@ -556,6 +557,7 @@ async function refresh(){
       history=rows;historyGranularity=granularity;lastHistoryFetch=Date.now();
       forgetEstimate();
     }
+    lastHistoryError=null;
     const last=history.at(-1),age=Math.max(0,Math.round(Date.now()/1000-
       (last.time+granularity)));
     $('lastPrice').textContent=money(last.close);
@@ -582,6 +584,7 @@ async function refresh(){
       status('Error al cargar historia: '+error.message+
         '. Se conserva vacío; no se fabrica predicción.','error');
       history=null;historyGranularity=null;forgetEstimate();
+      lastHistoryError=String(error.message);
       $('chartComment').textContent='No hay datos de mercado para graficar: '+error.message;
       renderSignals();drawChart();
     }
@@ -609,12 +612,16 @@ async function ensureAnalysisHistory(){
   if(!history||historyGranularity!==E.selectResolution(minutes)||
      Date.now()-lastHistoryFetch>180000)
     await refresh();
+  if(!history)throw Error(lastHistoryError??'No llegaron velas verificables.');
   try{return latestObservedOrFail()}
   catch(error){
     // Un historial antiguo no se usa aunque acabemos de consultar el ticker.
     // Sólo se hace un segundo intento si los datos cargados eran antiguos.
     if(history&&Date.now()-lastHistoryFetch<180000){
+      // No reutilizar una caché con barras vencidas.
+      lastHistoryFetch=0;
       await refresh();
+      if(!history)throw Error(lastHistoryError??'No llegaron velas actuales.');
       return latestObservedOrFail();
     }
     throw error;
