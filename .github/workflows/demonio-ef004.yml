@@ -70,6 +70,8 @@ jobs:
             console.log(JSON.stringify(x));
           '
       - name: F002 · ejecutar estudio conjunto sobre archivos EF002 reales
+        env:
+          LAPLACE_F002_INCLUDE_LEGACY: 'true'
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/f002-output"
