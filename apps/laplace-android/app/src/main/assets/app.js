@@ -20,6 +20,7 @@ let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let xn01Busy=false,xn01Result=null;
 let integralResult=null,integralBusy=false;
+let smartBusy=false,validationBusy=false;
 let loading=false,sequence=0,latestTest=null;
 const tickerStream=Live.createTracker();
 let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
@@ -56,6 +57,17 @@ function setActionAvailability(){
   $('integralRun').disabled=integralBusy;
   $('xn01Run').disabled=xn01Busy||asset!=='BTC-USD';
   $('xn01Run').textContent=xn01Busy?'Ejecutando XI original…':'Calcular dirección nativa XI';
+  const quick=$('smartRun');
+  if(quick){
+    quick.disabled=loading||smartBusy||validationBusy;
+    const label=quick.querySelector('strong');
+    if(label)label.textContent=smartBusy?'Analizando mercado…':'Analizar ahora';
+  }
+  const validate=$('validationRun');
+  if(validate){
+    validate.disabled=loading||validationBusy||smartBusy;
+    validate.textContent=validationBusy?'Calculando pruebas…':'Calcular validación del activo elegido';
+  }
 }
 
 /* WebSocket reception is a separate, explicitly labeled source.
@@ -368,21 +380,22 @@ async function runIntegral(){
     renderIntegral();renderCapabilities();
   }finally{
     integralBusy=false;setActionAvailability();
-    $('integralRun').textContent='Consultar y calcular F001 para BTC';
+    $('integralRun').textContent='Calcular los 14 horizontes de Bitcoin';
   }
 }
 
 function show(page){
-  
-
-for(const b of document.querySelectorAll('[data-tab]'))
-    b.setAttribute('aria-current',b.dataset.tab===page?'page':'false');
+  const navPage=page==='signals'?'world':page;
+  for(const b of document.querySelectorAll('[data-tab]'))
+    b.setAttribute('aria-current',b.dataset.tab===navPage?'page':'false');
   for(const section of document.querySelectorAll('.tabpage'))
     section.hidden=section.id!==page;
   if(page==='world')renderWorld();
   if(page==='integral')renderIntegral();
   if(page==='tests'){showTests();renderHistory()}
   if(page==='panel')setTimeout(()=>{drawChart();drawLiveChart();updateLiveBanner();},60);
+  // Evita quedarse navegando a una sección que no tiene vuelta visible.
+  window.scrollTo?.({top:0,behavior:'instant'});
 }
 function renderQuotes(){
   const short={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
@@ -435,6 +448,9 @@ function useHorizon(value){
     $('chartComment').textContent='Historial pendiente para '+label(m)+'.';
     status('Horizonte cambiado. Es necesario consultar velas de '+E.HISTORICAL_CONFIG[E.selectResolution(m)].label+'.');
   }
+  smartMessage('idle','PLAZO SELECCIONADO',
+    'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
+    asset.replace('-','/'));
   renderSignals();drawChart();setActionAvailability();
 }
 function remote(request){
@@ -575,6 +591,98 @@ async function refresh(){
       loading=false;setActionAvailability();renderQuotes();
     }
   }
+}
+/* Flujo principal 3.5. Mismo M001 original: descarga datos y calcula un
+ * candidato sólo si los patrones y los cortes temporales son válidos.
+ * No altera pesos, no sintetiza series, no permite trading.
+ */
+function smartMessage(state,badge,summary,explanation,evidence){
+  const root=$('smartResult');
+  if(!root)return;
+  root.dataset.state=state;
+  $('smartBadge').textContent=badge;
+  $('smartSummary').textContent=summary;
+  $('smartExplain').textContent=explanation;
+  $('smartEvidence').textContent=evidence??'';
+}
+async function ensureAnalysisHistory(){
+  if(!history||historyGranularity!==E.selectResolution(minutes)||
+     Date.now()-lastHistoryFetch>180000)
+    await refresh();
+  try{return latestObservedOrFail()}
+  catch(error){
+    // Un historial antiguo no se usa aunque acabemos de consultar el ticker.
+    // Sólo se hace un segundo intento si los datos cargados eran antiguos.
+    if(history&&Date.now()-lastHistoryFetch<180000){
+      await refresh();
+      return latestObservedOrFail();
+    }
+    throw error;
+  }
+}
+async function runSmart(){
+  if(smartBusy||loading)return;
+  const chosenAsset=asset,chosenMinutes=minutes;
+  smartBusy=true;setActionAvailability();
+  smartMessage('working','COMPROBANDO FUENTES',
+    'Analizando '+chosenAsset.replace('-','/')+'…',
+    'Validando velas cerradas, patrones históricos y precio de referencia.',
+    'M001 · '+label(chosenMinutes));
+  try{
+    await ensureAnalysisHistory();
+    if(asset!==chosenAsset||minutes!==chosenMinutes)
+      throw Error('Cambiaste de activo o plazo durante la consulta; vuelve a analizar.');
+    const model=calculateModel();
+    if(!model.ready){
+      smartMessage('abstained','SIN SOPORTE SUFICIENTE',
+        'M001 se abstiene de proyectar.',
+        String(model.reason??'No hay análogos independientes suficientes para este plazo.'),
+        model.historyCount+' velas · '+model.patterns+' patrones');
+      status('M001 se abstuvo. '+String(model.reason),'error');
+      return;
+    }
+    forecastAction(); // El único camino canónico de M001; guarda evidencia y dibuja.
+    const forecast=lastForecast;
+    if(!forecast)throw Error('No fue posible producir un candidato con datos válidos.');
+    const v=model.validation;
+    const compared=v.evaluated>0&&Number.isFinite(v.candidateMAE)&&
+      Number.isFinite(v.baselineMAE);
+    const comparison=!compared?'Sin muestras suficientes para comparar errores.':
+      v.candidateMAE<v.baselineMAE?
+        'En la prueba retrospectiva, el error M001 fue menor que persistencia.':
+        'En la prueba retrospectiva, M001 no superó la referencia de persistencia.';
+    smartMessage('complete','CÁLCULO EXPERIMENTAL',
+      money(forecast.estimate)+' · '+label(chosenMinutes),
+      'Desde '+money(forecast.fromPrice)+' ('+
+        percent(forecast.relativeChange)+'). '+model.patterns+
+        ' patrones históricos y '+v.evaluated+' casos de evaluación. '+
+        comparison+' No es una predicción calibrada ni una recomendación de operar.',
+      forecast.sourceType+' · '+label(chosenMinutes));
+  }catch(error){
+    smartMessage('error','SIN RESULTADO VERIFICABLE','No se emitió un candidato.',
+      String(error.message??error)+' · Revisa la fuente o intenta nuevamente.',
+      chosenAsset+' · '+label(chosenMinutes));
+    status('Análisis no disponible: '+String(error.message??error),'error');
+  }finally{smartBusy=false;setActionAvailability()}
+}
+async function runValidation(){
+  if(validationBusy||loading)return;
+  validationBusy=true;setActionAvailability();
+  $('validationStatus').textContent='Preparando histórico y prueba cronológica…';
+  try{
+    await ensureAnalysisHistory();
+    const m=calculateModel();
+    const changed=evaluateHistory();
+    show('tests');showTests();renderHistory();
+    const v=m.validation;
+    $('validationStatus').textContent='Evaluados '+v.evaluated+
+      ' casos retrospectivos; '+changed.evaluated+
+      ' pronósticos locales nuevos comprobados. Sin ventaja futura garantizada.';
+    status('Validación M001 actualizada con barras cerradas.','success');
+  }catch(error){
+    $('validationStatus').textContent='Validación no disponible: '+error.message;
+    status('No fue posible validar: '+error.message,'error');
+  }finally{validationBusy=false;setActionAvailability()}
 }
 function latestObservedOrFail(){
   if(!history||historyGranularity!==E.selectResolution(minutes))
@@ -846,12 +954,17 @@ function renderCapabilities(){
     'EF004: ningún informe del mismo archivo disponible en esta compilación; no se asume que entrenó.';
   $('capabilityRaw').textContent=JSON.stringify(report,null,2);
   const query=$('capabilityQuery').value.toLocaleLowerCase('es-MX').trim();
+  const filter=$('capabilityFilter')?.value??'all';
   const names={executed:'EJECUTADO',observed_archive:'OBSERVADO EN ARCHIVO',
     partial:'PARCIAL',abstained:'ABSTENCIÓN',
     not_executed:'NO EJECUTADO',not_observed:'NO OBSERVADO'};
   const matching=report.items.filter(x=>
     (x.id+' '+x.key+' '+x.title+' '+x.source+' '+x.reason).
-      toLocaleLowerCase('es-MX').includes(query));
+      toLocaleLowerCase('es-MX').includes(query)).filter(x=>
+      filter==='all'||(filter==='usable'&&
+        ['executed','observed_archive'].includes(x.state))||
+        (filter==='pending'&&
+          ['partial','not_executed','not_observed','abstained'].includes(x.state)));
   if(!matching.length){
     const p=document.createElement('p');
     p.textContent='No coincide ninguna capacidad con la búsqueda.';
@@ -941,6 +1054,9 @@ function changeAsset(next){
   xn01Result=null;renderXN01();
   $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
     'XN01 original bursátil no está integrado; BTC sí está disponible.';
+  smartMessage('idle','ACTIVO SELECCIONADO','Listo para '+asset.replace('-','/')+'.',
+    'El próximo cálculo utilizará velas de este activo, sin mezclar mercados.',
+    'PLAZO · '+label(minutes));
   renderQuotes();renderSignals();drawChart();updateLiveBanner();drawLiveChart();updateLivePreview();
   refresh();
 }
@@ -966,7 +1082,16 @@ $('worldShowMore').addEventListener('click',()=>{
   worldVisibleLimit+=100;renderWorldObservations();
 });
 $('capabilityQuery').addEventListener('input',renderCapabilities);
-$('capabilityRefresh').addEventListener('click',renderCapabilities);
+$('capabilityFilter').addEventListener('change',renderCapabilities);
+$('capabilityRefresh').addEventListener('click',()=>{
+  $('capabilityQuery').value='';
+  $('capabilityFilter').value='all';
+  renderCapabilities();
+});
+$('jumpSignals').addEventListener('click',()=>{show('signals');renderSignals()});
+$('jumpValidation').addEventListener('click',()=>show('tests'));
+$('smartRun').addEventListener('click',runSmart);
+$('validationRun').addEventListener('click',runValidation);
 $('clearHistory').addEventListener('click',()=>{
   log=[];persist();renderHistory();
   status('Registro local limpiado. No se alteraron datos del proveedor.','success');
@@ -995,8 +1120,10 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.4',tabs:6,
-  actions:['refresh','forecast','train','test','evaluate','integralRun','xn01Run',
-    'liveToggle','clearHistory','pdeSolve','graphSolve','capabilityRefresh','worldShowMore']};
+window.LaplaceUIHealth={initialized:true,version:'3.5',tabs:5,
+  actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
+    'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
+    'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
+    'worldShowMore','jumpSignals']};
 setTimeout(refresh,200);
 })();
