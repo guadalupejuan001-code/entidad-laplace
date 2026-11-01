@@ -1,3 +1,46 @@
+## Android 3.7 — mercado ampliado y consulta con Robinhood
+
+Esta versión conserva el núcleo BTC original y agrega **31 activos
+seleccionables**: 10 criptomonedas Coinbase y 21 acciones/ETF de EE. UU.
+(AAPL, NVDA, TSLA, AMD, MSFT, AMZN, GOOGL, META, HOOD, COIN, MSTR,
+SOFI, PLTR, NFLX, JPM, SPY, QQQ, DIA, IWM, VOO, VTI).
+
+- BTC/USD conserva **F001 de 14 horizontes** y su Laplaciano, más XN01
+  nativo, M001, EF002, EF004, F002 y el laboratorio.
+- Otras criptomonedas y 21 valores bursátiles usan **M001
+  experimental de 16 horizontes** (5 minutos hasta 90 días/sesiones).
+  No se afirma que los modelos estén calibrados igual que BTC.
+- Para bolsa, *días* largos equivalen a **sesiones bursátiles
+  observadas**, no a días calendarios. No se inventa un instante
+  exacto para fines de semana ni se guardan pronósticos bursátiles
+  como vencidos a una hora ficticia.
+- **Coinbase:** cotizaciones públicas y WebSocket solo para los tres
+  activos originales BTC, ETH y SOL. Los demás usan HTTPS por selección.
+- **Acciones/ETF:** Yahoo Finance Chart público **no oficial**,
+  potencialmente retrasado, limitado o bloqueado (HTTP 429).
+  No es un feed NBBO consolidado, ni información del broker, ni
+  precio garantizado de ejecución. Fuente caída equivale a abstención.
+- **Robinhood:** enlace externo a la ficha del activo. La app no
+  solicita credenciales ni accede a saldo, órdenes o posiciones.
+- **Favoritos locales:** máximo 12, no sincronizados con Robinhood.
+- **Actualizar precio:** lectura de un ticker sin descargar historial.
+- **Auto 2 min:** opción apagada por defecto; consulta solo el
+  activo elegido mientras la interfaz está visible.
+- **Marea M003:** resumen del experimento retrospectivo sobre 7488
+  velas BTC, con resultado negativo para ventaja consistente. No
+  modifica predicciones bursátiles.
+- **F002/EF004:** estados independientes; abstención si falta evidencia.
+
+Instalación: debug de paquete **com.entidadlaplace.mobile.multi37**
+(versionCode 12, versión 3.7.0-MULTI-MARKET-RESEARCH), paralelo a
+3.4/3.5/3.6. No transfiere ni borra registros anteriores.
+
+Chromium usa cotizaciones SIMULADAS para la prueba de UI; Android JUnit
+comprueba el parser Yahoo offline. Esas pruebas no acreditan
+disponibilidad real de Yahoo en todos los dispositivos. La investigación
+es experimental y no constituye asesoría de inversión.
+
+
 # Laplace Android — APK financiera independiente
 
 Aplicación Android autónoma basada en el concepto visual aportado para
