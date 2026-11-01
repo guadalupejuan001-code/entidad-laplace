@@ -116,12 +116,19 @@ export function prepararPanelF002(captures,{
     horizonHours>0&&toleranceHours>=0&&toleranceHours<horizonHours&&freshnessHours>0,
     'horizonte/tolerancia inválidos');
   const list=snapshotList(captures),samples=[];
-  let matched=0,missed=0;
+  let matched=0,missed=0,skippedOverlapping=0;
+  let lastIndependentDecision=-Infinity;
+  const usedOutcomeCaptures=new Set();
   for(let i=1;i<list.length;i++){
     const previous=list[i-1],now=list[i],ref=btc(now);
     const input=cambiosF002(previous,now,{freshnessHours});
     if(!ref){missed++;continue}
     const decision=Date.parse(now.at),target=decision+horizonHours*HOUR;
+    // Cortes repetidos dentro de una ventana no son experimentos independientes.
+    // El futuro usado como etiqueta se reserva para una única decisión.
+    if(decision-lastIndependentDecision<horizonHours*HOUR*.85){
+      skippedOverlapping++;continue;
+    }
     // El precio objetivo debe existir en un archivo FUTURO, nunca ser rellenado.
     const candidates=list.slice(i+1).map(s=>({s,price:btc(s)})).filter(x=>
       x.price&&Date.parse(x.price.observed_at)>decision&&
@@ -129,8 +136,10 @@ export function prepararPanelF002(captures,{
     candidates.sort((a,b)=>
       Math.abs(Date.parse(a.s.at)-target)-Math.abs(Date.parse(b.s.at)-target)||
       a.s.at.localeCompare(b.s.at));
+    const independent=candidates.find(x=>!usedOutcomeCaptures.has(x.s.capture_sha256));
+    if(!independent){skippedOverlapping++;continue}
     if(!candidates.length){missed++;continue}
-    const {s,price}=candidates[0];
+    const {s,price}=independent;
     const y=Math.log(price.value/ref.value);
     if(!finite(y)||Math.abs(y)>1){missed++;continue}
     samples.push({decision_at:now.at,decision_sha256:now.capture_sha256,
@@ -140,6 +149,8 @@ export function prepararPanelF002(captures,{
       outcome_capture_sha256:s.capture_sha256,
       actual_price:price.value,actual_log_return:y,
       features:input.features,accounting:input.accounting});
+    usedOutcomeCaptures.add(s.capture_sha256);
+    lastIndependentDecision=decision;
     matched++;
   }
   const latest=list.length>=2?cambiosF002(list.at(-2),list.at(-1),
@@ -166,6 +177,7 @@ export function prepararPanelF002(captures,{
     latest_capture_sha256:final?.capture_sha256??null,
     asset:'BTC-USD',target_horizon_hours:horizonHours,tolerance_hours:toleranceHours,
     matched_outcomes:matched,unmatched_decisions:missed,
+    skipped_correlated_decisions:skippedOverlapping,
     historical_pairs:samples,latest_input:latest,
     latest_spot:spot?{price:spot.value,observed_at:spot.observed_at,
       known_at:spot.known_at,source_url:spot.source_url}:null,
