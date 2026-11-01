@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {universeSnapshot} from '../universo/estados.mjs';
 import {sellarCaptura} from '../universo/integridad.mjs';
 import {grupoF002,cambiosF002,prepararPanelF002,ejecutarPrediccionF002,
-  verificarPronosticoF002,evaluarPronosticoF002,resumirValidacionProspectivaF002,
+  verificarPronosticoF002,evaluarPronosticoF002,resumirValidacionProspectivaF002,trazaOriginalF002,
   F002_GROUPS,F002_FEATURE_NAMES} from '../prediccion/conjunta-f002.mjs';
 import {estadoDeCaptura} from '../demonio/series.mjs';
 
@@ -80,6 +80,18 @@ test('F002 considera todos los estados públicos y mantiene ausencias explícita
   const input=prepararPanelF002(captures);
   assert.ok(input.distinct_source_series>=7);
   assert.equal(input.source_groups.find(x=>x.group==='etf_fund_flows_c001').restricted,1);
+});
+test('F002 conserva cada valor original sin ocultarlo por la mediana del grupo',()=>{
+  const captures=synthetic(4),trace=trazaOriginalF002(captures);
+  assert.equal(trace.schema,'laplace-f002-raw-state-trace-v1');
+  assert.equal(trace.source_series_all_latest_or_previous,7);
+  assert.equal(trace.observed_states,7);
+  assert.equal(trace.unrounded_original_values_retained,true);
+  assert.match(trace.trace_sha256,/^[a-f0-9]{64}$/);
+  assert.ok(trace.signals.some(x=>x.group==='flujos_derivados'&&x.current_value!==null));
+  assert.ok(trace.signals.every(x=>Object.hasOwn(x,'previous_value')&&
+    Object.hasOwn(x,'current_value')&&
+    !Object.hasOwn(x,'source_url')));
 });
 test('cinco capturas no prueban precisión, ni generan precios ficticios',()=>{
   const result=ejecutarPrediccionF002(synthetic(5));
