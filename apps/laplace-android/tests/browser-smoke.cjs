@@ -14,7 +14,7 @@ const mock=[
   "(()=>{",
   "function candles(asset,step,days){",
   "const end=Math.floor(Date.now()/1000/step)*step;",
-  "const total=Math.floor(days*86400/step);let value=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:180;",
+  "const total=Math.min(2400,Math.floor(days*86400/step));let value=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:asset==='SOL-USD'?180:asset==='AAPL'?350:200;",
   "const rows=[];",
   "for(let i=0;i<total;i++){",
   "const t=end-(total-i)*step;",
@@ -24,8 +24,8 @@ const mock=[
   "return rows;}",
   "window.LaplaceBridge={",
   "fetchCandles(id,asset,step,days){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:step,candles:candles(asset,step,days)}),15);},",
-  "fetchQuote(id,asset){const p=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:180;",
-  "setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:p,time:new Date().toISOString(),receivedAt:Date.now(),source:'SIMULACION SOLO PARA TEST'}}),10);}",
+  "fetchQuote(id,asset){const p=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:asset==='SOL-USD'?180:asset==='AAPL'?350:200;",
+  "setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:p,time:new Date().toISOString(),receivedAt:Date.now(),source:asset.includes('-USD')?'SIMULACION COINBASE SOLO PARA TEST':'SIMULACION YAHOO SOLO PARA TEST',market:asset.includes('-USD')?'crypto':'equity',indicative:!asset.includes('-USD')}}),10);}",
   "};",
   "let nextSeq=21;",
   "function simulatedLive(){if(!window.LaplaceMobile)return;",
@@ -57,8 +57,8 @@ window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
 const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
   '<style>'+read('style.css')+'</style>')
   .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
-const sources=['world.js','engine.js','math-pde.js','fusion-integral.js',
-  'pde-panel.js','live-feed.js','app.js'];
+const sources=['world.js','market-universe.js','marea.js','engine.js',
+  'math-pde.js','fusion-integral.js','pde-panel.js','live-feed.js','app.js'];
 const loaded=removeSources.replace('</body>',
   '<script>'+mock+mockXN01+'</script>'+
   sources.map(name=>'<script>'+read(name).replace(/<\/script>/g,'<\\/script>')+'</script>').join('')+
@@ -78,6 +78,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
+    assert.equal(await page.locator('#asset option').count(),31);
+    assert.equal(await page.locator('#asset optgroup').count(),3);
+    assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
+    assert.match(await page.locator('#selectedProvider').innerText(),/Coinbase|SIMULACION|público/i);
     const navHeight=await page.locator('.tabs').evaluate(el=>el.getBoundingClientRect().height);
     assert.ok(navHeight>=55&&navHeight<=100,'Barra móvil fuera de escala: '+navHeight);
     assert.equal(await page.locator('[data-minutes]').count(),16);
