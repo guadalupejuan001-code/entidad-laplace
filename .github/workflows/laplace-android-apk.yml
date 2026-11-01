@@ -146,7 +146,7 @@ jobs:
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-3-XN01-RAW
+          name: LAPLACE-ANDROID-V3-4-20-MODULOS-AUDITADOS
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
