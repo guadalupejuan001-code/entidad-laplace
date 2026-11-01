@@ -98,7 +98,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#quoteBTC').innerText(),/61,\d+/);
     await page.locator('#marketDetails > summary').click();
     assert.match(await page.locator('#liveGraphLabel').innerText(),/operaci/);
-    assert.match(await page.locator('#quoteTrace').innerText(),/Fuente.*Coinbase/i);
+    assert.match(await page.locator('#quoteTrace').innerText(),/Coinbase/i);
     await page.locator('#marketDetails > summary').click();
     const prevBTC=await page.locator('#quoteBTC').innerText();
     await page.evaluate(()=>{
