@@ -195,10 +195,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('#integralRun').click();
     await page.waitForFunction(()=>{
       const t=document.querySelector('#integralStatus').textContent;
-      return t.includes('F001 completado')||t.includes('No se pudo completar');
+      return t.includes('F001 original BTC')||t.includes('no pudo completarse');
     },{timeout:90000});
-    assert.match(await page.locator('#integralStatus').innerText(),/F001 completado/);
-    assert.equal(await page.locator('.integral-item').count(),14);
+    assert.match(await page.locator('#integralStatus').innerText(),/F001 original BTC/);
+    assert.equal(await page.locator('#integralTable .integral-item').count(),14);
     assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
     // Mercado bursátil: datos del mock exclusivamente para interacción.
