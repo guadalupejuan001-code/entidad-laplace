@@ -140,9 +140,15 @@ function analogsAt(bars,anchor,granularity,horizonBars,{limit=MAX_ANALOGS,asset=
 }
 function backtest(bars,granularity,horizonBars,asset='BTC-USD'){ 
   const first=Math.max(FEATURE_BARS+2,Math.floor(bars.length*.75));
+  const possible=bars.length-first-horizonBars;
+  // Acciones: muestreo cronológico sin solapamiento de hasta ~96 decisiones.
+  // Preserva M001 original de cripto sin modificar su política histórica.
+  const stride=equity(asset)?
+    horizonBars*Math.max(1,Math.ceil(possible/(96*horizonBars))):
+    horizonBars;
   let total=0,candidateErrors=0,referenceErrors=0,directions=0,correct=0;
   const results=[];
-  for(let i=first;i+horizonBars<bars.length;i+=horizonBars){
+  for(let i=first;i+horizonBars<bars.length;i+=stride){
     if(!hasContinuousWindow(bars,i,i+horizonBars,granularity,asset))continue;
     const pred=analogsAt(bars,i,granularity,horizonBars,{asset});
     if(pred.reason!==null)continue;
@@ -161,7 +167,8 @@ function backtest(bars,granularity,horizonBars,asset='BTC-USD'){
     skill:baselineMAE>0?1-mae/baselineMAE:null,
     correctDirections:correct,validDirections:directions,
     independentProspectiveValidation:false,
-    method:'walk_forward_chronological_non_overlapping_targets',
+    method:equity(asset)?'sampled_walk_forward_chronological_non_overlapping_targets':
+      'walk_forward_chronological_non_overlapping_targets',
     ...{results:results.slice(-30)}};
 }
 function analyze(raw,{granularity,horizonMinutes,asset='BTC-USD'}={}){
@@ -176,11 +183,14 @@ function analyze(raw,{granularity,horizonMinutes,asset='BTC-USD'}={}){
     'Historial insuficiente para '+horizonMinutes+' minutos.');
   const last=bars.at(-1),current=analogsAt(bars,bars.length-1,granularity,horizonBars,{asset});
   const validation=backtest(bars,granularity,horizonBars,asset);
-  const ready=current.reason===null;
+  const insufficientStockEvidence=equity(asset)&&validation.evaluated<8;
+  const ready=current.reason===null&&!insufficientStockEvidence;
+  const reason=insufficientStockEvidence?'Sólo '+validation.evaluated+
+    ' pruebas temporales independientes de bolsa; hacen falta 8.':current.reason;
   return {asset,horizonMinutes,granularity,
     firstTime:bars[0].time,lastTime:last.time,observedLast:last.close,
     historyCount:bars.length,horizonBars,
-    ready,reason:current.reason,features:current.features??null,
+    ready,reason,features:current.features??null,
     examples:current.analogs.map(x=>({...x})),
     patterns:current.analogs.length,returnLog:ready?current.returnLog:null,
     lowerReturn:ready?current.lowerReturn:null,
