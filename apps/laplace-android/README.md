@@ -1,3 +1,55 @@
+## LAPLACE Android 3.8 — regímenes y aprendizaje M004
+
+La nueva versión incorpora inteligencia estadística experimental, no pesos
+neuronales ni una certificación de exactitud financiera.
+
+M004 calcula la volatilidad (baja, media, alta), la tendencia
+(alcista, bajista o lateral) y la actividad de volumen a partir de
+las velas cerradas del activo elegido. Los umbrales se ajustan
+únicamente con datos históricos conocidos al momento de decidir.
+
+El botón **Comprobar si el régimen ayuda a predecir la amplitud**
+realiza tres cortes cronológicos, con entrenamiento, validación y
+prueba reservada. Compara tres variantes condicionales con la
+referencia de la magnitud histórica incondicional, y publica los
+errores negativos, muestras insuficientes y abstenciones.
+
+### Prueba auténtica sobre 7.488 velas BTC de cinco minutos
+
+| Horizonte | Error modelo M004 | Error referencia histórica | Diferencia |
+| --- | ---: | ---: | ---: |
+| 5 minutos | 4.890765 pb | 5.129500 pb | +4.6542 % |
+| 15 minutos | 8.846849 pb | 8.840645 pb | -0.0702 % |
+| 60 minutos | 17.671145 pb | 17.512636 pb | -0.9051 % |
+
+Las cifras son errores absolutos de magnitud de retorno logarítmico
+en puntos básicos. No son errores de precio ni aciertos direccionales.
+Todos los resultados son RETROSPECTIVOS; el archivo X002 no contiene
+vintages minuto a minuto autenticados. Ni siquiera 5 minutos tiene
+una ventaja prospectiva demostrada.
+
+En Android la tarjeta M004 observa únicamente velas cerradas del
+activo seleccionado; la prueba explícita utiliza ese mismo historial.
+Acciones y ETF continúan usando Yahoo indicativo, potencialmente
+retrasado; un mercado cerrado no se transforma en cotización viva.
+
+M004 no sustituye, corrige ni reentrena M001, F001, F002, M003,
+EF004 o XI/Ether. No accede a Robinhood ni coloca operaciones.
+
+La APK 3.8 usa versionCode 13 y el paquete de depuración
+com.entidadlaplace.mobile.regime38, independiente de 3.7.
+No migra registros locales anteriores.
+
+### Reproducir
+
+    node --test apps/laplace-android/tests/regime-m004.test.cjs
+    node tools/m004-regimes.mjs build/m004/report.json
+    node apps/laplace-android/prepare-regime.mjs
+
+GitHub Actions vuelve a probar la historia real y los controles Android.
+Chromium usa datos simulados únicamente para comprobar la interfaz.
+
+
 ## Android 3.7 — mercado ampliado y consulta con Robinhood
 
 Esta versión conserva el núcleo BTC original y agrega **31 activos
