@@ -54,7 +54,9 @@
     "demonio:ciclo": "node tools/nucleo-demonio.mjs",
     "demonio:xi": "node tools/probar-demonio-xi.mjs",
     "test:laplace-pde": "node --test tests/ecuacion-laplace*.test.mjs",
-    "ecuacion:laplace": "node tools/ecuacion-laplace.mjs"
+    "ecuacion:laplace": "node tools/ecuacion-laplace.mjs",
+    "marea": "node tools/mapa-marea.mjs",
+    "test:marea": "node --test tests/marea-m003.test.mjs"
   },
   "engines": {
     "node": ">=20"
