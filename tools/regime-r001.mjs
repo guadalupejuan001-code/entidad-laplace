@@ -38,11 +38,13 @@ try{
  console.log(JSON.stringify({path,schema:result.schema,
   observed_regimes:result.observations,
   total_transitions:result.valid_transition_pairs,
-  independent_holdout_transitions:result.holdout_transition_pairs,
+  chronological_holdout_transitions_not_independent:result.holdout_transition_pairs,
   folds:result.folds.map(f=>({status:f.status,
     brier_conditional:f.score?.conditional_brier??null,
     brier_unconditional:f.score?.unconditional_brier??null,
+    brier_always_stay:f.score?.always_stay_brier??null,
     magnitude_conditional_mae_bps:f.magnitude_score?.conditional_mae_bps??null,
-    magnitude_baseline_mae_bps:f.magnitude_score?.unconditional_mae_bps??null})),
+    magnitude_baseline_mae_bps:f.magnitude_score?.unconditional_mae_bps??null,
+    magnitude_bootstrap_interval:f.magnitude_score?.bootstrap_interval??null})),
   existing_models_modified:false,automatic_trading:false}));
 }catch(e){console.error('R001: '+String(e?.stack??e));process.exitCode=1}
