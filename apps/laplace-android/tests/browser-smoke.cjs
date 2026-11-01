@@ -187,6 +187,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const x=Number((await page.locator('#graphValue').innerText()).replace(',','.'));
     assert.ok(Math.abs(x-25)<.01,'Grafo dejó de calcular al pulsar botón: '+x);
     await page.locator('[data-tab="integral"]').click();
+    assert.match(await page.locator('#f002Status').innerText(),/sin informe|Sin resultado/i);
     await page.locator('#integralRun').click();
     await page.waitForFunction(()=>{
       const t=document.querySelector('#integralStatus').textContent;
