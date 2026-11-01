@@ -56,6 +56,48 @@ certificó mediante vintages de cada cierre. El script verifica el
 SHA de las filas, pero no vuelve a descargar cada respuesta
 original individual del proveedor.
 
+
+## Resultado medido sobre el archivo X002 (1 de noviembre de 2026)
+
+Se procesaron 7.488 velas BTC de 5 min, dando 7.176 clasificaciones
+retrospectivas, 7.175 transiciones cronológicas comparables y
+2.153 transiciones puntuadas en tres holdouts. Las transiciones
+contiguas **no son observaciones estadísticamente independientes**.
+
+| Holdout | Brier de transición R001 | Brier «mismo régimen» | Brier incondicional | MAE de magnitud R001 (pb) | MAE de magnitud incondicional (pb) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0,13060 | 0,13928 | 0,63978 | 3,7843 | 3,8593 |
+| 2 | 0,13076 | 0,13947 | 0,64247 | 4,7166 | 4,8467 |
+| 3 | 0,11861 | 0,12535 | 0,64302 | 6,5891 | 6,8025 |
+
+El Brier de estado mejora muchísimo contra *frecuencia
+incondicional* pero solo ligeramente contra la referencia más fuerte
+**«el régimen permanece igual»**. Esto muestra que la persistencia
+de la clasificación explica gran parte de la aparente ventaja.
+
+Las mejoras medias de magnitud fueron 0,075, 0,130 y 0,213 puntos
+básicos. El remuestreo exploratorio de los errores emparejados mediante
+bloques contiguos de **72 velas (6 horas)** dio estos intervalos
+percentiles 2,5–97,5 para «mejora en puntos básicos»:
+
+- Holdout 1: [-0,068, 0,215].
+- Holdout 2: [0,002, 0,276].
+- Holdout 3: [0,050, 0,396].
+
+**El primer intervalo incluye cero.** Los otros dos son positivos bajo
+este procedimiento exploratorio, pero la muestra temporal es corta,
+el tamaño de bloque se eligió heurísticamente, y la estrategia se
+ha analizado repetidamente. No constituye prueba prospectiva ni
+garantiza una ventaja estable con más datos, otro activo o costes
+reales de negociación.
+
+### Decisión
+
+R001 queda **aislado como auditoría**. No ajusta ninguna predicción
+de precio, no modifica M004, no altera la APK 3.8 y no se habilita
+trading. El próximo ciclo debe congelar hipótesis y probarlas contra
+observaciones que lleguen después de la fecha de emisión original.
+
 ## Ciclo R001.4: conexión opcional
 
 Conservar R001 en backend como auditoría, sin activar ninguna inferencia
