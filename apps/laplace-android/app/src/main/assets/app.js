@@ -6,9 +6,12 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
+const Markets=window.LaplaceMarkets;
+const Marea=window.LAPLACE_MAREA??null;
 const F=window.LaplaceIntegral;
 const Live=window.LaplaceLiveMath;
 const STORAGE='laplace-mobile-forecasts-v2';
+const FAVORITES_KEY='laplace-mobile-market-favorites-v1';
 const money=v=>Number.isFinite(v)?new Intl.NumberFormat('es-MX',{
   style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
 const number=v=>Number.isFinite(v)?v.toLocaleString('es-MX',{maximumFractionDigits:5}):'—';
@@ -18,7 +21,32 @@ const compactPrice=v=>Number.isFinite(v)?
 const percent=v=>Number.isFinite(v)?(100*v).toFixed(3)+' %':'—';
 const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
   year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-const label=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
+const label=m=>{
+  const h=E.HORIZONS.find(x=>x.minutes===m);
+  if(!Markets?.isEquity(asset))return h?.label??m+' min';
+  if(m>=1440)return m===1440?'1 sesión':m/1440+' sesiones';
+  return h?.label??m+' min bursátiles';
+};
+const isEquity=()=>Markets?.isEquity(asset)===true;
+const marketHistory=()=>E.historyConfig(asset,minutes);
+const granularityNow=()=>E.selectResolution(minutes,asset);
+const marketTimeStatus=(sourceTime,g)=>{
+  const gap=Date.now()/1000-sourceTime,unavailable=gap<0;
+  if(unavailable)return {valid:false,label:'fecha del proveedor en el futuro'};
+  if(!isEquity())return {valid:gap<=g*2.5,label:gap<=g*2.5?'actual':'antiguas'};
+  // Acciones/ETF cierran fines de semana; la última sesión es útil
+  // como referencia histórica, nunca una cotización viva.
+  const today=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',
+    weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false})
+      .formatToParts(new Date());
+  const part=x=>today.find(p=>p.type===x)?.value??'';
+  const hour=Number(part('hour'))%24,min=Number(part('minute')),
+    weekday=part('weekday');
+  const trading=['Mon','Tue','Wed','Thu','Fri'].includes(weekday)&&
+    (hour*60+min>=570&&hour*60+min<=960);
+  const max=trading?Math.max(7200,g*2):7*86400;
+  return {valid:gap<=max,label:trading?'sesión · posible retraso':'último cierre · mercado cerrado'};
+};
 let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let lastHistoryError=null;
@@ -30,6 +58,9 @@ const tickerStream=Live.createTracker();
 let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
 let log=[];
+let favorites=new Set(['BTC-USD','ETH-USD','AAPL','NVDA','SPY']);
+try{const raw=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');
+ if(Array.isArray(raw))favorites=new Set(raw.filter(s=>Markets?.BY_SYMBOL[s]));}catch(error){}
 let worldVisibleLimit=100;
 try{
   const data=JSON.parse(localStorage.getItem(STORAGE)||'[]');
@@ -49,7 +80,7 @@ function status(message,kind='info'){
   $('activityStatus').textContent=message;
 }
 function setActionAvailability(){
-  const ready=Boolean(history&&historyGranularity===E.selectResolution(minutes)&&!loading);
+  const ready=Boolean(history&&historyGranularity===granularityNow()&&!loading);
   for(const id of ['forecast','train','test','evaluate']){
     const button=$(id);
     button.disabled=!ready;
