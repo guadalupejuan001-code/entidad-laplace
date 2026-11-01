@@ -300,6 +300,7 @@ const abstain=(panel,reason,extra={})=>({schema:F002_SCHEMA,
   observed_domains:panel.domains.length,source_groups:panel.source_groups,
   input_coverage:panel.historical_input_groups,
   matched_outcomes:panel.matched_outcomes,
+  skipped_correlated_decisions:panel.skipped_correlated_decisions,
   required_training_pairs:24,required_validation_pairs:8,required_holdout_pairs:8,
   production_activation_allowed:false,prospectively_validated:false,
   central_f001_price_modified:false,automatic_trading:false,...extra});
