@@ -9,6 +9,9 @@ on:
     paths:
       - 'demonio/**'
       - 'tools/nucleo-demonio.mjs'
+      - 'prediccion/conjunta-f002.mjs'
+      - 'tools/conjunta-f002.mjs'
+      - 'tests/conjunta-f002.test.mjs'
       - '.github/workflows/demonio-ef004.yml'
   schedule:
     - cron: '47 4,10,16,22 * * *'
@@ -39,6 +42,7 @@ jobs:
           set -euo pipefail
           npm ci --no-audit --no-fund
           npm run test:ef004
+          node --test tests/conjunta-f002.test.mjs
       - name: Obtener pronosticos ya congelados de la rama historica
         run: |
           set -euo pipefail
@@ -65,6 +69,33 @@ jobs:
             assert.ok(["abstained","experimental_model_frozen"].includes(x.status));
             console.log(JSON.stringify(x));
           '
+      - name: F002 · ejecutar estudio conjunto sobre archivos EF002 reales
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f002-output"
+          node tools/conjunta-f002.mjs ejecutar             deps/archivo/capturas "$RUNNER_TEMP/f002-output" "$RUNNER_TEMP/ef004-diario"             > "$RUNNER_TEMP/f002-output/resultado-de-ciclo.json"
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const x=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/f002-output/resumen-f002.json","utf8"));
+            assert.ok(x.archive_count>=1);
+            assert.equal(x.verified_real_archives_only,true);
+            assert.equal(x.production_activation_allowed,false);
+            assert.equal(x.central_f001_price_modified,false);
+            assert.equal(x.automatic_trading,false);
+            console.log(JSON.stringify({status:x.status,reason:x.reason,
+              archive_count:x.archive_count,source_series:x.observed_source_series,
+              matched_outcomes:x.matched_verified_outcomes,
+              training:x.training_pairs,validation:x.validation_pairs,holdout:x.holdout_pairs}));
+          '
+      - name: Conservar F002 y comprobación prospectiva como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laplace-f002-joint-evidence
+          path: ${{ runner.temp }}/f002-output/
+          retention-days: 30
+          if-no-files-found: warn
       - name: Conservar registro reproducible del ciclo
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,11 +118,14 @@ jobs:
               'Pronosticos congelados y evaluaciones separadas.' \
               'No prueba conocimiento perfecto ni ventaja financiera.' > README.md
           fi
-          mkdir -p reportes pronosticos evaluaciones
+          mkdir -p reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002
           cp -an "$RUNNER_TEMP/ef004-output/reportes/." reportes/
           cp -an "$RUNNER_TEMP/ef004-output/pronosticos/." pronosticos/
           cp -an "$RUNNER_TEMP/ef004-output/evaluaciones/." evaluaciones/
-          git add -- README.md reportes pronosticos evaluaciones
+          cp -an "$RUNNER_TEMP/f002-output/informes-f002/." informes-f002/
+          cp -an "$RUNNER_TEMP/f002-output/pronosticos-f002/." pronosticos-f002/
+          cp -an "$RUNNER_TEMP/f002-output/evaluaciones-f002/." evaluaciones-f002/
+          git add -- README.md reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002
           if ! git diff --cached --quiet; then
             git commit -m "data(EF004): ciclo de aprendizaje, abstencion o validacion futura"
             git push origin HEAD:refs/heads/laplace-modelos
