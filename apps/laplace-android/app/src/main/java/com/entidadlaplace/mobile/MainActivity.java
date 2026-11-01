@@ -111,11 +111,13 @@ public final class MainActivity extends Activity {
 
     @Override protected void onResume(){
         super.onResume();
+        if(webView!=null)webView.onResume();
         if(liveFeed!=null)liveFeed.resume();
     }
 
     @Override protected void onPause(){
         if(liveFeed!=null)liveFeed.pause();
+        if(webView!=null)webView.onPause();
         super.onPause();
     }
 
