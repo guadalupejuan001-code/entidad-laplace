@@ -624,7 +624,10 @@ footer{color:#718299}
   .lab-chip{display:none}
   .tabs{
     display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
-    position:fixed;z-index:30;left:0;right:0;bottom:0;margin:0;
+    position:fixed;z-index:30;left:0;right:0;bottom:0;top:auto;margin:0;
+    height:calc(75px + env(safe-area-inset-bottom));min-height:75px;
+    max-height:calc(75px + env(safe-area-inset-bottom));
+    grid-template-rows:minmax(0,1fr);align-items:center;overflow:hidden;
     padding:8px 7px calc(9px + env(safe-area-inset-bottom));
     border:0;border-top:1px solid #455066;border-radius:17px 17px 0 0;
     background:#0d1522f7;box-shadow:0 -8px 30px #0008;
@@ -658,4 +661,12 @@ footer{color:#718299}
 }
 @media(prefers-reduced-motion:reduce){
   .smart-action,.quote-tile{transition:none}
+}
+
+/* Las acciones desplazadas no quedan tapadas por la navegación inferior. */
+html{scroll-padding-bottom:105px}
+@media(max-width:739px){
+  main summary,main button,main input,main select{
+    scroll-margin-bottom:118px;scroll-margin-top:20px
+  }
 }
