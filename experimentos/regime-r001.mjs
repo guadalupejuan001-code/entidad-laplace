@@ -144,14 +144,44 @@ function magnitudeModel(train){
   trained_labels:train.length,feature:'current_regime_only',
   no_future_labels_used:true};
 }
+/* Diagnóstico por bloques continuos: incertidumbre por autocorrelación.
+ * No es certificación estadística ni prueba prospectiva.
+ */
+function blockBootstrap(differences,{repetitions=300,blockSize=12}={}){
+ const n=differences.length;
+ if(n<30)return {status:'insufficient',lower_bps:null,upper_bps:null};
+ let seed=0x9e3779b9;
+ const next=()=>{
+   seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
+   return seed>>>0;
+ };
+ const results=[];
+ for(let iteration=0;iteration<repetitions;iteration++){
+   let total=0,drawn=0;
+   while(drawn<n){
+     const start=next()%n;
+     for(let j=0;j<blockSize&&drawn<n;j++,drawn++)
+       total+=differences[(start+j)%n];
+   }
+   results.push(total/n);
+ }
+ return {status:'exploratory_circular_block_resampling',
+   block_size:Math.min(blockSize,n),repetitions,
+   lower_bps:round(q(results,.025)),
+   upper_bps:round(q(results,.975)),
+   interpretation:'serially_correlated_retrospective_cases_not_prospective_certification'};
+}
 function magnitudeScore(test,model){
  const errors=test.map(x=>Math.abs(model.buckets[x.from].
   median_abs_log_return-x.observed_next_abs_log_return)*10000);
  const base=test.map(x=>Math.abs(model.baseline_median_abs_log_return-
   x.observed_next_abs_log_return)*10000);
+ const differences=errors.map((e,i)=>base[i]-e);
  return {n:test.length,conditional_mae_bps:round(avg(errors)),
   unconditional_mae_bps:round(avg(base)),
   paired_wins:errors.filter((e,i)=>e<base[i]).length,
+  mean_paired_improvement_bps:round(avg(differences)),
+  bootstrap_interval: blockBootstrap(differences),
   relative_gain:avg(base)>0?round(1-avg(errors)/avg(base)):null};
 }
 function brier(pred,actual){
@@ -169,6 +199,9 @@ function errors(samples,model){
   always_stay_brier:round(avg(sticky)),
   relative_gain_vs_unconditional:avg(unconditional)>0?
     round(1-avg(conditional)/avg(unconditional)):null,
+  relative_gain_vs_always_stay:avg(sticky)>0?
+    round(1-avg(conditional)/avg(sticky)):null,
+  conditional_wins_vs_always_stay:samples.filter((x,i)=>conditional[i]<sticky[i]).length,
   conditional_wins:samples.filter((x,i)=>conditional[i]<unconditional[i]).length,
   realized_changes:samples.filter(x=>x.from!==x.to).length
  };
@@ -185,7 +218,7 @@ export function auditRegimeTransitions(raw,{cutoff=null}={}){
   const train=pairs.slice(0,start),test=pairs.slice(start,end);
   if(train.length<R001_POLICY.minimum_train_transitions||
     test.length<R001_POLICY.minimum_test_transitions){
-   folds.push({status:'abstained',reason:'insufficient_independent_transition_history',
+   folds.push({status:'abstained',reason:'insufficient_chronological_transition_history',
      train:train.length,test:test.length});continue;
   }
   const model=probabilities(train),score=errors(test,model),
@@ -195,8 +228,7 @@ export function auditRegimeTransitions(raw,{cutoff=null}={}){
     'fuga temporal en transición R001');
   folds.push({status:'retrospective_evaluation_only',
     train_pairs:train.length,test_pairs:test.length,
-    decision_cutoff:toISO(lastTrain.realized_index===undefined?0:
-      detector.states.find(x=>x.original_index===lastTrain.realized_index)?.at??0),
+    decision_cutoff:lastTrain.realized_at,
     holdout_start:firstTest.decided_at,holdout_end:test.at(-1).realized_at,
     model,score,magnitude_model:amplitude,magnitude_score:amplitude_score,
     first_holdout_prediction:model.conditional[firstTest.from],
