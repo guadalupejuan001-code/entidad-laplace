@@ -43,8 +43,10 @@ antes de resumir la comparación muestral y **no garantiza rentabilidad**.
 
 ## Primer ciclo verificado contra archivos públicos (1-nov-2026)
 
-Resultados reales: cinco capturas, 910 series distintas, 30 dominios
-y un único resultado de mercado futuro comparable. Entrenamiento,
+Resultados reales después de recuperar cinco capturas suplementarias con
+sellos íntegros: **diez capturas** (cinco de laplace-archivo y cinco
+de evidencias originales), **927 series distintas**, 30 dominios y un
+único resultado futuro de mercado comparable. Entrenamiento,
 validación y holdout: 0 / 0 / 0 pares. Estado: abstained, razón:
 insufficient_verified_market_outcomes. Precio conjunto emitido: ninguno.
 
@@ -58,8 +60,8 @@ sobre los archivos inmutables, serializa informes de fuente con sello,
 pronósticos experimentales y evaluaciones prospectivas en directorios
 separados de la rama laplace-modelos.
 
-La APK incluye el diagnóstico F002 asociado exactamente al SHA de su
-captura EF002 y presenta datos de entrenamiento, holdout, fuentes y motivos
+La APK 3.6 independiente (paquete de depuración propio) incluye el
+diagnóstico F002 asociado exactamente al SHA de su captura EF002 y presenta datos de entrenamiento, holdout, fuentes y motivos
 de abstención en Multiplazo/Fuentes. El cálculo completo permanece en
 el servidor: una sola captura compilada en Android no permitiría entrenar.
 
@@ -74,3 +76,8 @@ y fuentes privadas no se sustituyen por supuestos.
 
 Para evaluar pronósticos ya emitidos, añadir el directorio de
 laplace-modelos como tercer argumento después de la ruta de salida.
+
+El importador de F002 conserva los hashes de los cinco archivos de evidencia
+anteriores y evita contar como independientes las capturas próximas o
+etiquetas futuras ya empleadas. El sello de fuente de la captura no es
+una firma criptográfica del proveedor externo.
