@@ -29,6 +29,7 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
     for(const path of paths)captures.push((await leerArchivoEF002(path)).capture);
     // Solo evidencia heredada EXPLÍCITAMENTE declarada, con sello real.
     // No se convierten resultados de laboratorios ni simulaciones en mercado.
+    const lastArchivedAt=Math.max(...captures.map(c=>Date.parse(c.at)));
     const oldPaths=[
       'evidencia/fuentes-primarias-20261030/captura-integrada.json',
       'evidencia/continuidad-u003-20261030/captura-integrada.json',
@@ -43,7 +44,7 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
         const raw=await readFile(path,'utf8');
         const c=JSON.parse(raw);
         normalizarCapturaU003(c); // Sello de toda la captura y snapshot.
-        need(c.at<=captures.at(-1).at,'evidencia heredada no debe llegar del futuro');
+        need(Date.parse(c.at)<=lastArchivedAt,'evidencia heredada posterior al archivo principal');
         if(captures.some(x=>x.capture_sha256===c.capture_sha256))continue;
         captures.push(c);
         supplemental.push({path:rel,capture_sha256:c.capture_sha256,
