@@ -86,10 +86,14 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#quoteBTC').innerText(),/61/);
     await page.waitForFunction(()=>document.querySelector('#liveStatus').textContent==='WebSocket conectado',null,{timeout:10000});
     assert.match(await page.locator('#liveCount').innerText(),/3 operaciones/);
-    assert.match(await page.locator('#quoteBTCStatus').innerText(),/WEB SOCKET/);
-    assert.match(await page.locator('#quoteETHStatus').innerText(),/WEB SOCKET/);
-    assert.match(await page.locator('#quoteSOLStatus').innerText(),/WEB SOCKET/);
+    assert.match(await page.locator('#quoteBTCStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteETHStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteSOLStatus').innerText(),/EN VIVO/);
+    assert.match(await page.locator('#quoteBTC').innerText(),/61,\d+/);
+    await page.locator('#marketDetails > summary').click();
     assert.match(await page.locator('#liveGraphLabel').innerText(),/operaci/);
+    assert.match(await page.locator('#quoteTrace').innerText(),/Fuente.*Coinbase/i);
+    await page.locator('#marketDetails > summary').click();
     const prevBTC=await page.locator('#quoteBTC').innerText();
     await page.evaluate(()=>{
       window.LaplaceMobile.live({type:'ticker',asset:'BTC-USD',price:999,
