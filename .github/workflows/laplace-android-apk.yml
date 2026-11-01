@@ -106,7 +106,9 @@ jobs:
             assert.ok(["abstained","experimental_model_frozen"].includes(w.ef004_report?.status));
             assert.equal(w.f002_report?.schema,"laplace-f002-joint-archive-v1");
             assert.equal(w.f002_report?.capture_sha256,w.capture_sha256);
-            assert.equal(w.f002_report?.archive_count,w.archive_manifests_count);
+            assert.equal(w.f002_report?.archive_manifests_verified,w.archive_manifests_count);
+            assert.equal(w.f002_report?.archive_count,
+              w.archive_manifests_count+w.f002_report?.supplemental_evidence_verified);
             assert.equal(w.f002_report?.automatic_trading,false);
             assert.equal(w.f002_report?.production_activation_allowed,false);
             assert.equal(w.f002_report?.central_f001_price_modified,false);
