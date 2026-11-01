@@ -365,6 +365,101 @@ function renderF002(){
   }
   $('f002Raw').textContent=JSON.stringify(report,null,2);
 }
+/* M004 no sustituye M001. El estado describe solamente el último cierre
+ * de la fuente elegida, y el test posterior de amplitud es retrospectivo. */
+function renderRegime(){
+  const tag=$('regimeTag'),vol=$('regimeVol'),trend=$('regimeTrend'),
+    activity=$('regimeActivity'),info=$('regimeStatus'),score=$('regimeEvidence');
+  if(!tag||!Regime)return;
+  const validHistory=Boolean(history?.length&&historyGranularity===granularityNow());
+  const newKey=validHistory?asset+'|'+minutes+'|'+history.length+'|'+
+    history.at(-1).time:null;
+  if(newKey!==regimeCacheKey){regimeResult=null;regimeCacheKey=newKey}
+  let observed=null;
+  if(validHistory)observed=Regime.currentRegime(history,{
+    granularity:historyGranularity,equity:isEquity(),
+    cutoff:new Date().toISOString()});
+  const ready=observed?.status==='observed_regime';
+  tag.textContent=ready?'OBSERVADO · HISTÓRICO':'SIN ESTADO VÁLIDO';
+  vol.textContent=ready?observed.regime.volatility_label:'—';
+  trend.textContent=ready?observed.regime.trend_label:'—';
+  activity.textContent=ready?(observed.regime.activity==='high'?'Elevada':'Habitual'):'—';
+  tag.dataset.state=ready?'measured':'abstained';
+  if(ready){
+    const last=history.at(-1),fresh=marketTimeStatus(last.time+historyGranularity,
+      historyGranularity),t=observed.observed_last_close_at;
+    info.textContent='Estado calculado con velas de '+Markets.sourceLabel(asset)+
+      ' · último cierre '+new Date(t).toLocaleString('es-MX')+
+      ' · '+(fresh.valid?fresh.label:'datos antiguos')+
+      '. Las etiquetas no implican causalidad ni señalan un precio futuro.';
+  }else info.textContent='M004 no detectó un estado utilizable: '+
+    (observed?.reason??'actualiza velas cerradas del horizonte elegido')+
+    '. Las ausencias no se convierten en señales.';
+  if(regimeResult){
+    const x=regimeResult,a=x.aggregate;
+    const change=a.model_mae_bps!==null&&a.unconditional_mae_bps!==null?
+      'MAE amplitud: M004 '+a.model_mae_bps+' pb; referencia histórica '+
+      a.unconditional_mae_bps+' pb. ':'';
+    const why=x.status==='retrospective_candidate_only'?
+      'Posible ventaja solo retrospectiva, pendiente de pruebas prospectivas.':
+      x.status==='no_stable_incremental_edge'?
+      'No se confirmó mejora consistente contra la referencia.':
+      'Insuficientes resultados históricos separados para validar.';
+    score.textContent=asset+' · '+label(minutes)+' · '+
+      x.independent_test_cases+' resultados evaluados. '+change+why+
+      ' Nunca se altera la proyección de precio M001/F001.';
+  }else{
+    const btc=RegimeArchive?.source?.asset==='BTC-USD'?
+      RegimeArchive.horizons?.find(x=>x.minutes===5):null;
+    score.textContent=btc?
+      'Experimento histórico BTC 5 min: '+btc.test_cases+
+      ' casos, error M004 '+btc.oos_model_mae_bps+
+      ' pb frente a '+btc.oos_baseline_mae_bps+
+      ' pb de referencia. Es retrospectivo, no de '+asset+'.':
+      'Aún sin prueba para '+asset+' en '+label(minutes)+'.';
+  }
+  if(!regimeResult)
+    $('regimeRaw').textContent=JSON.stringify({
+      schema:'laplace-m004-ui-audit-v1',asset,minutes,
+      current:observed,archive_result:asset==='BTC-USD'?RegimeArchive:null,
+      experimental_only:true,production_activation_allowed:false
+    },null,2);
+}
+async function runRegimeStudy(){
+  if(regimeBusy||loading)return;
+  const selected=asset,period=minutes;
+  regimeBusy=true;setActionAvailability();
+  $('regimeEvidence').textContent='Separando pasado, validación y pruebas posteriores…';
+  try{
+    await ensureAnalysisHistory();
+    if(asset!==selected||minutes!==period)throw Error(
+      'Cambió el mercado o el plazo durante la consulta; vuelve a estudiar.');
+    // El cálculo utiliza el mismo historial ya aceptado por el puente HTTPS.
+    const result=Regime.evaluateRegimes(history,{
+      granularity:historyGranularity,equity:isEquity(),horizonMinutes:minutes,
+      cutoff:new Date().toISOString()});
+    regimeCacheKey=asset+'|'+minutes+'|'+history.length+'|'+history.at(-1).time;
+    regimeResult=result;
+    $('regimeRaw').textContent=JSON.stringify({
+      ...result,folds:result.folds.map(x=>({...x,
+        test_cases:x.test_cases?{
+          total:x.test_cases.length,first:x.test_cases.slice(0,3),
+          last:x.test_cases.slice(-3),
+          note:'Casos intermedios evaluados para las métricas, omitidos en pantalla móvil'
+        }:[]}))
+    },null,2);
+    renderRegime();
+  }catch(e){
+    regimeResult=null;renderRegime();
+    $('regimeEvidence').textContent='M004 se abstuvo: '+String(e.message??e)+
+      '. No se creó una predicción nueva ni una confianza ficticia.';
+    $('regimeRaw').textContent=JSON.stringify({
+      schema:'laplace-m004-ui-audit-v1',status:'abstained',
+      asset:selected,horizon:period,reason:String(e.message??e),
+      production_activation_allowed:false
+    },null,2);
+  }finally{regimeBusy=false;setActionAvailability()}
+}
 function renderMarea(){
   const root=$('mareaMetrics');if(!root)return;
   root.replaceChildren();
