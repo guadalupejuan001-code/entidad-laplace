@@ -1,0 +1,62 @@
+name: LAPLACE M004 - Estados y validación de magnitud
+on:
+  pull_request:
+    paths:
+      - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
+      - 'apps/laplace-android/tests/regime-m004.test.cjs'
+      - 'apps/laplace-android/prepare-regime.mjs'
+      - 'tools/m004-regimes.mjs'
+      - '.github/workflows/laplace-m004.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
+      - 'apps/laplace-android/tests/regime-m004.test.cjs'
+      - 'apps/laplace-android/prepare-regime.mjs'
+      - 'tools/m004-regimes.mjs'
+      - '.github/workflows/laplace-m004.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regime-and-no-leakage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Verificar motores y pruebas
+        run: |
+          set -euo pipefail
+          node --check apps/laplace-android/app/src/main/assets/regime-m004.js
+          node --test apps/laplace-android/tests/regime-m004.test.cjs
+          node --test apps/laplace-android/tests/multimarket.test.cjs
+      - name: Evaluación reproducible con velas Coinbase archivadas
+        run: |
+          set -euo pipefail
+          node tools/m004-regimes.mjs "$RUNNER_TEMP/m004/report.json"
+          node --input-type=module -e '
+            import assert from "node:assert/strict";
+            import {readFileSync} from "node:fs";
+            const x=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/m004/report.json"));
+            assert.equal(x.source.candles,7488);
+            assert.equal(x.source.authenticated_historical_vintages,false);
+            assert.equal(x.production_activation_allowed,false);
+            assert.equal(x.automatic_trading,false);
+            assert.equal(x.horizons.length,3);
+            assert.ok(x.horizons.every(z=>z.folds.length===3));
+            console.log(JSON.stringify(x.horizons.map(z=>({
+              horizon:z.horizon_minutes,status:z.status,n:z.independent_test_cases,
+              model_mae:z.aggregate.model_mae_bps,
+              baseline_mae:z.aggregate.unconditional_mae_bps,
+              improvement:z.aggregate.relative_gain
+            }))));
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LAPLACE-M004-PRUEBAS-REGIMEN-REALES
+          path: ${{ runner.temp }}/m004/
+          retention-days: 30
+          if-no-files-found: error
