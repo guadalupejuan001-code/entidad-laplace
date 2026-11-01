@@ -120,14 +120,15 @@ jobs:
               'Pronosticos congelados y evaluaciones separadas.' \
               'No prueba conocimiento perfecto ni ventaja financiera.' > README.md
           fi
-          mkdir -p reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002
+          mkdir -p reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002 trazas-f002
           cp -an "$RUNNER_TEMP/ef004-output/reportes/." reportes/
           cp -an "$RUNNER_TEMP/ef004-output/pronosticos/." pronosticos/
           cp -an "$RUNNER_TEMP/ef004-output/evaluaciones/." evaluaciones/
           cp -an "$RUNNER_TEMP/f002-output/informes-f002/." informes-f002/
           cp -an "$RUNNER_TEMP/f002-output/pronosticos-f002/." pronosticos-f002/
           cp -an "$RUNNER_TEMP/f002-output/evaluaciones-f002/." evaluaciones-f002/
-          git add -- README.md reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002
+          cp -an "$RUNNER_TEMP/f002-output/trazas-f002/." trazas-f002/
+          git add -- README.md reportes pronosticos evaluaciones informes-f002 pronosticos-f002 evaluaciones-f002 trazas-f002
           if ! git diff --cached --quiet; then
             git commit -m "data(EF004): ciclo de aprendizaje, abstencion o validacion futura"
             git push origin HEAD:refs/heads/laplace-modelos
