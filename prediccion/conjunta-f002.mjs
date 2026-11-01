@@ -286,14 +286,23 @@ export function ejecutarPrediccionF002(captures,options={}){
   const valid=validation.relative_improvement>0&&test.relative_improvement>0;
   const latestAt=Date.parse(panel.latest_capture_at??'');
   const latest=panel.latest_spot,feat=panel.latest_input;
+  const issuedAt=Date.parse(options.issuedAt??panel.latest_capture_at);
   const fresh=latest&&feat?.matched_price_momentum===true&&
     latestAt-Date.parse(latest.observed_at)<=30*60000;
-  if(!valid||!fresh)return abstain(panel,!valid?
-    'no_confirmed_out_of_sample_advantage':'latest_verified_price_unavailable',{
-      ...audit,model_ready:true,retrospective_candidate_only:true});
+  // Una ejecución diferida no debe reconstruir un pronóstico "emitido"
+  // antes de conocer una vela futura. La emisión tiene hora real independiente.
+  const publishedInTime=Number.isFinite(issuedAt)&&issuedAt>=latestAt&&
+    issuedAt-latestAt<=30*60000&&
+    issuedAt+60*60000<=latestAt+panel.target_horizon_hours*HOUR;
+  if(!valid||!fresh||!publishedInTime)return abstain(panel,!valid?
+    'no_confirmed_out_of_sample_advantage':!fresh?
+    'latest_verified_price_unavailable':'snapshot_not_fresh_at_publication',{
+      ...audit,model_ready:true,retrospective_candidate_only:true,
+      publication_cutoff:iso(Number.isFinite(issuedAt)?issuedAt:latestAt)});
   const returnLog=predict(best.model,feat.features);
   const body={schema:'laplace-f002-shadow-forecast-v1',status:'shadow_forecast_frozen',
     asset:'BTC-USD',decision_at:panel.latest_capture_at,
+    issued_at:iso(issuedAt),
     target_at:iso(latestAt+panel.target_horizon_hours*HOUR),
     tolerance_hours:panel.tolerance_hours,
     decision_capture_sha256:panel.latest_capture_sha256,
@@ -333,8 +342,11 @@ export function verificarPronosticoF002(f){
 export function evaluarPronosticoF002(f,captures){
   verificarPronosticoF002(f);
   const list=snapshotList(captures);
-  const target=Date.parse(f.target_at),decision=Date.parse(f.decision_at);
-  need(target>decision,'objetivo anterior a decisión');
+  const target=Date.parse(f.target_at),decision=Date.parse(f.decision_at),
+    issued=Date.parse(f.issued_at);
+  need(Number.isFinite(issued)&&issued>=decision&&
+    issued-decision<=30*60000&&target>issued+60*60000,
+    'pronóstico emitido tarde o fuera del tiempo verificable');
   const eligible=list.filter(x=>Date.parse(x.at)>decision).map(s=>({s,price:btc(s)}))
     .filter(x=>x.price&&Date.parse(x.price.observed_at)>decision&&
       Math.abs(Date.parse(x.s.at)-target)<=f.tolerance_hours*HOUR)
