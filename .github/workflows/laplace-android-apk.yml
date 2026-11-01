@@ -156,11 +156,15 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'classes.dex'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -12
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.ux35'" /tmp/laplace-badging.txt
+          grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.5'" /tmp/laplace-badging.txt
+          head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-5-UX-INTELIGENTE
+          name: LAPLACE-ANDROID-V3-5-INSTALACION-PARALELA
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
