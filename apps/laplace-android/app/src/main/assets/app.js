@@ -132,11 +132,12 @@ function updateLiveBanner(){
       ' · siguiente intento en '+snap.retrySeconds+' s':'');
   $('liveCount').textContent=snap.updates.toLocaleString('es-MX')+
     (snap.updates===1?' operación recibida':' operaciones recibidas');
-  const q=tickerStream.quote(asset);
-  const fresh=q&&tickerStream.isFresh(asset);
-  $('liveAge').textContent=q?('Último '+asset.replace('-USD','')+' · '+
+  const tracked=Markets?.isCrypto(asset)&&['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
+  const q=tickerStream.quote(tracked);
+  const fresh=q&&tickerStream.isFresh(tracked);
+  $('liveAge').textContent=q?('Último '+tracked.replace('-USD','')+' · '
     liveTimeAgo(q.observedAt)+(fresh?' · activo':' · no actualizado')):
-    'Sin operación en vivo de '+asset.replace('-USD','');
+    'Sin operación en vivo de '+tracked.replace('-USD','');
   $('liveToggle').textContent=liveEnabled?'Detener':'Activar';
   $('liveToggle').setAttribute('aria-pressed',String(liveEnabled));
 }
@@ -149,8 +150,9 @@ function drawLiveChart(){
   ctx.scale(ratio,ratio);
   ctx.clearRect(0,0,width,height);
   ctx.fillStyle='#071b2a';ctx.fillRect(0,0,width,height);
-  const points=tickerStream.points(asset),values=points.map(p=>p.price);
-  $('liveGraphAsset').textContent=asset.replace('-USD','/USD');
+  const tracked=['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
+  const points=tickerStream.points(tracked),values=points.map(p=>p.price);
+  $('liveGraphAsset').textContent=tracked.replace('-USD','/USD');
   $('liveGraphLabel').textContent=points.length?
     points.length+' operaciones · '+liveTimeAgo(points.at(-1).at):
     'Aún sin operaciones recibidas';
@@ -179,6 +181,10 @@ function drawLiveChart(){
 }
 function updateLivePreview(){
   const previewElement=$('livePreview'),q=tickerStream.quote(asset);
+  if(!['BTC-USD','ETH-USD','SOL-USD'].includes(asset)){
+    previewElement.textContent='WebSocket para BTC, ETH y SOL únicamente. '+
+      'El activo seleccionado usa lectura pública indicativa por HTTPS.';return;
+  }
   if(!liveEnabled||!tickerStream.isFresh(asset)||!q){
     previewElement.textContent='Sin nuevos ticks válidos para '+asset+'. '+
       'El historial M001 no se transforma en precios en vivo.';
@@ -547,13 +553,13 @@ function useHorizon(value){
   $('estimate').textContent='—';
   $('relativeChange').textContent='Sin cálculo para este horizonte';
   $('modelLabel').textContent='M001 · NO CALCULADO';
-  if(history&&previous!==E.selectResolution(m)){
+  if(history&&previous!==E.selectResolution(m,asset)){
     history=null;historyGranularity=null;
     $('lastPrice').textContent='—';
     $('priceTime').textContent='Este plazo requiere otra resolución de velas.';
     $('dataStatus').textContent='Sin datos para el plazo '+label(m)+'. Pulsa Actualizar datos.';
     $('chartComment').textContent='Historial pendiente para '+label(m)+'.';
-    status('Horizonte cambiado. Es necesario consultar velas de '+E.HISTORICAL_CONFIG[E.selectResolution(m)].label+'.');
+    status('Horizonte cambiado. Es necesario consultar velas de '+E.historyConfig(asset,m).label+'.');
   }
   smartMessage('idle','PLAZO SELECCIONADO',
     'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
@@ -629,17 +635,17 @@ function forgetEstimate(){
 }
 async function refresh(){
   const epoch=++refreshEpoch,requested=asset,m=minutes;
-  const granularity=E.selectResolution(m),cfg=E.HISTORICAL_CONFIG[granularity];
+  const granularity=E.selectResolution(m,requested),cfg=E.historyConfig(requested,m);
   loading=true;setActionAvailability();
   $('quoteStatus').textContent='CONSULTANDO';
   connection('CARGANDO');
-  status('Consultando '+requested+' en Coinbase. Velas de '+cfg.label+
-    ' durante '+cfg.days+' días; no se inventarán datos.');
+  status('Consultando '+requested+' mediante '+Markets.sourceLabel(requested)+'. '+
+    'Velas de '+cfg.label+' · ventana '+cfg.days+' días; sin datos simulados.');
   $('dataStatus').textContent='Consultando fuente pública...';
   const oldValid=history&&historyGranularity===granularity&&
     Date.now()-lastHistoryFetch<180000;
   if(!oldValid){history=null;historyGranularity=null;forgetEstimate()}
-  const quotePromises=E.ALLOWED_ASSETS.map(async code=>{
+  const quotePromises=[...new Set(['BTC-USD','ETH-USD','SOL-USD',requested])].map(async code=>{
     try{
       const q=await remote({kind:'quote',asset:code});
       if(epoch!==refreshEpoch)return;
@@ -665,21 +671,21 @@ async function refresh(){
     }
     lastHistoryError=null;
     const last=history.at(-1),age=Math.max(0,Math.round(Date.now()/1000-
-      (last.time+granularity)));
+      (last.time+granularity))),marketAge=marketTimeStatus(last.time+granularity,granularity);
     $('lastPrice').textContent=money(last.close);
     $('priceTime').textContent='Cierre de vela '+date(last.time+granularity)+
-      ' · '+cfg.label+' · '+(age>2.5*granularity?'ANTIGUA':'verificada');
+      ' · '+cfg.label+' · '+(marketAge.valid?marketAge.label:'ANTIGUA');
     $('dataStatus').textContent=history.length+' velas cerradas · '+cfg.label+
       ' · '+cfg.days+' días solicitados · del '+date(history[0].time)+
       ' al '+date(last.time+granularity)+
-      (age>2.5*granularity?' · datos antiguos':'');
+      (marketAge.valid?' · '+marketAge.label:' · datos antiguos');
     $('chartComment').textContent='Historial real cargado: '+history.length+
       ' velas de '+cfg.label+'. Para ver un candidato selecciona Proyectar precio.';
-    if(age>2.5*granularity){
+    if(!marketAge.valid){
       connection('DATOS ANTIGUOS');
       status('Fuente retrasada: hay velas, pero no son recientes. No emitir candidatos actuales.','error');
     }else{
-      connection('VELAS LISTAS',true);
+      connection(isEquity()?'REFERENCIA HISTÓRICA':'VELAS LISTAS',true);
       status('Historial público descargado y ordenado. Pulsa Analizar o Proyectar.','success');
     }
     evaluateHistory();renderSignals();drawChart();
@@ -715,7 +721,7 @@ function smartMessage(state,badge,summary,explanation,evidence){
   $('smartEvidence').textContent=evidence??'';
 }
 async function ensureAnalysisHistory(){
-  if(!history||historyGranularity!==E.selectResolution(minutes)||
+  if(!history||historyGranularity!==granularityNow()||
      Date.now()-lastHistoryFetch>180000)
     await refresh();
   if(!history)throw Error(lastHistoryError??'No llegaron velas verificables.');
@@ -804,10 +810,10 @@ async function runValidation(){
   }finally{validationBusy=false;setActionAvailability()}
 }
 function latestObservedOrFail(){
-  if(!history||historyGranularity!==E.selectResolution(minutes))
+  if(!history||historyGranularity!==granularityNow())
     throw Error('Necesitas pulsar Actualizar para este horizonte.');
   const last=history.at(-1),g=historyGranularity;
-  if(Date.now()/1000-(last.time+g)>g*2.5)
+  if(!marketTimeStatus(last.time+g,g).valid)
     throw Error('Las últimas velas son antiguas; revisa la conexión.');
   return last;
 }
@@ -946,7 +952,7 @@ function showTests(){
   const m=analysis,stats=document.createElement('div');stats.className='stats';
   const rows=[
     ['Activo',m.asset],['Horizonte',label(m.horizonMinutes)],
-    ['Resolución',E.HISTORICAL_CONFIG[m.granularity].label],
+    ['Resolución',E.historyConfig(asset,minutes).label],
     ['Velas reales',number(m.historyCount)],
     ['Patrones usados',number(m.patterns)],
     ['Estado',m.ready?'Candidato experimental':'Abstención: '+m.reason],
@@ -973,12 +979,12 @@ function showTests(){
 function renderSignals(){
   const out=$('signalRows');out.replaceChildren();
   const g=historyGranularity,rows=history;
-  const current=rows&&g?E.featureAt(rows,rows.length-1,g):null;
+  const current=rows&&g?E.featureAt(rows,rows.length-1,g,asset):null;
   const data=[
     ['Precio ticker público',quotes.get(asset)?money(quotes.get(asset).price):
       'No disponible',Boolean(quotes.get(asset))],
     ['Velas OHLCV',rows?number(rows.length)+' cerradas · '+
-      E.HISTORICAL_CONFIG[g].label:'No cargadas',Boolean(rows)],
+      E.historyConfig(asset,minutes).label:'No cargadas',Boolean(rows)],
     ['Retorno de 3 velas',current?percent(Math.exp(current[0])-1):'Faltan velas',Boolean(current)],
     ['Retorno de 1 vela',current?percent(Math.exp(current[1])-1):'Faltan velas',Boolean(current)],
     ['Volatilidad RMS (6 velas)',current?percent(current[2]):'Faltan velas',Boolean(current)],
