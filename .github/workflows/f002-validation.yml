@@ -45,6 +45,8 @@ jobs:
           node --test tests/conjunta-f002.test.mjs
           node --test tests/demonio-ef004.test.mjs tests/demonio-evaluacion-ef004.test.mjs tests/laplace-integral.test.mjs
       - name: Ejecutar F002 sobre archivos EF002 auténticos (no mocks)
+        env:
+          LAPLACE_F002_INCLUDE_LEGACY: 'true'
         run: |
           set -euo pipefail
           node tools/conjunta-f002.mjs ejecutar deps/archivo/capturas "$RUNNER_TEMP/f002-real" > "$RUNNER_TEMP/f002-result.json"
