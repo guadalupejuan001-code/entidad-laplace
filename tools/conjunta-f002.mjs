@@ -6,6 +6,7 @@ import {readFile,readdir,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {descubrirManifiestosEF002,leerArchivoEF002} from '../estado-financiero/captura.mjs';
+import {normalizarCapturaU003} from '../estado-financiero/modelo.mjs';
 import {ejecutarPrediccionF002,evaluarPronosticoF002,
   resumirValidacionProspectivaF002} from '../prediccion/conjunta-f002.mjs';
 const [command,archiveArg,outputArg,journalArg,...extra]=process.argv.slice(2);
@@ -26,6 +27,29 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
     need(paths.length>0,'no hay archivos EF002 verificables');
     const captures=[];
     for(const path of paths)captures.push((await leerArchivoEF002(path)).capture);
+    // Solo evidencia heredada EXPLÍCITAMENTE declarada, con sello real.
+    // No se convierten resultados de laboratorios ni simulaciones en mercado.
+    const oldPaths=[
+      'evidencia/fuentes-primarias-20261030/captura-integrada.json',
+      'evidencia/continuidad-u003-20261030/captura-integrada.json',
+      'evidencia/capital-u004-20261030/primera-captura-mundial-parcial.json',
+      'evidencia/capital-u004-20261030/captura-mundial.json',
+      'evidencia/entrenamiento-x002-20261030/fuentes-mundiales/captura.json'
+    ];
+    const supplemental=[];
+    if(process.env.LAPLACE_F002_INCLUDE_LEGACY==='true'){
+      for(const rel of oldPaths){
+        const path=resolve(new URL('../'+rel,import.meta.url).pathname);
+        const raw=await readFile(path,'utf8');
+        const c=JSON.parse(raw);
+        normalizarCapturaU003(c); // Sello de toda la captura y snapshot.
+        need(c.at<=captures.at(-1).at,'evidencia heredada no debe llegar del futuro');
+        if(captures.some(x=>x.capture_sha256===c.capture_sha256))continue;
+        captures.push(c);
+        supplemental.push({path:rel,capture_sha256:c.capture_sha256,
+          source_file_sha256:sha(raw),captured_at:c.at});
+      }
+    }
     captures.sort((a,b)=>a.at.localeCompare(b.at));
     const version=sha(await readFile(new URL('../prediccion/conjunta-f002.mjs',import.meta.url)));
     const model=ejecutarPrediccionF002(captures,{issuedAt:new Date().toISOString()});
@@ -36,6 +60,8 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
     const report={...model,model_source_sha256:version,
       source_branch:'laplace-archivo',archive_count:captures.length,
       verified_real_archives_only:true,
+      archive_manifests_verified:paths.length,
+      supplemental_evidence_verified:supplemental,
       input_capture_sha256:tail,automatic_trading:false,
       production_activation_allowed:false,prospectively_validated:false};
     await writeFile(join(output,reportName),JSON.stringify(report,null,2)+'\n',
@@ -85,8 +111,11 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
       missed_capture_windows:unscorable,
       prospective_scorecard:score,
       model_source_sha256:version,
-      verified_real_archives_only:true,automatic_trading:false,
-      central_f001_price_modified:false,production_activation_allowed:false};
+      verified_real_archives_only:true,archive_manifests_verified:paths.length,
+      supplemental_evidence_verified:supplemental.length,
+      skipped_correlated_decisions:model.skipped_correlated_decisions??null,
+      automatic_trading:false,central_f001_price_modified:false,
+      production_activation_allowed:false};
     await writeFile(join(output,'resumen-f002.json'),JSON.stringify(status,null,2)+'\n',
       {flag:'wx',mode:0o600});
     console.log(JSON.stringify(status));
