@@ -69,7 +69,10 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
       {flag:'wx',mode:0o600});
     let forecastName=null;
     if(model.status==='experimental_shadow_frozen'){
-      forecastName='pronosticos-f002/forecast-'+model.forecast.forecast_sha256+'.json';
+      // Un solo pronóstico por captura: una ejecución tardía/repetida no
+      // puede multiplicar artificialmente el número de apuestas prospectivas.
+      forecastName='pronosticos-f002/forecast-'+
+        model.forecast.decision_capture_sha256+'.json';
       await writeFile(join(output,forecastName),
         JSON.stringify(model.forecast,null,2)+'\n',{flag:'wx',mode:0o600});
     }
