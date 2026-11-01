@@ -16,6 +16,13 @@ son adimensionales; únicamente después se calcula una mediana y máscara
 de presencia por grupo. Nunca se suman USD con tasas o conteos.
 Un dato antiguo repetido no se trata como observación nueva.
 
+Cada ciclo también crea trazas-f002/trace-SHA.json: archivo inmutable con
+los valores originales sin redondeo, unidad, proveedor, fechas bitemporales,
+valor anterior, valor nuevo, cambio normalizado o motivo de ausencia de
+cada señal. Este registro se conserva por SHA aparte del modelo estadístico;
+la agregación a seis familias nunca borra la información cruda original.
+
+
 El objetivo actual es BTC/USD a 6 horas, debido a la cadencia programada
 de EF002. La etiqueta futura requiere una captura posterior auténtica,
 con precio Coinbase observado después de la decisión y dentro de ±2 horas.
