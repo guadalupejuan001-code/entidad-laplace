@@ -2,7 +2,7 @@
  * Conserva datos reales, su procedencia, conocimiento temporal y fuente.
  * No convierte una captura transversal en entrenamiento de futuro.
  */
-import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,readdirSync,existsSync} from 'node:fs';
 import {resolve,join,dirname} from 'node:path';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
@@ -43,14 +43,27 @@ function load(file){
 }
 const files=manifests(source);
 if(!files.length)throw Error('EF002: ninguna captura pública real');
-const snapshots=files.slice(-8).map(load);
-const latest=snapshots.at(-1),snapshot=latest.capture.universal_state;
+// Se verifican TODOS los manifiestos, no sólo las últimas ocho capturas.
+ // Memoria acotada: sólo se conservan las dos capturas completas más recientes.
+let latest=null,previousLatest=null;
+const history=[];
+for(const file of files){
+  const entry=load(file);
+  previousLatest=latest;
+  latest=entry;
+  history.push({captured_at:entry.manifest.captured_at,
+    states:entry.manifest.states_observed,sources:entry.manifest.sources_observed,
+    capture_sha256:entry.manifest.capture_sha256,
+    snapshot_sha256:entry.manifest.snapshot_sha256,
+    archive_sha256:entry.manifest.archive_sha256});
+}
+const snapshot=latest.capture.universal_state;
 const states=snapshot.states.map(x=>({
   id:x.id,domain:x.domain,variable:x.variable,unit:x.unit,
   value:x.value,known_at:x.known_at,observed_at:x.observed_at,
   source_url:x.source_url
 }));
-const previous=snapshots.length>=2?snapshots.at(-2).capture.universal_state:null;
+const previous=previousLatest?.capture.universal_state??null;
 const before=new Map((previous?.states??[]).map(x=>[x.id,x]));
 const observedChanges=[];
 for(const state of states){
@@ -74,13 +87,10 @@ const world={
   capture_sha256:latest.capture.capture_sha256,
   snapshot_sha256:snapshot.snapshot_sha256,
   source_count:latest.manifest.sources_observed,
-  snapshots_verified:snapshots.length,
+  snapshots_verified:history.length,
   archive_manifests_count:files.length,
-  history:snapshots.map(({manifest})=>({
-    captured_at:manifest.captured_at,
-    states:manifest.states_observed,sources:manifest.sources_observed,
-    capture_sha256:manifest.capture_sha256
-  })),
+  history,history_index_complete:true,state_history_on_device:false,
+  source_status:latest.capture.source_status??[],
   observed_changes_between_last_two:observedChanges,
   groups:(latest.capture.coverage?.groups??[]).map(g=>({
     group:String(g.group),signals:Number(g.signals??0),status:String(g.status)
@@ -94,8 +104,43 @@ const world={
   original_m001_model_uses_world:false,ef004_requires_history:true,
   automatic_trading:false
 };
+// EF004 no puede declararse entrenado por ver 2/3 capturas.
+// Sólo se publica un reporte verdaderamente asociado al tamaño del archivo.
+const models=resolve(process.argv[3]??'model_archive/reportes');
+const reports=[];
+if(existsSync(models)){
+  for(const name of readdirSync(models).filter(x=>/^status-.*\.json$/.test(x))){
+    let report;
+    try{report=JSON.parse(readFileSync(join(models,name),'utf8'));}catch{continue}
+    if(report?.schema!=='laplace-demonio-financiero-ef004-v1'||
+       report.verification!=='real_archives_only_not_synthetic'||
+       report.archive_count!==files.length||
+       !Number.isFinite(Date.parse(report.as_of))||
+       Date.parse(report.as_of)<Date.parse(latest.capture.at)-10000)continue;
+    if(report.status!=='abstained'&&report.status!=='experimental_model_frozen')continue;
+    if(report.automatic_trading!==false||report.production_activation_allowed!==false)continue;
+    reports.push({name,report});
+  }
+}
+reports.sort((a,b)=>Date.parse(b.report.as_of)-Date.parse(a.report.as_of));
+if(reports.length){
+  const {name,report}=reports[0];
+  world.ef004_report={schema:report.schema,status:report.status,
+    reason:report.reason??null,model_ready:report.model_ready===true,
+    captures_seen:report.captures_seen??null,
+    contiguous_captures:report.contiguous_captures??null,
+    required_training_pairs:report.required_training_pairs??null,
+    required_validation_pairs:report.required_validation_pairs??null,
+    required_holdout_pairs:report.required_holdout_pairs??null,
+    observed_training_pairs:report.observed_training_pairs??null,
+    observed_validation_pairs:report.observed_validation_pairs??null,
+    observed_holdout_pairs:report.observed_holdout_pairs??null,
+    as_of:report.as_of,source_branch:'laplace-modelos',report_name:name,
+    verification:report.verification};
+}else world.ef004_report=null;
 const output=join(scriptDir,'app/src/main/assets/world.js');
 writeFileSync(output,'window.LAPLACE_WORLD = '+JSON.stringify(world)+';\n');
 console.log(JSON.stringify({verified:true,states:states.length,domains:world.domains,
   groups:world.groups.length,archives:files.length,history:world.snapshots_verified,
-  changes:observedChanges.length,sha:world.capture_sha256,size:readFileSync(output).length}));
+  changes:observedChanges.length,ef004:world.ef004_report?.status??'no_report',
+  sha:world.capture_sha256,size:readFileSync(output).length}));
