@@ -148,7 +148,9 @@ if(existsSync(f002Directory)){
     try{report=JSON.parse(readFileSync(join(f002Directory,name),'utf8'));}catch{continue}
     if(report.schema!=='laplace-f002-joint-archive-v1'||
       report.verified_real_archives_only!==true||
-      report.archive_count!==files.length||
+      report.archive_manifests_verified!==files.length||
+      !Array.isArray(report.supplemental_evidence_verified)||
+      report.archive_count!==files.length+report.supplemental_evidence_verified.length||
       report.input_capture_sha256!==latest.capture.capture_sha256||
       report.production_activation_allowed!==false||
       report.automatic_trading!==false||
@@ -166,6 +168,8 @@ if(f002Candidates.length){
   world.f002_report={
     schema:report.schema,status:report.status,reason:report.reason??null,
     archive_count:report.archive_count,
+    archive_manifests_verified:report.archive_manifests_verified,
+    supplemental_evidence_verified:report.supplemental_evidence_verified.length,
     source_series:report.distinct_source_series,
     domains:report.observed_domains,
     matched_verified_outcomes:report.matched_outcomes,
