@@ -706,3 +706,44 @@ html{scroll-padding-bottom:105px}
     padding:5px 9px;border:1px solid #4b6872;border-radius:7px
   }
 }
+
+
+/* Laplace 3.7 — consulta multimercado. La estética no reemplaza la evidencia. */
+.market-selected{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin:13px 0 9px;padding:14px 15px;
+  background:linear-gradient(125deg,#142c32,#182338);border-radius:15px;
+  border:1px solid #477066
+}
+.market-selected>div{display:flex;flex-direction:column;min-width:0;gap:3px}
+.market-selected small{font-size:9px;font-weight:800;letter-spacing:.13em;color:#9fc6ba}
+#selectedQuote{font-size:clamp(21px,6vw,30px);letter-spacing:-.05em;
+  line-height:1.15;font-variant-numeric:tabular-nums;color:#f1f8f6}
+#selectedProvider{font-size:10px;line-height:1.4;color:#a9c4bd;
+  overflow-wrap:anywhere}
+.favorite-toggle{
+  border-radius:12px;border:1px solid #677c7d;background:#253940;
+  color:#d6ffae;min-width:48px;min-height:49px;flex-shrink:0;
+  font-size:25px;line-height:1
+}
+.favorite-toggle[aria-pressed=true]{background:#314b3c;border-color:#9ddd8e}
+.market-quote-actions{display:flex;gap:8px;margin:10px 0}
+.market-quote-actions button{flex:1;min-width:0;font-size:11px}
+.favorite-assets{display:flex;flex-wrap:wrap;gap:7px;padding:7px 0 10px}
+.favorite-pill{border:1px solid #48617c;color:#b9c7e1;border-radius:9px;
+  background:#1e293d;padding:8px 11px;min-height:38px;
+  font-size:11px;font-weight:750}
+.favorite-pill[aria-pressed=true]{border-color:#9cf2c3;background:#294b42;color:#dcffee}
+.robinhood-link{display:inline-block;font-size:12px;font-weight:700;
+  color:#aee9c7;text-decoration:underline;text-underline-offset:3px;
+  margin:1px 0 11px}
+#providerDisclaimer{display:block;margin:0 0 12px;color:#a6b8c5;line-height:1.55}
+#asset optgroup{font-style:normal;font-weight:750;color:#a4bfc7}
+#asset option{font-weight:500}
+#integral .integral-item{gap:9px}
+#integral .integral-item>small{line-height:1.55}
+@media(max-width:430px){
+  .market-quote-actions{flex-wrap:wrap}
+  .market-quote-actions button{min-width:130px}
+  .favorite-assets{max-height:110px;overflow:auto}
+}
