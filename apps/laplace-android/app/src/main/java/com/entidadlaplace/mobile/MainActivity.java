@@ -32,17 +32,15 @@ import java.util.concurrent.Executors;
 
 /**
  * Independiente de REVERSE-PC; WebView sirve solo archivos internos.
- * Entrada de mercado exclusivamente desde endpoint público de Coinbase.
- * M001 (análisis de análogos) se ejecuta en engine.js sin acceso a cuentas.
+ * Criptomonedas: Coinbase público. Acciones/ETF: Yahoo Chart no oficial,
+ * indicativo y posiblemente demorado. Ninguna integración con una cuenta.
+ * M001 usa análogos solo con historia cerrada; sin acceso a dinero.
  * No hay APIs para cuentas, órdenes o claves privadas.
  */
 public final class MainActivity extends Activity {
     private WebView webView;
     private CoinbaseLiveFeed liveFeed;
     private final ExecutorService io=Executors.newFixedThreadPool(4);
-    private static final Set<String> ASSETS = new HashSet<>(Arrays.asList(
-        "BTC-USD","ETH-USD","SOL-USD"
-    ));
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
     private static final int MAX_QUOTE_BYTES=64*1024;
 
@@ -124,16 +122,21 @@ public final class MainActivity extends Activity {
     private final class MarketBridge {
         @JavascriptInterface
         public void fetchCandles(String requestId,String asset,int granularity,int days){
-            int expectedDays=granularity==300?14:granularity==3600?45:
-                granularity==86400?1000:-1;
+            int expectedDays=MarketCatalog.days(granularity,asset);
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
-               !ASSETS.contains(asset)||expectedDays<0||days!=expectedDays){
+               !MarketCatalog.allowed(asset)||expectedDays<0||days!=expectedDays){
                 emit(requestId,"Solicitud inválida: fuente o ventana no permitida.",null,granularity);
                 return;
             }
             io.execute(()->{
                 try{
-                    JSONArray candles=fetchCoinbaseHistory(requestId,asset,granularity,days);
+                    JSONArray candles;
+                    if(MarketCatalog.isCrypto(asset))
+                        candles=fetchCoinbaseHistory(requestId,asset,granularity,days);
+                    else{
+                        candles=EquityHistory.history(asset,granularity);
+                        emitProgress(requestId,1,1);
+                    }
                     emit(requestId,null,candles,granularity);
                 }catch(Exception error){
                     emit(requestId,"Histórico: "+error.getMessage(),null,granularity);
@@ -174,12 +177,14 @@ public final class MainActivity extends Activity {
         @JavascriptInterface
         public void fetchQuote(String requestId,String asset){
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
-               !ASSETS.contains(asset)){
+               !MarketCatalog.allowed(asset)){
                 emitQuote(requestId,"Activo no permitido.",null);
                 return;
             }
             io.execute(()->{
-                try{emitQuote(requestId,null,fetchCoinbaseQuote(asset));}
+                try{emitQuote(requestId,null,
+                    MarketCatalog.isCrypto(asset)?
+                        fetchCoinbaseQuote(asset):EquityHistory.quote(asset));}
                 catch(Exception e){emitQuote(requestId,e.getMessage(),null);}
             });
         }
@@ -217,6 +222,8 @@ public final class MainActivity extends Activity {
             result.put("time",raw.optString("time",""));
             result.put("receivedAt",System.currentTimeMillis());
             result.put("source","Coinbase Exchange · ticker público");
+            result.put("market","crypto");
+            result.put("indicative",false);
             return result;
         }finally{conn.disconnect();}
     }
