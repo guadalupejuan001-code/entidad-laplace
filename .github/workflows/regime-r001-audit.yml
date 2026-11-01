@@ -1,0 +1,84 @@
+name: LAPLACE R001 - Auditoria de transiciones y amplitud por regimen
+on:
+  pull_request:
+    paths:
+      - 'experimentos/regime-r001.mjs'
+      - 'tests/regime-r001.test.mjs'
+      - 'tools/regime-r001.mjs'
+      - '.github/workflows/regime-r001-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experimentos/regime-r001.mjs'
+      - 'tests/regime-r001.test.mjs'
+      - 'tools/regime-r001.mjs'
+      - '.github/workflows/regime-r001-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate-without-future-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Contratos y sintaxis
+        run: |
+          set -euo pipefail
+          node --check experimentos/regime-r001.mjs
+          node --check tests/regime-r001.test.mjs
+          node --check tools/regime-r001.mjs
+      - name: Contrapruebas de fuga y datos faltantes
+        run: |
+          set -euo pipefail
+          node --test tests/regime-r001.test.mjs
+      - name: Regresiones M003, M004 sin modificar los motores existentes
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --test tests/marea-m003.test.mjs
+          if test -f apps/laplace-android/tests/regime-m004.test.cjs; then
+            node --test apps/laplace-android/tests/regime-m004.test.cjs
+          fi
+      - name: Emitir informe de R001 con capturas históricas auténticas
+        run: |
+          set -euo pipefail
+          node tools/regime-r001.mjs \
+            evidencia/entrenamiento-x002-20261030/velas.json \
+            "$RUNNER_TEMP/r001/transition-audit.json" > "$RUNNER_TEMP/r001-summary.json"
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const x=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/r001/transition-audit.json","utf8"));
+            assert.equal(x.schema,"laplace-regime-r001-transition-audit-v1");
+            assert.equal(x.asset,"BTC-USD");
+            assert.equal(x.source.historical_close_vintage_attested,false);
+            assert.equal(x.source.original_provider_responses_rechecked_here,false);
+            assert.equal(x.folds.length,3);
+            assert.equal(x.status,"retrospective_audit_completed");
+            assert.ok(x.valid_transition_pairs>6000);
+            assert.ok(x.holdout_transition_pairs>1000);
+            assert.equal(x.prospectively_validated,false);
+            assert.equal(x.production_activation_allowed,false);
+            assert.equal(x.automatic_trading,false);
+            assert.ok(x.folds.every(f=>f.no_holdout_selection&&
+              f.status==="retrospective_evaluation_only"));
+            console.log(JSON.stringify({
+              observations:x.observations,transitions:x.valid_transition_pairs,
+              holdout_transitions:x.holdout_transition_pairs,
+              scores:x.folds.map(f=>({conditional_brier:f.score.conditional_brier,
+                unconditional_brier:f.score.unconditional_brier,
+                conditional_mae_bps:f.magnitude_score.conditional_mae_bps,
+                baseline_mae_bps:f.magnitude_score.unconditional_mae_bps}))
+            }));
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LAPLACE-R001-TRANSICIONES-REALES
+          path: ${{ runner.temp }}/r001/
+          if-no-files-found: warn
+          retention-days: 30
