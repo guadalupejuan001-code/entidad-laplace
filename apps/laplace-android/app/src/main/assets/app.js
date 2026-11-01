@@ -287,17 +287,15 @@ function renderIntegral(){
       'discrepancia máxima '+Number(field.max_anchor_inconsistency).toExponential(2)+
       '. El precio central F001 permanece intacto.':
     'Laplace: '+(field.reason??field.status)+'. No se inventa cálculo.';
+  const snapshot=F.resumirCapacidades({world:W,
+    executed:{f001:true,xn01:!!xn01Result,m001Diary:log.length},
+    asOf:new Date().toISOString()});
   const groups=[
-    ['F001 multiescala',fusion.horizons.length+' horizontes calculados'],
-    ['M001', 'Análogos históricos en F001; ver error por horizonte'],
-    ['Laplace (ecuación)',domain],
-    ['EF001 / EF002',audit.valid_at_cut+' estados públicos, fecha '+(audit.capture_at??'no disponible')],
-    ['C001 ETF SEC',audit.etf_fund_flow_status+' · '+audit.etf_fund_flow_signals+' señales'],
-    ['EF004', 'Faltan suficientes transiciones independientes para usarlo en Android'],
-    ['U002/U003/U004',audit.domains.length+' dominios conocidos; cobertura no universal'],
-    ['D001/D002 B001 K001 O001','Se conservan en el archivo si la captura los observó; revisar Mundo'],
-    ['X002 / XN01 / XI-Ether','No ejecutados por esta APK; se requiere backend nativo verificable'],
-    ['Datos fallidos',errors.length?errors.join(' · '):'Ninguna consulta de velas falló']
+    ['F001 · cálculo actual',fusion.horizons.length+' horizontes · '+
+      fusion.horizons.filter(x=>x.price_candidate!==null).length+' candidatos, sin validación prospectiva'],
+    ['Campo Laplace',domain],
+    ['Auditoría EF002',audit.valid_at_cut+' estados válidos al corte; '+errors.length+' problemas de descarga'],
+    ...snapshot.items.map(x=>[x.id+' · '+x.title,x.state+' · '+x.reason])
   ];
   for(const [title,description] of groups){
     const row=document.createElement('div');row.className='signal-row';
