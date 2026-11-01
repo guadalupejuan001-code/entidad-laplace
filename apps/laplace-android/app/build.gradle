@@ -6,8 +6,8 @@ android {
         applicationId 'com.entidadlaplace.mobile'
         minSdk 26
         targetSdk 34
-        versionCode 10
-        versionName '3.5.0-INTELLIGENT-UX'
+        versionCode 11
+        versionName '3.6.0-F002-JOINT-RESEARCH'
     }
     defaultConfig {
         ndk { abiFilters 'arm64-v8a' }
@@ -20,7 +20,7 @@ android {
         }
     }
     buildTypes {
-        debug { applicationIdSuffix '.ux35' }
+        debug { applicationIdSuffix '.f002' }
         release { minifyEnabled false }
     }
     dependencies {
