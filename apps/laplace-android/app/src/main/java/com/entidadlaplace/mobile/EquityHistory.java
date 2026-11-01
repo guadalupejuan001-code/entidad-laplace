@@ -100,8 +100,8 @@ public final class EquityHistory {
                open<low-1e-4||open>high+1e-4||
                close<low-1e-4||close>high+1e-4)continue;
             JSONArray row=new JSONArray();
-            row.put(time);row.put(Math.min(low,open,close));
-            row.put(Math.max(high,open,close));row.put(open);row.put(close);row.put(volume);
+            row.put(time);row.put(Math.min(low,Math.min(open,close)));
+            row.put(Math.max(high,Math.max(open,close)));row.put(open);row.put(close);row.put(volume);
             JSONArray prior=ordered.putIfAbsent(time,row);
             if(prior!=null&&!prior.toString().equals(row.toString()))
                 throw new IOException("Yahoo devolvió velas contradictorias");
