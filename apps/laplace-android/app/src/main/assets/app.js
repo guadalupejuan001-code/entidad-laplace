@@ -505,11 +505,69 @@ function show(page){
   // Evita quedarse navegando a una sección que no tiene vuelta visible.
   window.scrollTo?.({top:0,behavior:'instant'});
 }
+
+function marketChoice(){
+  const a=Markets?.BY_SYMBOL[asset],stock=isEquity();
+  $('selectedMarketTag').textContent=stock?(a.kind==='etf'?'ETF · EE. UU.':'ACCIÓN · EE. UU.'):'CRIPTO · USD';
+  $('selectedProvider').textContent=stock?'Yahoo Finance · precio indicativo':
+    'Coinbase Exchange · spot';
+  $('providerDisclaimer').textContent=stock?
+    'Yahoo Chart es una fuente pública no oficial y puede retrasarse o bloquearse. '+ 
+    'Las sesiones no son horas de reloj. Laplace NO accede a Robinhood.':
+    'Coinbase es independiente de Robinhood. El precio de ejecución puede variar.';
+  const robinhood=Markets?.robinhood(asset);
+  $('robinhoodLink').href=robinhood??'https://robinhood.com/us/en/';
+  $('favoriteToggle').textContent=favorites.has(asset)?'★':'☆';
+  $('favoriteToggle').setAttribute('aria-pressed',String(favorites.has(asset)));
+  $('favoriteToggle').setAttribute('aria-label',favorites.has(asset)?
+    'Quitar de favoritos locales':'Añadir a favoritos locales');
+  $('integralTitle').textContent=asset==='BTC-USD'?
+    'F001 · 14 horizontes originales de BTC':
+    'M001 · 16 horizontes · '+(a?.name??asset);
+  $('integralMode').textContent=asset==='BTC-USD'?'F001 · 14 PLAZOS':
+    stock?'M001 · 16 PLAZOS BURSÁTILES':'M001 · 16 PLAZOS CRIPTO';
+  $('integralDisclaimer').textContent=asset==='BTC-USD'?
+    'F001 original Bitcoin, 14 horizontes y operador Laplace. M003/F002 son estudios separados, no nuevos precios.':
+    stock?'La bolsa usa barras y sesiones de negociación, no horas calendario. '+
+      'El histórico procede de Yahoo Chart no oficial; sin precio Robinhood ni vencimiento exacto.':
+      'M001 ejecuta 16 horizontes de criptomonedas con Coinbase. '+ 
+      'No está calibrado con pruebas prospectivas independientes.';
+  renderFavoriteAssets();
+}
+function renderFavoriteAssets(){
+  const node=$('favoriteAssets');node.replaceChildren();
+  const pinned=[...favorites].filter(x=>Markets?.BY_SYMBOL[x]).slice(0,12);
+  for(const code of pinned){
+    const button=document.createElement('button');
+    button.type='button';button.className='favorite-pill';
+    button.textContent=code.replace('-USD','');
+    button.setAttribute('aria-pressed',String(asset===code));
+    button.addEventListener('click',()=>changeAsset(code));
+    node.appendChild(button);
+  }
+}
+function populateMarkets(){
+  const select=$('asset');select.replaceChildren();
+  for(const [title,filter] of [
+    ['CRIPTOMONEDAS · COINBASE',a=>a.market==='crypto'],
+    ['ACCIONES · EE. UU. · YAHOO INDICATIVO',a=>a.kind==='stock'],
+    ['ETF · EE. UU. · YAHOO INDICATIVO',a=>a.kind==='etf']]){
+    const group=document.createElement('optgroup');group.label=title;
+    for(const entry of Markets.ITEMS.filter(filter)){
+      const opt=document.createElement('option');
+      opt.value=entry.symbol;
+      opt.textContent=entry.name+' · '+entry.symbol.replace('-USD','/USD');
+      group.appendChild(opt);
+    }
+    select.appendChild(group);
+  }
+  select.value=asset;
+}
 function renderQuotes(){
-  const short={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
+  const pinned={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
   let found=0;
-  for(const code of E.ALLOWED_ASSETS){
-    const q=quotes.get(code),id=short[code],selected=code===asset,
+  for(const [code,id] of Object.entries(pinned)){
+    const q=quotes.get(code),selected=code===asset,
       streamFresh=q?.isLive&&tickerStream.isFresh(code);
     const button=document.querySelector('[data-quote-asset="'+code+'"]');
     if(button){
@@ -518,25 +576,28 @@ function renderQuotes(){
       button.dataset.live=String(Boolean(streamFresh));
     }
     $('quote'+id).textContent=q?compactPrice(q.price):'—';
-    $('quote'+id+'Status').textContent=streamFresh?
-      'EN VIVO · WS':
-      q?.isLive?'TRADE ANTIGUO':
-      q?'TICKER · HTTPS':'SIN FUENTE';
+    $('quote'+id+'Status').textContent=streamFresh?'EN VIVO · WS':
+      q?.isLive?'TRADE ANTIGUO':q?'TICKER HTTPS':'SIN FUENTE';
     if(q)found++;
   }
   $('quoteStatus').textContent=tickerStream.snapshot().status==='live'?
-    'WS CONECTADO · '+found+'/3':'HTTPS · '+found+'/3';
-  const q=quotes.get(asset);
+    'WS CRIPTO · '+found+'/3':'HTTPS CRIPTO · '+found+'/3';
+  const q=quotes.get(asset),stock=isEquity(),provider=Markets?.sourceLabel(asset);
+  $('selectedQuote').textContent=q?money(q.price):'—';
+  $('selectedProvider').textContent=q?
+    (q.source??provider):provider;
   $('quoteTime').textContent=q?
-    asset.replace('-','/')+' · '+money(q.price)+' · '+
-      (q.isLive?'último trade WebSocket':'ticker HTTPS')+
-      ' · dato observado, no predicción':
-    'Sin precio verificable para '+asset+'. No se fabricaron datos.';
+    asset.replace('-','/')+' · '+money(q.price)+' · '+(stock?
+      'indicativo, NO precio Robinhood':'spot Coinbase')+
+      ' · fuente '+new Date(q.time).toLocaleString('es-MX')+
+      ' · leído '+date(q.receivedAt/1000):
+    'Sin referencia disponible para '+asset+'. No se fabrica ningún precio.';
   $('quoteTrace').textContent=q?
-    'Fuente '+(q.isLive?'WebSocket Coinbase Exchange':'HTTPS Coinbase Exchange')+
-      ' · observado '+q.time+' · recibido '+date(q.receivedAt/1000)+
-      ' · última operación no equivale a vela cerrada.':
-    'Sin traza de mercado disponible.';
+    (q.source??provider)+' · observado '+q.time+
+      ' · recibido '+date(q.receivedAt/1000)+
+      ' · '+(stock?'puede haber retraso, horarios y cierre del mercado':
+      'el último trade no equivale a una vela cerrada'):
+    'Sin fuente verificable para el activo seleccionado.';
 }
 function useHorizon(value){
   const m=Number(value);
