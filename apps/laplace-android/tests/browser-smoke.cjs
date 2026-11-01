@@ -132,6 +132,13 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('#world').isVisible(),true);
     await page.locator('#worldSearch').fill('BTC');
     assert.match(await page.locator('#worldMatches').innerText(),/estados/);
+    await page.locator('#capabilityRefresh').click();
+    assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
+    assert.match(await page.locator('#capabilityRaw').textContent(),/laplace-capability-observability-v1/);
+    await page.locator('#capabilityQuery').fill('EF004');
+    assert.equal(await page.locator('#capabilityRows .signal-row').count(),1);
+    await page.locator('#capabilityQuery').fill('');
+    assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
     await page.locator('[data-tab="equation"]').click();
     await page.selectOption('#pdePreset','quadratic');
     await page.locator('#pdeSolve').click();
@@ -171,7 +178,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.deepEqual(errors,[],'La interfaz emitió errores Javascript');
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
-      F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
+      capabilities:20,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
       stream:true,livePauseResume:true,streamOutOfOrderIgnored:true,jsErrors:errors.length}));
   }finally{
     await browser.close();
