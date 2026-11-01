@@ -91,7 +91,9 @@ export function muestrasMarea(prepared,horizonBars){
   const {bars,gapPrefix}=prepared,rows=[];
   for(let i=MAREA_PLAN.lookback_bars;i+horizonBars<bars.length;i++){
     // Un único target por bloque; los índices de muestras no se superponen.
-    if(i%horizonBars!==0||
+    // La fase de muestreo depende del reloj UTC, nunca del número de filas;
+    // quitar velas por huecos no cambia el horizonte ni sus etiquetas.
+    if((bars[i][0]-bars[0][0])%(horizonBars*STEP_SECONDS)!==0||
        !contiguous(gapPrefix,i-MAREA_PLAN.lookback_bars,i+horizonBars))continue;
     const x=valoresEnCorte(bars,i),y=Math.log(bars[i+horizonBars][4]/bars[i][4]);
     if(!Number.isFinite(y))continue;
@@ -189,8 +191,8 @@ function byRegime(cases,threshold){
       persistence:rows.length?scoreCases(rows,'persistence'):null};
   });
 }
-function foldMarea(samples,{horizon,from,to,validationBars,plan}){
-  const valStart=from-validationBars;
+function foldMarea(samples,{horizon,from,to,validationStart,plan}){
+  const valStart=validationStart;
   const fit=samples.filter(s=>s.index<valStart&&s.due_index<valStart);
   const val=samples.filter(s=>s.index>=valStart&&s.due_index<from);
   const refit=samples.filter(s=>s.index<from&&s.due_index<from);
@@ -257,16 +259,24 @@ export function investigarMarea(raw,{cutoff,horizons=MAREA_PLAN.horizons_bars}={
     horizons.every(x=>MAREA_PLAN.horizons_bars.includes(x))&&
     new Set(horizons).size===horizons.length,'horizontes no preregistrados');
   const history=prepararVelasMarea(raw,{cutoff}),bars=history.bars;
-  const perDay=86400/STEP_SECONDS,all=[];
+  const all=[],startEpoch=bars[0][0],lastClosedEpoch=bars.at(-1)[0]+STEP_SECONDS;
+  const indexAt=time=>bars.findIndex(r=>r[0]>=time);
   for(const h of horizons){
     const samples=muestrasMarea(history,h),folds=[];
     for(let k=0;k<MAREA_PLAN.folds;k++){
-      const from=(MAREA_PLAN.train_days_first+k*MAREA_PLAN.test_days)*perDay;
-      const to=from+MAREA_PLAN.test_days*perDay;
-      if(to>bars.length)folds.push({status:'abstained',reason:'short_history',
-        required_bars:to,available_bars:bars.length});
+      // Los folds son intervalos de reloj reales: los huecos NO alargan
+      // artificialmente el periodo de entrenamiento.
+      const fromEpoch=startEpoch+
+        (MAREA_PLAN.train_days_first+k*MAREA_PLAN.test_days)*86400;
+      const toEpoch=fromEpoch+MAREA_PLAN.test_days*86400;
+      const valEpoch=fromEpoch-MAREA_PLAN.validation_days*86400;
+      const from=indexAt(fromEpoch),foundTo=indexAt(toEpoch),
+        to=foundTo<0?bars.length:foundTo,validationStart=indexAt(valEpoch);
+      if(toEpoch>lastClosedEpoch||from<0||validationStart<0)
+        folds.push({status:'abstained',reason:'short_calendar_history',
+          required_end_at:ms(toEpoch),available_end_at:ms(lastClosedEpoch)});
       else folds.push(foldMarea(samples,{horizon:h,from,to,
-        validationBars:MAREA_PLAN.validation_days*perDay,plan:history}));
+        validationStart,plan:history}));
     }
     const passed=folds.filter(x=>x.status==='retrospective_research_only');
     const cases=passed.flatMap(f=>f.cases);
