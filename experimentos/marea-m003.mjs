@@ -48,7 +48,7 @@ export function prepararVelasMarea(raw,{cutoff,granularity=STEP_SECONDS}={}){
   need(granularity===300,'M003 se limita a velas verificadas de cinco minutos');
   need(typeof cutoff==='string'&&Number.isFinite(Date.parse(cutoff)),'corte UTC obligatorio');
   need(Array.isArray(raw)&&raw.length>=300&&raw.length<=30000,'historial OHLCV insuficiente o excedido');
-  const received=validarVelas(raw,{corte,segundos:granularity,maximo:30000});
+  const received=validarVelas(raw,{corte:cutoff,segundos:granularity,maximo:30000});
   need(received.length===raw.length,
     'no se usan velas abiertas, duplicadas ni fuera de la fecha de corte');
   // Validar no solapamiento, no solo el orden en que el proveedor respondió.
