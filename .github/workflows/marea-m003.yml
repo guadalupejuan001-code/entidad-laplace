@@ -1,0 +1,83 @@
+name: Laplace M003 - Comprender la marea del precio
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experimentos/marea-m003.mjs'
+      - 'tools/mapa-marea.mjs'
+      - 'tests/marea-m003.test.mjs'
+      - '.github/workflows/marea-m003.yml'
+  pull_request:
+    paths:
+      - 'experimentos/marea-m003.mjs'
+      - 'tools/mapa-marea.mjs'
+      - 'tests/marea-m003.test.mjs'
+      - '.github/workflows/marea-m003.yml'
+      - 'package.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hypotheses-before-price:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencias y contrato
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node --check experimentos/marea-m003.mjs
+          node --check tools/mapa-marea.mjs
+          node --check tests/marea-m003.test.mjs
+      - name: Contraejemplos, fugas temporales y regresiones
+        run: |
+          node --test tests/marea-m003.test.mjs tests/fusion-temporal.test.mjs tests/entrenamiento.test.mjs
+      - name: Estudiar las velas reales archivadas y guardar trazas individuales
+        run: |
+          set -euo pipefail
+          node tools/mapa-marea.mjs \
+            evidencia/entrenamiento-x002-20261030/velas.json \
+            "$RUNNER_TEMP/marea-archive/report.json" \
+            > "$RUNNER_TEMP/marea-execution.json"
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            import assert from "node:assert/strict";
+            const x=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/marea-archive/report.json","utf8"));
+            assert.equal(x.schema,"laplace-marea-m003-discovery-v1");
+            assert.equal(x.observed_candles,7488);
+            assert.equal(x.source_capture_rows_sha256,x.input_rows_sha256);
+            assert.equal(x.source_raw_responses_verified_by_m003,false);
+            assert.equal(x.reference_availability,"historical_close_known_only_by_assumption");
+            assert.equal(x.production_activation_allowed,false);
+            assert.equal(x.automatic_trading,false);
+            assert.equal(x.experiments.length,3);
+            for(const exp of x.experiments){
+              assert.equal(exp.signal_causality_proven,false);
+              assert.equal(exp.can_promote_to_price_engine,false);
+              assert.ok(exp.analyzed_nonoverlapping_outcomes>100);
+              assert.equal(exp.stability.folds_evaluated,3);
+              assert.ok(exp.folds.every(f=>f.training.purge_confirmed));
+              const output={
+                minutes:exp.horizon_minutes,exploration_status:exp.status,
+                samples:exp.analyzed_nonoverlapping_outcomes,
+                baseline_bps:exp.evaluation.persistence.mae_bps,
+                selected_bps:exp.evaluation.selected.mae_bps,
+                inertia_bps:exp.evaluation.inertia_only.mae_bps,
+                placebo_bps:exp.evaluation.placebo.mae_bps,
+                stability:exp.stability
+              };
+              console.log(JSON.stringify(output));
+            }
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: LAPLACE-M003-MAPA-MAREA-RETROSPECTIVO
+          path: ${{ runner.temp }}/marea-archive/
+          retention-days: 30
+          if-no-files-found: warn
