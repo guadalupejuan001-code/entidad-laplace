@@ -59,6 +59,12 @@ jobs:
             assert.equal(x.production_activation_allowed,false);
             assert.equal(x.automatic_trading,false);
             assert.equal(x.central_f001_price_modified,false);
+            const trace=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/f002-real/"+x.raw_trace_filename,"utf8"));
+            assert.equal(trace.trace_sha256,x.raw_trace_sha256);
+            assert.equal(trace.source_series_all_latest_or_previous,x.raw_trace_series);
+            assert.ok(trace.signals.every(s=>Object.hasOwn(s,"current_value")&&
+              Object.hasOwn(s,"previous_value")&&Object.hasOwn(s,"status")));
+            assert.ok(trace.signals.length>500,"No se deben perder fuentes originales en la agregación");
             assert.ok(["abstained","experimental_shadow_frozen"].includes(x.status));
             if(x.matched_verified_outcomes<42){
               assert.equal(x.status,"abstained");
