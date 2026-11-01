@@ -57,7 +57,8 @@ window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
 const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
   '<style>'+read('style.css')+'</style>')
   .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
-const sources=['world.js','market-universe.js','marea.js','engine.js',
+const sources=['world.js','market-universe.js','marea.js','regime-m004.js',
+  'm004-evidence.js','engine.js',
   'math-pde.js','fusion-integral.js','pde-panel.js','live-feed.js','app.js'];
 const loaded=removeSources.replace('</body>',
   '<script>'+mock+mockXN01+'</script>'+
@@ -79,6 +80,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'3.8');
+    assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
     assert.match(await page.locator('#selectedProvider').innerText(),/Coinbase|SIMULACION|público/i);
@@ -124,6 +127,14 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
         await page.locator('#noticeText').innerText());
     }
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
+    assert.match(await page.locator('#regimeStatus').innerText(),/Estado calculado|régimen|velas/i);
+    assert.match(await page.locator('#regimeVol').innerText(),/Alta|Media|Baja/);
+    await page.locator('#regimeStudy').click();
+    await page.waitForFunction(()=>!document.querySelector('#regimeStudy').disabled,
+      null,{timeout:20000});
+    assert.match(await page.locator('#regimeRaw').textContent(),/laplace-m004-regime-learning-v1/);
+    assert.match(await page.locator('#regimeEvidence').innerText(),/MAE amplitud|resultados evaluados/i);
+    assert.match(await page.locator('#regimeEvidence').innerText(),/referencia/i);
     await page.locator('#smartRun').click();
     await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',null,{timeout:20000});
     assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete',
@@ -210,6 +221,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#asset','AAPL');
     assert.match(await page.locator('#selectedMarketTag').innerText(),/ACCIÓN/);
+    assert.equal(await page.locator('#regimeTag').innerText(),'SIN ESTADO VÁLIDO');
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/stocks\/aapl\//);
     await page.waitForFunction(()=>document.querySelector('#selectedQuote').textContent!=='—'&&
       !document.querySelector('#refresh').disabled,null,{timeout:25000});
