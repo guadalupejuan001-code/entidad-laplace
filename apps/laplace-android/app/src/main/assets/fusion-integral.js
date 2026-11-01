@@ -419,9 +419,13 @@ function base(key,g,world,flags,model,archives){
       ' entradas locales; archivo prospectivo M001 del servidor no sincronizado'):
       missing('Diario M001 servidor sin sincronizar; la bitácora local está vacía');
     case 'U002_XI':return missing('Estados archivados no equivalen a un roundtrip XI nativo ejecutado');
-    case 'WORLD':return (world?.states_count>0||world?.states?.length>0)?
-      observed('Captura pública fechada: '+(world.states_count??world.states.length)+' estados; sin impacto predictivo acreditado'):
-      missing('Sin captura EF002 verificable incluida');
+    case 'WORLD':{
+      const states=world?.states_count??world?.states?.length??
+        world?.universal_state?.states?.length??0;
+      return states>0?
+        observed('Captura pública fechada: '+states+' estados; sin impacto predictivo acreditado'):
+        missing('Sin captura EF002 verificable incluida');
+    }
     case 'ORDER_FLOW':return missing('La APK recibe ticker de operaciones, no L2/L3 ni flujo de órdenes validado');
     case 'NOAA_EUR':return missing('Observaciones externas no conectadas a un predictor verificable en Android');
     case 'C001':return formatGroup(g,'etf_fund_flows_c001');
