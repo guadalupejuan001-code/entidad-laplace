@@ -630,7 +630,13 @@ async function ensureAnalysisHistory(){
 async function runSmart(){
   if(smartBusy||loading)return;
   const chosenAsset=asset,chosenMinutes=minutes;
-  smartBusy=true;setActionAvailability();
+  smartBusy=true;
+  // Una ejecución nueva no debe presentar el candidato anterior como actual.
+  lastForecast=null;
+  $('estimate').textContent='—';
+  $('relativeChange').textContent='Preparando una evaluación nueva';
+  drawChart();
+  setActionAvailability();
   smartMessage('working','COMPROBANDO FUENTES',
     'Analizando '+chosenAsset.replace('-','/')+'…',
     'Validando velas cerradas, patrones históricos y precio de referencia.',
