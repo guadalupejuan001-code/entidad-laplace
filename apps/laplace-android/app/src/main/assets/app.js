@@ -396,7 +396,7 @@ function renderIntegral(){
     const element=document.createElement('div');element.className='integral-item';
     const label=document.createElement('strong'),statusText=document.createElement('span'),
       detail=document.createElement('small');
-    label.textContent=E.HORIZONS.find(h=>h.minutes===row.minutes)?.label??row.minutes+' min';
+    label.textContent=label(row.minutes);
     statusText.textContent=row.price_candidate===null?'Sin candidato':
       money(row.price_candidate);
     detail.textContent=(result.marketMode==='multiasset'?'M001 · ':'F001 · ')+
@@ -929,8 +929,10 @@ async function runSmart(){
       money(forecast.estimate)+' · '+label(chosenMinutes),
       'Desde '+money(forecast.fromPrice)+' ('+
         percent(forecast.relativeChange)+'). '+model.patterns+
-        ' patrones históricos y '+v.evaluated+' casos de evaluación. '+
-        comparison+' No es una predicción calibrada ni una recomendación de operar.',
+        ' patrones históricos y '+v.evaluated+' casos de evaluación. '+ 
+        comparison+
+      (isEquity()?' Plazo en barras bursátiles; sin hora calendario de entrega.':'')+
+      ' No es una predicción calibrada ni una recomendación de operar.',
       forecast.sourceType+' · '+label(chosenMinutes));
   }catch(error){
     smartMessage('error','SIN RESULTADO VERIFICABLE','No se emitió un candidato.',
@@ -995,6 +997,9 @@ function analyzeAction(){
 }
 function quoteAnchor(last){
   const q=quotes.get(asset),now=Date.now()/1000;
+  if(isEquity())return {basePrice:last.close,
+    sourceTime:last.time+historyGranularity,
+    sourceType:'cierre bursátil indicativo de Yahoo; no es precio Robinhood'};
   if(q){
     const providerTime=Date.parse(q.time)/1000;
     if(Number.isFinite(providerTime)&&Math.abs(now-providerTime)<180&&
@@ -1016,20 +1021,23 @@ function forecastAction(){
     $('rawM001').textContent=JSON.stringify({
       schema:'laplace-m001-raw-binary64-v1',
       model:analysis,forecast:candidate,
-      source:'Coinbase Exchange · OHLCV',
+      source:Markets.sourceLabel(asset),
       no_display_rounding:true
     },null,2);
     $('estimate').textContent=money(candidate.estimate);
     $('relativeChange').textContent=percent(candidate.relativeChange)+' · '+
       label(minutes)+' · '+model.patterns+' patrones';
-    $('chartComment').textContent='Candidato para '+date(candidate.forecastTime)+
+    $('chartComment').textContent='Candidato para '+
+      (isEquity()?label(minutes)+' de negociación (sin fecha exacta)':date(candidate.forecastTime))+
       ', usando '+candidate.sourceType+'. Rango de resultados analógicos: '+
       money(candidate.lower)+' – '+money(candidate.upper)+
       '. No son intervalos de confianza calibrados.';
     status('Candidato M001 emitido: '+money(candidate.estimate)+
       ' desde '+money(candidate.fromPrice)+' ('+percent(candidate.relativeChange)+
       '). No se corrigió artificialmente el movimiento.','success');
-    saveForecast(candidate,model);
+    if(!isEquity())saveForecast(candidate,model);
+    else $('chartComment').textContent+=' No se guarda como predicción vencible: '+ 
+      'el mercado tiene horarios y fines de semana.';
     drawChart();
   }catch(error){lastForecast=null;$('estimate').textContent='—';
     $('relativeChange').textContent='Sin candidato válido';
@@ -1326,10 +1334,12 @@ function renderHistory(){
 function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
   asset=next;$('asset').value=next;
+  marketChoice();integralResult=null;renderIntegral();
+  try{localStorage.setItem('laplace-last-asset',asset)}catch(error){}
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
   xn01Result=null;renderXN01();
   $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
-    'XN01 original bursátil no está integrado; BTC sí está disponible.';
+    'XN01 XI/Ether original solo BTC; no se simula para otros activos.';
   smartMessage('idle','ACTIVO SELECCIONADO','Listo para '+asset.replace('-','/')+'.',
     'El próximo cálculo utilizará velas de este activo, sin mezclar mercados.',
     'PLAZO · '+label(minutes));
@@ -1345,6 +1355,13 @@ for(const b of document.querySelectorAll('[data-quote-asset]'))
   b.addEventListener('click',()=>changeAsset(b.dataset.quoteAsset));
 $('asset').addEventListener('change',()=>changeAsset($('asset').value));
 $('refresh').addEventListener('click',refresh);
+$('favoriteToggle').addEventListener('click',()=>{
+  if(favorites.has(asset))favorites.delete(asset);
+  else if(favorites.size<12)favorites.add(asset);
+  else {status('Máximo de 12 favoritos locales. Quita uno antes de añadir otro.','error');return}
+  try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...favorites]));}catch(error){}
+  marketChoice();
+});
 $('integralRun').addEventListener('click',runIntegral);
 $('train').addEventListener('click',analyzeAction);
 $('test').addEventListener('click',testAction);
@@ -1377,6 +1394,14 @@ $('liveToggle').addEventListener('click',toggleLive);
 $('marketDetails').addEventListener('toggle',()=>{
   if($('marketDetails').open)drawLiveChart();
 });
+populateMarkets();
+const previousChoice=(()=>{
+  try{return localStorage.getItem('laplace-last-asset')}catch(error){return null}
+})();
+if(previousChoice&&Markets?.BY_SYMBOL[previousChoice]){
+  asset=previousChoice;$('asset').value=previousChoice;
+}
+marketChoice();
 useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();
 renderHistory();drawChart();connection('SIN CONSULTAR');
 updateLiveBanner();drawLiveChart();updateLivePreview();
@@ -1399,7 +1424,7 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.5',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'3.7',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
