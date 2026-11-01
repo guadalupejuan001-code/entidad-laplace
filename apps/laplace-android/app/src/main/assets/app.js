@@ -25,6 +25,7 @@ const tickerStream=Live.createTracker();
 let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
 let log=[];
+let worldVisibleLimit=100;
 try{
   const data=JSON.parse(localStorage.getItem(STORAGE)||'[]');
   if(Array.isArray(data))log=data.filter(r=>r&&E.ALLOWED_ASSETS.includes(r.asset))
@@ -229,7 +230,7 @@ async function runXN01(){
     xn01Result=null;renderXN01();
     $('xn01Status').textContent='XN01 se abstuvo: '+e.message;
   }finally{
-    xn01Busy=false;setActionAvailability();
+    xn01Busy=false;setActionAvailability();renderCapabilities();
   }
 }
 
@@ -359,14 +360,14 @@ async function runIntegral(){
       ' candidatos de '+fusion.horizons.length+' horizontes. Campo Laplace: '+
       field.status+'. '+problems.length+' fuentes incompletas. No se confundió '+
       'el archivo mundial con información en vivo.';
-    show('integral');renderIntegral();
+    show('integral');renderIntegral();renderCapabilities();
   }catch(error){
     $('integralStatus').dataset.state='error';
     $('integralStatus').textContent='No se pudo completar F001: '+error.message+
       '. Verifica Internet y vuelve a intentar.';
     integralResult=null;
     $('rawF001').textContent='F001 no emitió resultado: '+error.message;
-    renderIntegral();
+    renderIntegral();renderCapabilities();
   }finally{
     integralBusy=false;setActionAvailability();
     $('integralRun').textContent='Consultar y calcular F001 para BTC';
@@ -796,7 +797,7 @@ function renderWorld(){
     cnt.textContent=group.signals+' señales';cnt.className='outline-tag';
     l.append(k,d);row.append(l,cnt);groups.appendChild(row);
   }
-  renderWorldObservations();
+  renderWorldObservations();renderCapabilities();
 }
 function renderWorldObservations(){
   const target=$('worldObservations');target.replaceChildren();
@@ -805,15 +806,70 @@ function renderWorldObservations(){
   const matches=states.filter(x=>(x.id+' '+x.domain+' '+x.variable+' '+x.unit)
     .toLocaleLowerCase('es-MX').includes(query));
   $('worldMatches').textContent=matches.length+' estados auténticos coincidentes; '+
-    'se muestran los primeros 40. Valores de la captura archivada.';
-  for(const observation of matches.slice(0,40)){
+    'se muestran '+Math.min(matches.length,worldVisibleLimit)+'. Valores de la captura archivada.';
+  for(const observation of matches.slice(0,worldVisibleLimit)){
     const row=document.createElement('div');row.className='world-observation';
     const key=document.createElement('strong'),value=document.createElement('span'),
       meta=document.createElement('small');
     key.textContent=observation.domain+' · '+observation.variable;
     value.textContent=number(observation.value)+' '+observation.unit;
-    meta.textContent='Disponible '+observation.known_at+' · '+observation.id;
+    meta.textContent='Observado '+observation.observed_at+' · conocido '+
+      observation.known_at+' · '+observation.id;
     row.append(key,value,meta);target.appendChild(row);
+  }
+  $('worldShowMore').hidden=matches.length<=worldVisibleLimit;
+  $('worldShowMore').textContent='Mostrar más · '+
+    (matches.length-worldVisibleLimit>0?matches.length-worldVisibleLimit:0)+' restantes';
+}
+function renderCapabilities(){
+  const output=$('capabilityRows');if(!output)return;
+  output.replaceChildren();
+  if(!F?.resumirCapacidades){
+    $('capabilitySummary').textContent='El inventario canónico no está empaquetado.';
+    $('capabilityRaw').textContent='Sin inventario verificable';return;
+  }
+  const report=F.resumirCapacidades({world:W,
+    executed:{xn01:!!xn01Result,f001:!!integralResult,m001Diary:log.length},
+    asOf:new Date().toISOString()});
+  const c=report.counts;
+  $('capabilitySummary').textContent=report.items.length+
+    ' grupos · '+c.executed+' ejecutados · '+c.observed_archive+
+    ' observados en archivo · '+c.partial+' parciales · '+c.abstained+
+    ' abstenciones · '+c.not_executed+' sin ejecutar · '+c.not_observed+
+    ' sin observación.';
+  const ef=W?.ef004_report;
+  $('ef004Report').textContent=ef?
+    'EF004 · '+ef.status+' ('+(ef.reason??'sin motivo')+
+      ') · '+ef.contiguous_captures+' capturas contiguas · train '+
+      ef.observed_training_pairs+' / '+ef.required_training_pairs+
+      ', validación '+ef.observed_validation_pairs+' / '+
+      ef.required_validation_pairs+
+      ' · informe '+ef.as_of+' [laplace-modelos]':
+    'EF004: ningún informe del mismo archivo disponible en esta compilación; no se asume que entrenó.';
+  $('capabilityRaw').textContent=JSON.stringify(report,null,2);
+  const query=$('capabilityQuery').value.toLocaleLowerCase('es-MX').trim();
+  const names={executed:'EJECUTADO',observed_archive:'OBSERVADO EN ARCHIVO',
+    partial:'PARCIAL',abstained:'ABSTENCIÓN',
+    not_executed:'NO EJECUTADO',not_observed:'NO OBSERVADO'};
+  const matching=report.items.filter(x=>
+    (x.id+' '+x.key+' '+x.title+' '+x.source+' '+x.reason).
+      toLocaleLowerCase('es-MX').includes(query));
+  if(!matching.length){
+    const p=document.createElement('p');
+    p.textContent='No coincide ninguna capacidad con la búsqueda.';
+    output.appendChild(p);
+  }
+  for(const x of matching){
+    const row=document.createElement('div');row.className='signal-row';
+    const left=document.createElement('div'),head=document.createElement('strong'),
+      detail=document.createElement('small'),source=document.createElement('small'),
+      state=document.createElement('span');
+    head.textContent=x.id+' · '+x.title;
+    detail.textContent=x.reason;
+    source.textContent='Código: '+x.source;
+    state.textContent=names[x.state]??x.state;
+    state.className='outline-tag';
+    left.append(head,detail,source);row.append(left,state);output.appendChild(row);
   }
 }
 function drawChart(){
@@ -905,7 +961,14 @@ $('test').addEventListener('click',testAction);
 $('evaluate').addEventListener('click',evaluateAction);
 $('forecast').addEventListener('click',forecastAction);
 $('xn01Run').addEventListener('click',runXN01);
-$('worldSearch').addEventListener('input',renderWorldObservations);
+$('worldSearch').addEventListener('input',()=>{
+  worldVisibleLimit=100;renderWorldObservations();
+});
+$('worldShowMore').addEventListener('click',()=>{
+  worldVisibleLimit+=100;renderWorldObservations();
+});
+$('capabilityQuery').addEventListener('input',renderCapabilities);
+$('capabilityRefresh').addEventListener('click',renderCapabilities);
 $('clearHistory').addEventListener('click',()=>{
   log=[];persist();renderHistory();
   status('Registro local limpiado. No se alteraron datos del proveedor.','success');
@@ -934,8 +997,8 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.2',tabs:6,
+window.LaplaceUIHealth={initialized:true,version:'3.4',tabs:6,
   actions:['refresh','forecast','train','test','evaluate','integralRun','xn01Run',
-    'liveToggle','clearHistory','pdeSolve','graphSolve']};
+    'liveToggle','clearHistory','pdeSolve','graphSolve','capabilityRefresh','worldShowMore']};
 setTimeout(refresh,200);
 })();
