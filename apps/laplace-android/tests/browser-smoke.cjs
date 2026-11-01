@@ -103,7 +103,16 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('#liveToggle').click();
     await page.waitForFunction(()=>document.querySelector('#liveStatus').textContent==='WebSocket conectado',null,{timeout:10000});
     assert.equal(await page.locator('#liveToggle').getAttribute('aria-pressed'),'true');
-    assert.equal(await page.locator('#forecast').isDisabled(),false);
+    // La conexión WebSocket puede recuperarse antes de que termine la
+    // validación de velas; esperar la condición, no asumir orden de callbacks.
+    try{
+      await page.waitForFunction(()=>!document.querySelector('#forecast').disabled,
+        null,{timeout:15000});
+    }catch(error){
+      throw Error('El botón Proyectar no se habilitó: '+
+        await page.locator('#dataStatus').innerText()+' / '+
+        await page.locator('#noticeText').innerText());
+    }
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});

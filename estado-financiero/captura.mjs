@@ -12,6 +12,7 @@ import {utcTime} from '../universo/estados.mjs';
 import {observeWorldU003} from '../universo/global-u003.mjs';
 import {normalizarCapturaU003} from './modelo.mjs';
 import {importarU003} from './repositorio.mjs';
+import {resumirFuentesEF002} from './resumen-fuentes.mjs';
 
 export const EF002_VERSION='laplace-ef002-public-world-capture-v1';
 const APPROVED_GROUPS=['derivatives_d001','swaps_otc_d002','etf_fund_flows_c001',
@@ -40,24 +41,6 @@ function credentialsNotInUrls(value){
     credentialsNotInUrls(v);
   }
 }
-function mapCoverage(capture){
-  const groups=new Map();
-  for(const item of capture.source_status??[]){
-    const group=String(item.group??'unclassified'),entry=groups.get(group)??{
-      group,observed_sources:0,failed_sources:0,restricted_sources:0,
-      not_reported_sources:0,signal_count:0,source_ids:[]};
-    const status=String(item.status??'unknown');
-    entry.source_ids.push(String(item.name??item.id??'unknown'));
-    const n=Number(item.signals??0);
-    if(status==='observed'){entry.observed_sources++;if(Number.isSafeInteger(n)&&n>=0)entry.signal_count+=n}
-    else if(status==='requires_credentials'||status==='requires_license'||status==='requires_contact'||status==='restricted')
-      entry.restricted_sources++;
-    else if(status==='not_reported'||status==='not_published')entry.not_reported_sources++;
-    else entry.failed_sources++;
-    groups.set(group,entry);
-  }
-  return [...groups.values()].sort((a,b)=>a.group.localeCompare(b.group));
-}
 export function resumirCapturaFinanciera(capture,{import_result=null}={}){
   const c=normalizarCapturaU003(capture);
   credentialsNotInUrls(capture);
@@ -71,7 +54,7 @@ export function resumirCapturaFinanciera(capture,{import_result=null}={}){
     cutoff_at:c.cutoff_at,capture_sha256:c.capture_sha,
     snapshot_sha256:c.snapshot_sha,
     states_observed:c.state_count,domains:capture.universal_state.domains.length,
-    source_summary:mapCoverage(capture),additional_financial_groups:groups,
+    source_summary:resumirFuentesEF002(capture.source_status??[]),additional_financial_groups:groups,
     import_result,coverage_complete:false,provider_signatures_verified:false,
     world_predictive_advantage_demonstrated:false,automatic_trading:false};
 }
