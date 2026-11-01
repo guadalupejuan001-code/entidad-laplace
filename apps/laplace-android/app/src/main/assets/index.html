@@ -66,6 +66,8 @@
         </button>
       </div>
       <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
+      <details id="marketDetails" class="market-details">
+        <summary>Ver operaciones recientes y procedencia</summary>
       <div class="live-sparkline-block">
         <div class="live-graph-head">
           <strong>Operaciones recientes <span id="liveGraphAsset">BTC/USD</span></strong>
@@ -74,6 +76,8 @@
         <canvas id="liveChart" height="108" aria-label="Últimas operaciones recibidas en tiempo real"></canvas>
       </div>
       <p id="livePreview" class="live-preview">El precio se actualiza al llegar una operación. El cálculo M001 usa velas cerradas y solo recalcula un escenario indicativo si ya existe un modelo.</p>
+        <small id="quoteTrace" class="helper">Sin trazas de cotización.</small>
+      </details>
       <div class="quick-guide">Escoge un activo y pulsa «Analizar ahora». El sistema se encarga de comprobar el historial.</div>
     </article>
     <article class="card selector">
