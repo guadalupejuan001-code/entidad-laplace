@@ -117,7 +117,7 @@ test('Falla cerrado cuando hay huecos recientes o muestras insuficientes',()=>{
     /insuficiente/);
   assert.throws(()=>Engine.analyze(bars(500),{granularity:300,horizonMinutes:20160}),
     /resolución/);
-  assert.throws(()=>Engine.analyze(bars(500),{granularity:300,horizonMinutes:15,asset:'SPY'}),
+  assert.throws(()=>Engine.analyze(bars(500),{granularity:300,horizonMinutes:15,asset:'FAKE-LAPLACE'}),
     /Activo no autorizado/);
   const input=bars(2016);
   input.splice(input.length-3,1);
@@ -132,11 +132,18 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   const manifest=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/AndroidManifest.xml'),'utf8');
   assert.match(code,/fetchCandles\(String requestId,String asset,int granularity,int days\)/);
-  assert.match(code,/granularity==300\?14:granularity==3600\?45/);
+  const catalog=fs.readFileSync(path.resolve(__dirname,
+    '../app/src/main/java/com/entidadlaplace/mobile/MarketCatalog.java'),'utf8');
+  const equity=fs.readFileSync(path.resolve(__dirname,
+    '../app/src/main/java/com/entidadlaplace/mobile/EquityHistory.java'),'utf8');
+  assert.match(catalog,/granularity==300\?14:granularity==3600\?45/);
+  assert.match(equity,/query1\.finance\.yahoo\.com/);
+  assert.match(equity,/includePrePost=false/);
+  assert.match(equity,/puede tener retraso|retraso|indicativo/);
   assert.match(code,/days!=expectedDays/);
   assert.match(code,/fetchCoinbaseHistory/);
   assert.match(code,/api\.exchange\.coinbase\.com\/products\//);
-  assert.match(code,/ASSETS\.contains\(asset\)/);
+  assert.match(code,/MarketCatalog\.allowed\(asset\)/);
   assert.match(code,/Coinbase HTTP 429/);
   assert.equal((code.match(/@JavascriptInterface/g)||[]).length,5);
   assert.match(code,/setAllowUniversalAccessFromFileURLs\(false\)/);
