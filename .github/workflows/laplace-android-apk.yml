@@ -74,6 +74,8 @@ jobs:
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: F002 · ejecutar predictor conjunto verificable sobre archivo verdadero
+        env:
+          LAPLACE_F002_INCLUDE_LEGACY: 'true'
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/f002-build"
