@@ -1,0 +1,40 @@
+name: Laplace 3.8 - Auditoria R001 de regimenes
+on:
+  pull_request:
+    paths:
+      - 'experimentos/regime-r001.mjs'
+      - 'tests/regime-r001.test.mjs'
+      - 'tools/regime-r001.mjs'
+      - '.github/workflows/laplace-r001.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experimentos/regime-r001.mjs'
+      - 'tests/regime-r001.test.mjs'
+      - 'tools/regime-r001.mjs'
+      - '.github/workflows/laplace-r001.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regime-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar motor y auditoria temporal
+        run: |
+          node --check experimentos/regime-r001.mjs
+          node --test tests/regime-r001.test.mjs
+      - name: Auditoria sobre historia BTC X002 autentica
+        run: |
+          node tools/regime-r001.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laplace-r001-evidencia
+          path: build/r001/
+          if-no-files-found: warn
