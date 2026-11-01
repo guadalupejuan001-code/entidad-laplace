@@ -16,6 +16,32 @@ el historial de la aplicación antigua en su propio espacio. Los
 registros M001 no se migran entre aplicaciones ni se prometen como
 datos sincronizados. Requiere Android ARM64 (arm64-v8a), API 26+.
 
+## Android 3.6 — F002 conjunto y evaluación verificable
+
+- Motor nuevo de servidor F002: incorpora los estados de todas las fuentes
+  públicas archivadas en seis familias de cambios normalizados. Cada
+  medición conserva identidad, unidad, fecha conocida y SHA del archivo.
+- Añade las cinco capturas históricas originales del 30-oct-2026 con
+  verificación de integridad; diez capturas, 927 series y 30 dominios
+  examinados en el ciclo real. Sólo un resultado futuro comparable:
+  **F002 se abstiene y no predice un precio validado**.
+- Las pruebas usan validación temporal y holdout separado. Cuando
+  exista evidencia suficiente, las salidas permanecen en modo shadow
+  y se congelan para evaluación prospectiva posterior.
+- Pestaña Multiplazo: diagnóstico F002 con fuentes nuevas, repetidas,
+  pares train/validación/holdout y explicación de abstención. F001
+  mantiene sus 14 cálculos originales sin fusionar un modelo no validado.
+- Pestaña Fuentes: incluye información vinculada al SHA del reporte.
+- Instalación de depuración paralela a las anteriores:
+  id com.entidadlaplace.mobile.f002, nombre LAPLACE 3.6, versionCode 11.
+  No borra la 3.4 ni la 3.5 y no transfiere sus registros locales.
+- La APK no ejecuta automáticamente 927 series en cada fotograma:
+  la inferencia conjunta se ejecuta en GitHub Actions al capturar
+  archivos; la compilación integra su diagnóstico verificable.
+  Ningún dato licenciado inaccesible se inventa.
+
+Véase docs/F002_PREDICCION_CONJUNTA_AUDITABLE.md.
+
 ## Android 3.5 — centro de análisis y navegación inteligente
 
 **Objetivo:** quitar fricción y botones redundantes sin cambiar el cálculo original.
