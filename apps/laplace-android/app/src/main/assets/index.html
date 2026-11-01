@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090c16"><title>LAPLACE 3.7 · Multimercado</title>
+<meta name="theme-color" content="#090c16"><title>LAPLACE 3.8 · Regímenes M004</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
 <script src="marea.js" defer></script>
+<script src="regime-m004.js" defer></script>
+<script src="m004-evidence.js" defer></script>
 <script src="engine.js" defer></script>
 <script src="math-pde.js" defer></script>
 <script src="fusion-integral.js" defer></script>
@@ -15,7 +17,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>OBSERVATORIO MULTIMERCADO · 3.7</small></div>
+    <div><h1>LAPLACE</h1><small>OBSERVATORIO MULTIMERCADO · 3.8</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -200,6 +202,35 @@
         <strong id="estimate">—</strong><span id="relativeChange">Sin modelo</span>
       </article>
     </div>
+
+    <article class="card regime-card" aria-label="Estado del mercado M004">
+      <div class="section-head">
+        <div><small class="eyebrow">M004 · ESTADOS APRENDIDOS</small>
+          <h2>Régimen de mercado</h2></div>
+        <span id="regimeTag" class="outline-tag">SIN OBSERVAR</span>
+      </div>
+      <div class="regime-metrics">
+        <div><small>VOLATILIDAD</small><strong id="regimeVol">—</strong></div>
+        <div><small>TENDENCIA</small><strong id="regimeTrend">—</strong></div>
+        <div><small>ACTIVIDAD</small><strong id="regimeActivity">—</strong></div>
+      </div>
+      <p id="regimeStatus" class="helper" role="status" aria-live="polite">
+        Actualiza el historial para observar el régimen con velas cerradas.
+      </p>
+      <button id="regimeStudy" type="button" class="pde-primary secondary">
+        Comprobar si el régimen ayuda a predecir la amplitud
+      </button>
+      <p id="regimeEvidence" class="helper" role="status">
+        Comparará el modelo con una referencia histórica en períodos posteriores.
+      </p>
+      <details class="raw-details">
+        <summary>Ver entrenamiento, errores y prueba histórica M004</summary>
+        <pre id="regimeRaw">No se ejecutó M004.</pre>
+      </details>
+      <p class="fineprint">Estado estadístico observado, no explicación causal.
+        La prueba histórica no valida precisión futura ni modifica los precios de M001/F001.
+        El botón nunca envía órdenes a Robinhood.</p>
+    </article>
 
     <article class="card chart-card">
       <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
