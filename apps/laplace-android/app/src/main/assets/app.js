@@ -12,6 +12,9 @@ const STORAGE='laplace-mobile-forecasts-v2';
 const money=v=>Number.isFinite(v)?new Intl.NumberFormat('es-MX',{
   style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
 const number=v=>Number.isFinite(v)?v.toLocaleString('es-MX',{maximumFractionDigits:5}):'—';
+const compactPrice=v=>Number.isFinite(v)?
+  new Intl.NumberFormat('en-US',{maximumFractionDigits:
+    v>=10000?0:v>=1000?1:2}).format(v):'—';
 const percent=v=>Number.isFinite(v)?(100*v).toFixed(3)+' %':'—';
 const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
   year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
@@ -410,21 +413,26 @@ function renderQuotes(){
       button.setAttribute('aria-pressed',String(selected));
       button.dataset.live=String(Boolean(streamFresh));
     }
-    $('quote'+id).textContent=q?money(q.price):'—';
+    $('quote'+id).textContent=q?compactPrice(q.price):'—';
     $('quote'+id+'Status').textContent=streamFresh?
-      'WEB SOCKET · último trade':
-      q?.isLive?'ÚLTIMA OPERACIÓN · no actualizada':
-      q?'HTTPS · cotización puntual':'Sin cotización';
+      'EN VIVO · WS':
+      q?.isLive?'TRADE ANTIGUO':
+      q?'TICKER · HTTPS':'SIN FUENTE';
     if(q)found++;
   }
   $('quoteStatus').textContent=tickerStream.snapshot().status==='live'?
     'WS CONECTADO · '+found+'/3':'HTTPS · '+found+'/3';
   const q=quotes.get(asset);
   $('quoteTime').textContent=q?
-    asset+' · '+(q.isLive?'WebSocket · última operación':'HTTPS · ticker')+
-      ' · origen '+q.time+' · recibido '+date(q.receivedAt/1000)+
-      ' · NO es una predicción':
-    'Sin ticker disponible para '+asset+'. No se inventaron precios.';
+    asset.replace('-','/')+' · '+money(q.price)+' · '+
+      (q.isLive?'último trade WebSocket':'ticker HTTPS')+
+      ' · dato observado, no predicción':
+    'Sin precio verificable para '+asset+'. No se fabricaron datos.';
+  $('quoteTrace').textContent=q?
+    'Fuente '+(q.isLive?'WebSocket Coinbase Exchange':'HTTPS Coinbase Exchange')+
+      ' · observado '+q.time+' · recibido '+date(q.receivedAt/1000)+
+      ' · última operación no equivale a vela cerrada.':
+    'Sin traza de mercado disponible.';
 }
 function useHorizon(value){
   const m=Number(value);
@@ -958,7 +966,9 @@ function renderCapabilities(){
     ' sin observación.';
   const ef=W?.ef004_report;
   $('ef004Report').textContent=ef?
-    'EF004 · '+ef.status+' ('+(ef.reason??'sin motivo')+
+    'EF004 · '+(ef.status==='abstained'?'sin entrenamiento suficiente':ef.status)+
+      ' ('+(ef.reason==='insufficient_independent_capture_history'?
+        'faltan capturas consecutivas independientes':(ef.reason??'sin motivo'))+
       ') · '+ef.contiguous_captures+' capturas contiguas · train '+
       ef.observed_training_pairs+' / '+ef.required_training_pairs+
       ', validación '+ef.observed_validation_pairs+' / '+
@@ -990,7 +1000,7 @@ function renderCapabilities(){
       state=document.createElement('span');
     head.textContent=x.id+' · '+x.title;
     detail.textContent=x.reason;
-    source.textContent='Código: '+x.source;
+    source.textContent='Código: '+x.source.split('/').slice(-2).join('/');
     state.textContent=names[x.state]??x.state;
     state.className='outline-tag';
     left.append(head,detail,source);row.append(left,state);output.appendChild(row);
@@ -1111,6 +1121,9 @@ $('clearHistory').addEventListener('click',()=>{
 });
 window.addEventListener('resize',drawChart);
 $('liveToggle').addEventListener('click',toggleLive);
+$('marketDetails').addEventListener('toggle',()=>{
+  if($('marketDetails').open)drawLiveChart();
+});
 useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();
 renderHistory();drawChart();connection('SIN CONSULTAR');
 updateLiveBanner();drawLiveChart();updateLivePreview();
