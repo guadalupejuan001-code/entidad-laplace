@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.6 - F002 fuentes conjuntas y validación
+name: LAPLACE Android 3.7 - Mercados, 16 horizontes y M003
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -6,12 +6,14 @@ on:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
       - 'tools/conjunta-f002.mjs'
+      - 'experimentos/marea-m003.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   pull_request:
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
       - 'tools/conjunta-f002.mjs'
+      - 'experimentos/marea-m003.mjs'
       - '.github/workflows/laplace-android-apk.yml'
   workflow_dispatch:
 permissions:
@@ -74,6 +76,7 @@ jobs:
           set -euo pipefail
           node apps/laplace-android/build-integral-assets.mjs --verify
           node --test apps/laplace-android/tests/*.test.cjs
+          node --test tests/marea-m003.test.mjs
           node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
@@ -126,6 +129,21 @@ jobs:
             }
             console.log("EF002:",w.states_count,"estados,",w.archive_manifests_count,"archivos.");
           '
+      - name: Incorporar investigación M003 real (NO predicción en vivo)
+        run: |
+          set -euo pipefail
+          node apps/laplace-android/prepare-marea.mjs
+          node --input-type=module -e '
+            import{readFileSync}from"node:fs";
+            import assert from"node:assert/strict";
+            const t=readFileSync("apps/laplace-android/app/src/main/assets/marea.js","utf8");
+            const m=JSON.parse(t.replace(/^window.LAPLACE_MAREA = /,"").trim().replace(/;$/,""));
+            assert.equal(m.history_bars,7488);
+            assert.equal(m.study.length,3);
+            assert.equal(m.prospective_validation,false);
+            assert.equal(m.changes_f001_or_m001,false);
+            assert.ok(m.study.every(x=>x.status==="no_reproducible_edge_detected"));
+          '
       - name: Prueba de interacción real de todos los controles en Chromium
         run: |
           set -euo pipefail
@@ -135,7 +153,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-3-5-PREVIEWS-SIMULADAS
+          name: LAPLACE-3-7-PREVIEWS-SIMULADAS
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -177,14 +195,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.f002'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.multi37'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.6'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.7'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-6-F002-CONJUNTO-AUDITADO
+          name: LAPLACE-ANDROID-V3-7-MULTIMERCADO-31-ACTIVOS
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

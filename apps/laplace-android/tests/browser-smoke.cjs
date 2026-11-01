@@ -14,7 +14,7 @@ const mock=[
   "(()=>{",
   "function candles(asset,step,days){",
   "const end=Math.floor(Date.now()/1000/step)*step;",
-  "const total=Math.floor(days*86400/step);let value=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:180;",
+  "const total=Math.min(2400,Math.floor(days*86400/step));let value=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:asset==='SOL-USD'?180:asset==='AAPL'?350:200;",
   "const rows=[];",
   "for(let i=0;i<total;i++){",
   "const t=end-(total-i)*step;",
@@ -24,8 +24,8 @@ const mock=[
   "return rows;}",
   "window.LaplaceBridge={",
   "fetchCandles(id,asset,step,days){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:step,candles:candles(asset,step,days)}),15);},",
-  "fetchQuote(id,asset){const p=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:180;",
-  "setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:p,time:new Date().toISOString(),receivedAt:Date.now(),source:'SIMULACION SOLO PARA TEST'}}),10);}",
+  "fetchQuote(id,asset){const p=asset==='BTC-USD'?61500:asset==='ETH-USD'?3100:asset==='SOL-USD'?180:asset==='AAPL'?350:200;",
+  "setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:p,time:new Date().toISOString(),receivedAt:Date.now(),source:asset.includes('-USD')?'SIMULACION COINBASE SOLO PARA TEST':'SIMULACION YAHOO SOLO PARA TEST',market:asset.includes('-USD')?'crypto':'equity',indicative:!asset.includes('-USD')}}),10);}",
   "};",
   "let nextSeq=21;",
   "function simulatedLive(){if(!window.LaplaceMobile)return;",
@@ -57,8 +57,8 @@ window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
 const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
   '<style>'+read('style.css')+'</style>')
   .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
-const sources=['world.js','engine.js','math-pde.js','fusion-integral.js',
-  'pde-panel.js','live-feed.js','app.js'];
+const sources=['world.js','market-universe.js','marea.js','engine.js',
+  'math-pde.js','fusion-integral.js','pde-panel.js','live-feed.js','app.js'];
 const loaded=removeSources.replace('</body>',
   '<script>'+mock+mockXN01+'</script>'+
   sources.map(name=>'<script>'+read(name).replace(/<\/script>/g,'<\\/script>')+'</script>').join('')+
@@ -78,6 +78,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
+    assert.equal(await page.locator('#asset option').count(),31);
+    assert.equal(await page.locator('#asset optgroup').count(),3);
+    assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
+    assert.match(await page.locator('#selectedProvider').innerText(),/Coinbase|SIMULACION|público/i);
     const navHeight=await page.locator('.tabs').evaluate(el=>el.getBoundingClientRect().height);
     assert.ok(navHeight>=55&&navHeight<=100,'Barra móvil fuera de escala: '+navHeight);
     assert.equal(await page.locator('[data-minutes]').count(),16);
@@ -94,7 +98,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#quoteBTC').innerText(),/61,\d+/);
     await page.locator('#marketDetails > summary').click();
     assert.match(await page.locator('#liveGraphLabel').innerText(),/operaci/);
-    assert.match(await page.locator('#quoteTrace').innerText(),/Fuente.*Coinbase/i);
+    assert.match(await page.locator('#quoteTrace').innerText(),/Coinbase/i);
     await page.locator('#marketDetails > summary').click();
     const prevBTC=await page.locator('#quoteBTC').innerText();
     await page.evaluate(()=>{
@@ -187,16 +191,58 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const x=Number((await page.locator('#graphValue').innerText()).replace(',','.'));
     assert.ok(Math.abs(x-25)<.01,'Grafo dejó de calcular al pulsar botón: '+x);
     await page.locator('[data-tab="integral"]').click();
-    assert.match(await page.locator('#f002Status').innerText(),/sin informe|Sin resultado|se abstuvo|experimental/i);
+    assert.match(await page.locator('#integral > article.card').first().innerText(),
+      /Horizontes|F001|Cálculo de horizontes/);
+    assert.equal(await page.locator('#integral > details.advanced-fold').count(),2);
+    assert.equal(await page.locator('#integral > details.advanced-fold[open]').count(),0);
+    assert.match(await page.locator('#f002Status').textContent(),/sin informe|Sin resultado|se abstuvo|experimental/i);
     await page.locator('#integralRun').click();
     await page.waitForFunction(()=>{
       const t=document.querySelector('#integralStatus').textContent;
-      return t.includes('F001 completado')||t.includes('No se pudo completar');
+      return t.includes('F001 original BTC')||t.includes('no pudo completarse');
     },{timeout:90000});
-    assert.match(await page.locator('#integralStatus').innerText(),/F001 completado/);
-    assert.equal(await page.locator('.integral-item').count(),14);
+    assert.match(await page.locator('#integralStatus').innerText(),/F001 original BTC/);
+    assert.equal(await page.locator('#integralTable .integral-item').count(),14);
     assert.match(await page.locator('#rawF001').textContent(),/price_candidate_unrounded/);
     assert.equal(await page.locator('#integralRun').isDisabled(),false);
+    // Mercado bursátil: datos del mock exclusivamente para interacción.
+    // La API de Yahoo real se comprueba aparte en Android (sin inventar éxito).
+    await page.locator('[data-tab="panel"]').click();
+    await page.selectOption('#asset','AAPL');
+    assert.match(await page.locator('#selectedMarketTag').innerText(),/ACCIÓN/);
+    assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/stocks\/aapl\//);
+    await page.waitForFunction(()=>document.querySelector('#selectedQuote').textContent!=='—'&&
+      !document.querySelector('#refresh').disabled,null,{timeout:25000});
+    assert.match(await page.locator('#selectedProvider').innerText(),/YAHOO|SIMULACION/i);
+    await page.locator('#favoriteToggle').click();
+    assert.equal(await page.locator('#favoriteToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('#favoriteToggle').click();
+    assert.equal(await page.locator('#favoriteToggle').getAttribute('aria-pressed'),'true');
+    await page.locator('#refreshQuote').click();
+    await page.waitForFunction(()=>!document.querySelector('#refreshQuote').disabled,null,{timeout:10000});
+    await page.locator('#autoQuoteToggle').click();
+    assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'true');
+    await page.locator('#autoQuoteToggle').click();
+    assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('#smartRun').click();
+    await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',
+      null,{timeout:25000});
+    assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete');
+    assert.match(await page.locator('#smartExplain').innerText(),/bursátil|sesión/i);
+    await page.locator('[data-tab="integral"]').click();
+    assert.match(await page.locator('#integralMode').innerText(),/16 PLAZOS/);
+    await page.locator('#integralRun').click();
+    await page.waitForFunction(()=>!document.querySelector('#integralRun').disabled,
+      null,{timeout:90000});
+    assert.match(await page.locator('#integralStatus').innerText(),/M001 AAPL/);
+    assert.equal(await page.locator('#integralTable .integral-item').count(),16);
+    assert.match(await page.locator('#mareaIntro').textContent(),/Bitcoin|M003/);
+    assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
+    assert.equal(await page.locator('#xn01Run').isDisabled(),true);
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.7-ACCIONES-SIMULADO.png')});
+    await page.locator('[data-tab="panel"]').click();
+    await page.selectOption('#asset','BTC-USD');
+    await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
     await page.locator('[data-tab="tests"]').click();
     await page.locator('#validationRun').click();
     assert.match(await page.locator('#validationStatus').innerText(),/Evaluados|Validación/i);
@@ -225,7 +271,9 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
       capabilities:20,smartAnalysis:true,moduleFilters:true,validationNow:true,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
-      stream:true,livePauseResume:true,streamOutOfOrderIgnored:true,jsErrors:errors.length}));
+      stream:true,stockQuotes:true,assetCount:31,stockMultiHorizon:true,
+      robinhoodLink:true,localFavorites:true,livePauseResume:true,
+      streamOutOfOrderIgnored:true,jsErrors:errors.length}));
   }finally{
     await browser.close();
   }

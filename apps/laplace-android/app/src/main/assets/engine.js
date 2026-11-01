@@ -17,19 +17,38 @@ const HORIZONS=Object.freeze([
   {minutes:10080,label:'7 días'},{minutes:20160,label:'14 días'},
   {minutes:43200,label:'30 días'},{minutes:129600,label:'90 días'}
 ]);
-const ALLOWED_ASSETS=Object.freeze(['BTC-USD','ETH-USD','SOL-USD']);
+const Markets=root.LaplaceMarkets??(typeof require==='function'?require('./market-universe.js'):null);
+const ALLOWED_ASSETS=Object.freeze(Markets?.assets??['BTC-USD','ETH-USD','SOL-USD']);
 const HISTORICAL_CONFIG=Object.freeze({
   300:Object.freeze({days:14,label:'5 min',expectedMax:4032}),
   3600:Object.freeze({days:45,label:'1 hora',expectedMax:1080}),
   86400:Object.freeze({days:1000,label:'1 día',expectedMax:1000})
 });
+const EQUITY_CONFIG=Object.freeze({
+  300:Object.freeze({days:30,label:'5 min bursátiles',expectedMax:2400}),
+  3600:Object.freeze({days:180,label:'1 hora bursátil',expectedMax:1400}),
+  86400:Object.freeze({days:1825,label:'sesiones diarias',expectedMax:1500})
+});
+const equity=s=>Markets?.isEquity(s)===true;
+const historyConfig=(asset,minutes)=>
+  (equity(asset)?EQUITY_CONFIG:HISTORICAL_CONFIG)[selectResolution(minutes,asset)];
+const stockSessionDay=seconds=>new Date(seconds*1000).toLocaleDateString('en-CA',{
+  timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'});
+const continuous=(before,after,granularity,asset)=>{
+  if(after.time-before.time===granularity)return true;
+  if(!equity(asset))return false;
+  if(granularity===86400)return after.time>before.time&&after.time-before.time<10*86400;
+  return stockSessionDay(after.time)!==stockSessionDay(before.time)&&
+    after.time>before.time&&after.time-before.time<5*86400;
+};
 const SCALES=Object.freeze([.007,.004,.004,.006,1.5]);
 const MAX_ANALOGS=18,MIN_ANALOGS=8,FEATURE_BARS=6;
 const check=(ok,message)=>{if(!ok)throw Error(message)};
 const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
-function selectResolution(minutes){
+function selectResolution(minutes,asset='BTC-USD'){
   check(HORIZONS.some(h=>h.minutes===minutes),'Horizonte no admitido.');
+  if(equity(asset))return minutes<=300?300:minutes<1440?3600:86400;
   return minutes<=120?300:minutes<=4320?3600:86400;
 }
 function quantile(a,q){
@@ -60,10 +79,10 @@ function candlesFromCoinbase(input,granularity){
   check(candles.length>0,'Sin velas válidas; no inventar cotizaciones.');
   return candles;
 }
-function featureAt(bars,index,granularity){
+function featureAt(bars,index,granularity,asset='BTC-USD'){
   if(index<FEATURE_BARS)return null;
   for(let k=index-FEATURE_BARS+1;k<=index;k++)
-    if(bars[k].time-bars[k-1].time!==granularity)return null;
+    if(!continuous(bars[k-1],bars[k],granularity,asset))return null;
   const returns=[];
   for(let k=index-FEATURE_BARS+1;k<=index;k++)
     returns.push(Math.log(bars[k].close/bars[k-1].close));
@@ -76,22 +95,22 @@ function featureAt(bars,index,granularity){
     volume>0?bars[index].volume/volume:1
   ];
 }
-function hasContinuousWindow(bars,start,end,granularity){
+function hasContinuousWindow(bars,start,end,granularity,asset='BTC-USD'){
   for(let k=start+1;k<=end;k++)
-    if(bars[k].time-bars[k-1].time!==granularity)return false;
+    if(!continuous(bars[k-1],bars[k],granularity,asset))return false;
   return true;
 }
 /* Solo ejemplos cuyo resultado era conocido en el instante anchor.
  * Compatible con los cinco rasgos y pesos inversos originales de M001.
  */
-function analogsAt(bars,anchor,granularity,horizonBars,{limit=MAX_ANALOGS}={}){
-  const current=featureAt(bars,anchor,granularity);
+function analogsAt(bars,anchor,granularity,horizonBars,{limit=MAX_ANALOGS,asset='BTC-USD'}={}){
+  const current=featureAt(bars,anchor,granularity,asset);
   if(!current)return {reason:'No hay seis velas consecutivas recientes.',analogs:[]};
   const scales=SCALES.map((s,i)=>i===4?s:s*Math.sqrt(granularity/300));
   const candidates=[];
   for(let i=FEATURE_BARS;i+horizonBars<anchor;i++){
-    const previous=featureAt(bars,i,granularity);
-    if(!previous||!hasContinuousWindow(bars,i,i+horizonBars,granularity))continue;
+    const previous=featureAt(bars,i,granularity,asset);
+    if(!previous||!hasContinuousWindow(bars,i,i+horizonBars,granularity,asset))continue;
     const distance=Math.sqrt(mean(current.map((x,k)=>
       ((x-previous[k])/scales[k])**2)));
     const gain=Math.log(bars[i+horizonBars].close/bars[i].close);
@@ -119,13 +138,19 @@ function analogsAt(bars,anchor,granularity,horizonBars,{limit=MAX_ANALOGS}={}){
     scales:scales,
     independentPatterns:selected.length};
 }
-function backtest(bars,granularity,horizonBars){
+function backtest(bars,granularity,horizonBars,asset='BTC-USD'){ 
   const first=Math.max(FEATURE_BARS+2,Math.floor(bars.length*.75));
+  const possible=bars.length-first-horizonBars;
+  // Acciones: muestreo cronológico sin solapamiento de hasta ~96 decisiones.
+  // Preserva M001 original de cripto sin modificar su política histórica.
+  const stride=equity(asset)?
+    horizonBars*Math.max(1,Math.ceil(possible/(96*horizonBars))):
+    horizonBars;
   let total=0,candidateErrors=0,referenceErrors=0,directions=0,correct=0;
   const results=[];
-  for(let i=first;i+horizonBars<bars.length;i+=horizonBars){
-    if(!hasContinuousWindow(bars,i,i+horizonBars,granularity))continue;
-    const pred=analogsAt(bars,i,granularity,horizonBars);
+  for(let i=first;i+horizonBars<bars.length;i+=stride){
+    if(!hasContinuousWindow(bars,i,i+horizonBars,granularity,asset))continue;
+    const pred=analogsAt(bars,i,granularity,horizonBars,{asset});
     if(pred.reason!==null)continue;
     const initial=bars[i].close,actual=bars[i+horizonBars].close;
     const estimated=initial*Math.exp(pred.returnLog);
@@ -142,31 +167,39 @@ function backtest(bars,granularity,horizonBars){
     skill:baselineMAE>0?1-mae/baselineMAE:null,
     correctDirections:correct,validDirections:directions,
     independentProspectiveValidation:false,
-    method:'walk_forward_chronological_non_overlapping_targets',
+    method:equity(asset)?'sampled_walk_forward_chronological_non_overlapping_targets':
+      'walk_forward_chronological_non_overlapping_targets',
     ...{results:results.slice(-30)}};
 }
 function analyze(raw,{granularity,horizonMinutes,asset='BTC-USD'}={}){
   check(ALLOWED_ASSETS.includes(asset),'Activo no autorizado.');
   check(Object.hasOwn(HISTORICAL_CONFIG,granularity),'Granularidad inválida.');
-  check(selectResolution(horizonMinutes)===granularity,
+  check(selectResolution(horizonMinutes,asset)===granularity,
     'La resolución no corresponde al horizonte elegido.');
   const bars=candlesFromCoinbase(raw,granularity);
   const horizonBars=horizonMinutes*60/granularity;
   check(Number.isSafeInteger(horizonBars)&&horizonBars>=1,'Horizonte no múltiplo de la vela.');
   check(bars.length>=Math.max(70,horizonBars*MIN_ANALOGS+FEATURE_BARS+5),
     'Historial insuficiente para '+horizonMinutes+' minutos.');
-  const last=bars.at(-1),current=analogsAt(bars,bars.length-1,granularity,horizonBars);
-  const validation=backtest(bars,granularity,horizonBars);
-  const ready=current.reason===null;
+  const last=bars.at(-1),current=analogsAt(bars,bars.length-1,granularity,horizonBars,{asset});
+  const validation=backtest(bars,granularity,horizonBars,asset);
+  const insufficientStockEvidence=equity(asset)&&validation.evaluated<8;
+  const ready=current.reason===null&&!insufficientStockEvidence;
+  const reason=insufficientStockEvidence?'Sólo '+validation.evaluated+
+    ' pruebas temporales independientes de bolsa; hacen falta 8.':current.reason;
   return {asset,horizonMinutes,granularity,
     firstTime:bars[0].time,lastTime:last.time,observedLast:last.close,
     historyCount:bars.length,horizonBars,
-    ready,reason:current.reason,features:current.features??null,
+    ready,reason,features:current.features??null,
     examples:current.analogs.map(x=>({...x})),
     patterns:current.analogs.length,returnLog:ready?current.returnLog:null,
     lowerReturn:ready?current.lowerReturn:null,
     upperReturn:ready?current.upperReturn:null,
-    validation,source:'Coinbase Exchange · OHLCV',
+    validation,market:equity(asset)?'equity':'crypto',
+    validationTime:'retrospective_only',
+    resolutionSemantics:equity(asset)?'trading_bars_not_elapsed_calendar_time':'elapsed_minutes',
+    validationSource:equity(asset)?'Yahoo chart público no oficial · puede tener retraso':'Coinbase Exchange',
+    source:equity(asset)?'Yahoo Finance · OHLCV indicativo':'Coinbase Exchange · OHLCV',
     algorithm:'M001_analogos_ponderados',noArtificialReturnFloor:true,
     worldwideSignalsUsedForModel:false,
     worldContextSeparate:true,automaticTrading:false,
@@ -181,18 +214,19 @@ function forecast(model,{basePrice,sourceTime,sourceType='cierre de vela'}={}){
   const b=basePrice*Math.exp(model.upperReturn);
   check([estimated,a,b].every(finite)&&estimated>0&&a>0&&b>0,
     'Resultado numerico invalido.');
-  return {asset:model.asset,minutes:model.horizonMinutes,
+  return {asset:model.asset,market:model.market??'crypto',minutes:model.horizonMinutes,
     fromPrice:basePrice,estimate:estimated,lower:Math.min(a,b),upper:Math.max(a,b),
     relativeChange:Math.exp(model.returnLog)-1,
     modelName:'M001 · análogos históricos',patterns:model.patterns,
-    forecastTime:sourceTime+model.horizonMinutes*60,
+    forecastTime:model.market==='equity'?null:sourceTime+model.horizonMinutes*60,
+    timeSemantics:model.market==='equity'?'sesiones/velas bursátiles, sin vencimiento de calendario':'tiempo de reloj',
     sourceTime,sourceType,baseline:basePrice,
     rangeLabel:'Cuantiles históricos exploratorios (NO probabilidades calibradas)',
     validation:model.validation,examples:model.examples,
     isGuarantee:false,automaticTrading:false,prospectivelyValidated:false};
 }
-const exported={HORIZONS,ALLOWED_ASSETS,HISTORICAL_CONFIG,SCALES,MAX_ANALOGS,
-  selectResolution,candlesFromCoinbase,featureAt,analogsAt,backtest,analyze,forecast};
+const exported={HORIZONS,ALLOWED_ASSETS,HISTORICAL_CONFIG,EQUITY_CONFIG,SCALES,MAX_ANALOGS,
+  selectResolution,historyConfig,candlesFromCoinbase,featureAt,analogsAt,backtest,analyze,forecast};
 if(typeof module!=='undefined'&&module.exports)module.exports=exported;
 root.LaplaceMath=exported;
 })(typeof window!=='undefined'?window:globalThis);

@@ -6,9 +6,12 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
+const Markets=window.LaplaceMarkets;
+const Marea=window.LAPLACE_MAREA??null;
 const F=window.LaplaceIntegral;
 const Live=window.LaplaceLiveMath;
 const STORAGE='laplace-mobile-forecasts-v2';
+const FAVORITES_KEY='laplace-mobile-market-favorites-v1';
 const money=v=>Number.isFinite(v)?new Intl.NumberFormat('es-MX',{
   style:'currency',currency:'USD',maximumFractionDigits:2}).format(v):'—';
 const number=v=>Number.isFinite(v)?v.toLocaleString('es-MX',{maximumFractionDigits:5}):'—';
@@ -18,7 +21,32 @@ const compactPrice=v=>Number.isFinite(v)?
 const percent=v=>Number.isFinite(v)?(100*v).toFixed(3)+' %':'—';
 const date=sec=>Number.isFinite(sec)?new Date(sec*1000).toLocaleString('es-MX',{
   year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-const label=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
+const label=m=>{
+  const h=E.HORIZONS.find(x=>x.minutes===m);
+  if(!Markets?.isEquity(asset))return h?.label??m+' min';
+  if(m>=1440)return m===1440?'1 sesión':m/1440+' sesiones';
+  return h?.label??m+' min bursátiles';
+};
+const isEquity=()=>Markets?.isEquity(asset)===true;
+const marketHistory=()=>E.historyConfig(asset,minutes);
+const granularityNow=()=>E.selectResolution(minutes,asset);
+const marketTimeStatus=(sourceTime,g)=>{
+  const gap=Date.now()/1000-sourceTime,unavailable=gap<0;
+  if(unavailable)return {valid:false,label:'fecha del proveedor en el futuro'};
+  if(!isEquity())return {valid:gap<=g*2.5,label:gap<=g*2.5?'actual':'antiguas'};
+  // Acciones/ETF cierran fines de semana; la última sesión es útil
+  // como referencia histórica, nunca una cotización viva.
+  const today=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',
+    weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false})
+      .formatToParts(new Date());
+  const part=x=>today.find(p=>p.type===x)?.value??'';
+  const hour=Number(part('hour'))%24,min=Number(part('minute')),
+    weekday=part('weekday');
+  const trading=['Mon','Tue','Wed','Thu','Fri'].includes(weekday)&&
+    (hour*60+min>=570&&hour*60+min<=960);
+  const max=trading?Math.max(7200,g*2):7*86400;
+  return {valid:gap<=max,label:trading?'sesión · posible retraso':'último cierre · mercado cerrado'};
+};
 let asset='BTC-USD',minutes=15,history=null,historyGranularity=null;
 let analysis=null,lastForecast=null,lastHistoryFetch=0,refreshEpoch=0;
 let lastHistoryError=null;
@@ -30,6 +58,11 @@ const tickerStream=Live.createTracker();
 let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
 let log=[];
+let favorites=new Set(['BTC-USD','ETH-USD','AAPL','NVDA','SPY']);
+let autoQuoteEnabled=false,selectedQuoteBusy=false,lastQuoteAt=0;
+try{autoQuoteEnabled=localStorage.getItem('laplace-auto-quote-v1')==='yes';}catch(error){}
+try{const raw=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');
+ if(Array.isArray(raw))favorites=new Set(raw.filter(s=>Markets?.BY_SYMBOL[s]));}catch(error){}
 let worldVisibleLimit=100;
 try{
   const data=JSON.parse(localStorage.getItem(STORAGE)||'[]');
@@ -49,7 +82,7 @@ function status(message,kind='info'){
   $('activityStatus').textContent=message;
 }
 function setActionAvailability(){
-  const ready=Boolean(history&&historyGranularity===E.selectResolution(minutes)&&!loading);
+  const ready=Boolean(history&&historyGranularity===granularityNow()&&!loading);
   for(const id of ['forecast','train','test','evaluate']){
     const button=$(id);
     button.disabled=!ready;
@@ -101,11 +134,12 @@ function updateLiveBanner(){
       ' · siguiente intento en '+snap.retrySeconds+' s':'');
   $('liveCount').textContent=snap.updates.toLocaleString('es-MX')+
     (snap.updates===1?' operación recibida':' operaciones recibidas');
-  const q=tickerStream.quote(asset);
-  const fresh=q&&tickerStream.isFresh(asset);
-  $('liveAge').textContent=q?('Último '+asset.replace('-USD','')+' · '+
+  const tracked=Markets?.isCrypto(asset)&&['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
+  const q=tickerStream.quote(tracked);
+  const fresh=q&&tickerStream.isFresh(tracked);
+  $('liveAge').textContent=q?('Último '+tracked.replace('-USD','')+' · '+
     liveTimeAgo(q.observedAt)+(fresh?' · activo':' · no actualizado')):
-    'Sin operación en vivo de '+asset.replace('-USD','');
+    'Sin operación en vivo de '+tracked.replace('-USD','');
   $('liveToggle').textContent=liveEnabled?'Detener':'Activar';
   $('liveToggle').setAttribute('aria-pressed',String(liveEnabled));
 }
@@ -118,8 +152,9 @@ function drawLiveChart(){
   ctx.scale(ratio,ratio);
   ctx.clearRect(0,0,width,height);
   ctx.fillStyle='#071b2a';ctx.fillRect(0,0,width,height);
-  const points=tickerStream.points(asset),values=points.map(p=>p.price);
-  $('liveGraphAsset').textContent=asset.replace('-USD','/USD');
+  const tracked=['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
+  const points=tickerStream.points(tracked),values=points.map(p=>p.price);
+  $('liveGraphAsset').textContent=tracked.replace('-USD','/USD');
   $('liveGraphLabel').textContent=points.length?
     points.length+' operaciones · '+liveTimeAgo(points.at(-1).at):
     'Aún sin operaciones recibidas';
@@ -148,6 +183,10 @@ function drawLiveChart(){
 }
 function updateLivePreview(){
   const previewElement=$('livePreview'),q=tickerStream.quote(asset);
+  if(!['BTC-USD','ETH-USD','SOL-USD'].includes(asset)){
+    previewElement.textContent='WebSocket para BTC, ETH y SOL únicamente. '+
+      'El activo seleccionado usa lectura pública indicativa por HTTPS.';return;
+  }
   if(!liveEnabled||!tickerStream.isFresh(asset)||!q){
     previewElement.textContent='Sin nuevos ticks válidos para '+asset+'. '+
       'El historial M001 no se transforma en precios en vivo.';
@@ -320,15 +359,44 @@ function renderF002(){
   }
   $('f002Raw').textContent=JSON.stringify(report,null,2);
 }
+function renderMarea(){
+  const root=$('mareaMetrics');if(!root)return;
+  root.replaceChildren();
+  if(Marea?.schema!=='laplace-marea-m003-mobile-summary-v1'){
+    $('mareaIntro').textContent='No se incorporó un mapa M003 verificado. '+
+      'Esta app no inventa relaciones predictivas.';
+    $('mareaRaw').textContent='Sin informe M003.';
+    return;
+  }
+  $('mareaIntro').textContent='Investigación M003 sobre '+
+    Marea.history_bars.toLocaleString('es-MX')+
+    ' velas históricas Bitcoin; no se aplica a '+asset+
+    ' ni modifica el precio de F001. Cierres históricos conocidos por suposición.';
+  for(const x of Marea.study){
+    const row=document.createElement('div'),time=document.createElement('strong'),
+      value=document.createElement('span'),meta=document.createElement('small');
+    row.className='integral-item';
+    time.textContent=x.minutes+' min · BTC';
+    value.textContent=x.status==='no_reproducible_edge_detected'?
+      'Sin ventaja repetible':'Hipótesis solo histórica';
+    meta.textContent=x.independent_horizon_outcomes+
+      ' casos retrospectivos · persistencia '+x.baseline_mae_bps+
+      ' pb · seleccionado '+x.selected_mae_bps+
+      ' pb · sin causalidad demostrada';
+    row.append(time,value,meta);root.appendChild(row);
+  }
+  $('mareaRaw').textContent=JSON.stringify(Marea,null,2);
+}
 function renderIntegral(){
   const table=$('integralTable'),modules=$('integralModules'),metrics=$('integralMetrics');
-  renderF002();
+  renderF002();renderMarea();
   if(!table||!modules||!metrics)return;
   table.replaceChildren();modules.replaceChildren();metrics.replaceChildren();
   const result=integralResult;
   if(!result){
     const p=document.createElement('p');
-    p.textContent='Todavía no hay un cálculo. Pulsa el botón para consultar BTC y ejecutar F001.';
+    p.textContent='Elige un activo y ejecuta sus horizontes. '+ 
+      'F001 original corresponde solo a BTC; otros mercados usan M001.';
     table.appendChild(p);
     const row=document.createElement('div');row.className='signal-row';
     const text=document.createElement('small');
@@ -340,7 +408,8 @@ function renderIntegral(){
   }
   const {fusion,field,audit,errors}=result;
   const info=[
-    ['Horizontes F001',fusion.horizons.length],
+    [result.marketMode==='multiasset'?'Horizontes M001':'Horizontes F001',
+      fusion.horizons.length],
     ['Con candidatos',fusion.horizons.filter(h=>h.price_candidate!==null).length],
     ['Operador Lφ=0',field.status],
     ['Anclas del campo',field.available_candidate_anchors],
@@ -355,14 +424,15 @@ function renderIntegral(){
   }
   for(const row of fusion.horizons){
     const element=document.createElement('div');element.className='integral-item';
-    const label=document.createElement('strong'),statusText=document.createElement('span'),
+    const period=document.createElement('strong'),statusText=document.createElement('span'),
       detail=document.createElement('small');
-    label.textContent=E.HORIZONS.find(h=>h.minutes===row.minutes)?.label??row.minutes+' min';
+    period.textContent=label(row.minutes);
     statusText.textContent=row.price_candidate===null?'Sin candidato':
       money(row.price_candidate);
-    detail.textContent='F001 · '+row.status+' · '+row.analogs+' análogos'+
+    detail.textContent=(result.marketMode==='multiasset'?'M001 · ':'F001 · ')+
+      row.status+' · '+row.analogs+' análogos'+
       (row.return_pct!==null?' · retorno '+number(row.return_pct)+' %':'');
-    element.append(label,statusText,detail);table.appendChild(element);
+    element.append(period,statusText,detail);table.appendChild(element);
   }
   const domain=field.status==='calculated'?
     'Lφ = 0: '+field.available_candidate_anchors+' fronteras experimentales; '+
@@ -374,9 +444,10 @@ function renderIntegral(){
     executed:{f001:true,xn01:!!xn01Result,m001Diary:log.length},
     asOf:new Date().toISOString()});
   const groups=[
-    ['F001 · cálculo actual',fusion.horizons.length+' horizontes · '+
+    [result.marketMode==='multiasset'?'M001 · multimercado':'F001 · cálculo actual',
+      fusion.horizons.length+' horizontes · '+
       fusion.horizons.filter(x=>x.price_candidate!==null).length+' candidatos, sin validación prospectiva'],
-    ['Campo Laplace',domain],
+    [result.marketMode==='multiasset'?'Campo Laplace · no aplicado':'Campo Laplace',domain],
     ['Auditoría EF002',audit.valid_at_cut+' estados válidos al corte; '+errors.length+' problemas de descarga'],
     ...snapshot.items.map(x=>[x.id+' · '+x.title,x.state+' · '+x.reason])
   ];
@@ -388,36 +459,121 @@ function renderIntegral(){
     modules.appendChild(row);
   }
 }
+/* BTC conserva F001 sin modificar; todos los demás activos usan
+ * analogía M001 sobre 3 resoluciones. Ningún retorno genera trading.
+ */
+async function runGenericHorizons(chosen){
+  const resolutions=[300,3600,86400],request=await Promise.allSettled(
+    resolutions.map(g=>remote({kind:'history',asset:chosen,granularity:g,
+      days:E.historyConfig(chosen,g===300?5:g===3600?720:1440).days})));
+  if(asset!==chosen)throw Error('Cambiaste de activo mientras consultábamos las fuentes.');
+  const series={},errors=[];
+  for(let i=0;i<3;i++){
+    const entry=request[i],g=resolutions[i];
+    if(entry.status==='fulfilled')series[g]=entry.value;
+    else{
+      series[g]=[];
+      errors.push('Velas '+(g===300?'5m':g===3600?'1h':'diarias')+
+        ': '+String(entry.reason?.message??entry.reason));
+    }
+  }
+  const horizons=E.HORIZONS.map(h=>{
+    const g=E.selectResolution(h.minutes,chosen),bars=series[g];
+    if(bars.length<70)
+      return {minutes:h.minutes,granularity:g,status:'sin_fuente_suficiente',
+        price_candidate:null,return_pct:null,analogs:0,
+        reason:'Sin datos válidos para esta resolución'};
+    try{
+      const model=E.analyze(bars,{asset:chosen,granularity:g,
+        horizonMinutes:h.minutes});
+      if(!model.ready)return {minutes:h.minutes,granularity:g,
+        status:'soporte_insuficiente',reason:model.reason,
+        price_candidate:null,return_pct:null,analogs:model.patterns,
+        validation:model.validation};
+      const last=bars.at(-1),fresh=marketTimeStatus(last.time+g,g);
+      if(!fresh.valid)return {minutes:h.minutes,granularity:g,
+        status:'datos_antiguos',price_candidate:null,return_pct:null,
+        analogs:model.patterns,reason:fresh.label};
+      const estimate=E.forecast(model,{basePrice:last.close,
+        sourceTime:last.time+g,
+        sourceType:Markets.isEquity(chosen)?
+          'último cierre bursátil · tiempo de negociación':
+          'último cierre crypto · Coinbase'});
+      return {minutes:h.minutes,granularity:g,status:'candidato_experimental',
+        price_candidate:estimate.estimate,
+        return_pct:100*estimate.relativeChange,analogs:model.patterns,
+        forecast_time:estimate.forecastTime,
+        time_semantics:estimate.timeSemantics,
+        range_low:estimate.lower,range_high:estimate.upper,
+        provider:model.source,validation:model.validation,
+        prospective_validation:false};
+    }catch(e){
+      return {minutes:h.minutes,granularity:g,
+        status:'abstained',reason:String(e?.message??e),
+        price_candidate:null,return_pct:null,analogs:0};
+    }
+  });
+  const asOf=new Date().toISOString();
+  return {marketMode:'multiasset',asset:chosen,errors,
+    fusion:{schema:'laplace-m001-multimarket-horizons-v1',horizons,asset:chosen,
+      interpretation:Markets.isEquity(chosen)?
+        'trading_bars_or_sessions_not_calendar_time':'calendar_time',
+      source:Markets.sourceLabel(chosen),
+      no_trading:true,prospectively_validated:false},
+    field:{status:'not_applied',reason:
+      'Operador armónico F001 exclusivamente BTC; no se trasladan coeficientes a otros activos.',
+      available_candidate_anchors:0},
+    audit:F.auditarUniversoLaplace(W,{asOf})};
+}
 async function runIntegral(){
   if(integralBusy)return;
+  const chosen=asset,btc=chosen==='BTC-USD';
   integralBusy=true;setActionAvailability();
-  $('integralRun').textContent='Consultando Bitcoin…';
+  $('integralRun').textContent='Calculando '+chosen+'…';
   $('integralStatus').dataset.state='info';
-  $('integralStatus').textContent='F001 usa BTC/USD exclusivamente. Solicitando velas de 5 minutos, 1 hora y 1 día…';
+  $('integralStatus').textContent=btc?
+    'F001 original Bitcoin · consultando 5 minutos, 1 hora y 1 día…':
+    'M001 · consultando tres resoluciones para '+chosen+
+      ' · '+(Markets.isEquity(chosen)?'datos bursátiles indicativos':'Coinbase')+'.';
   try{
     if(!F||!window.LaplacePDE?.resolverLaplaceGrafo)
-      throw Error('El motor F001 o Laplace no se cargó correctamente.');
+      throw Error('El motor matemático no se cargó correctamente.');
+    if(!btc){
+      integralResult=await runGenericHorizons(chosen);
+      const {fusion,errors}=integralResult;
+      $('rawF001').textContent=JSON.stringify({
+        ...integralResult,source_is_not_robinhood:true,
+        not_same_calibrated_model_as_f001_btc:true,
+        cannot_trade:true,no_calendar_due_time_for_equity:Markets.isEquity(chosen)
+      },null,2);
+      $('integralStatus').dataset.state=errors.length?'info':'success';
+      $('integralStatus').textContent='M001 '+chosen+': '+
+        fusion.horizons.filter(h=>h.price_candidate!==null).length+
+        '/16 escenarios experimentales. '+errors.length+' fuentes incompletas. '+
+        (Markets.isEquity(chosen)?
+          'Plazos bursátiles por velas/sesiones, no tiempos calendario. ':'')+
+        'Sin pruebas prospectivas ni cuenta Robinhood.';
+      show('integral');renderIntegral();renderCapabilities();
+      return;
+    }
     const tasks=[
       ...[300,3600,86400].map(granularity=>
         remote({kind:'history',asset:'BTC-USD',granularity,
           days:F.HISTORIA_REQUERIDA[granularity].days})),
       remote({kind:'quote',asset:'BTC-USD'})
     ];
-    const r=await Promise.allSettled(tasks);
+    const response=await Promise.allSettled(tasks);
+    if(asset!==chosen)throw Error('Cambiaste de activo mientras se calculaba F001.');
     const problems=[],series={};
     for(let i=0;i<3;i++){
-      const k=[300,3600,86400][i],entry=r[i];
+      const g=[300,3600,86400][i],entry=response[i];
       if(entry.status==='fulfilled')
-        series[k]=entry.value.map(x=>[
-          x.time,x.low,x.high,x.open,x.close,x.volume]);
-      else{
-        series[k]=[];
-        problems.push(F.HISTORIA_REQUERIDA[k].days+' días: '+String(entry.reason?.message));
-      }
+        series[g]=entry.value.map(x=>[x.time,x.low,x.high,x.open,x.close,x.volume]);
+      else {series[g]=[];problems.push('Histórico '+g+': '+String(entry.reason?.message));}
     }
-    if(r[3].status!=='fulfilled')
-      throw Error('Ticker BTC no disponible: '+String(r[3].reason?.message));
-    const q=r[3].value,asOf=new Date().toISOString();
+    if(response[3].status!=='fulfilled')throw Error('Ticker BTC no disponible: '+
+      String(response[3].reason?.message));
+    const q=response[3].value,asOf=new Date().toISOString();
     const quote={asset:'BTC-USD',value:q.price,observed_at:q.time,
       known_at:new Date(q.receivedAt).toISOString()};
     const world=W?.states?{at:W.captured_at,
@@ -428,30 +584,29 @@ async function runIntegral(){
       quotePrice:q.price,asset:'BTC-USD',
       solver:window.LaplacePDE.resolverLaplaceGrafo});
     const audit=F.auditarUniversoLaplace(W,{asOf});
-    integralResult={fusion,field,audit,errors:problems};
+    integralResult={fusion,field,audit,errors:problems,marketMode:'btc_original',asset:chosen};
     $('rawF001').textContent=JSON.stringify({
       schema:'laplace-f001-raw-binary64-v1',as_of:asOf,
       quote,errors:problems,fusion,laplace_field:field,
       world_audit:audit,known_source:'prediccion/fusion-temporal.mjs',
-      disclaimer:'Valores raw_diagnostics previos a redondeo; sin evidencia de rentabilidad'
+      disclaimer:'Valores crudos sin redondeo; sin evidencia de rentabilidad'
     },null,2);
     $('integralStatus').dataset.state='success';
-    $('integralStatus').textContent='F001 completado con '+
-      fusion.horizons.filter(x=>x.price_candidate!==null).length+
-      ' candidatos de '+fusion.horizons.length+' horizontes. Campo Laplace: '+
-      field.status+'. '+problems.length+' fuentes incompletas. No se confundió '+
-      'el archivo mundial con información en vivo.';
+    $('integralStatus').textContent='F001 original BTC: '+
+      fusion.horizons.filter(h=>h.price_candidate!==null).length+
+      ' candidatos de 14 horizontes. Campo Laplace '+field.status+
+      '. '+problems.length+' fuentes incompletas. Sin trading.';
     show('integral');renderIntegral();renderCapabilities();
   }catch(error){
     $('integralStatus').dataset.state='error';
-    $('integralStatus').textContent='No se pudo completar F001: '+error.message+
-      '. Verifica Internet y vuelve a intentar.';
+    $('integralStatus').textContent='El análisis de '+chosen+' no pudo completarse: '+
+      error.message;
     integralResult=null;
-    $('rawF001').textContent='F001 no emitió resultado: '+error.message;
+    $('rawF001').textContent='Sin resultado verificable: '+error.message;
     renderIntegral();renderCapabilities();
   }finally{
     integralBusy=false;setActionAvailability();
-    $('integralRun').textContent='Calcular los 14 horizontes de Bitcoin';
+    $('integralRun').textContent='Calcular horizontes del activo seleccionado';
   }
 }
 
@@ -468,11 +623,99 @@ function show(page){
   // Evita quedarse navegando a una sección que no tiene vuelta visible.
   window.scrollTo?.({top:0,behavior:'instant'});
 }
+
+function marketChoice(){
+  const a=Markets?.BY_SYMBOL[asset],stock=isEquity();
+  $('selectedMarketTag').textContent=stock?(a.kind==='etf'?'ETF · EE. UU.':'ACCIÓN · EE. UU.'):'CRIPTO · USD';
+  $('selectedProvider').textContent=stock?'Yahoo Finance · precio indicativo':
+    'Coinbase Exchange · spot';
+  $('providerDisclaimer').textContent=stock?
+    'Yahoo Chart es una fuente pública no oficial y puede retrasarse o bloquearse. '+ 
+    'Las sesiones no son horas de reloj. Laplace NO accede a Robinhood.':
+    'Coinbase es independiente de Robinhood. El precio de ejecución puede variar.';
+  const robinhood=Markets?.robinhood(asset);
+  $('robinhoodLink').href=robinhood??'https://robinhood.com/us/en/';
+  $('favoriteToggle').textContent=favorites.has(asset)?'★':'☆';
+  $('favoriteToggle').setAttribute('aria-pressed',String(favorites.has(asset)));
+  $('favoriteToggle').setAttribute('aria-label',favorites.has(asset)?
+    'Quitar de favoritos locales':'Añadir a favoritos locales');
+  $('integralTitle').textContent=asset==='BTC-USD'?
+    'F001 · 14 horizontes originales de BTC':
+    'M001 · 16 horizontes · '+(a?.name??asset);
+  $('integralMode').textContent=asset==='BTC-USD'?'F001 · 14 PLAZOS':
+    stock?'M001 · 16 PLAZOS BURSÁTILES':'M001 · 16 PLAZOS CRIPTO';
+  $('integralDisclaimer').textContent=asset==='BTC-USD'?
+    'F001 original Bitcoin, 14 horizontes y operador Laplace. M003/F002 son estudios separados, no nuevos precios.':
+    stock?'La bolsa usa barras y sesiones de negociación, no horas calendario. '+
+      'El histórico procede de Yahoo Chart no oficial; sin precio Robinhood ni vencimiento exacto.':
+      'M001 ejecuta 16 horizontes de criptomonedas con Coinbase. '+ 
+      'No está calibrado con pruebas prospectivas independientes.';
+  renderFavoriteAssets();
+  updateQuoteControls();
+}
+function updateQuoteControls(){
+  const auto=$('autoQuoteToggle'),manual=$('refreshQuote');
+  auto.setAttribute('aria-pressed',String(autoQuoteEnabled));
+  auto.textContent=autoQuoteEnabled?'Auto 2 min · activado':'Auto 2 min · desactivado';
+  manual.disabled=selectedQuoteBusy;
+  manual.textContent=selectedQuoteBusy?'Consultando precio…':'Actualizar precio';
+}
+async function refreshSelectedQuote({silent=false}={}){
+  if(selectedQuoteBusy)return;
+  const requested=asset;selectedQuoteBusy=true;updateQuoteControls();
+  try{
+    const quote=await remote({kind:'quote',asset:requested});
+    if(asset!==requested)return;
+    lastQuoteAt=Date.now();
+    const previous=quotes.get(requested);
+    if(!(previous?.isLive&&tickerStream.isFresh(requested)))quotes.set(requested,quote);
+    renderQuotes();
+    if(!silent)status('Precio recibido de '+(quote.source??Markets.sourceLabel(asset))+
+      '. No representa el precio de ejecución en Robinhood.','success');
+  }catch(e){
+    if(asset===requested){
+      const existing=quotes.get(requested);
+      if(!existing?.isLive)quotes.delete(requested);
+      renderQuotes();
+      status('Cotización '+requested+' no disponible: '+e.message+
+        ' · No se utilizó un precio ficticio.','error');
+    }
+  }finally{selectedQuoteBusy=false;updateQuoteControls()}
+}
+function renderFavoriteAssets(){
+  const node=$('favoriteAssets');node.replaceChildren();
+  const pinned=[...favorites].filter(x=>Markets?.BY_SYMBOL[x]).slice(0,12);
+  for(const code of pinned){
+    const button=document.createElement('button');
+    button.type='button';button.className='favorite-pill';
+    button.textContent=code.replace('-USD','');
+    button.setAttribute('aria-pressed',String(asset===code));
+    button.addEventListener('click',()=>changeAsset(code));
+    node.appendChild(button);
+  }
+}
+function populateMarkets(){
+  const select=$('asset');select.replaceChildren();
+  for(const [title,filter] of [
+    ['CRIPTOMONEDAS · COINBASE',a=>a.market==='crypto'],
+    ['ACCIONES · EE. UU. · YAHOO INDICATIVO',a=>a.kind==='stock'],
+    ['ETF · EE. UU. · YAHOO INDICATIVO',a=>a.kind==='etf']]){
+    const group=document.createElement('optgroup');group.label=title;
+    for(const entry of Markets.ITEMS.filter(filter)){
+      const opt=document.createElement('option');
+      opt.value=entry.symbol;
+      opt.textContent=entry.name+' · '+entry.symbol.replace('-USD','/USD');
+      group.appendChild(opt);
+    }
+    select.appendChild(group);
+  }
+  select.value=asset;
+}
 function renderQuotes(){
-  const short={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
+  const pinned={'BTC-USD':'BTC','ETH-USD':'ETH','SOL-USD':'SOL'};
   let found=0;
-  for(const code of E.ALLOWED_ASSETS){
-    const q=quotes.get(code),id=short[code],selected=code===asset,
+  for(const [code,id] of Object.entries(pinned)){
+    const q=quotes.get(code),selected=code===asset,
       streamFresh=q?.isLive&&tickerStream.isFresh(code);
     const button=document.querySelector('[data-quote-asset="'+code+'"]');
     if(button){
@@ -481,25 +724,28 @@ function renderQuotes(){
       button.dataset.live=String(Boolean(streamFresh));
     }
     $('quote'+id).textContent=q?compactPrice(q.price):'—';
-    $('quote'+id+'Status').textContent=streamFresh?
-      'EN VIVO · WS':
-      q?.isLive?'TRADE ANTIGUO':
-      q?'TICKER · HTTPS':'SIN FUENTE';
+    $('quote'+id+'Status').textContent=streamFresh?'EN VIVO · WS':
+      q?.isLive?'TRADE ANTIGUO':q?'TICKER HTTPS':'SIN FUENTE';
     if(q)found++;
   }
   $('quoteStatus').textContent=tickerStream.snapshot().status==='live'?
-    'WS CONECTADO · '+found+'/3':'HTTPS · '+found+'/3';
-  const q=quotes.get(asset);
+    'WS CRIPTO · '+found+'/3':'HTTPS CRIPTO · '+found+'/3';
+  const q=quotes.get(asset),stock=isEquity(),provider=Markets?.sourceLabel(asset);
+  $('selectedQuote').textContent=q?money(q.price):'—';
+  $('selectedProvider').textContent=q?
+    (q.source??provider):provider;
   $('quoteTime').textContent=q?
-    asset.replace('-','/')+' · '+money(q.price)+' · '+
-      (q.isLive?'último trade WebSocket':'ticker HTTPS')+
-      ' · dato observado, no predicción':
-    'Sin precio verificable para '+asset+'. No se fabricaron datos.';
+    asset.replace('-','/')+' · '+money(q.price)+' · '+(stock?
+      'indicativo, NO precio Robinhood':'spot Coinbase')+
+      ' · fuente '+new Date(q.time).toLocaleString('es-MX')+
+      ' · leído '+date(q.receivedAt/1000):
+    'Sin referencia disponible para '+asset+'. No se fabrica ningún precio.';
   $('quoteTrace').textContent=q?
-    'Fuente '+(q.isLive?'WebSocket Coinbase Exchange':'HTTPS Coinbase Exchange')+
-      ' · observado '+q.time+' · recibido '+date(q.receivedAt/1000)+
-      ' · última operación no equivale a vela cerrada.':
-    'Sin traza de mercado disponible.';
+    (q.source??provider)+' · observado '+q.time+
+      ' · recibido '+date(q.receivedAt/1000)+
+      ' · '+(stock?'puede haber retraso, horarios y cierre del mercado':
+      'el último trade no equivale a una vela cerrada'):
+    'Sin fuente verificable para el activo seleccionado.';
 }
 function useHorizon(value){
   const m=Number(value);
@@ -516,13 +762,13 @@ function useHorizon(value){
   $('estimate').textContent='—';
   $('relativeChange').textContent='Sin cálculo para este horizonte';
   $('modelLabel').textContent='M001 · NO CALCULADO';
-  if(history&&previous!==E.selectResolution(m)){
+  if(history&&previous!==E.selectResolution(m,asset)){
     history=null;historyGranularity=null;
     $('lastPrice').textContent='—';
     $('priceTime').textContent='Este plazo requiere otra resolución de velas.';
     $('dataStatus').textContent='Sin datos para el plazo '+label(m)+'. Pulsa Actualizar datos.';
     $('chartComment').textContent='Historial pendiente para '+label(m)+'.';
-    status('Horizonte cambiado. Es necesario consultar velas de '+E.HISTORICAL_CONFIG[E.selectResolution(m)].label+'.');
+    status('Horizonte cambiado. Es necesario consultar velas de '+E.historyConfig(asset,m).label+'.');
   }
   smartMessage('idle','PLAZO SELECCIONADO',
     'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
@@ -598,23 +844,24 @@ function forgetEstimate(){
 }
 async function refresh(){
   const epoch=++refreshEpoch,requested=asset,m=minutes;
-  const granularity=E.selectResolution(m),cfg=E.HISTORICAL_CONFIG[granularity];
+  const granularity=E.selectResolution(m,requested),cfg=E.historyConfig(requested,m);
   loading=true;setActionAvailability();
   $('quoteStatus').textContent='CONSULTANDO';
   connection('CARGANDO');
-  status('Consultando '+requested+' en Coinbase. Velas de '+cfg.label+
-    ' durante '+cfg.days+' días; no se inventarán datos.');
+  status('Consultando '+requested+' mediante '+Markets.sourceLabel(requested)+'. '+
+    'Velas de '+cfg.label+' · ventana '+cfg.days+' días; sin datos simulados.');
   $('dataStatus').textContent='Consultando fuente pública...';
   const oldValid=history&&historyGranularity===granularity&&
     Date.now()-lastHistoryFetch<180000;
   if(!oldValid){history=null;historyGranularity=null;forgetEstimate()}
-  const quotePromises=E.ALLOWED_ASSETS.map(async code=>{
+  const quotePromises=[...new Set(['BTC-USD','ETH-USD','SOL-USD',requested])].map(async code=>{
     try{
       const q=await remote({kind:'quote',asset:code});
       if(epoch!==refreshEpoch)return;
       const previous=quotes.get(code);
       if(!(previous?.isLive&&tickerStream.isFresh(code)))
         quotes.set(code,q);
+      if(code===asset)lastQuoteAt=Date.now();
       renderQuotes();
     }catch(error){
       if(epoch!==refreshEpoch)return;
@@ -634,21 +881,21 @@ async function refresh(){
     }
     lastHistoryError=null;
     const last=history.at(-1),age=Math.max(0,Math.round(Date.now()/1000-
-      (last.time+granularity)));
+      (last.time+granularity))),marketAge=marketTimeStatus(last.time+granularity,granularity);
     $('lastPrice').textContent=money(last.close);
     $('priceTime').textContent='Cierre de vela '+date(last.time+granularity)+
-      ' · '+cfg.label+' · '+(age>2.5*granularity?'ANTIGUA':'verificada');
+      ' · '+cfg.label+' · '+(marketAge.valid?marketAge.label:'ANTIGUA');
     $('dataStatus').textContent=history.length+' velas cerradas · '+cfg.label+
       ' · '+cfg.days+' días solicitados · del '+date(history[0].time)+
       ' al '+date(last.time+granularity)+
-      (age>2.5*granularity?' · datos antiguos':'');
+      (marketAge.valid?' · '+marketAge.label:' · datos antiguos');
     $('chartComment').textContent='Historial real cargado: '+history.length+
       ' velas de '+cfg.label+'. Para ver un candidato selecciona Proyectar precio.';
-    if(age>2.5*granularity){
+    if(!marketAge.valid){
       connection('DATOS ANTIGUOS');
       status('Fuente retrasada: hay velas, pero no son recientes. No emitir candidatos actuales.','error');
     }else{
-      connection('VELAS LISTAS',true);
+      connection(isEquity()?'REFERENCIA HISTÓRICA':'VELAS LISTAS',true);
       status('Historial público descargado y ordenado. Pulsa Analizar o Proyectar.','success');
     }
     evaluateHistory();renderSignals();drawChart();
@@ -684,7 +931,7 @@ function smartMessage(state,badge,summary,explanation,evidence){
   $('smartEvidence').textContent=evidence??'';
 }
 async function ensureAnalysisHistory(){
-  if(!history||historyGranularity!==E.selectResolution(minutes)||
+  if(!history||historyGranularity!==granularityNow()||
      Date.now()-lastHistoryFetch>180000)
     await refresh();
   if(!history)throw Error(lastHistoryError??'No llegaron velas verificables.');
@@ -743,8 +990,10 @@ async function runSmart(){
       money(forecast.estimate)+' · '+label(chosenMinutes),
       'Desde '+money(forecast.fromPrice)+' ('+
         percent(forecast.relativeChange)+'). '+model.patterns+
-        ' patrones históricos y '+v.evaluated+' casos de evaluación. '+
-        comparison+' No es una predicción calibrada ni una recomendación de operar.',
+        ' patrones históricos y '+v.evaluated+' casos de evaluación. '+ 
+        comparison+
+      (isEquity()?' Plazo en barras bursátiles; sin hora calendario de entrega.':'')+
+      ' No es una predicción calibrada ni una recomendación de operar.',
       forecast.sourceType+' · '+label(chosenMinutes));
   }catch(error){
     smartMessage('error','SIN RESULTADO VERIFICABLE','No se emitió un candidato.',
@@ -773,10 +1022,10 @@ async function runValidation(){
   }finally{validationBusy=false;setActionAvailability()}
 }
 function latestObservedOrFail(){
-  if(!history||historyGranularity!==E.selectResolution(minutes))
+  if(!history||historyGranularity!==granularityNow())
     throw Error('Necesitas pulsar Actualizar para este horizonte.');
   const last=history.at(-1),g=historyGranularity;
-  if(Date.now()/1000-(last.time+g)>g*2.5)
+  if(!marketTimeStatus(last.time+g,g).valid)
     throw Error('Las últimas velas son antiguas; revisa la conexión.');
   return last;
 }
@@ -809,6 +1058,9 @@ function analyzeAction(){
 }
 function quoteAnchor(last){
   const q=quotes.get(asset),now=Date.now()/1000;
+  if(isEquity())return {basePrice:last.close,
+    sourceTime:last.time+historyGranularity,
+    sourceType:'cierre bursátil indicativo de Yahoo; no es precio Robinhood'};
   if(q){
     const providerTime=Date.parse(q.time)/1000;
     if(Number.isFinite(providerTime)&&Math.abs(now-providerTime)<180&&
@@ -830,20 +1082,23 @@ function forecastAction(){
     $('rawM001').textContent=JSON.stringify({
       schema:'laplace-m001-raw-binary64-v1',
       model:analysis,forecast:candidate,
-      source:'Coinbase Exchange · OHLCV',
+      source:Markets.sourceLabel(asset),
       no_display_rounding:true
     },null,2);
     $('estimate').textContent=money(candidate.estimate);
     $('relativeChange').textContent=percent(candidate.relativeChange)+' · '+
       label(minutes)+' · '+model.patterns+' patrones';
-    $('chartComment').textContent='Candidato para '+date(candidate.forecastTime)+
+    $('chartComment').textContent='Candidato para '+
+      (isEquity()?label(minutes)+' de negociación (sin fecha exacta)':date(candidate.forecastTime))+
       ', usando '+candidate.sourceType+'. Rango de resultados analógicos: '+
       money(candidate.lower)+' – '+money(candidate.upper)+
       '. No son intervalos de confianza calibrados.';
     status('Candidato M001 emitido: '+money(candidate.estimate)+
       ' desde '+money(candidate.fromPrice)+' ('+percent(candidate.relativeChange)+
       '). No se corrigió artificialmente el movimiento.','success');
-    saveForecast(candidate,model);
+    if(!isEquity())saveForecast(candidate,model);
+    else $('chartComment').textContent+=' No se guarda como predicción vencible: '+ 
+      'el mercado tiene horarios y fines de semana.';
     drawChart();
   }catch(error){lastForecast=null;$('estimate').textContent='—';
     $('relativeChange').textContent='Sin candidato válido';
@@ -915,7 +1170,7 @@ function showTests(){
   const m=analysis,stats=document.createElement('div');stats.className='stats';
   const rows=[
     ['Activo',m.asset],['Horizonte',label(m.horizonMinutes)],
-    ['Resolución',E.HISTORICAL_CONFIG[m.granularity].label],
+    ['Resolución',E.historyConfig(asset,minutes).label],
     ['Velas reales',number(m.historyCount)],
     ['Patrones usados',number(m.patterns)],
     ['Estado',m.ready?'Candidato experimental':'Abstención: '+m.reason],
@@ -942,12 +1197,12 @@ function showTests(){
 function renderSignals(){
   const out=$('signalRows');out.replaceChildren();
   const g=historyGranularity,rows=history;
-  const current=rows&&g?E.featureAt(rows,rows.length-1,g):null;
+  const current=rows&&g?E.featureAt(rows,rows.length-1,g,asset):null;
   const data=[
     ['Precio ticker público',quotes.get(asset)?money(quotes.get(asset).price):
       'No disponible',Boolean(quotes.get(asset))],
     ['Velas OHLCV',rows?number(rows.length)+' cerradas · '+
-      E.HISTORICAL_CONFIG[g].label:'No cargadas',Boolean(rows)],
+      E.historyConfig(asset,minutes).label:'No cargadas',Boolean(rows)],
     ['Retorno de 3 velas',current?percent(Math.exp(current[0])-1):'Faltan velas',Boolean(current)],
     ['Retorno de 1 vela',current?percent(Math.exp(current[1])-1):'Faltan velas',Boolean(current)],
     ['Volatilidad RMS (6 velas)',current?percent(current[2]):'Faltan velas',Boolean(current)],
@@ -1140,10 +1395,12 @@ function renderHistory(){
 function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
   asset=next;$('asset').value=next;
+  marketChoice();integralResult=null;renderIntegral();
+  try{localStorage.setItem('laplace-last-asset',asset)}catch(error){}
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
   xn01Result=null;renderXN01();
   $('xn01Status').textContent=asset==='BTC-USD'?'XN01 listo para consultar velas cerradas.':
-    'XN01 original bursátil no está integrado; BTC sí está disponible.';
+    'XN01 XI/Ether original solo BTC; no se simula para otros activos.';
   smartMessage('idle','ACTIVO SELECCIONADO','Listo para '+asset.replace('-','/')+'.',
     'El próximo cálculo utilizará velas de este activo, sin mezclar mercados.',
     'PLAZO · '+label(minutes));
@@ -1159,6 +1416,21 @@ for(const b of document.querySelectorAll('[data-quote-asset]'))
   b.addEventListener('click',()=>changeAsset(b.dataset.quoteAsset));
 $('asset').addEventListener('change',()=>changeAsset($('asset').value));
 $('refresh').addEventListener('click',refresh);
+$('refreshQuote').addEventListener('click',()=>refreshSelectedQuote());
+$('autoQuoteToggle').addEventListener('click',()=>{
+  autoQuoteEnabled=!autoQuoteEnabled;lastQuoteAt=Date.now();
+  try{localStorage.setItem('laplace-auto-quote-v1',autoQuoteEnabled?'yes':'no')}catch(error){}
+  updateQuoteControls();
+  status(autoQuoteEnabled?'Actualización de precios activada cada 2 min mientras usas la APK.':
+    'Actualización periódica de precios desactivada.','info');
+});
+$('favoriteToggle').addEventListener('click',()=>{
+  if(favorites.has(asset))favorites.delete(asset);
+  else if(favorites.size<12)favorites.add(asset);
+  else {status('Máximo de 12 favoritos locales. Quita uno antes de añadir otro.','error');return}
+  try{localStorage.setItem(FAVORITES_KEY,JSON.stringify([...favorites]));}catch(error){}
+  marketChoice();
+});
 $('integralRun').addEventListener('click',runIntegral);
 $('train').addEventListener('click',analyzeAction);
 $('test').addEventListener('click',testAction);
@@ -1191,6 +1463,14 @@ $('liveToggle').addEventListener('click',toggleLive);
 $('marketDetails').addEventListener('toggle',()=>{
   if($('marketDetails').open)drawLiveChart();
 });
+populateMarkets();
+const previousChoice=(()=>{
+  try{return localStorage.getItem('laplace-last-asset')}catch(error){return null}
+})();
+if(previousChoice&&Markets?.BY_SYMBOL[previousChoice]){
+  asset=previousChoice;$('asset').value=previousChoice;
+}
+marketChoice();
 useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();
 renderHistory();drawChart();connection('SIN CONSULTAR');
 updateLiveBanner();drawLiveChart();updateLivePreview();
@@ -1209,11 +1489,14 @@ if(window.LaplaceLiveBridge){
   updateLiveBanner();
 }
 window.setInterval(()=>{
+  if(autoQuoteEnabled&&document.visibilityState==='visible'&&
+    Date.now()-lastQuoteAt>120000&&!loading&&!integralBusy)
+    refreshSelectedQuote({silent:true});
   updateLiveBanner();
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.5',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'3.7',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090c16"><title>LAPLACE 3.6 · F002 conjunto</title>
+<meta name="theme-color" content="#090c16"><title>LAPLACE 3.7 · Multimercado</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
+<script src="market-universe.js" defer></script>
+<script src="marea.js" defer></script>
 <script src="engine.js" defer></script>
 <script src="math-pde.js" defer></script>
 <script src="fusion-integral.js" defer></script>
@@ -13,7 +15,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>OBSERVATORIO FINANCIERO · 3.6</small></div>
+    <div><h1>LAPLACE</h1><small>OBSERVATORIO MULTIMERCADO · 3.7</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -39,7 +41,7 @@
   <section id="panel" class="tabpage">
     <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
       <div class="quote-head">
-        <div><small class="eyebrow">COINBASE · MERCADO PÚBLICO</small><h2>Precios en USD</h2></div>
+        <div><small class="eyebrow">CRIPTO EN VIVO · COINBASE</small><h2>BTC, ETH y SOL</h2></div>
         <span id="quoteStatus" class="outline-tag">SIN CONSULTAR</span>
       </div>
       <div class="live-control">
@@ -81,7 +83,7 @@
       <div class="quick-guide">Escoge un activo y pulsa «Analizar ahora». El sistema se encarga de comprobar el historial.</div>
     </article>
     <article class="card selector">
-      <div class="section-head"><div><small class="eyebrow">ACTIVO</small><h2>Mercado de referencia</h2></div><span class="outline-tag">SPOT · USD</span></div>
+      <div class="section-head"><div><small class="eyebrow">UNIVERSO · 31 ACTIVOS</small><h2>Tu mercado</h2></div><span id="selectedMarketTag" class="outline-tag">CRIPTO</span></div>
       <div class="asset-row">
         <label for="asset" class="sr-only">Activo</label>
         <select id="asset" aria-label="Activo">
@@ -91,6 +93,21 @@
         </select>
         <button id="refresh" class="refresh" type="button">Actualizar datos</button>
       </div>
+      <div class="market-selected">
+        <div><small>ÚLTIMA REFERENCIA DEL ACTIVO</small>
+          <strong id="selectedQuote">—</strong>
+          <span id="selectedProvider">Coinbase · operaciones públicas</span></div>
+        <button id="favoriteToggle" class="favorite-toggle" type="button" aria-pressed="false"
+          aria-label="Agregar a favoritos">☆</button>
+      </div>
+      <div class="market-quote-actions">
+        <button id="refreshQuote" class="smart-secondary" type="button">Actualizar precio</button>
+        <button id="autoQuoteToggle" class="smart-secondary" type="button" aria-pressed="false">Auto 2 min · desactivado</button>
+      </div>
+      <div id="favoriteAssets" class="favorite-assets" role="group" aria-label="Favoritos locales"></div>
+      <a id="robinhoodLink" href="https://robinhood.com/us/en/crypto/BTC/" target="_blank" rel="noopener noreferrer"
+        class="external robinhood-link">Consultar este activo en Robinhood</a>
+      <small id="providerDisclaimer" class="helper">Laplace no se conecta a tu cuenta Robinhood ni conoce tus posiciones.</small>
       <small id="dataStatus" class="helper">Ticker WebSocket en primer plano; velas históricas por HTTPS. El botón Actualizar consulta el historial, no es necesario para seguir los ticks.</small>
     </article>
 
@@ -307,7 +324,38 @@
 
 
   <section id="integral" class="tabpage" hidden>
-    <article class="card" aria-label="Predictor conjunto experimental F002">
+    <article class="card">
+      <div class="section-head">
+        <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
+          <h2 id="integralTitle">Cálculo de horizontes por activo</h2></div>
+        <span id="integralMode" class="outline-tag">14 PLAZOS · BTC</span>
+      </div>
+      <p>Selecciona tu mercado y consulta los horizontes disponibles.
+      Bitcoin conserva F001 original y el operador armónico Lφ = 0.
+      Los otros activos utilizan M001 experimental y sus series propias,
+      sin extrapolar el modelo original a una bolsa diferente.</p>
+      <button id="integralRun" class="pde-primary" type="button">Calcular horizontes del activo seleccionado</button>
+      <p id="integralDisclaimer" class="fineprint">BTC ejecuta F001 original (14 plazos). Otros activos usan M001 (16 plazos). En acciones los horizontes son intervalos o sesiones de negociación, sin hora exacta de vencimiento.</p>
+      <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. Selecciona un activo. Solo se usarán velas disponibles y datos públicos etiquetados por proveedor.</p>
+      <div id="integralMetrics" class="stats pde-stats"></div>
+      <div id="integralTable" class="integral-results"></div>
+      <details class="raw-details">
+        <summary>Ver cálculo crudo por horizonte, fuente y errores</summary>
+        <pre id="rawF001">Sin cálculo F001.</pre>
+      </details>
+    </article>
+    <details class="card advanced-fold" aria-label="Investigación Marea M003">
+      <summary>Estudio Marea M003 · Bitcoin · histórico</summary>
+      <div class="section-head"><div><small class="eyebrow">MAREA · M003 · MOTOR DE INVESTIGACIÓN</small>
+      <h2>Comprender antes de predecir</h2></div><span class="outline-tag">SOLO BTC · RETROSPECTIVO</span></div>
+      <p id="mareaIntro" class="helper">Pruebas históricas, no señales de compraventa.</p>
+      <div id="mareaMetrics" class="integral-results"></div>
+      <details class="raw-details"><summary>Ver evidencia del estudio M003</summary>
+        <pre id="mareaRaw">No se incorporó la evidencia M003.</pre>
+      </details>
+    </details>
+    <details class="card advanced-fold" aria-label="Predictor conjunto experimental F002">
+      <summary>Estado F002 · fuentes mundiales y validación</summary>
       <div class="section-head">
         <div><small class="eyebrow">F002 · ARCHIVO CONJUNTO Y PREDICCIÓN COMPROBABLE</small>
           <h2>Qué calculó el mundo financiero</h2></div>
@@ -326,26 +374,7 @@
       <p class="fineprint">Informe generado sobre capturas reales durante la compilación.
       Si falta historia, F002 se abstiene. No es pronóstico en tiempo real ni
       señal de inversión; los modelos en el servidor requieren pruebas futuras.</p>
-    </article>
-    <article class="card">
-      <div class="section-head">
-        <div><small class="eyebrow">F001 · ECUACIÓN DE LAPLACE · EF002</small>
-          <h2>F001 · Cálculo multiescala BTC</h2></div>
-        <span class="outline-tag">14 PLAZOS · BTC</span>
-      </div>
-      <p>Ejecuta el F001 original con 14 horizontes de BTC, audita el archivo financiero
-      y aplica Lφ = 0 a los retornos logarítmicos. Las fronteras son candidatos
-      experimentales, no precios observados del futuro.</p>
-      <button id="integralRun" class="pde-primary" type="button">Calcular los 14 horizontes de Bitcoin</button>
-      <p class="fineprint">F001 solo Bitcoin · 14 horizontes · Datos SEC/EF004 se muestran según disponibilidad, sin cálculos ficticios.</p>
-      <p id="integralStatus" class="pde-status" role="status" aria-live="polite">Sin ejecución. Esta sección calcula exclusivamente Bitcoin; los datos mundiales provienen del último archivo fechado.</p>
-      <div id="integralMetrics" class="stats pde-stats"></div>
-      <div id="integralTable" class="integral-results"></div>
-      <details class="raw-details">
-        <summary>Mostrar las 14 predicciones crudas de F001 (sin redondeo de pantalla)</summary>
-        <pre id="rawF001">Sin cálculo F001.</pre>
-      </details>
-    </article>
+    </details>
     <article class="card">
       <h2>Observaciones y módulos sin simulación</h2>
       <div id="integralModules" class="signal-rows"></div>
