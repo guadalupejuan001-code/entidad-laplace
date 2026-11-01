@@ -8,7 +8,7 @@ import {createHash} from 'node:crypto';
 import {descubrirManifiestosEF002,leerArchivoEF002} from '../estado-financiero/captura.mjs';
 import {normalizarCapturaU003} from '../estado-financiero/modelo.mjs';
 import {ejecutarPrediccionF002,evaluarPronosticoF002,
-  resumirValidacionProspectivaF002} from '../prediccion/conjunta-f002.mjs';
+  resumirValidacionProspectivaF002,trazaOriginalF002} from '../prediccion/conjunta-f002.mjs';
 const [command,archiveArg,outputArg,journalArg,...extra]=process.argv.slice(2);
 const help='Uso: node tools/conjunta-f002.mjs ejecutar ARCHIVO_EF002 SALIDA [LAPLACE_MODELOS]\n'+
  'Cada captura se verifica con hashes. Publica abstención o candidato shadow,\n'+
@@ -54,15 +54,22 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
     captures.sort((a,b)=>a.at.localeCompare(b.at));
     const version=sha(await readFile(new URL('../prediccion/conjunta-f002.mjs',import.meta.url)));
     const model=ejecutarPrediccionF002(captures,{issuedAt:new Date().toISOString()});
-    const outputSubdirs=['informes-f002','pronosticos-f002','evaluaciones-f002'];
+    const trace=trazaOriginalF002(captures);
+    const outputSubdirs=['informes-f002','pronosticos-f002','evaluaciones-f002','trazas-f002'];
     for(const folder of outputSubdirs)await mkdir(join(output,folder),{recursive:true});
     const tail=captures.at(-1).capture_sha256,policy=version.slice(0,12);
     const reportName='informes-f002/status-'+tail+'-'+policy+'.json';
+    const traceName='trazas-f002/trace-'+tail+'.json';
+    await writeFile(join(output,traceName),JSON.stringify(trace,null,2)+'\n',
+      {flag:'wx',mode:0o600});
     const report={...model,model_source_sha256:version,
       source_branch:'laplace-archivo',archive_count:captures.length,
       verified_real_archives_only:true,
       archive_manifests_verified:paths.length,
       supplemental_evidence_verified:supplemental,
+      raw_trace_sha256:trace.trace_sha256,
+      raw_trace_filename:traceName,
+      raw_trace_series:trace.source_series_all_latest_or_previous,
       input_capture_sha256:tail,automatic_trading:false,
       production_activation_allowed:false,prospectively_validated:false};
     await writeFile(join(output,reportName),JSON.stringify(report,null,2)+'\n',
@@ -110,6 +117,9 @@ else if(command!=='ejecutar'||!archiveArg||!outputArg||extra.length){
       holdout_pairs:model.training?.observed_holdout_pairs??model.observed_holdout_pairs??0,
       forecast_sha256:model.forecast?.forecast_sha256??null,
       shadow_saved_path:forecastName,report_path:reportName,
+      raw_trace_sha256:trace.trace_sha256,
+      raw_trace_filename:traceName,
+      raw_trace_series:trace.source_series_all_latest_or_previous,
       earlier_forecasts_checked:oldForecasts.length,
       new_real_outcomes_evaluated:evaluated,awaiting_later_capture:waiting,
       missed_capture_windows:unscorable,
