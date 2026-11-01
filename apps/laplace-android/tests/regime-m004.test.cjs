@@ -50,7 +50,7 @@ test('M004 no aprovecha una decisión cuyo resultado cruza un hueco temporal',()
  const partial=M.rowsWithLabels(missing,{horizonMinutes:15,cutoff:cutoff(rows)});
  assert.ok(partial.samples.length<complete.samples.length);
  assert.ok(partial.samples.every(x=>x.dueAt>x.decisionAt));
- const affected=partial.samples.filter(x=>x.index>=470&&x.index<=485);
+ const affected=partial.samples.filter(x=>x.index>=479&&x.index<=503);
  assert.equal(affected.length,0);
 });
 test('M004 compara 3 periodos separados y nunca selecciona con holdout futuro',()=>{
