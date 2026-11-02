@@ -191,6 +191,33 @@ public final class MainActivity extends Activity {
             });
         }
         @JavascriptInterface
+        public void analyzeXN02(String requestId,String asset,String barsJson){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
+               !"BTC-USD".equals(asset)||barsJson==null||barsJson.length()>512*1024){
+                emitXI(requestId,"xn02","XN02: datos no permitidos",null);return;
+            }
+            io.execute(()->{
+                try{
+                    JSONArray rows=new JSONArray(barsJson);
+                    String xi;
+                    try(InputStream in=getAssets().open("xn02-native.xi")){
+                        ByteArrayOutputStream out=new ByteArrayOutputStream();
+                        byte[] buffer=new byte[4096];int n;
+                        while((n=in.read(buffer))!=-1){
+                            if(out.size()+n>32768)throw new IOException("Plantilla XI demasiado grande");
+                            out.write(buffer,0,n);
+                        }
+                        xi=out.toString(StandardCharsets.UTF_8.name());
+                    }
+                    emitXI(requestId,"xn02",null,NativeXN02.analyze(asset,rows,xi));
+                }catch(Exception e){
+                    emitXI(requestId,"xn02","XN02 nativo: "+e.getMessage(),null);
+                }catch(LinkageError e){
+                    emitXI(requestId,"xn02","XN02 JNI ausente o incompatible",null);
+                }
+            });
+        }
+        @JavascriptInterface
         public void analyzeXN01(String requestId,String asset,String barsJson){
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
                !"BTC-USD".equals(asset)||barsJson==null||barsJson.length()>100000){
@@ -358,11 +385,14 @@ public final class MainActivity extends Activity {
         runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(javascript,null);});
     }
     private void emitXN01(String requestId,String error,JSONObject result){
+        emitXI(requestId,"xn01",error,result);
+    }
+    private void emitXI(String requestId,String model,String error,JSONObject result){
         if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
         try{
             JSONObject msg=new JSONObject();
             msg.put("ok",error==null);
-            if(error==null)msg.put("xn01",result);
+            if(error==null)msg.put(model,result);
             else msg.put("error",error);
             String js="window.LaplaceMobile&&window.LaplaceMobile.receive("+
                 JSONObject.quote(requestId)+","+msg.toString()+")";

@@ -10,7 +10,7 @@ import java.util.Locale;
 public final class NativeXN01 {
     static { System.loadLibrary("laplace_xi"); }
     private NativeXN01(){}
-    private static native String executeProgram(String source);
+    static native String executeProgram(String source);
     static String sha256(String value)throws Exception {
         byte[] digest=MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
         StringBuilder out=new StringBuilder();

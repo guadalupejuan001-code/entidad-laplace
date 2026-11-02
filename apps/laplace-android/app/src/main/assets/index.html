@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.0 · Aprendizaje y órdenes</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.1 · Aprendizaje XI</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -14,6 +14,7 @@
 <script src="pde-panel.js" defer></script>
 <script src="live-feed.js" defer></script>
 <script src="tracking.js" defer></script>
+<script src="xn02-evidence.js" defer></script>
 <script src="app.js" defer></script>
 <script src="ef004-runtime.js" defer></script>
 <script src="ef004-archive.js" defer></script>
@@ -24,7 +25,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.0</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.1</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -183,15 +184,25 @@
     </article>
 
     <details class="card xn01-card advanced-fold">
-      <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Motor original · ejecutar por separado</small></summary>
+      <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Entrenar con más historia</small></summary>
       <div class="section-head">
-        <div><small class="eyebrow">XN01 · XI/ETHER ORIGINAL</small>
+        <div><small class="eyebrow">XN01 / XN02 · XI/ETHER</small>
           <h2>Dirección y confianza interna</h2></div>
         <span class="outline-tag">5 MIN · BTC</span>
       </div>
-      <p>Usa el programa XI original sobre las últimas 64–240 velas cerradas de
-      Bitcoin. La confianza es una probabilidad interna del estado aprendido,
-      no el porcentaje de aciertos ni una garantía sobre el precio.</p>
+      <p>Aprende de velas cerradas de Bitcoin. Puedes ampliar la historia de
+      20 horas a cinco días. Más datos pueden subir o bajar la confianza;
+      ese porcentaje no equivale a los aciertos comprobados.</p>
+      <label class="pde-label" for="xn01Window">Historia para entrenar</label>
+      <select id="xn01Window">
+        <option value="240">20 horas · 240 velas · XN01 original</option>
+        <option value="288">1 día · 288 velas · XN02 ampliado</option>
+        <option value="864">3 días · 864 velas · XN02 ampliado</option>
+        <option value="1440">5 días · 1.440 velas · XN02 ampliado</option>
+      </select>
+      <p class="helper">XN02 conserva las fórmulas de XN01 y amplía sus contadores.
+      Cada ejecución vuelve a aprender con la ventana elegida; repetirla con las
+      mismas velas no añade entrenamiento.</p>
       <button type="button" class="pde-primary" id="xn01Run">Calcular dirección nativa XI</button>
       <p class="helper" role="status" aria-live="polite" id="xn01Status">
         Sin ejecución. Se usarán velas cerradas y el ejecutor XI/Ether original.
@@ -204,6 +215,19 @@
         <div><span>Prior nativo</span><strong id="xn01Prior">—</strong></div>
         <div><span>Filas entrenadas</span><strong id="xn01Rows">—</strong></div>
       </div>
+      <p class="helper" id="xn01TrainingDetail">Elige una ventana y ejecuta para consultar el soporte real.</p>
+      <details class="raw-details">
+        <summary>¿Aprender más mejoró los aciertos?</summary>
+        <p class="helper" id="xn01StudySummary"></p>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Historia</th><th>Aciertos</th><th>Error de probabilidad</th></tr></thead>
+          <tbody id="xn01StudyRows"></tbody>
+        </table></div>
+        <p class="fineprint">Prueba retrospectiva de BTC, hasta el 30/10/2026.
+        64 casos para elegir ventana y 128 posteriores reservados para comprobarla.
+        Menor error es mejor; una probabilidad fija de 50 % da 0,2500.
+        Una sola muestra histórica no demuestra precisión futura.</p>
+      </details>
       <details class="raw-details">
         <summary>Mostrar registros XI crudos, sin sustituir ni suavizar la salida</summary>
         <pre id="xn01Raw">Sin salida nativa todavía.</pre>

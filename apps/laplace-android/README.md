@@ -1,11 +1,18 @@
-## LAPLACE Android 4.0 — EF004 local y órdenes
+## LAPLACE Android 4.1 — entrenamiento XI ampliado
+
+El selector de historia de **Dirección XI/Ether** conserva XN01 con 240 velas y añade XN02 con 288, 864 o 1.440. Las fórmulas y el ejecutor XI/Ether son los originales; XN02 amplía cuatro contadores de un byte a uint32 para evitar desbordamientos. Repetir las mismas velas no añade aprendizaje.
+
+La app presenta soporte, ejemplos entrenados y una comparación retrospectiva separada de la confianza interna. Las ventanas ampliadas no se activan automáticamente: no mejoraron la comprobación reservada. [Resultados y reproducción](../../docs/ANDROID_4_1_XI_APRENDIZAJE.md).
+
+Paquete `com.entidadlaplace.mobile.learn41`, versionCode 16, **LAPLACE 4.1**. Se instala en paralelo; los registros y las credenciales de otras instalaciones no se migran automáticamente.
+
+## EF004 local y órdenes
 
 El motor EF004 original se ejecuta y entrena en el teléfono, con todas las capturas EF002 disponibles, verificación de integridad, almacenamiento local y evaluación prospectiva. Conserva la abstención si aún no hay suficientes transiciones independientes.
 
 La sección **Operar** incluye cuenta virtual y conector oficial Robinhood Crypto v2. Las órdenes reales requieren credenciales configuradas en el teléfono, preconsulta y confirmación nativa de cada envío. El desarrollo no utiliza una cuenta real ni coloca órdenes reales. Acciones/ETF mantienen análisis y enlace externo.
 
 [Implementación, pruebas y alcance](../../docs/ANDROID_4_0_EF004_Y_ORDENES.md).
-Paquete de prueba `com.entidadlaplace.mobile.learn40`, versionCode 15, **LAPLACE 4.0**; instalación paralela, sin migración automática de otras instalaciones.
 
 ---
 

@@ -100,6 +100,7 @@ function setActionAvailability(){
   if($('regimeStudy'))$('regimeStudy').textContent=regimeBusy?
     'Evaluando períodos históricos…':'Comprobar si el régimen ayuda a predecir la amplitud';
   $('xn01Run').disabled=xn01Busy||asset!=='BTC-USD';
+  $('xn01Window').disabled=xn01Busy||asset!=='BTC-USD';
   $('xn01Run').textContent=xn01Busy?'Ejecutando XI original…':'Calcular dirección nativa XI';
   const quick=$('smartRun');
   if(quick){
@@ -250,7 +251,7 @@ function toggleLive(){
 }
 
 
-/* Original native XN01 only: no JavaScript classification.
+/* Native XN01 / widened XN02 only: no JavaScript classification.
  * Closed five-minute bars are mandatory; a live ticker is not a candle.
  */
 function renderXN01(){
@@ -258,6 +259,7 @@ function renderXN01(){
   for(const id of ['xn01Direction','xn01Confidence','xn01PUp','xn01Support','xn01Prior','xn01Rows'])
     $(id).textContent='—';
   $('xn01Raw').textContent='Sin salida nativa todavía.';
+  $('xn01TrainingDetail').textContent='Elige una ventana y ejecuta para consultar el soporte real.';
   if(!r)return;
   $('xn01Direction').textContent=r.direction==='subida'?'SUBIDA ↑':'BAJADA ↓';
   $('xn01Confidence').textContent=(r.confidence*100).toFixed(2)+' %';
@@ -265,6 +267,10 @@ function renderXN01(){
   $('xn01Support').textContent=String(r.support);
   $('xn01Prior').textContent=String(r.prior);
   $('xn01Rows').textContent=String(r.training_rows);
+  $('xn01TrainingDetail').textContent=(r.schema.includes('xn02')?'XN02 ampliado':'XN01 original')+
+    ' · '+r.training_rows+' ejemplos con resultado conocido; '+r.support+
+    ' del mismo estado. '+(r.input_rows?r.input_rows+' velas consultadas. ':'')+
+    'La última vela define el estado actual y no se usa como resultado futuro.';
   $('xn01Raw').textContent=JSON.stringify({...r,
     warning:'Confianza interna, no porcentaje de aciertos demostrados',
     not_reimplemented_in_javascript:true
@@ -272,28 +278,52 @@ function renderXN01(){
 }
 async function runXN01(){
   if(xn01Busy)return;
+  const windowRows=Number($('xn01Window').value),kind=windowRows===240?'xn01':'xn02';
   xn01Busy=true;setActionAvailability();
   $('xn01Status').textContent='Recuperando velas cerradas y ejecutando XI/Ether original…';
   try{
     if(asset!=='BTC-USD')throw Error('XN01 original sólo BTC mientras no se valide la ruta bursátil.');
-    if(typeof window.LaplaceBridge?.analyzeXN01!=='function')
+    if(![240,288,864,1440].includes(windowRows))throw Error('Ventana de entrenamiento no permitida.');
+    if(typeof window.LaplaceBridge?.[kind==='xn01'?'analyzeXN01':'analyzeXN02']!=='function')
       throw Error('Ejecutor original JNI no está disponible; no se inventará confianza.');
-    const rows=historyGranularity===300&&history?.length>=64?history:
+    const rows=historyGranularity===300&&history?.length>=windowRows?history:
       await remote({kind:'history',asset:'BTC-USD',granularity:300,days:14});
     const closedAt=rows.at(-1).time+300;
-    if(Date.now()/1000-closedAt>750)
+    if(closedAt>Date.now()/1000||Date.now()/1000-closedAt>750)
       throw Error('Las velas de 5 minutos están desactualizadas.');
-    const bars=rows.slice(-240).map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume]);
-    xn01Result=await remote({kind:'xn01',asset:'BTC-USD',bars});
+    if(rows.length<windowRows)throw Error('La fuente devolvió '+rows.length+
+      ' velas; esta ventana necesita '+windowRows+'. Elige una ventana menor.');
+    if(asset!=='BTC-USD')throw Error('El activo cambió durante la consulta.');
+    const bars=rows.slice(-windowRows).map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume]);
+    const result=await remote({kind,asset:'BTC-USD',bars});
+    if(asset!=='BTC-USD')throw Error('El activo cambió durante el cálculo.');
+    xn01Result=result;
     renderXN01();
-    $('xn01Status').textContent='XN01 ejecutado en XI/Ether: '+bars.length+
+    $('xn01Status').textContent=kind.toUpperCase()+' ejecutado en XI/Ether: '+bars.length+
       ' velas. Estado '+xn01Result.mask+', P(subida) '+xn01Result.probability_up+
       ', confianza '+xn01Result.confidence+' (no precisión validada).';
   }catch(e){
     xn01Result=null;renderXN01();
-    $('xn01Status').textContent='XN01 se abstuvo: '+e.message;
+    $('xn01Status').textContent='XI se abstuvo: '+e.message;
   }finally{
     xn01Busy=false;setActionAvailability();renderCapabilities();
+  }
+}
+function renderXN01Study(){
+  const study=window.LAPLACE_XN02_EVIDENCE;
+  if(!study?.windows)return;
+  $('xn01StudySummary').textContent='La ventana de 3 días fue la mejor en validación, '+
+    'pero no mejoró la prueba posterior. Conservamos 20 horas por defecto y puedes '+
+    'comparar las demás manualmente. Los aciertos de abajo no son la confianza de tu próxima señal.';
+  $('xn01StudyRows').replaceChildren();
+  for(const [rows,label] of [[240,'20 horas'],[288,'1 día'],[864,'3 días'],[1440,'5 días']]){
+    const measured=study.windows[rows]?.test;if(!measured)continue;
+    const tr=document.createElement('tr');
+    for(const value of [label,measured.correct+'/'+measured.cases+' · '+
+      (measured.accuracy*100).toFixed(1)+' %',measured.brier.toFixed(4)]){
+      const td=document.createElement('td');td.textContent=value;tr.append(td);
+    }
+    $('xn01StudyRows').append(tr);
   }
 }
 
@@ -899,6 +929,8 @@ function remote(request){
         window.LaplaceBridge.fetchCandles(id,request.asset,request.granularity,request.days);
       else if(request.kind==='xn01')
         window.LaplaceBridge.analyzeXN01(id,request.asset,JSON.stringify(request.bars));
+      else if(request.kind==='xn02')
+        window.LaplaceBridge.analyzeXN02(id,request.asset,JSON.stringify(request.bars));
       else throw Error('Solicitud desconocida.');
     }catch(error){
       clearTimeout(timer);pending.delete(id);reject(error);
@@ -919,13 +951,18 @@ window.LaplaceMobile={
            !Number.isFinite(Number(q.receivedAt)))
           throw Error('Cotización numéricamente inválida.');
         p.resolve({...q,price:Number(q.price),receivedAt:Number(q.receivedAt)});
-      }else if(p.kind==='xn01'){
-        const o=response.xn01;
-        if(!o||o.schema!=='laplace-xn01-native-xi-v1'||
+      }else if(p.kind==='xn01'||p.kind==='xn02'){
+        const o=response[p.kind];
+        if(!o||o.schema!=='laplace-'+p.kind+'-native-xi-v1'||
           o.backend!=='XI/Ether · NativeRuntime'||o.asset!=='BTC-USD'||
           !Number.isFinite(o.confidence)||o.confidence<.5||o.confidence>1||
           !Number.isFinite(o.probability_up)||o.probability_up<0||o.probability_up>1||
-          !Number.isSafeInteger(o.support)||!Number.isSafeInteger(o.training_rows)||
+          !Number.isSafeInteger(o.support)||o.support<0||
+          !Number.isSafeInteger(o.training_rows)||o.training_rows<0||o.support>o.training_rows||
+          o.training_rows>p.bars.length-7||
+          !['subida','bajada'].includes(o.direction)||
+          Math.abs(o.confidence-Math.max(o.probability_up,1-o.probability_up))>.00001||
+          (p.kind==='xn02'&&o.input_rows!==p.bars.length)||
           !/^[0-9a-f]{64}$/.test(o.program_sha256)||
           !/^[0-9a-f]{64}$/.test(o.output_sha256))
           throw Error('Resultado XI no verificable; no hay confianza ficticia.');
@@ -1646,6 +1683,10 @@ $('test').addEventListener('click',testAction);
 $('evaluate').addEventListener('click',evaluateAction);
 $('forecast').addEventListener('click',forecastAction);
 $('xn01Run').addEventListener('click',runXN01);
+$('xn01Window').addEventListener('change',()=>{
+  xn01Result=null;renderXN01();
+  $('xn01Status').textContent='Nueva ventana seleccionada. Pulsa Calcular para entrenar con esa historia.';
+});
 $('worldSearch').addEventListener('input',()=>{
   worldVisibleLimit=100;renderWorldObservations();
 });
@@ -1696,7 +1737,7 @@ if(previousChoice&&Markets?.BY_SYMBOL[previousChoice]){
   asset=previousChoice;$('asset').value=previousChoice;
 }
 marketChoice();
-useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();
+useHorizon(15);renderQuotes();renderWorld();renderSignals();renderXN01();renderXN01Study();
 renderHistory();drawChart();connection('SIN CONSULTAR');
 updateLiveBanner();drawLiveChart();updateLivePreview();
 if(window.LaplaceLiveBridge){
@@ -1724,7 +1765,7 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.0',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.1',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',

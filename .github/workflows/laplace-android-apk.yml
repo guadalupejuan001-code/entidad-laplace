@@ -1,7 +1,7 @@
-name: LAPLACE Android 4.0 - EF004 local y órdenes manuales
+name: LAPLACE Android 4.1 - entrenamiento XI ampliado
 on:
   push:
-    branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
+    branches: [feature/laplace-4-1-xn02-wide-learning-20261101, main]
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
@@ -76,6 +76,7 @@ jobs:
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
           set -euo pipefail
+          node apps/laplace-android/build-xn02.mjs --verify
           node apps/laplace-android/build-integral-assets.mjs --verify
           node apps/laplace-android/build-ef004-assets.mjs --verify
           node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
@@ -176,7 +177,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-4-0-PREVIEWS-Y-EF004-LOCAL
+          name: LAPLACE-4-1-PREVIEWS-XI
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -191,6 +192,11 @@ jobs:
           python3 deps/reverse-pc/scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
           test -f build/ether-compat/mundo_x/quantum_runtime.hpp
           test -f apps/laplace-android/app/src/main/cpp/native_xn01_jni.cpp
+      - name: Probar XI original y contadores uint32 con 1440 velas
+        run: |
+          set -euo pipefail
+          g++ -O2 -std=c++17 -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ideps/reverse-pc/src apps/laplace-android/tests/native-xi-runner.cpp -o build/native-xi-runner
+          python3 apps/laplace-android/tests/xn02-native.py
       - name: Probar protocolo WebSocket nativo con JUnit
         run: |
           set -euo pipefail
@@ -219,20 +225,22 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/regime-m004.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/m004-evidence.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
+          unzip -Z1 "$APK" | grep -Fx 'assets/xn02-native.xi'
+          unzip -Z1 "$APK" | grep -Fx 'assets/xn02-evidence.js'
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/liblaplace_xi.so'
           unzip -Z1 "$APK" | grep -Fx 'assets/xn01-native.xi'
           unzip -Z1 "$APK" | grep -Fx 'classes.dex'
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn40'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn41'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.0'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.1'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-0-EF004-ORDENES
+          name: LAPLACE-ANDROID-V4-1-XI-AMPLIADO
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
