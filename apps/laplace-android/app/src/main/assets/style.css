@@ -30,3 +30,5 @@ select,input{width:100%;background:#11161d;border:1px solid #48505c;border-radiu
 #ef004Forecasts{max-height:420px;overflow:auto}#orderModeLabel{max-width:42%;white-space:normal}.real-submit{width:100%;background:#743f37;border-color:#b87564;color:#ffe7dd;margin-top:12px;min-height:49px}
 #brokerPreview{border-left:2px solid var(--accent);padding-left:10px}#brokerPublicKey{font:11px ui-monospace,monospace}#paperHistory,#brokerHistory{max-height:650px;overflow:auto}
 @media(max-width:739px){.tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.tabs button{font-size:9px}.tabs .tab-symbol{font-size:18px}#orders .metric strong{font-size:20px}.pde-fields select{margin-top:5px}}
+
+.xn01-card .table-scroll{overflow-x:auto;margin:12px 0}.xn01-card table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}.xn01-card th,.xn01-card td{text-align:left;padding:10px 6px;vertical-align:top;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.xn01-card th{color:var(--muted);font-weight:500}.xn01-card td{font-variant-numeric:tabular-nums}.xn01-card select{font-size:13px}

@@ -1,4 +1,4 @@
-// XN01 executes within the ORIGINAL Mundo X / Inverse Ether Memory.
+// XN01 and XN02 execute within ORIGINAL Mundo X / Inverse Ether Memory.
 #include "mundo_x/quantum_runtime.hpp"
 #include <jni.h>
 #include <exception>
@@ -13,9 +13,9 @@ void fail(JNIEnv* env,const char* message){
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_entidadlaplace_mobile_NativeXN01_executeProgram(JNIEnv* env,jclass,jstring input){
   try{
-    if(!input)throw std::invalid_argument("XN01 program missing");
+    if(!input)throw std::invalid_argument("XI program missing");
     const jsize size=env->GetStringUTFLength(input);
-    if(size<=0||size>256*1024)throw std::length_error("XN01 program outside transport limit");
+    if(size<=0||size>512*1024)throw std::length_error("XI program outside transport limit");
     const char* u=env->GetStringUTFChars(input,nullptr);
     if(!u)throw std::runtime_error("JNI UTF8 unavailable");
     const std::string source(u,std::size_t(size));
