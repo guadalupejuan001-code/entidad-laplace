@@ -5,6 +5,7 @@
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
+const T=window.LaplaceTracking;
 const E=window.LaplaceMath,W=window.LAPLACE_WORLD??null;
 const Markets=window.LaplaceMarkets;
 const Marea=window.LAPLACE_MAREA??null;
@@ -60,7 +61,7 @@ let loading=false,sequence=0,latestTest=null;
 const tickerStream=Live.createTracker();
 let liveEnabled=true,lastLiveUiAt=0,lastLiveSignalsAt=0;
 const quotes=new Map(),pending=new Map();
-let log=[];
+let log=[],historyLimit=20,syncBusy=false,lastSyncAt=0,storageError=null;
 let favorites=new Set(['BTC-USD','ETH-USD','AAPL','NVDA','SPY']);
 let autoQuoteEnabled=false,selectedQuoteBusy=false,lastQuoteAt=0;
 try{autoQuoteEnabled=localStorage.getItem('laplace-auto-quote-v1')==='yes';}catch(error){}
@@ -70,8 +71,8 @@ let worldVisibleLimit=100;
 try{
   const data=JSON.parse(localStorage.getItem(STORAGE)||'[]');
   if(Array.isArray(data))log=data.filter(r=>r&&E.ALLOWED_ASSETS.includes(r.asset))
-    .slice(-250);
-}catch(error){}
+    ;
+}catch(error){storageError='No se pudo leer el registro local: '+error.message}
 function connection(value,ready=false){
   $('connection').textContent=value;
   document.querySelector('.dot').classList.toggle('live',ready);
@@ -157,7 +158,7 @@ function drawLiveChart(){
   const ctx=canvas.getContext('2d');if(!ctx)return;
   ctx.scale(ratio,ratio);
   ctx.clearRect(0,0,width,height);
-  ctx.fillStyle='#071b2a';ctx.fillRect(0,0,width,height);
+  ctx.fillStyle='#10161d';ctx.fillRect(0,0,width,height);
   const tracked=['BTC-USD','ETH-USD','SOL-USD'].includes(asset)?asset:'BTC-USD';
   const points=tickerStream.points(tracked),values=points.map(p=>p.price);
   $('liveGraphAsset').textContent=tracked.replace('-USD','/USD');
@@ -165,7 +166,7 @@ function drawLiveChart(){
     points.length+' operaciones · '+liveTimeAgo(points.at(-1).at):
     'Aún sin operaciones recibidas';
   if(!points.length){
-    ctx.fillStyle='#9dbbcc';ctx.font='12px system-ui';ctx.textAlign='center';
+    ctx.fillStyle='#aab1bc';ctx.font='12px system-ui';ctx.textAlign='center';
     ctx.fillText('Esperando ticker público de Coinbase',width/2,height/2);
     return;
   }
@@ -173,18 +174,18 @@ function drawLiveChart(){
   const low=min-delta*.2,high=max+delta*.2;
   const x=i=>10+(width-20)*(i/Math.max(1,points.length-1));
   const y=v=>10+(height-20)*(high-v)/(high-low);
-  ctx.strokeStyle='#1b4055';ctx.lineWidth=1;
+  ctx.strokeStyle='#343b45';ctx.lineWidth=1;
   for(let i=1;i<=3;i++){
     const step=height*i/4;ctx.beginPath();ctx.moveTo(10,step);
     ctx.lineTo(width-10,step);ctx.stroke();
   }
-  ctx.beginPath();ctx.strokeStyle='#55e5c7';ctx.lineWidth=2;
+  ctx.beginPath();ctx.strokeStyle='#8cd4c1';ctx.lineWidth=2;
   for(let i=0;i<points.length;i++){
     if(i===0)ctx.moveTo(x(i),y(values[i]));
     else ctx.lineTo(x(i),y(values[i]));
   }
   ctx.stroke();
-  ctx.fillStyle='#b4fff1';ctx.beginPath();
+  ctx.fillStyle='#b7e2d4';ctx.beginPath();
   ctx.arc(x(points.length-1),y(values.at(-1)),3,0,Math.PI*2);ctx.fill();
 }
 function updateLivePreview(){
@@ -712,7 +713,8 @@ async function runIntegral(){
 }
 
 function show(page){
-  const navPage=page==='signals'?'world':page;
+  const navPage=['signals','equation'].includes(page)?'world':page;
+  if(window.LaplaceDecoration)window.LaplaceDecoration.setPage(page);
   for(const b of document.querySelectorAll('[data-tab]'))
     b.setAttribute('aria-current',b.dataset.tab===navPage?'page':'false');
   for(const section of document.querySelectorAll('.tabpage'))
@@ -723,6 +725,8 @@ function show(page){
   if(page==='panel')setTimeout(()=>{drawChart();drawLiveChart();updateLiveBanner();},60);
   // Evita quedarse navegando a una sección que no tiene vuelta visible.
   window.scrollTo?.({top:0,behavior:'instant'});
+  const heading=$(page)?.querySelector('h2');
+  if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}
 }
 
 function marketChoice(){
@@ -883,7 +887,7 @@ function remote(request){
     const timer=setTimeout(()=>{
       pending.delete(id);
       reject(Error('Tiempo de espera agotado. Revisa la conexión.'));},135000);
-    pending.set(id,{resolve,reject,timer,kind:request.kind});
+    pending.set(id,{...request,resolve,reject,timer});
     try{
       if(!window.LaplaceBridge)throw Error('Este panel necesita la APK Android.');
       if(request.kind==='quote')
@@ -907,7 +911,7 @@ window.LaplaceMobile={
     try{
       if(p.kind==='quote'){
         const q=response.quote;
-        if(!q||!E.ALLOWED_ASSETS.includes(q.asset)||
+        if(!q||q.asset!==p.asset||!E.ALLOWED_ASSETS.includes(q.asset)||
            !Number.isFinite(Number(q.price))||Number(q.price)<=0||
            !Number.isFinite(Number(q.receivedAt)))
           throw Error('Cotización numéricamente inválida.');
@@ -924,7 +928,10 @@ window.LaplaceMobile={
           throw Error('Resultado XI no verificable; no hay confianza ficticia.');
         p.resolve(o);
       }else{
-        const rows=E.candlesFromCoinbase(response.candles,response.granularity);
+        if(response.granularity!==p.granularity)throw Error('La fuente respondió con otra resolución.');
+        const rows=E.candlesFromCoinbase(response.candles,response.granularity)
+          .filter(b=>b.time+response.granularity<=Date.now()/1000);
+        if(!rows.length)throw Error('No hay velas cerradas verificables.');
         p.resolve(rows);
       }
     }catch(error){p.reject(error)}
@@ -1013,7 +1020,9 @@ async function refresh(){
       renderSignals();renderRegime();drawChart();
     }
   }finally{
-    await Promise.allSettled(quotePromises);
+    // El ticker es independiente: no bloquear los botones hasta 135 s
+    // esperando una cotización que no es necesaria para analizar las velas.
+    void Promise.allSettled(quotePromises);
     if(epoch===refreshEpoch){
       loading=false;setActionAvailability();renderQuotes();
     }
@@ -1069,6 +1078,8 @@ async function runSmart(){
     await ensureAnalysisHistory();
     if(asset!==chosenAsset||minutes!==chosenMinutes)
       throw Error('Cambiaste de activo o plazo durante la consulta; vuelve a analizar.');
+    await new Promise(resolve=>setTimeout(resolve,30));
+    if(asset!==chosenAsset||minutes!==chosenMinutes)throw Error('Cambiaste de activo o plazo. Vuelve a analizar.');
     const model=calculateModel();
     if(!model.ready){
       smartMessage('abstained','SIN SOPORTE SUFICIENTE',
@@ -1106,13 +1117,17 @@ async function runSmart(){
 }
 async function runValidation(){
   if(validationBusy||loading)return;
+  const chosenAsset=asset,chosenMinutes=minutes;
   validationBusy=true;setActionAvailability();
   $('validationStatus').textContent='Preparando histórico y prueba cronológica…';
   try{
     await ensureAnalysisHistory();
+    if(asset!==chosenAsset||minutes!==chosenMinutes)throw Error('Cambiaste de activo o plazo. Vuelve a validar.');
+    await new Promise(resolve=>setTimeout(resolve,30));
+    if(asset!==chosenAsset||minutes!==chosenMinutes)throw Error('Cambiaste de activo o plazo. Vuelve a validar.');
     const m=calculateModel();
     const changed=evaluateHistory();
-    show('tests');showTests();renderHistory();
+    show('tests');$('backtestDetails').open=true;showTests();renderHistory();
     const v=m.validation;
     $('validationStatus').textContent='Evaluados '+v.evaluated+
       ' casos retrospectivos; '+changed.evaluated+
@@ -1198,9 +1213,8 @@ function forecastAction(){
     status('Candidato M001 emitido: '+money(candidate.estimate)+
       ' desde '+money(candidate.fromPrice)+' ('+percent(candidate.relativeChange)+
       '). No se corrigió artificialmente el movimiento.','success');
-    if(!isEquity())saveForecast(candidate,model);
-    else $('chartComment').textContent+=' No se guarda como predicción vencible: '+ 
-      'el mercado tiene horarios y fines de semana.';
+    saveForecast(candidate,model);
+    if(isEquity())$('chartComment').textContent+=' Se comprueba al completar las velas o sesiones del plazo, sin inventar una fecha calendario.';
     drawChart();
   }catch(error){lastForecast=null;$('estimate').textContent='—';
     $('relativeChange').textContent='Sin candidato válido';
@@ -1208,44 +1222,82 @@ function forecastAction(){
     status('No se emitió un candidato: '+error.message,'error');drawChart()}
 }
 function saveForecast(candidate,model){
+  const sourceCloseAt=history.at(-1).time+historyGranularity;
   const existing=log.find(x=>x.status==='pending'&&x.asset===asset&&
     x.minutes===minutes&&x.sourceTime===candidate.sourceTime);
   if(existing)return;
-  log.push({id:String(Date.now())+'-'+String(log.length),asset,minutes,
-    granularity:historyGranularity,issuedAt:Date.now()/1000,
-    sourceTime:candidate.sourceTime,targetAt:candidate.forecastTime,
-    sourceType:candidate.sourceType,
-    estimate:candidate.estimate,baseline:candidate.fromPrice,
-    low:candidate.lower,high:candidate.upper,patterns:model.patterns,
-    model:'M001_analogos',status:'pending'});
-  log=log.slice(-250);persist();
-}
-function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(log))}catch(error){}}
-function evaluateHistory(){
-  if(!history||!historyGranularity)return {evaluated:0,pending:log.length};
-  let evaluated=0,pendingCount=0;
-  for(const f of log){
-    if(f.status!=='pending'||f.asset!==asset||
-      f.granularity!==historyGranularity){if(f.status==='pending')pendingCount++;continue}
-    if(Date.now()/1000<f.targetAt){pendingCount++;continue}
-    // Resultado de cierre posterior al objetivo, nunca un precio inventado
-    // al segundo exacto; distancia temporal máxima: una barra.
-    const bar=history.find(b=>b.time+historyGranularity>=f.targetAt&&
-      b.time+historyGranularity<=f.targetAt+historyGranularity);
-    if(!bar){pendingCount++;continue}
-    f.actual=bar.close;f.observedCloseAt=bar.time+historyGranularity;
-    f.modelError=Math.abs(f.estimate-f.actual);
-    f.baselineError=Math.abs(f.baseline-f.actual);
-    f.status='verified';evaluated++;
+  const issuedAt=Date.now()/1000;
+  if(!isEquity()&&candidate.forecastTime<=issuedAt){
+    $('historyStatus').textContent='No se guardó: el objetivo ya había pasado al emitir el escenario. Actualiza la referencia.';return;
   }
-  if(evaluated)persist();
-  return {evaluated,pending:pendingCount};
+  log.push({id:typeof window.crypto?.randomUUID==='function'?window.crypto.randomUUID():
+      String(Date.now())+'-'+String(log.length),
+    schema:'laplace-local-forecast-v3',asset,market:isEquity()?'equity':'crypto',minutes,
+    horizonBars:model.horizonBars,granularity:historyGranularity,issuedAt,
+    sourceCloseAt,sourceTime:candidate.sourceTime,targetAt:candidate.forecastTime,
+    sourceType:candidate.sourceType,estimate:candidate.estimate,baseline:candidate.fromPrice,
+    low:candidate.lower,high:candidate.upper,patterns:model.patterns,
+    model:'M001_analogos',status:'pending',
+    evidence:{algorithm:model.algorithm,features:model.features,examples:model.examples,
+      validation:model.validation,dataKnownThrough:model.dataKnownThrough}});
+  persist();renderHistory();
+}
+function persist(){
+  try{localStorage.setItem(STORAGE,JSON.stringify(log));storageError=null;return true}
+  catch(error){storageError='No se pudo guardar en el dispositivo. Exporta el registro antes de cerrar. '+error.message;
+    $('historyStatus').textContent=storageError;status(storageError,'error');return false}
+}
+function evaluateHistory(){
+  if(!history||!historyGranularity)return {evaluated:0,pending:log.filter(x=>x.status==='pending').length};
+  const result=T.evaluate(log,history,{asset,granularity:historyGranularity});
+  log=result.records;if(result.evaluated)persist();renderHistory();return result;
+}
+async function syncHistory(){
+  if(syncBusy)return;
+  const groups=new Map();
+  for(const f of log){
+    if(f.status!=='pending'||!T.valid(f)||(!f.market&&f.targetAt>Date.now()/1000)||
+      (f.market==='crypto'&&f.targetAt>Date.now()/1000))continue;
+    groups.set(f.asset+':'+f.granularity,{asset:f.asset,granularity:f.granularity,minutes:f.minutes});
+  }
+  if(!groups.size){$('historyStatus').textContent=storageError??'No hay objetivos vencidos por comprobar. Los pendientes esperarán su plazo.';return}
+  syncBusy=true;lastSyncAt=Date.now();$('syncHistory').disabled=true;
+  $('syncHistory').textContent='Comprobando cierres…';
+  let checked=0,total=0;const errors=[];
+  try{
+    for(const request of groups.values()){
+      $('historyStatus').textContent='Consultando '+request.asset+' · '+(++checked)+'/'+groups.size+' fuentes pendientes…';
+      try{
+        const cfg=E.historyConfig(request.asset,request.minutes);
+        const bars=await remote({kind:'history',...request,days:cfg.days});
+        const result=T.evaluate(log,bars,request);log=result.records;total+=result.evaluated;
+        if(result.evaluated)persist();renderHistory();
+      }catch(error){errors.push(request.asset+': '+error.message)}
+    }
+    const pendingCount=log.filter(f=>f.status==='pending').length;
+    $('historyStatus').textContent=storageError??('Comprobados '+total+' escenarios nuevos · '+pendingCount+
+      ' pendientes. '+(pendingCount?'Se conserva pendiente si falta el cierre o está fuera de la ventana de la fuente. ':'')+
+      (errors.length?'Fuentes no disponibles: '+errors.join(' · '):'Registro actualizado.'));
+  }finally{syncBusy=false;$('syncHistory').disabled=false;$('syncHistory').textContent='Comprobar pendientes'}
+}
+window.LaplaceExportResult=message=>{$('historyStatus').textContent=String(message)};
+function exportHistory(){
+  const text=JSON.stringify({schema:'laplace-local-evidence-v3',exportedAt:new Date().toISOString(),
+    records:log,metrics:log.map(f=>({id:f.id,...T.metrics(f)})),
+    note:'Cierre OHLCV de referencia, no operación al segundo exacto ni rentabilidad de una cartera.'},null,2);
+  if(window.LaplaceBridge?.exportHistory){
+    try{window.LaplaceBridge.exportHistory(text);return}catch(error){status('Exportación no disponible: '+error.message,'error');return}
+  }
+  const url=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download='LAPLACE-registro.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  $('historyStatus').textContent='Archivo JSON preparado con todos los registros y cifras originales.';
 }
 function evaluateAction(){
   try{
     const current=calculateModel();
     const r=evaluateHistory();
-    show('tests');showTests();renderHistory();
+    show('tests');$('backtestDetails').open=true;showTests();renderHistory();
     status('Evaluación histórica M001: '+current.validation.evaluated+
       ' objetivos no solapados; MAE candidato '+
       money(current.validation.candidateMAE)+' frente a persistencia '+
@@ -1255,7 +1307,7 @@ function evaluateAction(){
 }
 function testAction(){
   const m=analyzeAction();if(!m)return;
-  show('tests');showTests();
+  show('tests');$('backtestDetails').open=true;showTests();
   status('Se muestra prueba cronológica fuera de muestra disponible: '+
     m.validation.evaluated+' casos. No atribuye ventaja prospectiva.','success');
 }
@@ -1436,9 +1488,9 @@ function drawChart(){
   const ratio=Math.min(2,window.devicePixelRatio||1);
   canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);
   const ctx=canvas.getContext('2d');if(!ctx)return;ctx.scale(ratio,ratio);
-  ctx.fillStyle='#071727';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#10161d';ctx.fillRect(0,0,w,h);
   if(!history?.length){
-    ctx.fillStyle='#a9bfd1';ctx.textAlign='center';ctx.font='12px system-ui';
+    ctx.fillStyle='#aab1bc';ctx.textAlign='center';ctx.font='12px system-ui';
     ctx.fillText('Sin velas: pulsa Actualizar',w/2,h/2);return;
   }
   const past=history.slice(-75),vals=past.map(x=>x.close);
@@ -1453,46 +1505,90 @@ function drawChart(){
   const Y=v=>top+(max-v)/(max-min)*(bottom-top);
   for(let i=0;i<5;i++){
     const y=top+(bottom-top)*i/4;
-    ctx.strokeStyle='#28465f';ctx.lineWidth=1;ctx.beginPath();
+    ctx.strokeStyle='#343b45';ctx.lineWidth=1;ctx.beginPath();
     ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
-    ctx.fillStyle='#8ba4b8';ctx.font='10px system-ui';ctx.textAlign='right';
+    ctx.fillStyle='#aab1bc';ctx.font='10px system-ui';ctx.textAlign='right';
     ctx.fillText(((max-min)*(1-i/4)+min).toFixed(0),left-7,y+3);
   }
-  ctx.strokeStyle='#d8eaff';ctx.lineWidth=2;ctx.beginPath();
+  ctx.strokeStyle='#ddd8d1';ctx.lineWidth=2;ctx.beginPath();
   past.forEach((p,i)=>i?ctx.lineTo(X(i),Y(p.close)):ctx.moveTo(X(i),Y(p.close)));
   ctx.stroke();
   if(lastForecast){
     const endX=right,beginX=X(past.length-1),startY=Y(lastForecast.fromPrice);
-    ctx.setLineDash([4,6]);ctx.strokeStyle='#55d2f4';ctx.lineWidth=2;
+    ctx.setLineDash([4,6]);ctx.strokeStyle='#e8af7e';ctx.lineWidth=2;
     ctx.beginPath();ctx.moveTo(beginX,startY);
     ctx.lineTo(endX,Y(lastForecast.estimate));ctx.stroke();ctx.setLineDash([]);
-    ctx.strokeStyle='#526fcf';ctx.lineWidth=5;ctx.beginPath();
+    ctx.strokeStyle='#976d48';ctx.lineWidth=5;ctx.beginPath();
     ctx.moveTo(endX,Y(lastForecast.lower));ctx.lineTo(endX,Y(lastForecast.upper));ctx.stroke();
-    ctx.fillStyle='#b6f3ff';ctx.beginPath();ctx.arc(endX,Y(lastForecast.estimate),4,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#efc49f';ctx.beginPath();ctx.arc(endX,Y(lastForecast.estimate),4,0,2*Math.PI);ctx.fill();
   }
-  ctx.textAlign='left';ctx.fillStyle='#92bed7';ctx.font='10px system-ui';
+  ctx.textAlign='left';ctx.fillStyle='#aab1bc';ctx.font='10px system-ui';
   ctx.fillText('OBSERVADO',left,bottom+18);
   if(lastForecast){ctx.textAlign='right';
     ctx.fillText('OBJETIVO '+label(minutes),right,bottom+18)}
 }
 function renderHistory(){
   const out=$('history');out.replaceChildren();
-  if(!log.length){
-    const p=document.createElement('p');p.textContent='Sin candidatos guardados.';
-    out.appendChild(p);return;
+  const assetSelect=$('historyAsset'),selected=assetSelect.value;
+  const available=[...new Set(log.map(f=>f.asset))].sort();
+  assetSelect.replaceChildren(new Option('Todos los activos','all'),...available.map(a=>new Option(a,a)));
+  assetSelect.value=available.includes(selected)?selected:'all';
+  const base=log.filter(f=>assetSelect.value==='all'||f.asset===assetSelect.value);
+  const tolerance=Number($('historyTolerance').value),summary=T.summarize(base,tolerance);
+  $('historyCount').textContent=log.length+' REGISTROS';
+  const make=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
+  const root=$('historySummary');root.replaceChildren();
+  const pct=n=>Number.isFinite(n)?n.toFixed(3)+' %':'—';
+  for(const [value,name] of [[summary.evaluated,'Evaluados'],[summary.pending,'Pendientes'],
+    [summary.evaluated?summary.correctDirections+'/'+summary.evaluated:'—','Direcciones acertadas'],
+    [summary.evaluated?summary.near+'/'+summary.evaluated:'—','Con error ≤ '+tolerance+' %'],
+    [pct(summary.meanErrorPercent),'Error absoluto medio (%)'],
+    [summary.evaluated?summary.beatsBaseline+'/'+summary.evaluated:'—','Mejores que precio inicial']]){
+    const tile=make('div','');tile.append(make('strong',String(value)),make('small',name));root.append(tile);
   }
-  for(const f of log.slice().reverse().slice(0,35)){
-    const row=document.createElement('div');row.className='history-row';
-    const l=document.createElement('div'),n=document.createElement('strong'),
-      s=document.createElement('small'),v=document.createElement('span');
-    n.textContent=f.asset+' · '+label(f.minutes)+' · '+money(f.estimate);
-    s.textContent='Emitido '+date(f.issuedAt)+' · objetivo '+date(f.targetAt)+
-      (f.status==='verified'?' · real '+money(f.actual)+
-        ', error '+money(f.modelError):'');
-    v.className='outline-tag';
-    v.textContent=f.status==='verified'?'Evaluado':'Pendiente';
-    l.append(n,s);row.append(l,v);out.appendChild(row);
+  const filter=$('historyFilter').value;
+  const rows=base.filter(f=>filter==='all'||f.status===filter||
+    (filter==='correct'&&T.metrics(f)?.directionCorrect===true)||
+    (filter==='missed'&&T.metrics(f)?.directionCorrect===false)).slice().reverse();
+  if(!rows.length)out.append(make('p',log.length?'No hay registros con estos filtros.':'Sin candidatos guardados. Analiza un activo para iniciar tu registro.'));
+  for(const f of rows.slice(0,historyLimit)){
+    const m=T.metrics(f),row=make('details','','history-entry');
+    const head=make('summary',''),name=make('div',''),state=make('span',m?
+      (m.directionCorrect?'Dirección acertada':'Dirección fallida'):'Pendiente','result-tag');
+    state.dataset.state=m?(m.directionCorrect?'correct':'missed'):'pending';
+    const horizon=E.HORIZONS.find(h=>h.minutes===f.minutes)?.label??f.minutes+' min';
+    name.append(make('strong',f.asset+' · '+(f.market==='equity'&&f.minutes>=1440?f.minutes/1440+' sesiones':horizon)),
+      make('small',m?'Previsto '+money(f.estimate)+' → real '+money(f.actual):
+        'Previsto '+money(f.estimate)+' · '+(f.market==='equity'?'Tras '+f.horizonBars+' velas bursátiles':date(f.targetAt))));
+    head.append(name,state);row.append(head);
+    if(m){
+      const result=make('div','','result-strip');
+      result.append(make('strong','Error '+money(m.absoluteError)+' · '+pct(m.errorPercent)),
+        make('small',m.signedError===0?'Coincide con el cierre observado.':
+          'La previsión quedó '+(m.signedError>0?'por encima':'por debajo')+' del cierre real.'));
+      row.append(result);
+    }
+    const dl=make('dl','','record-facts');
+    const fields=[['Referencia inicial',money(f.baseline)],['Precio previsto',money(f.estimate)],
+      ['Emitido',date(f.issuedAt)],['Hora de referencia',date(f.sourceTime)],
+      ['Objetivo',f.market==='equity'?f.horizonBars+' velas/sesiones posteriores al origen':date(f.targetAt)],
+      ['Fuente del escenario',f.sourceType??'No registrada'],['Resolución',f.granularity/60+' minutos por vela']];
+    if(m)fields.push(['Cierre observado',money(f.actual)],['Hora del cierre usado',date(f.observedCloseAt)],
+      ['Fuente del resultado',f.resultSource??'Cierre histórico de la fuente original'],
+      ['Diferencia prevista − real',money(m.signedError)],['Error absoluto',money(m.absoluteError)],
+      ['Error relativo al real',pct(m.errorPercent)],
+      ['Error manteniendo precio inicial',money(m.baselineError)],
+      ['Mejora frente a esa referencia',money(m.improvement)],
+      ['Cercanía (error ≤ '+tolerance+' %)',m.errorPercent<=tolerance?'Dentro del umbral':'Fuera del umbral'],
+      ['Cierre dentro del rango histórico',m.inRange===null?'No registrado':m.inRange?'Sí':'No'],
+      ['Desfase respecto al objetivo',m.observationDelay===null?'Plazo en velas bursátiles':Math.round(m.observationDelay)+' segundos (cierre de vela)']);
+    else fields.push(['Comprobación','Espera el plazo y pulsa Comprobar pendientes. Si falta la vela, seguirá pendiente.']);
+    for(const [key,value] of fields)dl.append(make('dt',key),make('dd',value));row.append(dl);
+    const raw=make('pre',JSON.stringify({...f,measurement:m},null,2));raw.className='record-raw';
+    const detail=make('details','');detail.append(make('summary','Ver registro original sin redondear'),raw);row.append(detail);out.append(row);
   }
+  $('historyMore').hidden=rows.length<=historyLimit;
+  if(storageError)$('historyStatus').textContent=storageError;
 }
 function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
@@ -1558,10 +1654,25 @@ $('jumpValidation').addEventListener('click',()=>show('tests'));
 $('smartRun').addEventListener('click',runSmart);
 $('validationRun').addEventListener('click',runValidation);
 $('regimeStudy').addEventListener('click',runRegimeStudy);
-$('clearHistory').addEventListener('click',()=>{
-  log=[];persist();renderHistory();
-  status('Registro local limpiado. No se alteraron datos del proveedor.','success');
+$('clearHistory').addEventListener('click',()=>{$('clearConfirm').hidden=false});
+$('cancelClear').addEventListener('click',()=>{$('clearConfirm').hidden=true});
+$('confirmClear').addEventListener('click',()=>{
+  if(syncBusy){$('historyStatus').textContent='Espera a que termine la comprobación antes de borrar.';return}
+  log=[];persist();renderHistory();$('clearConfirm').hidden=true;
+  $('historyStatus').textContent='Registro local vacío.';
 });
+$('syncHistory').addEventListener('click',syncHistory);
+$('exportHistory').addEventListener('click',exportHistory);
+for(const id of ['historyAsset','historyFilter','historyTolerance'])
+  $(id).addEventListener('change',()=>{historyLimit=20;renderHistory()});
+$('historyMore').addEventListener('click',()=>{historyLimit+=20;renderHistory()});
+$('openMath').addEventListener('click',()=>show('equation'));
+$('closeMath').addEventListener('click',()=>show('world'));
+window.LaplaceNavigation={back(){
+  const current=[...document.querySelectorAll('.tabpage')].find(p=>!p.hidden)?.id;
+  if(current==='panel')return false;
+  show(current==='equation'||current==='signals'?'world':'panel');return true;
+}};
 window.addEventListener('resize',drawChart);
 $('liveToggle').addEventListener('click',toggleLive);
 $('marketDetails').addEventListener('toggle',()=>{
@@ -1593,6 +1704,9 @@ if(window.LaplaceLiveBridge){
   updateLiveBanner();
 }
 window.setInterval(()=>{
+  if(document.visibilityState==='visible'&&!syncBusy&&!smartBusy&&!loading&&
+    Date.now()-lastSyncAt>120000&&log.some(f=>f.status==='pending'&&
+      (f.market==='equity'||f.targetAt<=Date.now()/1000)))syncHistory();
   if(autoQuoteEnabled&&document.visibilityState==='visible'&&
     Date.now()-lastQuoteAt>120000&&!loading&&!integralBusy)
     refreshSelectedQuote({silent:true});
@@ -1600,10 +1714,10 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.8',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'3.9',tabs:4,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
-    'worldShowMore','jumpSignals','regimeStudy']};
+    'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','openMath','closeMath','motionToggle']};
 setTimeout(refresh,200);
 })();

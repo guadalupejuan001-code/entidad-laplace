@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.8 - Regímenes M004 y validación retrospectiva
+name: LAPLACE Android 3.9 - Herramienta y registro detallado
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -174,7 +174,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-3-8-PREVIEWS-SIMULADAS
+          name: LAPLACE-3-9-PREVIEWS-SIMULADAS
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -218,14 +218,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.regime38'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.tool39'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.8'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 3.9'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-8-M004-REGIMENES
+          name: LAPLACE-ANDROID-V3-9-HERRAMIENTA-RESULTADOS
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
