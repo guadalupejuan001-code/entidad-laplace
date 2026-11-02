@@ -17,7 +17,7 @@ async function update(){
 }
 button.addEventListener('click',()=>{
   if(reduced.matches)return;
-  paused=!paused;try{localStorage.setItem('laplace-motion-paused',paused?'yes':'no')}catch(error){}
+  paused=!video.paused;try{localStorage.setItem('laplace-motion-paused',paused?'yes':'no')}catch(error){}
   update();
 });
 reduced.addEventListener('change',update);
