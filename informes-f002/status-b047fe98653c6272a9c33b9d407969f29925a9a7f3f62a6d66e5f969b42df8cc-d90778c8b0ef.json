@@ -1,0 +1,233 @@
+{
+  "schema": "laplace-f002-joint-archive-v1",
+  "status": "abstained",
+  "reason": "insufficient_verified_market_outcomes",
+  "model_ready": false,
+  "archive_count": 13,
+  "distinct_source_series": 1071,
+  "observed_domains": 30,
+  "source_groups": [
+    {
+      "group": "bis_banking_b001",
+      "observed": 4,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "blockchain_defi_k001",
+      "observed": 4,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "capital_u004",
+      "observed": 6,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "commodity_futures",
+      "observed": 10,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "dated_commodity_contracts",
+      "observed": 1,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "derivatives_d001",
+      "observed": 5,
+      "restricted": 0,
+      "failed": 6
+    },
+    {
+      "group": "direct_exchanges",
+      "observed": 0,
+      "restricted": 3,
+      "failed": 0
+    },
+    {
+      "group": "electricity",
+      "observed": 1,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "employment_high_frequency",
+      "observed": 3,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "employment_monthly",
+      "observed": 1,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "geo_news",
+      "observed": 5,
+      "restricted": 0,
+      "failed": 3
+    },
+    {
+      "group": "macro_exact_vintages",
+      "observed": 0,
+      "restricted": 1,
+      "failed": 0
+    },
+    {
+      "group": "maritime",
+      "observed": 1,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "official_central_banks",
+      "observed": 3,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "policy_rates",
+      "observed": 1,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "public_direct_exchanges",
+      "observed": 3,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "regional_markets",
+      "observed": 16,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "swaps_otc_d002",
+      "observed": 3,
+      "restricted": 0,
+      "failed": 0
+    },
+    {
+      "group": "u002_base",
+      "observed": 52,
+      "restricted": 0,
+      "failed": 0
+    }
+  ],
+  "input_coverage": [
+    {
+      "group": "mercados",
+      "seen": 255,
+      "fresh": 73,
+      "repeated": 182,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    },
+    {
+      "group": "banca_tasas",
+      "seen": 34,
+      "fresh": 1,
+      "repeated": 33,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    },
+    {
+      "group": "flujos_derivados",
+      "seen": 310,
+      "fresh": 168,
+      "repeated": 142,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    },
+    {
+      "group": "economia_real",
+      "seen": 103,
+      "fresh": 44,
+      "repeated": 59,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    },
+    {
+      "group": "eventos_ambiente",
+      "seen": 196,
+      "fresh": 196,
+      "repeated": 0,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    },
+    {
+      "group": "otros",
+      "seen": 2,
+      "fresh": 2,
+      "repeated": 0,
+      "missing": 0,
+      "stale": 0,
+      "status": "new_data"
+    }
+  ],
+  "matched_outcomes": 2,
+  "skipped_correlated_decisions": 10,
+  "required_training_pairs": 24,
+  "required_validation_pairs": 8,
+  "required_holdout_pairs": 8,
+  "production_activation_allowed": false,
+  "prospectively_validated": false,
+  "central_f001_price_modified": false,
+  "automatic_trading": false,
+  "observed_training_pairs": 0,
+  "observed_validation_pairs": 0,
+  "observed_holdout_pairs": 0,
+  "model_source_sha256": "d90778c8b0ef22c1922b40fbc18157baaf4193ca2c31bf7a79c10e5fa87f5124",
+  "source_branch": "laplace-archivo",
+  "verified_real_archives_only": true,
+  "archive_manifests_verified": 8,
+  "supplemental_evidence_verified": [
+    {
+      "path": "evidencia/fuentes-primarias-20261030/captura-integrada.json",
+      "capture_sha256": "28fa40095a1866bc100c2f1f53a75b8b636f1011aa5972d716c02df93b690e7b",
+      "source_file_sha256": "8d77adabc7f506f86e3df1f04305c48b47fddf59159b28918b95d92a530dd5ec",
+      "captured_at": "2026-10-30T16:36:42.606Z"
+    },
+    {
+      "path": "evidencia/continuidad-u003-20261030/captura-integrada.json",
+      "capture_sha256": "e2e7d8c70f9e0518858791ac57350fcea35612aac5d335e09b05d3d5130ba879",
+      "source_file_sha256": "00ef61c238aac18f886e6661fa84656da850f60250e66f52ef2a7dab41f8bb3e",
+      "captured_at": "2026-10-30T17:03:17.171Z"
+    },
+    {
+      "path": "evidencia/capital-u004-20261030/primera-captura-mundial-parcial.json",
+      "capture_sha256": "28bc02edfbb204c71e981edad32de774f0f4dd2694f65d85aff8b4bd6462a766",
+      "source_file_sha256": "5f3f54092b091880302cda5d35a6b2aba74cec344a28eb1ff2e7b8ca8353aa58",
+      "captured_at": "2026-10-30T17:45:53.679Z"
+    },
+    {
+      "path": "evidencia/capital-u004-20261030/captura-mundial.json",
+      "capture_sha256": "6e67876013fc16610d1128f8ac58f446a274c1f7196d50fe5ee1a5bd967d9e92",
+      "source_file_sha256": "df836e2d70065b521e025053acd74d1b1342d09ba5b7d3bcbd5c3e9655c44186",
+      "captured_at": "2026-10-30T17:50:33.174Z"
+    },
+    {
+      "path": "evidencia/entrenamiento-x002-20261030/fuentes-mundiales/captura.json",
+      "capture_sha256": "880082db081d8f32bc8f944fafa00ec9d4b7ba9e9bb1869d274eb09003912eac",
+      "source_file_sha256": "fa2fb571c34b4339131b1d6d995f862e11b8938c5f4850b3a06411deb3ffa7ec",
+      "captured_at": "2026-10-30T18:19:26.870Z"
+    }
+  ],
+  "raw_trace_sha256": "6b0a2f1009969beb53d2aff567836e4c714aa74413156debfc1f72c146dc127a",
+  "raw_trace_filename": "trazas-f002/trace-b047fe98653c6272a9c33b9d407969f29925a9a7f3f62a6d66e5f969b42df8cc.json",
+  "raw_trace_series": 909,
+  "input_capture_sha256": "b047fe98653c6272a9c33b9d407969f29925a9a7f3f62a6d66e5f969b42df8cc"
+}
