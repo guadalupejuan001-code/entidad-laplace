@@ -13,6 +13,10 @@ import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 final class RobinhoodClient {
+    static final class ApiException extends Exception {
+        final int status;
+        ApiException(int status,String message){super(message);this.status=status;}
+    }
     private final RobinhoodVault vault;
     private final OkHttpClient client=new OkHttpClient.Builder().connectTimeout(12,TimeUnit.SECONDS)
         .readTimeout(25,TimeUnit.SECONDS).followRedirects(false).followSslRedirects(false)
@@ -33,7 +37,7 @@ final class RobinhoodClient {
             if(response.body()==null)throw new IllegalArgumentException("Robinhood respondió sin contenido");
             ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=response.body().byteStream()){
                 byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1){if(out.size()+n>2*1024*1024)throw new IllegalArgumentException("Respuesta Robinhood demasiado grande");out.write(buffer,0,n);}}
-            if(!response.isSuccessful())throw new IllegalArgumentException("Robinhood HTTP "+response.code()+
+            if(!response.isSuccessful())throw new ApiException(response.code(),"Robinhood HTTP "+response.code()+
                 (response.code()==401?". Revisa la credencial y la hora del teléfono.":response.code()==403?". La cuenta o la clave no permiten esta operación.":response.code()==429?". Espera antes de reintentar.":". La operación fue rechazada; revisa sus parámetros."));
             String text=out.toString(StandardCharsets.UTF_8.name());return text.isEmpty()?new JSONObject():new JSONObject(text);
         }

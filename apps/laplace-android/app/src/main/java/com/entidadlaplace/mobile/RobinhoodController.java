@@ -141,6 +141,14 @@ final class RobinhoodController {
                 RobinhoodClient.encoded(preparedOrder.getString("account_number")),body);
             entry.put("state",result.optString("state","accepted")).put("response",result);record(clientId,entry);success(id,result);
         }catch(Exception error){
+            if(error instanceof RobinhoodClient.ApiException){
+                int code=((RobinhoodClient.ApiException)error).status;
+                if(code>=400&&code<500&&code!=408&&code!=409){
+                    entry.put("state","rejected").put("http_status",code);
+                    try{record(clientId,entry);}catch(Exception ignored){}
+                    failure(id,error.getMessage());return;
+                }
+            }
             entry.put("state","submission_uncertain");try{record(clientId,entry);}catch(Exception ignored){}
             failure(id,"El envío no quedó confirmado. Consulta las órdenes de Robinhood antes de intentar otra vez. ID: "+clientId);
         }
@@ -148,11 +156,13 @@ final class RobinhoodController {
     private void cancel(String id,JSONObject input) throws Exception {
         if(dialogOpen)throw new IllegalStateException("Termina la revisión anterior");
         String orderId=RobinhoodProtocol.uuid(input.getString("order_id"));dialogOpen=true;
-        activity.runOnUiThread(()->new AlertDialog.Builder(activity).setTitle("Cancelar orden real")
+        activity.runOnUiThread(()->{
+            if(activity.isFinishing()){dialogOpen=false;failure(id,"La app ya no está activa");return;}
+            new AlertDialog.Builder(activity).setTitle("Cancelar orden real")
             .setMessage("Solicitar a Robinhood la cancelación de la orden "+orderId+". Si ya se ejecutó, el bróker puede rechazar la cancelación.")
             .setCancelable(false).setNegativeButton("Conservar",(d,w)->{dialogOpen=false;try{success(id,new JSONObject().put("canceled_by_user",true));}catch(Exception ignored){}})
             .setPositiveButton("Solicitar cancelación",(d,w)->serial.execute(()->{try{
                 success(id,client.request("POST","/api/v2/crypto/trading/orders/"+orderId+"/cancel/",null));
-            }catch(Exception error){failure(id,"No se confirmó la cancelación. Actualiza el estado en Robinhood.");}finally{dialogOpen=false;}})).show());
+            }catch(Exception error){failure(id,"No se confirmó la cancelación. Actualiza el estado en Robinhood.");}finally{dialogOpen=false;}})).show();});
     }
 }

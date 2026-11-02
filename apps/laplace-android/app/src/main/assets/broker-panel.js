@@ -44,7 +44,7 @@ function form(real=false){const asset=$('orderAsset').value,side=$('orderSide').
  }else{P.units(quantity);if(type==='limit')P.units(limitPrice)}
  return {asset,side,type,quantity,limitPrice,
   id:crypto.randomUUID(),createdAt:Date.now(),account_number:$('brokerAccount').value,
-  symbol:asset,limit_price:limitPrice,client_order_id:crypto.randomUUID(),forecast_ref:window.LaplaceSelectedForecastRef??''};
+  symbol:asset,limit_price:limitPrice,client_order_id:crypto.randomUUID(),forecast_ref:window.LaplaceSelectedForecastMeta?.asset===asset?window.LaplaceSelectedForecastMeta.id:''};
 }
 function updateMode(){const real=$('orderMode').value==='real';$('paperControls').hidden=real;$('realControls').hidden=!real;
  $('orderModeLabel').textContent=real?'ROBINHOOD · FONDOS REALES':'CUENTA VIRTUAL · SIMULACIÓN';

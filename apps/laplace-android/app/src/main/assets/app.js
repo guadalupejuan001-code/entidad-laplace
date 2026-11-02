@@ -859,7 +859,7 @@ function useHorizon(value){
   const m=Number(value);
   if(!E.HORIZONS.some(h=>h.minutes===m))return;
   const previous=historyGranularity;
-  minutes=m;analysis=null;lastForecast=null;
+  minutes=m;analysis=null;lastForecast=null;window.LaplaceSelectedForecastMeta=null;
   regimeResult=null;regimeCacheKey=null;
   $('horizonSelect').value=String(m);
   for(const b of document.querySelectorAll('[data-minutes]')){
@@ -947,7 +947,7 @@ window.LaplaceMobile={
   }
 };
 function forgetEstimate(){
-  analysis=null;lastForecast=null;
+  analysis=null;lastForecast=null;window.LaplaceSelectedForecastMeta=null;
   $('estimate').textContent='—';$('relativeChange').textContent='Sin estimación';
   $('trainingCount').textContent='—';$('testingCount').textContent='—';
   $('modelError').textContent='—';$('baselineError').textContent='—';
@@ -1228,13 +1228,13 @@ function saveForecast(candidate,model){
   const sourceCloseAt=history.at(-1).time+historyGranularity;
   const existing=log.find(x=>x.status==='pending'&&x.asset===asset&&
     x.minutes===minutes&&x.sourceTime===candidate.sourceTime);
-  if(existing)return;
+  if(existing){window.LaplaceSelectedForecastMeta={id:existing.id,asset,minutes};return;}
   const issuedAt=Date.now()/1000;
   if(!isEquity()&&candidate.forecastTime<=issuedAt){
     $('historyStatus').textContent='No se guardó: el objetivo ya había pasado al emitir el escenario. Actualiza la referencia.';return;
   }
   const savedId=typeof window.crypto?.randomUUID==='function'?window.crypto.randomUUID():String(Date.now());
-  window.LaplaceSelectedForecastRef=savedId;
+  window.LaplaceSelectedForecastMeta={id:savedId,asset,minutes};
   log.push({id:savedId,
     schema:'laplace-local-forecast-v3',asset,market:isEquity()?'equity':'crypto',minutes,
     horizonBars:model.horizonBars,granularity:historyGranularity,issuedAt,

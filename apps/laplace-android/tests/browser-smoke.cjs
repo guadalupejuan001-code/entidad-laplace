@@ -419,6 +419,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.screenshot({path:path.join(captures,'LAPLACE-4.0-REGISTRO-SIMULADO.png')});
     await page.locator('[data-tab="panel"]').click();
     await page.emulateMedia({reducedMotion:'reduce'});
+    await page.waitForFunction(()=>document.querySelector('#portalVideo').paused&&document.querySelector('#motionToggle').disabled,null,{timeout:5000});
     assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
     assert.equal(await page.locator('#motionToggle').isDisabled(),true);
     await page.emulateMedia({reducedMotion:'no-preference'});
