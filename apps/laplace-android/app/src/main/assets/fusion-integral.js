@@ -448,7 +448,8 @@ function base(key,g,world,flags,model,archives){
       partial(archives+' manifiestos EF002 indexados; el datastore EF001/EF005 completo permanece fuera del dispositivo'):
       missing('Sin archivo bitemporal duradero dentro del dispositivo');
     case 'EF003':return missing('Leyes condicionales requieren EF001 y escenario explícito; no se ejecutan sobre precio spot');
-    case 'EF004':return model?.status==='experimental_model_frozen'?
+    case 'EF004':if(flags.ef004)return model?.status==='abstained'?{state:'abstained',reason:'Motor original ejecutado en el dispositivo · '+String(model.reason)}:{state:'executed',reason:'Motor EF004 original entrenado y sellado en el dispositivo; sin ventaja prospectiva certificada'};
+      return model?.status==='experimental_model_frozen'?
       partial('Pronóstico congelado del servidor; falta evaluación futura verificable'):
       model?.status==='abstained'?{state:'abstained',reason:String(model.reason??'Abstención')+
         ' · '+Number(model.contiguous_captures??0)+' capturas continuas'}:
@@ -463,7 +464,7 @@ function resumirCapacidades({world=null,executed={},ef004=null,asOf=null}={}){
   const g=groupsOf(world);
   const archives=Number(world?.archive_manifests_count??world?.history?.length??0);
   const model=ef004??world?.ef004_report??null;
-  const flags={xn01:executed.xn01===true,f001:executed.f001===true,
+  const flags={xn01:executed.xn01===true,f001:executed.f001===true,ef004:executed.ef004===true,
     m001Diary:Number.isSafeInteger(executed.m001Diary)&&executed.m001Diary>=0?
       executed.m001Diary:0};
   const items=CAPABILITY_CATALOG.map(x=>Object.freeze({...x,...base(x.key,g,world,flags,model,

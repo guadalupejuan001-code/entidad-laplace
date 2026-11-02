@@ -16,3 +16,6 @@ build-*/
 *.p12
 
 /node_modules
+
+# Archivo completo de capturas EF002 generado durante el empaquetado Android
+apps/laplace-android/app/src/main/assets/ef004-archive.js

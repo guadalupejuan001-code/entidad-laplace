@@ -36,11 +36,13 @@ import java.util.concurrent.Executors;
  * Criptomonedas: Coinbase público. Acciones/ETF: Yahoo Chart no oficial,
  * indicativo y posiblemente demorado. Ninguna integración con una cuenta.
  * M001 usa análogos solo con historia cerrada; sin acceso a dinero.
- * No hay APIs para cuentas, órdenes o claves privadas.
+ * Robinhood Crypto añade operaciones manuales mediante su API oficial.
+ * La semilla privada permanece cifrada en Android Keystore; cada envío exige confirmación nativa.
  */
 public final class MainActivity extends Activity {
     private WebView webView;
     private CoinbaseLiveFeed liveFeed;
+    private RobinhoodController robinhood;
     private final ExecutorService io=Executors.newFixedThreadPool(4);
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
     private static final int MAX_QUOTE_BYTES=64*1024;
@@ -83,6 +85,10 @@ public final class MainActivity extends Activity {
             }
         });
         liveFeed=new CoinbaseLiveFeed(this::emitLiveEvent);
+        robinhood=new RobinhoodController(this,(id,payload)->runOnUiThread(()->{
+            if(webView!=null)webView.evaluateJavascript("window.LaplaceBroker&&window.LaplaceBroker.receive("+
+                JSONObject.quote(id)+","+payload.toString()+")",null);
+        }));
         webView.addJavascriptInterface(new MarketBridge(),"LaplaceBridge");
         webView.addJavascriptInterface(new LiveBridge(),"LaplaceLiveBridge");
         setContentView(webView);
@@ -126,6 +132,25 @@ public final class MainActivity extends Activity {
     }
 
     private final class MarketBridge {
+        @JavascriptInterface
+        public void brokerCommand(String requestId,String action,String json){
+            if(robinhood!=null)robinhood.command(requestId,action,json);
+        }
+
+        @JavascriptInterface
+        public void fetchEF004Archive(String requestId){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+            io.execute(()->{
+                try{JSONObject result=EF004Archive.download((done,total)->{
+                    runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(
+                        "window.LaplaceEF004Archive&&window.LaplaceEF004Archive.progress("+
+                        JSONObject.quote(requestId)+","+done+","+total+")",null);});
+                });emitEF004Archive(requestId,result);}
+                catch(Exception error){try{emitEF004Archive(requestId,new JSONObject().put("ok",false)
+                    .put("error",error.getMessage()));}catch(Exception ignored){}}
+            });
+        }
+
         @JavascriptInterface
         public void exportHistory(String json){
             if(json==null||json.length()>8*1024*1024){
@@ -376,6 +401,11 @@ public final class MainActivity extends Activity {
             });
         }catch(Exception ignored){}
     }
+    private void emitEF004Archive(String id,JSONObject payload){
+        runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(
+            "window.LaplaceEF004Archive&&window.LaplaceEF004Archive.receive("+
+            JSONObject.quote(id)+","+payload.toString()+")",null);});
+    }
     private void exportFeedback(String message){
         runOnUiThread(()->{
             if(webView!=null)webView.evaluateJavascript(
@@ -405,6 +435,7 @@ public final class MainActivity extends Activity {
             handled->{if(!"true".equals(handled))MainActivity.super.onBackPressed();});
     }
     @Override protected void onDestroy(){
+        if(robinhood!=null){robinhood.shutdown();robinhood=null;}
         if(liveFeed!=null){
             liveFeed.shutdown();
             liveFeed=null;

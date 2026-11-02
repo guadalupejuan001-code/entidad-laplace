@@ -223,6 +223,7 @@ function liveMessage(event){
   if(event.type!=='ticker'||!tickerStream.acceptTicker(event))return;
   const q=tickerStream.quote(event.asset);
   quotes.set(event.asset,{...q});
+  window.LaplaceBroker?.quote({...q,asset:event.asset});
   const now=Date.now();
   renderQuotes();updateLiveBanner();
   if(now-lastLiveUiAt>280){
@@ -543,7 +544,8 @@ function renderIntegral(){
       '. El precio central F001 permanece intacto.':
     'Laplace: '+(field.reason??field.status)+'. No se inventa cálculo.';
   const snapshot=F.resumirCapacidades({world:W,
-    executed:{f001:true,xn01:!!xn01Result,m001Diary:log.length},
+    executed:{f001:true,xn01:!!xn01Result,m001Diary:log.length,ef004:window.LaplaceEF004Mobile?.state().executed===true},
+    ef004:window.LaplaceEF004Mobile?.state().lastRun?.result??null,
     asOf:new Date().toISOString()});
   const groups=[
     [result.marketMode==='multiasset'?'M001 · multimercado':'F001 · cálculo actual',
@@ -770,6 +772,7 @@ async function refreshSelectedQuote({silent=false}={}){
   const requested=asset;selectedQuoteBusy=true;updateQuoteControls();
   try{
     const quote=await remote({kind:'quote',asset:requested});
+    window.LaplaceBroker?.quote(quote);
     if(asset!==requested)return;
     lastQuoteAt=Date.now();
     const previous=quotes.get(requested);
@@ -1230,8 +1233,9 @@ function saveForecast(candidate,model){
   if(!isEquity()&&candidate.forecastTime<=issuedAt){
     $('historyStatus').textContent='No se guardó: el objetivo ya había pasado al emitir el escenario. Actualiza la referencia.';return;
   }
-  log.push({id:typeof window.crypto?.randomUUID==='function'?window.crypto.randomUUID():
-      String(Date.now())+'-'+String(log.length),
+  const savedId=typeof window.crypto?.randomUUID==='function'?window.crypto.randomUUID():String(Date.now());
+  window.LaplaceSelectedForecastRef=savedId;
+  log.push({id:savedId,
     schema:'laplace-local-forecast-v3',asset,market:isEquity()?'equity':'crypto',minutes,
     horizonBars:model.horizonBars,granularity:historyGranularity,issuedAt,
     sourceCloseAt,sourceTime:candidate.sourceTime,targetAt:candidate.forecastTime,
@@ -1364,8 +1368,12 @@ function renderSignals(){
     ['Volumen relativo (6 velas)',current?number(current[4])+' ×':'Faltan velas',Boolean(current)],
     ['Archivo global EF002',W?number(W.states_count??W.states)+
       ' estados fechados':'No empaquetado',Boolean(W)],
-    ['EF004 en el móvil','No entrenado dentro de esta APK; ver estado en servidor',false],
-    ['Órdenes financieras','Deshabilitadas por diseño',false]
+    ['EF004 en el móvil',window.LaplaceEF004Mobile?.state().executed?
+      'Motor original ejecutado aquí · '+window.LaplaceEF004Mobile.state().archiveCount+' capturas · '+window.LaplaceEF004Mobile.state().lastRun.result.status:
+      'Motor original incluido. Datos → Entrenar EF004.',Boolean(window.LaplaceEF004Mobile?.state().available)],
+    ['Órdenes financieras',window.LaplaceBroker?.state().configured?
+      'Robinhood Crypto configurado · órdenes manuales con confirmación nativa':
+      'Cuenta virtual disponible · conector Robinhood Crypto listo para configurar',Boolean(window.LaplaceBroker?.state().available)]
   ];
   for(const [title,description,ok] of data){
     const row=document.createElement('div');row.className='signal-row';
@@ -1432,7 +1440,8 @@ function renderCapabilities(){
     $('capabilityRaw').textContent='Sin inventario verificable';return;
   }
   const report=F.resumirCapacidades({world:W,
-    executed:{xn01:!!xn01Result,f001:!!integralResult,m001Diary:log.length},
+    executed:{xn01:!!xn01Result,f001:!!integralResult,m001Diary:log.length,ef004:window.LaplaceEF004Mobile?.state().executed===true},
+    ef004:window.LaplaceEF004Mobile?.state().lastRun?.result??null,
     asOf:new Date().toISOString()});
   const c=report.counts;
   $('capabilitySummary').textContent=report.items.length+
@@ -1440,17 +1449,17 @@ function renderCapabilities(){
     ' observados en archivo · '+c.partial+' parciales · '+c.abstained+
     ' abstenciones · '+c.not_executed+' sin ejecutar · '+c.not_observed+
     ' sin observación.';
-  const ef=W?.ef004_report;
-  $('ef004Report').textContent=ef?
-    'EF004 · '+(ef.status==='abstained'?'sin entrenamiento suficiente':ef.status)+
-      ' ('+(ef.reason==='insufficient_independent_capture_history'?
-        'faltan capturas consecutivas independientes':(ef.reason??'sin motivo'))+
-      ') · '+ef.contiguous_captures+' capturas contiguas · train '+
-      ef.observed_training_pairs+' / '+ef.required_training_pairs+
-      ', validación '+ef.observed_validation_pairs+' / '+
-      ef.required_validation_pairs+
-      ' · informe '+ef.as_of+' [laplace-modelos]':
-    'EF004: ningún informe del mismo archivo disponible en esta compilación; no se asume que entrenó.';
+  const localEF=window.LaplaceEF004Mobile?.state();
+  const ef=localEF?.lastRun?.result??W?.ef004_report;
+  $('ef004Report').textContent=localEF?.executed?
+    'EF004 local · '+ef.status+' · '+(ef.consecutive_captures??ef.contiguous_captures??0)+
+      ' capturas consecutivas · entrenamiento '+(ef.model?.train_pairs??ef.observed_training_pairs??0)+
+      ', validación '+(ef.model?.validation_pairs??ef.observed_validation_pairs??0)+
+      ', prueba reservada '+(ef.model?.holdout_pairs??ef.observed_holdout_pairs??0)+
+      ' · '+(ef.reason??'modelo congelado en el teléfono'):
+    ef?'EF004 archivado · '+ef.status+' · '+(ef.reason??'sin motivo')+
+      '. El motor local está disponible arriba para entrenar con el archivo completo.':
+    'EF004: motor local incluido. Usa Entrenar EF004 para comprobar su archivo.';
   $('capabilityRaw').textContent=JSON.stringify(report,null,2);
   const query=$('capabilityQuery').value.toLocaleLowerCase('es-MX').trim();
   const filter=$('capabilityFilter')?.value??'all';
@@ -1593,6 +1602,7 @@ function renderHistory(){
 function changeAsset(next){
   if(!E.ALLOWED_ASSETS.includes(next)||next===asset)return;
   asset=next;$('asset').value=next;
+  window.dispatchEvent(new CustomEvent('laplace:selection',{detail:{asset:next}}));
   marketChoice();integralResult=null;renderIntegral();
   try{localStorage.setItem('laplace-last-asset',asset)}catch(error){}
   history=null;historyGranularity=null;lastHistoryFetch=0;forgetEstimate();
@@ -1714,10 +1724,17 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'3.9',tabs:4,
+window.LaplaceUIHealth={initialized:true,version:'4.0',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
     'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','openMath','closeMath','motionToggle']};
+window.addEventListener('laplace:ef004',()=>{renderSignals();renderCapabilities()});
+window.addEventListener('laplace:broker',renderSignals);
+window.addEventListener('laplace:paper-quote-needed',async event=>{
+ const symbol=event.detail?.asset;if(!E.ALLOWED_ASSETS.includes(symbol))return;
+ try{const q=await remote({kind:'quote',asset:symbol});window.LaplaceBroker?.quote(q)}
+ catch(error){const el=$('paperStatus');if(el)el.textContent='La orden virtual sigue pendiente: '+error.message}
+});
 setTimeout(refresh,200);
 })();

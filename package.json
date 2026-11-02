@@ -71,5 +71,9 @@
     "pg": "8.23.1",
     "undici": "6.29.1",
     "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@noble/hashes": "1.8.0",
+    "esbuild": "0.25.12"
   }
 }

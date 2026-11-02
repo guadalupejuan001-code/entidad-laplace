@@ -79,5 +79,5 @@ test('PDE sigue funcionando sin contaminar M001 ni añadir un 3er puente',()=>{
   assert.match(html,/id="pdeSolve"/);
   assert.match(html,/id="graphSolve"/);
   assert.match(js,/function show\(page\)/);
-  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,6);
+  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,8);
 });

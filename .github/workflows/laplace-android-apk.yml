@@ -1,4 +1,4 @@
-name: LAPLACE Android 3.9 - Herramienta y registro detallado
+name: LAPLACE Android 4.0 - EF004 local y órdenes manuales
 on:
   push:
     branches: [feature/laplace-android-standalone-multihorizon-20261031, main]
@@ -77,6 +77,8 @@ jobs:
         run: |
           set -euo pipefail
           node apps/laplace-android/build-integral-assets.mjs --verify
+          node apps/laplace-android/build-ef004-assets.mjs --verify
+          node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
           node --test apps/laplace-android/tests/*.test.cjs
           node --test tests/marea-m003.test.mjs
           node --test apps/laplace-android/tests/regime-m004.test.cjs
@@ -174,7 +176,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-3-9-PREVIEWS-SIMULADAS
+          name: LAPLACE-4-0-PREVIEWS-Y-EF004-LOCAL
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -205,6 +207,11 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/math-pde.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/pde-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/engine.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/ef004-archive.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/ef004-mobile.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/broker-panel.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/paper-orders.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/index.html'
           unzip -Z1 "$APK" | grep -Fx 'assets/world.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/fusion-integral.js'
@@ -218,14 +225,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.tool39'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn40'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 3.9'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.0'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V3-9-HERRAMIENTA-RESULTADOS
+          name: LAPLACE-ANDROID-V4-0-EF004-ORDENES
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
