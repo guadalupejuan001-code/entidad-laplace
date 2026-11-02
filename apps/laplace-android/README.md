@@ -1,3 +1,14 @@
+## LAPLACE Android 4.0 — EF004 local y órdenes
+
+El motor EF004 original se ejecuta y entrena en el teléfono, con todas las capturas EF002 disponibles, verificación de integridad, almacenamiento local y evaluación prospectiva. Conserva la abstención si aún no hay suficientes transiciones independientes.
+
+La sección **Operar** incluye cuenta virtual y conector oficial Robinhood Crypto v2. Las órdenes reales requieren credenciales configuradas en el teléfono, preconsulta y confirmación nativa de cada envío. El desarrollo no utiliza una cuenta real ni coloca órdenes reales. Acciones/ETF mantienen análisis y enlace externo.
+
+[Implementación, pruebas y alcance](../../docs/ANDROID_4_0_EF004_Y_ORDENES.md).
+Paquete de prueba `com.entidadlaplace.mobile.learn40`, versionCode 15, **LAPLACE 4.0**; instalación paralela, sin migración automática de otras instalaciones.
+
+---
+
 ## LAPLACE Android 3.9 — herramienta y registro de resultados
 
 Cuatro destinos: Analizar, Plazos, Historial y Datos. La animación aportada es sólo estética, local y pausable. Icono triangular refinado y paleta carbón, marfil y cobre.

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 3.9 · Análisis y resultados</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.0 · Aprendizaje y órdenes</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -15,11 +15,16 @@
 <script src="live-feed.js" defer></script>
 <script src="tracking.js" defer></script>
 <script src="app.js" defer></script>
+<script src="ef004-runtime.js" defer></script>
+<script src="ef004-archive.js" defer></script>
+<script src="ef004-mobile.js" defer></script>
+<script src="paper-orders.js" defer></script>
+<script src="broker-panel.js" defer></script>
 <script src="decoration.js" defer></script>
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>ANÁLISIS DE MERCADO · 3.9</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.0</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -34,6 +39,7 @@
     <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Analizar</button>
     <button type="button" data-tab="integral"><span class="tab-symbol" aria-hidden="true">⌁</span>Plazos</button>
     <button type="button" data-tab="tests"><span class="tab-symbol" aria-hidden="true">▤</span>Historial</button>
+    <button type="button" data-tab="orders"><span class="tab-symbol" aria-hidden="true">⇄</span>Operar</button>
     <button type="button" data-tab="world"><span class="tab-symbol" aria-hidden="true">◈</span>Datos</button>
   </nav>
 
@@ -374,7 +380,65 @@
       <p class="fineprint">La topología y los pesos son supuestos introducidos por ti, no relaciones financieras demostradas. Un valor de equilibrio NO equivale a un pronóstico temporal.</p>
     </article>
   </section>
+  <section id="orders" class="tabpage" hidden>
+    <article class="card">
+      <div class="section-head"><div><small class="eyebrow">ÓRDENES MANUALES</small><h2>Del análisis a tu decisión</h2></div><span id="orderModeLabel" class="outline-tag">CUENTA VIRTUAL · SIMULACIÓN</span></div>
+      <label class="pde-label" for="orderMode">Dónde ejecutar</label><select id="orderMode"><option value="paper" selected>Cuenta virtual · sin dinero real</option><option value="real">Robinhood Crypto · dinero real</option></select>
+      <div class="pde-fields"><label>Activo<select id="orderAsset"></select></label><label>Operación<select id="orderSide"><option value="buy">Comprar</option><option value="sell">Vender</option></select></label>
+      <label>Tipo<select id="orderType"><option value="market">Mercado</option><option value="limit">Límite</option></select></label><label>Cantidad de unidades<input id="orderQuantity" type="text" inputmode="decimal" value="0.001" maxlength="40" autocomplete="off"></label></div>
+      <label id="orderLimitField" class="pde-label" hidden>Precio límite USD<input id="orderLimitPrice" inputmode="decimal" type="text" maxlength="40" autocomplete="off"></label>
+      <small class="helper">Los modelos no envían órdenes automáticamente. Tú eliges activo, cantidad y operación.</small>
+    </article>
+    <div id="paperControls">
+      <article class="card">
+        <div class="section-head"><div><small class="eyebrow">PRÁCTICA CON COTIZACIONES</small><h2>Cuenta virtual</h2></div><span class="outline-tag">SIMULACIÓN</span></div>
+        <div class="two-metrics"><div class="metric"><small>EFECTIVO VIRTUAL</small><strong id="paperCash">USD 10,000.00</strong></div><div class="metric"><small>RESULTADO REALIZADO VIRTUAL</small><strong id="paperRealized">USD 0.00</strong></div></div>
+        <div class="history-actions"><button id="paperPlace" class="pde-primary" type="button">Registrar orden simulada</button><button id="paperExport" type="button">Exportar cuenta virtual</button></div>
+        <p id="paperStatus" class="helper" role="status">Saldo inicial virtual: USD 10,000. Las órdenes se comprueban contra cotizaciones nuevas.</p>
+        <p class="fineprint">La simulación usa una referencia pública, sin spread, comisiones ni garantía de ejecución de un bróker. Sus resultados no son ganancias o pérdidas reales.</p>
+        <h2>Posiciones virtuales</h2><div id="paperPositions" class="signal-rows"></div>
+        <h2>Órdenes y resultados virtuales</h2><div id="paperHistory" class="signal-rows"></div>
+      </article>
+    </div>
+    <div id="realControls" hidden>
+      <article class="card">
+        <div class="section-head"><div><small class="eyebrow">CONECTOR OFICIAL · CRIPTO</small><h2>Conecta tu Robinhood</h2></div><span class="outline-tag">FONDOS REALES</span></div>
+        <p>La API oficial integrada permite órdenes de criptomonedas. Para acciones y ETF utiliza la app de Robinhood.</p>
+        <details id="brokerSetup" class="raw-details"><summary>Configurar mi conexión</summary>
+          <p>Genera una clave de esta app. Registra su clave pública en la configuración Crypto de Robinhood y pega aquí la API key que te proporcione. La clave privada se genera y guarda cifrada en el teléfono.</p>
+          <button id="brokerGenerate" type="button">Generar / ver clave pública</button>
+          <label class="pde-label" for="brokerPublicKey">Clave pública para registrar en Robinhood</label><input id="brokerPublicKey" readonly type="text" autocomplete="off">
+          <label class="pde-label" for="brokerAPIKey">API key de Robinhood</label><input id="brokerAPIKey" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="rh-api-…">
+          <div class="history-actions"><button id="brokerSave" type="button">Guardar conexión</button><button id="brokerDisconnect" type="button">Desconectar esta app</button></div>
+          <a class="external" href="https://robinhood.com/us/en/support/articles/crypto-api/">Abrir instrucciones oficiales de Robinhood</a>
+        </details>
+        <div class="history-actions"><button id="brokerConnect" type="button">Verificar cuenta</button><button id="brokerOrdersRefresh" type="button">Actualizar órdenes reales</button></div>
+        <label class="pde-label" for="brokerAccount">Cuenta consultada en Robinhood</label><select id="brokerAccount"><option value="">Sin cuenta conectada</option></select>
+        <p id="brokerStatus" class="helper" role="status" aria-live="polite">Conecta tu API key para consultar tu cuenta.</p>
+        <button id="brokerPrepare" class="pde-primary" type="button" disabled>Preparar y revisar orden real</button>
+        <div id="brokerPreview" class="signal-rows"></div>
+        <button id="brokerSubmit" class="real-submit" type="button" disabled>Continuar a confirmación nativa</button>
+        <p class="fineprint">Preparar consulta el bróker sin enviar una orden. El envío requiere que confirmes el activo y la cantidad en un diálogo nativo. Los precios y comisiones finales los confirma Robinhood.</p>
+      </article>
+      <article class="card"><h2>Órdenes consultadas en Robinhood</h2><div id="brokerHistory" class="signal-rows"></div><button id="brokerMore" type="button" hidden>Ver más órdenes reales</button></article>
+    </div>
+  </section>
+
   <section id="world" class="tabpage" hidden>
+    <article class="card" id="ef004Card">
+      <div class="section-head"><div><small class="eyebrow">APRENDIZAJE CONJUNTO · EF004</small><h2>Entrena en tu teléfono</h2></div><span id="ef004Tag" class="outline-tag">MOTOR LISTO</span></div>
+      <p>EF004 aprende las relaciones temporales de las capturas financieras completas. El motor original, el entrenamiento y la comprobación se ejecutan aquí.</p>
+      <div class="stats" id="ef004Metrics"></div>
+      <label class="pde-label" for="ef004Horizon">Horizonte de evolución</label><select id="ef004Horizon"><option value="6">6 horas</option><option value="24" selected>24 horas</option><option value="48">2 días</option><option value="168">7 días</option><option value="336">14 días</option></select>
+      <div class="history-actions"><button id="ef004Refresh" type="button">Actualizar archivo</button><button id="ef004Train" class="pde-primary" type="button">Entrenar EF004</button></div>
+      <p id="ef004Status" class="helper" role="status" aria-live="polite">Verificando el archivo local…</p>
+      <button id="ef004Cancel" type="button" hidden>Cancelar cálculo</button>
+      <div class="history-actions"><button id="ef004Evaluate" type="button">Comprobar resultados</button><button id="ef004Export" type="button">Exportar aprendizaje</button></div>
+      <details class="raw-details"><summary>Variables y primera evolución estimada</summary><div id="ef004Forecasts" class="signal-rows"></div></details>
+      <details class="raw-details"><summary>Modelo, coeficientes, errores y procedencia completos</summary><pre id="ef004Raw">Sin ejecución local todavía.</pre></details>
+      <p class="fineprint">Si faltan transiciones independientes, el motor explica lo que falta. Las observaciones simultáneas no sustituyen a la historia temporal. Sus pronósticos no envían órdenes.</p>
+    </article>
+
     <article class="card"><h2>Datos y herramientas</h2><p>Consulta la fuente del precio y la evidencia de cada cálculo.</p><button id="openMath" class="secondary" type="button">Herramientas matemáticas avanzadas</button><small class="helper">Solucionador de campos y grafos. Es independiente del análisis de precios.</small></article>
     <details id="quoteDetails" class="card advanced-fold"><summary>Cripto en directo · BTC, ETH y SOL</summary>    <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
       <div class="quote-head">

@@ -54,6 +54,24 @@ window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
  setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,xn01:result}),10);
 };`;
 
+const mockBroker=String.raw`
+window.__brokerCalls=[];let connected=false;
+window.LaplaceBridge.brokerCommand=function(id,action,encoded){
+ const data=JSON.parse(encoded);window.__brokerCalls.push({action,data});let result;
+ if(action==='status'||action==='generate')result={configured:connected,public_key:'PUBLIC-KEY-SIMULADA-SOLO-PARA-TEST',manual_orders:true,automatic_orders:false};
+ else if(action==='configure'){connected=true;result={configured:true};}
+ else if(action==='disconnect'){connected=false;result={configured:false};}
+ else if(action==='accounts')result={results:[{account_number:'CUENTA-SIMULADA',status:'active',buying_power:'10000',is_api_tradable:true}]};
+ else if(action==='orders')result={results:[],next:null};
+ else if(action==='prepare')result={nonce:'nonce-simulado',body:data,real_order_sent:false,
+  quote:{timestamp:new Date().toISOString(),est_total_cost:'60',est_fee:'0.1'}};
+ else if(action==='submit'||action==='cancel')result={canceled_by_user:true};
+ else result={};
+ setTimeout(()=>window.LaplaceBroker.receive(id,{ok:true,result}),10);
+};
+window.LaplaceBridge.fetchEF004Archive=function(id){setTimeout(()=>window.LaplaceEF004Archive.receive(id,
+ {ok:true,commit:'ARCHIVO-REAL-EMPAQUETADO-PUENTE-SIMULADO',captures_raw:window.LAPLACE_EF004_ARCHIVE.captures.map(JSON.stringify)}),10);};
+`;
 const http=require('node:http');
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css',
   '.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml'};
@@ -64,7 +82,7 @@ const server=http.createServer((req,res)=>{
   const file=path.join(root,name);
   if(!fs.existsSync(file)){res.writeHead(404);res.end();return}
   res.setHeader('Content-Type',mime[path.extname(name)]??'application/octet-stream');
-  if(name==='index.html')res.end(read(name).replace('<head>','<head><script>'+mock+mockXN01+'</script>'));
+  if(name==='index.html')res.end(read(name).replace('<head>','<head><script>'+mock+mockXN01+mockBroker+'</script>'));
   else res.end(fs.readFileSync(file));
 });
 const chromePaths=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/chromium',
@@ -85,9 +103,9 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-3.9-INICIO-SIMULADO.png')});
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
-    assert.equal(await page.locator('[data-tab]').count(),4);
+    assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'3.9');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.0');
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
@@ -155,7 +173,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const captures=path.resolve(__dirname,'../build/ux-previews');
     fs.mkdirSync(captures,{recursive:true});
     await page.locator('[data-tab="panel"]').click();
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-MOVIL-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-MOVIL-SIMULADO.png')});
     await page.locator('.xn01-card > summary').click();
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
@@ -201,7 +219,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(await page.locator('#capabilityRows .signal-row').count()>0);
     await page.locator('#capabilityRefresh').click();
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-FUENTES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-FUENTES-SIMULADO.png')});
     const overflowSources=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflowSources<=3,'Fuentes desbordan ancho de 393 px: '+overflowSources);
     await page.locator('#openMath').click();
@@ -264,7 +282,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#mareaIntro').textContent(),/Bitcoin|M003/);
     assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
     assert.equal(await page.locator('#xn01Run').isDisabled(),true);
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-ACCIONES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-ACCIONES-SIMULADO.png')});
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#asset','BTC-USD');
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
@@ -287,6 +305,56 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:5000});
     assert.equal(await page.locator('#smartRun').isDisabled(),false,'El ticker no puede bloquear las velas');
     await page.evaluate(()=>{window.LaplaceBridge.fetchQuote=window.__quote});
+    await page.locator('[data-tab="world"]').click();
+    await page.waitForFunction(()=>window.LaplaceEF004Mobile?.state().archiveCount>0&&
+      !window.LaplaceEF004Mobile.state().busy,null,{timeout:20000});
+    const realArchiveCount=await page.evaluate(()=>window.LAPLACE_EF004_ARCHIVE.archive_count);
+    assert.ok(realArchiveCount>=1);
+    await page.locator('#ef004Train').click();
+    await page.waitForFunction(()=>window.LaplaceEF004Mobile.state().executed&&!window.LaplaceEF004Mobile.state().busy,null,{timeout:25000});
+    assert.match(await page.locator('#ef004Status').innerText(),/Motor ejecutado|Entrenamiento local terminado/);
+    assert.match(await page.locator('#ef004Tag').innerText(),/EJECUTADO|MODELO LOCAL/);
+    assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().archiveCount),realArchiveCount);
+    await page.locator('#ef004Refresh').click();
+    await page.waitForFunction(()=>!window.LaplaceEF004Mobile.state().busy,null,{timeout:20000});
+    assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().archiveCount),realArchiveCount,'Actualizar no duplica capturas');
+    await page.locator('#ef004Evaluate').click();
+    await page.waitForFunction(()=>!window.LaplaceEF004Mobile.state().busy,null,{timeout:20000});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-EF004-REAL-LOCAL.png')});
+    await page.locator('[data-tab="orders"]').click();
+    assert.equal(await page.locator('#orderMode').inputValue(),'paper');
+    await page.locator('#orderQuantity').fill('0.001');
+    await page.locator('#paperPlace').click();
+    await page.waitForFunction(()=>document.querySelector('#paperHistory').innerText.includes('SIMULADA'),null,{timeout:10000});
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('laplace-paper-account-v1')).orders[0].status),'filled');
+    await page.locator('#orderSide').selectOption('sell');
+    await page.locator('#paperPlace').click();
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('laplace-paper-account-v1')).orders.filter(o=>o.status==='filled').length===2,null,{timeout:10000});
+    await page.locator('#orderSide').selectOption('buy');
+    await page.locator('#orderMode').selectOption('real');
+    assert.equal(await page.locator('#brokerPrepare').isDisabled(),true);
+    await page.locator('#brokerSetup > summary').click();
+    await page.locator('#brokerGenerate').click();
+    await page.waitForFunction(()=>document.querySelector('#brokerPublicKey').value.includes('SIMULADA'));
+    await page.locator('#brokerAPIKey').fill('rh-api-6148effc-c0b1-486c-8940-a1d099456be6');
+    await page.locator('#brokerSave').click();
+    await page.waitForFunction(()=>document.querySelector('#brokerAPIKey').value==='');
+    await page.locator('#brokerConnect').click();
+    await page.waitForFunction(()=>document.querySelector('#brokerAccount').value==='CUENTA-SIMULADA');
+    assert.equal(await page.locator('#brokerPrepare').isDisabled(),false);
+    await page.locator('#brokerPrepare').click();
+    await page.waitForFunction(()=>!document.querySelector('#brokerSubmit').disabled);
+    assert.equal(await page.evaluate(()=>window.__brokerCalls.filter(x=>x.action==='submit').length),0,'Preparar nunca envía la orden');
+    await page.locator('#brokerSubmit').click();
+    await page.waitForFunction(()=>document.querySelector('#brokerStatus').textContent.includes('cancelada por ti'));
+    assert.equal(await page.evaluate(()=>window.__brokerCalls.filter(x=>x.action==='submit').length),1);
+    assert.match(await page.locator('#brokerStatus').innerText(),/no se envió/);
+    await page.locator('#brokerDisconnect').click();
+    await page.waitForFunction(()=>!window.LaplaceBroker.state().configured);
+    assert.equal(await page.locator('#brokerPrepare').isDisabled(),true);
+    await page.locator('#orderMode').selectOption('paper');
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-ORDENES-SIMULADAS.png')});
+    await page.locator('[data-tab="panel"]').click();
     // Cambiar resolución exige otro lote y desactiva botones hasta recibirlo.
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#horizonSelect','129600');
@@ -348,9 +416,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const downloaded=page.waitForEvent('download');await page.locator('#exportHistory').click();
     const download=await downloaded,exported=JSON.parse(fs.readFileSync(await download.path(),'utf8'));
     assert.equal(exported.records.length,44);assert.equal(exported.records[1].estimate,100.2);
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-REGISTRO-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.0-REGISTRO-SIMULADO.png')});
     await page.locator('[data-tab="panel"]').click();
     await page.emulateMedia({reducedMotion:'reduce'});
+    await page.waitForFunction(()=>document.querySelector('#portalVideo').paused&&document.querySelector('#motionToggle').disabled,null,{timeout:5000});
     assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
     assert.equal(await page.locator('#motionToggle').isDisabled(),true);
     await page.emulateMedia({reducedMotion:'no-preference'});
@@ -366,7 +435,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
       capabilities:20,smartAnalysis:true,moduleFilters:true,validationNow:true,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
       stream:true,stockQuotes:true,assetCount:31,stockMultiHorizon:true,
       robinhoodLink:true,localFavorites:true,livePauseResume:true,
-      streamOutOfOrderIgnored:true,ledgerCrossAssetAndResolution:true,ledgerExport44:true,ledgerPagination:true,reducedMotion:true,jsErrors:errors.length}));
+      streamOutOfOrderIgnored:true,ef004OriginalOnDevice:true,paperBuySell:true,brokerSetupSimulated:true,brokerPreflightDoesNotSubmit:true,nativeConfirmationCanceledInMock:true,ledgerCrossAssetAndResolution:true,ledgerExport44:true,ledgerPagination:true,reducedMotion:true,jsErrors:errors.length}));
   }catch(error){
     await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-3.9-FAILURE.png')});
     throw error;
