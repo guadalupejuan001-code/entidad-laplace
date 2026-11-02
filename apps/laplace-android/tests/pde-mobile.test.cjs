@@ -56,7 +56,7 @@ test('rechaza falta de fronteras y restricciones de grafo',()=>{
 test('UI funcional enlaza pestaña, controles, visualizacion y libreria sin cambiar M001',()=>{
   const html=read('index.html'),panel=read('pde-panel.js'),engine=read('engine.js');
   const app=read('app.js');
-  assert.match(html,/data-tab="equation"/);
+  assert.match(html,/id="openMath"/);
   assert.match(html,/<section id="equation" class="tabpage" hidden>/);
   for(const name of ['math-pde.js','pde-panel.js'])assert.ok(html.includes('src="'+name+'"'));
   for(const id of ['pdePreset','pdeSize','pdeSolve','pdeCanvas','pdeIterations',
@@ -77,12 +77,12 @@ test('APK tiene versionCode incrementado y sin permisos adicionales',()=>{
   const gradle=fs.readFileSync(path.resolve(__dirname,'../app/build.gradle'),'utf8');
   const java=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/java/com/entidadlaplace/mobile/MainActivity.java'),'utf8');
-  assert.match(gradle,/versionCode 13/);
-  assert.match(gradle,/applicationIdSuffix '\.regime38'/);
+  assert.match(gradle,/versionCode 14/);
+  assert.match(gradle,/applicationIdSuffix '\.tool39'/);
   const strings=fs.readFileSync(path.resolve(__dirname,
     '../app/src/main/res/values/strings.xml'),'utf8');
-  assert.match(strings,/LAPLACE 3\.8/);
-  assert.match(gradle,/versionName '3\.8\.0-ADAPTIVE-REGIMES-M004'/);
-  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,5);
+  assert.match(strings,/LAPLACE 3\.9/);
+  assert.match(gradle,/versionName '3\.9\.0-CLEAR-TOOL-RESULTS'/);
+  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,6);
   assert.ok(!read('pde-panel.js').includes('LaplaceBridge'));
 });

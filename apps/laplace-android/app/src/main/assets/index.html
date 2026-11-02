@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#090c16"><title>LAPLACE 3.8 · Regímenes M004</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 3.9 · Análisis y resultados</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -13,79 +13,39 @@
 <script src="fusion-integral.js" defer></script>
 <script src="pde-panel.js" defer></script>
 <script src="live-feed.js" defer></script>
+<script src="tracking.js" defer></script>
 <script src="app.js" defer></script>
+<script src="decoration.js" defer></script>
 </head><body>
 <header class="topbar">
-  <div class="logo-lockup"><span class="mark" aria-hidden="true">▽</span>
-    <div><h1>LAPLACE</h1><small>OBSERVATORIO MULTIMERCADO · 3.8</small></div>
+  <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
+    <div><h1>LAPLACE</h1><small>ANÁLISIS DE MERCADO · 3.9</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
 <main>
   <div class="workspace-head">
-    <div><small>ESTACIÓN DE ANÁLISIS</small>
-      <h2>Mercado, modelos y evidencia.</h2>
-      <p>Un cálculo claro. Datos verificables. Nada de señales inventadas.</p></div>
-    <span class="lab-chip">LABORATORIO · NO TRADING</span>
+    <div><small>TU OBSERVATORIO</small>
+      <h2>Tu lectura de mercado.</h2>
+      <p>Elige un activo, calcula y comprueba el resultado.</p></div>
+    <span class="lab-chip">31 ACTIVOS · USD</span>
   </div>
   <nav class="tabs" aria-label="Navegación principal de Laplace">
-    <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Inicio</button>
-    <button type="button" data-tab="integral"><span class="tab-symbol" aria-hidden="true">⌁</span>Multiplazo</button>
-    <button type="button" data-tab="tests"><span class="tab-symbol" aria-hidden="true">▤</span>Validación</button>
-    <button type="button" data-tab="world"><span class="tab-symbol" aria-hidden="true">◈</span>Fuentes</button>
-    <button type="button" data-tab="equation"><span class="tab-symbol" aria-hidden="true">∇</span>Laboratorio</button>
+    <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Analizar</button>
+    <button type="button" data-tab="integral"><span class="tab-symbol" aria-hidden="true">⌁</span>Plazos</button>
+    <button type="button" data-tab="tests"><span class="tab-symbol" aria-hidden="true">▤</span>Historial</button>
+    <button type="button" data-tab="world"><span class="tab-symbol" aria-hidden="true">◈</span>Datos</button>
   </nav>
 
-  <div id="notice" class="status-banner" role="status" aria-live="polite">
-    <span id="noticeIcon" aria-hidden="true">◎</span>
-    <span id="noticeText">Selecciona un activo y un plazo. Actualiza los datos y pulsa Proyectar. Los cálculos históricos son experimentales.</span>
-  </div>
+
   <section id="panel" class="tabpage">
-    <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
-      <div class="quote-head">
-        <div><small class="eyebrow">CRIPTO EN VIVO · COINBASE</small><h2>BTC, ETH y SOL</h2></div>
-        <span id="quoteStatus" class="outline-tag">SIN CONSULTAR</span>
-      </div>
-      <div class="live-control">
-        <div class="live-left">
-          <span class="live-pulse" id="livePulse" aria-hidden="true"></span>
-          <div><strong id="liveStatus" role="status" aria-live="polite">Conectando al mercado…</strong>
-          <small id="liveDetail">Ticker + heartbeat · actualización automática cuando hay operaciones</small></div>
-        </div>
-        <button id="liveToggle" type="button" aria-pressed="true">Detener</button>
-      </div>
-      <div class="live-metadata" aria-label="Medición del flujo">
-        <span id="liveCount">0 actualizaciones</span>
-        <span id="liveAge">Sin operaciones recibidas</span>
-      </div>
-      <div class="quote-grid">
-        <button type="button" class="quote-tile active" data-quote-asset="BTC-USD" aria-pressed="true">
-          <span>BTC / USD</span><strong id="quoteBTC">—</strong><small id="quoteBTCStatus">Sin cotización</small>
-        </button>
-        <button type="button" class="quote-tile" data-quote-asset="ETH-USD" aria-pressed="false">
-          <span>ETH / USD</span><strong id="quoteETH">—</strong><small id="quoteETHStatus">Sin cotización</small>
-        </button>
-        <button type="button" class="quote-tile" data-quote-asset="SOL-USD" aria-pressed="false">
-          <span>SOL / USD</span><strong id="quoteSOL">—</strong><small id="quoteSOLStatus">Sin cotización</small>
-        </button>
-      </div>
-      <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
-      <details id="marketDetails" class="market-details">
-        <summary>Ver operaciones recientes y procedencia</summary>
-      <div class="live-sparkline-block">
-        <div class="live-graph-head">
-          <strong>Operaciones recientes <span id="liveGraphAsset">BTC/USD</span></strong>
-          <span id="liveGraphLabel">Esperando ticks reales</span>
-        </div>
-        <canvas id="liveChart" height="108" aria-label="Últimas operaciones recibidas en tiempo real"></canvas>
-      </div>
-      <p id="livePreview" class="live-preview">El precio se actualiza al llegar una operación. El cálculo M001 usa velas cerradas y solo recalcula un escenario indicativo si ya existe un modelo.</p>
-        <small id="quoteTrace" class="helper">Sin trazas de cotización.</small>
-      </details>
-      <div class="quick-guide">Escoge un activo y pulsa «Analizar ahora». El sistema se encarga de comprobar el historial.</div>
-    </article>
+    <div class="hero portal-banner">
+      <div class="portal-copy"><small class="eyebrow">LAPLACE / OBSERVA</small><strong>Del escenario<br>al resultado.</strong><span>Tu registro conserva ambos.</span></div>
+      <video id="portalVideo" muted autoplay loop playsinline preload="none" poster="laplace-portal-poster.jpg" aria-hidden="true" tabindex="-1"><source data-src="laplace-portal.mp4" type="video/mp4"></video>
+      <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa">Ⅱ</button>
+    </div>
     <article class="card selector">
-      <div class="section-head"><div><small class="eyebrow">UNIVERSO · 31 ACTIVOS</small><h2>Tu mercado</h2></div><span id="selectedMarketTag" class="outline-tag">CRIPTO</span></div>
+      <div class="section-head"><div><small class="eyebrow">01 / ACTIVO</small><h2>¿Qué quieres observar?</h2></div><span id="selectedMarketTag" class="outline-tag">CRIPTO</span></div>
       <div class="asset-row">
         <label for="asset" class="sr-only">Activo</label>
         <select id="asset" aria-label="Activo">
@@ -93,28 +53,16 @@
           <option value="ETH-USD">Ethereum · ETH/USD</option>
           <option value="SOL-USD">Solana · SOL/USD</option>
         </select>
-        <button id="refresh" class="refresh" type="button">Actualizar datos</button>
       </div>
       <div class="market-selected">
-        <div><small>ÚLTIMA REFERENCIA DEL ACTIVO</small>
+        <div><small>PRECIO DE REFERENCIA</small>
           <strong id="selectedQuote">—</strong>
           <span id="selectedProvider">Coinbase · operaciones públicas</span></div>
         <button id="favoriteToggle" class="favorite-toggle" type="button" aria-pressed="false"
           aria-label="Agregar a favoritos">☆</button>
       </div>
-      <div class="market-quote-actions">
-        <button id="refreshQuote" class="smart-secondary" type="button">Actualizar precio</button>
-        <button id="autoQuoteToggle" class="smart-secondary" type="button" aria-pressed="false">Auto 2 min · desactivado</button>
-      </div>
-      <div id="favoriteAssets" class="favorite-assets" role="group" aria-label="Favoritos locales"></div>
-      <a id="robinhoodLink" href="https://robinhood.com/us/en/crypto/BTC/" target="_blank" rel="noopener noreferrer"
-        class="external robinhood-link">Consultar este activo en Robinhood</a>
-      <small id="providerDisclaimer" class="helper">Laplace no se conecta a tu cuenta Robinhood ni conoce tus posiciones.</small>
-      <small id="dataStatus" class="helper">Ticker WebSocket en primer plano; velas históricas por HTTPS. El botón Actualizar consulta el historial, no es necesario para seguir los ticks.</small>
-    </article>
-
-    <article class="card horizons">
-      <div class="section-head"><div><small class="eyebrow">TIEMPO</small><h2>¿Para cuándo quieres calcular?</h2></div><span id="horizonTag" class="outline-tag">15 MIN</span></div>
+<div class="horizons">
+      <div class="section-head"><div><small class="eyebrow">02 / PLAZO</small><h2>¿A qué plazo?</h2></div><span id="horizonTag" class="outline-tag">15 MIN</span></div>
       <label class="sr-only" for="horizonSelect">Horizonte de cálculo</label>
       <select id="horizonSelect" aria-label="Horizonte de cálculo">
         <option value="5">5 minutos</option>
@@ -134,6 +82,10 @@
         <option value="43200">30 días</option>
         <option value="129600">90 días</option>
       </select>
+
+
+    </div>
+      <details class="market-extras"><summary>Precios, favoritos y enlaces</summary>
       <details class="horizon-details">
         <summary>Ver todos los plazos</summary>
       <div id="horizons" class="horizon-grid" role="group" aria-label="Horizontes de 5 minutos hasta 90 días">
@@ -155,21 +107,31 @@
         <button type="button" data-minutes="129600" aria-pressed="false">90 d</button>
       </div>
       </details>
-      <p class="fineprint">M001 usa patrones históricos. Plazos muy largos pueden mostrar «sin datos suficientes» en vez de una cifra inventada.</p>
+        <button id="refresh" class="refresh" type="button">Actualizar datos</button>
+      <div class="market-quote-actions">
+        <button id="refreshQuote" class="smart-secondary" type="button">Actualizar precio</button>
+        <button id="autoQuoteToggle" class="smart-secondary" type="button" aria-pressed="false">Auto 2 min · desactivado</button>
+      </div>
+      <div id="favoriteAssets" class="favorite-assets" role="group" aria-label="Favoritos locales"></div>
+      <a id="robinhoodLink" href="https://robinhood.com/us/en/crypto/BTC/" target="_blank" rel="noopener noreferrer"
+        class="external robinhood-link">Consultar este activo en Robinhood</a>
+      <small id="providerDisclaimer" class="helper">Laplace no se conecta a tu cuenta Robinhood ni conoce tus posiciones.</small>
+      <small id="dataStatus" class="helper">Ticker WebSocket en primer plano; velas históricas por HTTPS. El botón Actualizar consulta el historial, no es necesario para seguir los ticks.</small>
+      </details>
     </article>
 
     <article class="card decision-deck">
       <div class="section-head">
-        <div><small class="eyebrow">ANÁLISIS ASISTIDO · M001</small><h2>Una acción. Resultado y evidencia.</h2></div>
+        <div><small class="eyebrow">03 / ESCENARIO</small><h2>Calcula tu escenario.</h2></div>
         <span class="outline-tag">SIN ÓRDENES</span>
       </div>
       <div class="smart-actions">
         <button id="smartRun" class="smart-action" type="button">
           <span class="smart-action-symbol" aria-hidden="true">◈</span>
-          <span><strong>Analizar ahora</strong><small>Consulta, patrones y proyección</small></span>
+          <span><strong>Analizar ahora</strong><small>Obtiene datos y guarda el resultado</small></span>
           <span class="smart-arrow" aria-hidden="true">→</span>
         </button>
-        <button id="jumpValidation" class="smart-secondary" type="button">Ver validación</button>
+        <button id="jumpValidation" class="smart-secondary" type="button">Ver mis resultados</button>
       </div>
       <div class="smart-result" id="smartResult" data-state="idle" role="status" aria-live="polite">
         <div class="smart-result-head">
@@ -179,6 +141,10 @@
         <strong id="smartSummary">Elige un activo y un plazo.</strong>
         <p id="smartExplain">Laplace obtendrá las velas verificables y calculará un candidato únicamente si existe soporte histórico suficiente.</p>
       </div>
+  <div id="notice" class="status-banner" role="status" aria-live="polite">
+    <span id="noticeIcon" aria-hidden="true">◎</span>
+    <span id="noticeText">Elige tu activo y tu plazo. «Analizar ahora» obtiene los datos y guarda el escenario cuando hay soporte suficiente.</span>
+  </div>
       <details class="advanced-actions">
         <summary>Herramientas técnicas y pruebas individuales</summary>
         <div class="actions legacy-actions">
@@ -191,7 +157,7 @@
       </details>
     </article>
 
-    <p id="inlineStatus" class="action-feedback" role="status" aria-live="polite">Los controles se activarán cuando lleguen datos verificables.</p>
+    <p id="inlineStatus" hidden class="action-feedback" role="status" aria-live="polite">Los controles se activarán cuando lleguen datos verificables.</p>
 
     <div class="two-metrics">
       <article class="metric">
@@ -203,37 +169,8 @@
       </article>
     </div>
 
-    <article class="card regime-card" aria-label="Estado del mercado M004">
-      <div class="section-head">
-        <div><small class="eyebrow">M004 · ESTADOS APRENDIDOS</small>
-          <h2>Régimen de mercado</h2></div>
-        <span id="regimeTag" class="outline-tag">SIN OBSERVAR</span>
-      </div>
-      <div class="regime-metrics">
-        <div><small>VOLATILIDAD</small><strong id="regimeVol">—</strong></div>
-        <div><small>TENDENCIA</small><strong id="regimeTrend">—</strong></div>
-        <div><small>ACTIVIDAD</small><strong id="regimeActivity">—</strong></div>
-      </div>
-      <p id="regimeStatus" class="helper" role="status" aria-live="polite">
-        Actualiza el historial para observar el régimen con velas cerradas.
-      </p>
-      <button id="regimeStudy" type="button" class="pde-primary secondary">
-        Comprobar si el régimen ayuda a predecir la amplitud
-      </button>
-      <p id="regimeEvidence" class="helper" role="status">
-        Comparará el modelo con una referencia histórica en períodos posteriores.
-      </p>
-      <details class="raw-details">
-        <summary>Ver entrenamiento, errores y prueba histórica M004</summary>
-        <pre id="regimeRaw">No se ejecutó M004.</pre>
-      </details>
-      <p class="fineprint">Estado estadístico observado, no explicación causal.
-        La prueba histórica no valida precisión futura ni modifica los precios de M001/F001.
-        El botón nunca envía órdenes a Robinhood.</p>
-    </article>
-
     <article class="card chart-card">
-      <div class="section-head"><div><small class="eyebrow">M001 · DATOS REALES</small><h2>Historia y candidato</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
+      <div class="section-head"><div><small class="eyebrow">PRECIO Y ESCENARIO</small><h2>La trayectoria del precio</h2></div><span id="modelLabel" class="outline-tag">SIN ENTRENAR</span></div>
       <canvas id="forecastChart" height="270" aria-label="Gráfica de precios reales y un objetivo futuro experimental"></canvas>
       <div class="chart-legend"><span><i class="legend-real"></i> Observado</span><span><i class="legend-proj"></i> Escenario</span><span><i class="legend-band"></i> Rango no calibrado</span></div>
       <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
@@ -283,54 +220,7 @@
       </div>
       <p class="fineprint">M001 calcula análogos de mercado sin imponer un movimiento mínimo ni sustituir el resultado por persistencia. EF004 y los datos mundiales se muestran separados mientras no tengan validación temporal suficiente. Sin trading.</p>
     </details>
-    <div class="hero">
-      <div class="hero-caption"><span class="eyebrow">IDENTIDAD VISUAL · NO ES LA PREDICCIÓN</span><span class="tiny-chip">VÓRTICE DE DATOS</span></div>
-      <svg class="portal" viewBox="0 0 640 310" role="img" aria-label="Ojo triangular con vórtice central y corrientes de datos">
-      <defs>
-        <radialGradient id="halo"><stop stop-color="#527fff" stop-opacity=".35"/><stop offset=".48" stop-color="#25aaff" stop-opacity=".10"/><stop offset="1" stop-color="#08162c" stop-opacity="0"/></radialGradient>
-        <linearGradient id="tri" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#62edff"/><stop offset=".56" stop-color="#8595ff"/><stop offset="1" stop-color="#b1e6ff"/></linearGradient>
-        <filter id="glow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur stdDeviation="5"/></filter>
-      </defs>
-      <ellipse cx="318" cy="155" rx="220" ry="135" fill="url(#halo)"/>
-      <g id="streams" stroke="#3c99e9" stroke-width="1" fill="none" opacity=".45">
-        <path d="M0 15 Q145 32 257 116 T320 160"/>
-        <path d="M18 70 Q150 97 267 129 T320 160"/>
-        <path d="M0 145 Q145 151 269 144 T320 160"/>
-        <path d="M15 248 Q135 193 257 177 T320 160"/>
-        <path d="M640 12 Q487 48 385 120 T320 160"/>
-        <path d="M630 78 Q470 98 373 137 T320 160"/>
-        <path d="M640 170 Q480 165 369 155 T320 160"/>
-        <path d="M625 283 Q471 222 377 181 T320 160"/>
-        <path d="M190 0 Q214 76 283 125 T320 160"/>
-        <path d="M460 0 Q431 76 350 131 T320 160"/>
-        <path d="M194 310 Q227 230 285 190 T320 160"/>
-        <path d="M478 310 Q430 236 357 193 T320 160"/>
-      </g>
-      <g opacity=".55" fill="#67ddff">
-        <circle cx="58" cy="29" r="2.8"/><circle cx="94" cy="128" r="2"/>
-        <circle cx="145" cy="232" r="2.5"/><circle cx="244" cy="59" r="1.8"/>
-        <circle cx="488" cy="49" r="2.8"/><circle cx="570" cy="207" r="2"/>
-        <circle cx="418" cy="269" r="2.4"/><circle cx="508" cy="136" r="1.8"/>
-      </g>
-      <polygon points="230,73 460,112 310,266" fill="none" stroke="#74baff" stroke-width="10" opacity=".24" filter="url(#glow)"/>
-      <polygon class="triangle" points="230,73 460,112 310,266" fill="#0a1c37" fill-opacity=".15" stroke="url(#tri)" stroke-width="3"/>
-      <g class="swirl">
-        <circle cx="325" cy="157" r="65" stroke="#4d8bff" stroke-opacity=".25" stroke-width="1" fill="none"/>
-        <path d="M325,158 C320,139 339,125 358,139 C389,163 367,201 334,205 C284,210 270,157 300,132 C340,96 394,130 400,161" fill="none" stroke="#82ddff" stroke-width="3.3" stroke-linecap="round"/>
-        <path d="M325,158 C331,151 336,158 334,167 C331,187 297,180 300,158 C304,131 343,126 365,151" fill="none" stroke="#a7b0ff" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="326" cy="158" r="6" fill="#a3f7ff"/>
-      </g>
-      <text x="20" y="150" class="svg-label">SEÑALES</text>
-      <text x="530" y="150" class="svg-label">ESTADOS</text>
-      <g class="moving-particles" aria-hidden="true" fill="#9feeff">
-        <circle r="3.8"><animateMotion dur="2.1s" repeatCount="indefinite" path="M0 145 Q145 151 269 144 T320 160"/></circle>
-        <circle r="3.4"><animateMotion dur="2.8s" repeatCount="indefinite" path="M630 78 Q470 98 373 137 T320 160"/></circle>
-        <circle r="3.3"><animateMotion dur="3.4s" repeatCount="indefinite" path="M190 0 Q214 76 283 125 T320 160"/></circle>
-        <circle r="3.4"><animateMotion dur="2.6s" repeatCount="indefinite" path="M478 310 Q430 236 357 193 T320 160"/></circle>
-      </g>
-      </svg>
-      <div class="hero-sub"><span>DATOS <b>→</b> M001 <b>→</b> ESCENARIO</span><span class="research">ANIMACIÓN ILUSTRATIVA · NO CÁLCULO FÍSICO</span></div>
-    </div>
+
 
   </section>
 
@@ -343,14 +233,27 @@
   </section>
 
   <section id="tests" class="tabpage" hidden>
-    <article class="card"><div class="section-head"><div><small class="eyebrow">M001 · VALIDACIÓN</small><h2>Pruebas retrospectivas</h2></div><span class="outline-tag">RETROSPECTIVO</span></div>
-      <p>Compara el error de M001 contra mantener el precio inicial. No es una garantía de desempeño futuro.</p>
+    <article class="card tracking-card">
+      <div class="section-head"><div><small class="eyebrow">ESCENARIOS GUARDADOS</small><h2>¿Qué tan cerca estuvo?</h2></div><span id="historyCount" class="outline-tag">0 REGISTROS</span></div>
+      <p>Cada escenario conserva su precio y fecha originales. Comprobamos el cierre de una vela al llegar al objetivo.</p>
+      <div class="history-actions"><button id="syncHistory" class="pde-primary" type="button">Comprobar pendientes</button><button id="exportHistory" class="secondary" type="button">Exportar JSON</button></div>
+      <p id="historyStatus" class="helper" role="status" aria-live="polite">Se comprueban también otros activos y resoluciones. La app debe estar abierta.</p>
+      <div class="tracking-filters">
+        <label>Activo<select id="historyAsset" aria-label="Filtrar registro por activo"><option value="all">Todos los activos</option></select></label>
+        <label>Estado<select id="historyFilter" aria-label="Filtrar registro por resultado"><option value="all">Todos</option><option value="pending">Pendientes</option><option value="verified">Evaluados</option><option value="correct">Dirección acertada</option><option value="missed">Dirección fallida</option></select></label>
+        <label>Cercanía de precio<select id="historyTolerance" aria-label="Tolerancia de cercanía"><option value="0.1">Error ≤ 0.1 %</option><option value="0.5" selected>Error ≤ 0.5 %</option><option value="1">Error ≤ 1 %</option></select></label>
+      </div>
+      <div id="historySummary" class="tracking-summary" aria-live="polite"></div>
+      <p class="fineprint">La cercanía es un umbral de error elegido, no un porcentaje de confianza. Acertar la dirección no implica acertar el precio.</p>
+      <div id="history" class="history"></div><button id="historyMore" class="secondary" type="button" hidden>Mostrar más registros</button>
+      <details class="history-maintenance"><summary>Administrar registro local</summary><p>El archivo JSON conserva las cifras sin redondear. Los registros permanecen en este dispositivo.</p><button id="clearHistory" class="secondary" type="button">Borrar registro…</button><div id="clearConfirm" hidden><p>Se eliminarán todos los registros de esta instalación. Exporta primero si quieres conservarlos.</p><button id="confirmClear" type="button">Sí, borrar</button><button id="cancelClear" type="button">Conservar registros</button></div></details>
+    </article>
+    <details id="backtestDetails" class="card advanced-fold"><summary>Prueba histórica del modelo · M001</summary>
+      <p>Compara M001 con mantener el precio inicial. Es una prueba retrospectiva, separada de tus escenarios guardados.</p>
       <button id="validationRun" type="button" class="pde-primary">Calcular validación del activo elegido</button>
       <p id="validationStatus" class="helper" role="status">Sin evaluación nueva.</p>
-      <div id="testResults"><p>Actualiza las velas y pulsa Probar. Se usarán resultados históricos posteriores a cada decisión.</p></div>
-    </article>
-    <article class="card"><h2>Registro local</h2><p>Los candidatos emitidos se guardan en el dispositivo. Solo se evalúan cuando llegan nuevas velas cerradas del intervalo de su objetivo. Los registros nunca se convierten en aciertos ficticios.</p><div id="history" class="history"></div>
-      <button id="clearHistory" class="secondary" type="button">Limpiar registro local</button></article>
+      <div id="testResults"><p>Pulsa el botón para evaluar el historial del activo elegido.</p></div>
+    </details>
   </section>
 
 
@@ -416,6 +319,7 @@
     </article>
   </section>
   <section id="equation" class="tabpage" hidden>
+    <button id="closeMath" class="smart-secondary" type="button">← Volver a Datos</button>
     <article class="card pde-intro">
       <div class="section-head"><div><small class="eyebrow">MATEMÁTICA · LAPLACE PDE</small>
         <h2>∇²φ = 0</h2></div><span class="outline-tag">V1.1 · REAL</span></div>
@@ -471,6 +375,81 @@
     </article>
   </section>
   <section id="world" class="tabpage" hidden>
+    <article class="card"><h2>Datos y herramientas</h2><p>Consulta la fuente del precio y la evidencia de cada cálculo.</p><button id="openMath" class="secondary" type="button">Herramientas matemáticas avanzadas</button><small class="helper">Solucionador de campos y grafos. Es independiente del análisis de precios.</small></article>
+    <details id="quoteDetails" class="card advanced-fold"><summary>Cripto en directo · BTC, ETH y SOL</summary>    <article class="quote-console" aria-label="Cotizaciones de mercado en dólares">
+      <div class="quote-head">
+        <div><small class="eyebrow">CRIPTO EN VIVO · COINBASE</small><h2>BTC, ETH y SOL</h2></div>
+        <span id="quoteStatus" class="outline-tag">SIN CONSULTAR</span>
+      </div>
+      <div class="live-control">
+        <div class="live-left">
+          <span class="live-pulse" id="livePulse" aria-hidden="true"></span>
+          <div><strong id="liveStatus" role="status" aria-live="polite">Conectando al mercado…</strong>
+          <small id="liveDetail">Ticker + heartbeat · actualización automática cuando hay operaciones</small></div>
+        </div>
+        <button id="liveToggle" type="button" aria-pressed="true">Detener</button>
+      </div>
+      <div class="live-metadata" aria-label="Medición del flujo">
+        <span id="liveCount">0 actualizaciones</span>
+        <span id="liveAge">Sin operaciones recibidas</span>
+      </div>
+      <div class="quote-grid">
+        <button type="button" class="quote-tile active" data-quote-asset="BTC-USD" aria-pressed="true">
+          <span>BTC / USD</span><strong id="quoteBTC">—</strong><small id="quoteBTCStatus">Sin cotización</small>
+        </button>
+        <button type="button" class="quote-tile" data-quote-asset="ETH-USD" aria-pressed="false">
+          <span>ETH / USD</span><strong id="quoteETH">—</strong><small id="quoteETHStatus">Sin cotización</small>
+        </button>
+        <button type="button" class="quote-tile" data-quote-asset="SOL-USD" aria-pressed="false">
+          <span>SOL / USD</span><strong id="quoteSOL">—</strong><small id="quoteSOLStatus">Sin cotización</small>
+        </button>
+      </div>
+      <small id="quoteTime" class="quote-time">Los precios se mostrarán aquí cuando lleguen de la fuente pública. Toca cualquier activo para seleccionarlo.</small>
+      <details id="marketDetails" class="market-details">
+        <summary>Ver operaciones recientes y procedencia</summary>
+      <div class="live-sparkline-block">
+        <div class="live-graph-head">
+          <strong>Operaciones recientes <span id="liveGraphAsset">BTC/USD</span></strong>
+          <span id="liveGraphLabel">Esperando ticks reales</span>
+        </div>
+        <canvas id="liveChart" height="108" aria-label="Últimas operaciones recibidas en tiempo real"></canvas>
+      </div>
+      <p id="livePreview" class="live-preview">El precio se actualiza al llegar una operación. El cálculo M001 usa velas cerradas y solo recalcula un escenario indicativo si ya existe un modelo.</p>
+        <small id="quoteTrace" class="helper">Sin trazas de cotización.</small>
+      </details>
+      <div class="quick-guide">Escoge un activo y pulsa «Analizar ahora». El sistema se encarga de comprobar el historial.</div>
+    </article>
+</details>
+    <details id="studyDetails" class="card advanced-fold"><summary>Estudio histórico del estado de mercado · M004</summary>    <article class="card regime-card" aria-label="Estado del mercado M004">
+      <div class="section-head">
+        <div><small class="eyebrow">M004 · ESTADOS APRENDIDOS</small>
+          <h2>Régimen de mercado</h2></div>
+        <span id="regimeTag" class="outline-tag">SIN OBSERVAR</span>
+      </div>
+      <div class="regime-metrics">
+        <div><small>VOLATILIDAD</small><strong id="regimeVol">—</strong></div>
+        <div><small>TENDENCIA</small><strong id="regimeTrend">—</strong></div>
+        <div><small>ACTIVIDAD</small><strong id="regimeActivity">—</strong></div>
+      </div>
+      <p id="regimeStatus" class="helper" role="status" aria-live="polite">
+        Actualiza el historial para observar el régimen con velas cerradas.
+      </p>
+      <button id="regimeStudy" type="button" class="pde-primary secondary">
+        Comprobar si el régimen ayuda a predecir la amplitud
+      </button>
+      <p id="regimeEvidence" class="helper" role="status">
+        Comparará el modelo con una referencia histórica en períodos posteriores.
+      </p>
+      <details class="raw-details">
+        <summary>Ver entrenamiento, errores y prueba histórica M004</summary>
+        <pre id="regimeRaw">No se ejecutó M004.</pre>
+      </details>
+      <p class="fineprint">Estado estadístico observado, no explicación causal.
+        La prueba histórica no valida precisión futura ni modifica los precios de M001/F001.
+        El botón nunca envía órdenes a Robinhood.</p>
+    </article>
+
+</details>
     <div class="source-intro">
       <div><small class="eyebrow">ARCHIVO Y PROCEDENCIA</small>
         <h2>Qué sabe Laplace realmente</h2>
@@ -524,6 +503,6 @@
       en el repositorio de archivo. Ni BIS, ni FINRA, ni DeFi predicen el precio desde una sola captura.</p>
     </article>
   </section>
-  <footer>LAPLACE · DEMONIO DIGITAL · INVESTIGACIÓN · NO TRADING</footer>
+  <footer>LAPLACE · Escenarios experimentales · Datos con procedencia</footer>
 </main>
 </body></html>

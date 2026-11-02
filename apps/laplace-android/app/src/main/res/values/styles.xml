@@ -3,9 +3,9 @@
   <style name="Theme.Laplace" parent="android:style/Theme.Material.NoActionBar">
     <item name="android:fontFamily">sans</item>
     <item name="android:windowLightStatusBar">false</item>
-    <item name="android:statusBarColor">#06111E</item>
-    <item name="android:navigationBarColor">#06111E</item>
+    <item name="android:statusBarColor">#101318</item>
+    <item name="android:navigationBarColor">#101318</item>
     <item name="android:windowActionModeOverlay">true</item>
-    <item name="android:colorAccent">#68DAFF</item>
+    <item name="android:colorAccent">#E8AF7E</item>
   </style>
 </resources>

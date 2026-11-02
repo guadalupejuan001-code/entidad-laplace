@@ -54,33 +54,40 @@ window.LaplaceBridge.analyzeXN01=function(id,asset,encoded){
  setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,xn01:result}),10);
 };`;
 
-const removeSources=htmlSource.replace(/<link rel="stylesheet" href="style.css">/,
-  '<style>'+read('style.css')+'</style>')
-  .replace(/<script src="[A-Za-z0-9.-]+\.js" defer><\/script>/g,'');
-const sources=['world.js','market-universe.js','marea.js','regime-m004.js',
-  'm004-evidence.js','engine.js',
-  'math-pde.js','fusion-integral.js','pde-panel.js','live-feed.js','app.js'];
-const loaded=removeSources.replace('</body>',
-  '<script>'+mock+mockXN01+'</script>'+
-  sources.map(name=>'<script>'+read(name).replace(/<\/script>/g,'<\\/script>')+'</script>').join('')+
-  '</body>');
+const http=require('node:http');
+const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css',
+  '.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml'};
+const server=http.createServer((req,res)=>{
+  const name=req.url.split('?')[0]==='/'?'index.html':req.url.split('?')[0].slice(1);
+  if(name==='favicon.ico'){res.writeHead(204);res.end();return}
+  if(!/^[A-Za-z0-9.-]+$/.test(name)){res.writeHead(404);res.end();return}
+  const file=path.join(root,name);
+  if(!fs.existsSync(file)){res.writeHead(404);res.end();return}
+  res.setHeader('Content-Type',mime[path.extname(name)]??'application/octet-stream');
+  if(name==='index.html')res.end(read(name).replace('<head>','<head><script>'+mock+mockXN01+'</script>'));
+  else res.end(fs.readFileSync(file));
+});
 const chromePaths=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/chromium',
   '/opt/google/chrome/chrome'].filter(Boolean);
 const chrome=chromePaths.find(p=>fs.existsSync(p));
 assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI');
 (async()=>{
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const origin='http://127.0.0.1:'+server.address().port;
   const browser=await chromium.launch({executablePath:chrome,headless:true,args:['--no-sandbox']});
   const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:1});
   const errors=[];
   page.on('pageerror',e=>errors.push(String(e)));
   page.on('console',msg=>{if(msg.type()==='error')errors.push('console: '+msg.text())});
   try{
-    await page.setContent(loaded,{waitUntil:'domcontentloaded'});
+    await page.goto(origin,{waitUntil:'networkidle'});
+    fs.mkdirSync(path.resolve(__dirname,'../build/ux-previews'),{recursive:true});
+    await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-3.9-INICIO-SIMULADO.png')});
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
-    assert.equal(await page.locator('[data-tab]').count(),5);
+    assert.equal(await page.locator('[data-tab]').count(),4);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'3.8');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'3.9');
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
@@ -89,6 +96,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(navHeight>=55&&navHeight<=100,'Barra móvil fuera de escala: '+navHeight);
     assert.equal(await page.locator('[data-minutes]').count(),16);
     assert.equal(await page.locator('#horizonSelect option').count(),16);
+    await page.locator('[data-tab="world"]').click();
+    await page.locator('#quoteDetails > summary').click();
     // La carga inicial está simulada, pero el controller debe recibir datos.
     await page.waitForFunction(()=>document.querySelector('#quoteBTC').textContent!=='—'&&
       !document.querySelector('#refresh').disabled,{timeout:25000});
@@ -127,6 +136,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
         await page.locator('#noticeText').innerText());
     }
     assert.match(await page.locator('#chartComment').innerText(),/Historial real cargado/);
+    await page.locator('#studyDetails > summary').click();
     assert.match(await page.locator('#regimeStatus').innerText(),/Estado calculado|régimen|velas/i);
     assert.match(await page.locator('#regimeVol').innerText(),/Alta|Media|Baja/);
     await page.locator('#regimeStudy').click();
@@ -135,6 +145,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#regimeRaw').textContent(),/laplace-m004-regime-learning-v1/);
     assert.match(await page.locator('#regimeEvidence').innerText(),/MAE amplitud|resultados evaluados/i);
     assert.match(await page.locator('#regimeEvidence').innerText(),/referencia/i);
+    await page.locator('[data-tab="panel"]').click();
     await page.locator('#smartRun').click();
     await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',null,{timeout:20000});
     assert.equal(await page.locator('#smartResult').getAttribute('data-state'),'complete',
@@ -144,7 +155,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const captures=path.resolve(__dirname,'../build/ux-previews');
     fs.mkdirSync(captures,{recursive:true});
     await page.locator('[data-tab="panel"]').click();
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.5-MOVIL-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-MOVIL-SIMULADO.png')});
     await page.locator('.xn01-card > summary').click();
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
@@ -190,10 +201,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(await page.locator('#capabilityRows .signal-row').count()>0);
     await page.locator('#capabilityRefresh').click();
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.5-FUENTES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-FUENTES-SIMULADO.png')});
     const overflowSources=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflowSources<=3,'Fuentes desbordan ancho de 393 px: '+overflowSources);
-    await page.locator('[data-tab="equation"]').click();
+    await page.locator('#openMath').click();
     await page.selectOption('#pdePreset','quadratic');
     await page.locator('#pdeSolve').click();
     assert.match(await page.locator('#pdeStatus').innerText(),/resuelto/i);
@@ -226,6 +237,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>document.querySelector('#selectedQuote').textContent!=='—'&&
       !document.querySelector('#refresh').disabled,null,{timeout:25000});
     assert.match(await page.locator('#selectedProvider').innerText(),/YAHOO|SIMULACION/i);
+    if(!await page.locator('.market-extras').evaluate(e=>e.open))await page.locator('.market-extras > summary').click();
     await page.locator('#favoriteToggle').click();
     assert.equal(await page.locator('#favoriteToggle').getAttribute('aria-pressed'),'false');
     await page.locator('#favoriteToggle').click();
@@ -236,6 +248,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'true');
     await page.locator('#autoQuoteToggle').click();
     assert.equal(await page.locator('#autoQuoteToggle').getAttribute('aria-pressed'),'false');
+    await page.locator('[data-tab="panel"]').click();
     await page.locator('#smartRun').click();
     await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state!=='working',
       null,{timeout:25000});
@@ -251,15 +264,29 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#mareaIntro').textContent(),/Bitcoin|M003/);
     assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
     assert.equal(await page.locator('#xn01Run').isDisabled(),true);
-    await page.screenshot({path:path.join(captures,'LAPLACE-3.7-ACCIONES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-ACCIONES-SIMULADO.png')});
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#asset','BTC-USD');
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
     await page.locator('[data-tab="tests"]').click();
+    if(!await page.locator('#backtestDetails').evaluate(e=>e.open))await page.locator('#backtestDetails > summary').click();
     await page.locator('#validationRun').click();
+    await page.waitForFunction(()=>!document.querySelector('#validationRun').disabled,null,{timeout:25000});
     assert.match(await page.locator('#validationStatus').innerText(),/Evaluados|Validación/i);
+    await page.locator('.history-maintenance > summary').click();
     await page.locator('#clearHistory').click();
+    await page.locator('#cancelClear').click();
+    assert.equal(await page.locator('#clearConfirm').isVisible(),false);
+    await page.locator('#clearHistory').click();
+    await page.locator('#confirmClear').click();
     assert.match(await page.locator('#history').innerText(),/Sin candidatos/);
+    await page.locator('[data-tab="panel"]').click();
+    await page.evaluate(()=>{window.__quote=window.LaplaceBridge.fetchQuote;window.LaplaceBridge.fetchQuote=()=>{}});
+    if(!await page.locator('.market-extras').evaluate(e=>e.open))await page.locator('.market-extras > summary').click();
+    await page.locator('#refresh').click();
+    await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:5000});
+    assert.equal(await page.locator('#smartRun').isDisabled(),false,'El ticker no puede bloquear las velas');
+    await page.evaluate(()=>{window.LaplaceBridge.fetchQuote=window.__quote});
     // Cambiar resolución exige otro lote y desactiva botones hasta recibirlo.
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#horizonSelect','129600');
@@ -267,10 +294,12 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     // Error de fuente REAL de interfaz: debe verse y no inventar resultado.
     await page.evaluate(()=>{window.LaplaceBridge.fetchCandles=(id,asset,step,days)=>{
       setTimeout(()=>window.LaplaceMobile.receive(id,{ok:false,error:'HTTP 429 simulado'}),15);}});
+    if(!await page.locator('.market-extras').evaluate(e=>e.open))await page.locator('.market-extras > summary').click();
     await page.locator('#refresh').click();
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,{timeout:25000});
     assert.match(await page.locator('#noticeText').innerText(),/HTTP 429/i);
     assert.equal(await page.locator('#forecast').isDisabled(),true);
+    await page.locator('[data-tab="panel"]').click();
     await page.locator('#smartRun').click();
     await page.waitForFunction(()=>document.querySelector('#smartResult').dataset.state==='error',null,{timeout:10000});
     assert.match(await page.locator('#smartExplain').innerText(),/HTTP 429/i);
@@ -279,14 +308,70 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.setViewportSize({width:320,height:750});
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflow<=3,'Desbordamiento horizontal de '+overflow+' px');
+    // Registro prospectivo: fixtures SIMULADAS, nunca datos de mercado reales.
+    await page.evaluate(()=>{
+      const now=Math.floor(Date.now()/1000/300)*300;
+      const f={id:'fixture',asset:'BTC-USD',minutes:5,granularity:300,market:'crypto',
+        issuedAt:now-2400,sourceTime:now-2400,targetAt:now-2100,estimate:100.2,
+        baseline:90,low:80,high:110,status:'verified',actual:100,observedCloseAt:now-2100};
+      const records=Array.from({length:42},(_,i)=>({...f,id:'verified-'+i,
+        estimate:i===0?85:100.2}));
+      records.push({...f,id:'btc-pending',status:'pending',targetAt:now-600});
+      records.push({...f,id:'eth-pending',asset:'ETH-USD',minutes:60,
+        granularity:3600,status:'pending',issuedAt:now-14400,sourceTime:now-14400,
+        targetAt:Math.floor(now/3600)*3600-3600});
+      localStorage.setItem('laplace-mobile-forecasts-v2',JSON.stringify(records));
+    });
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
+    await page.locator('[data-tab="tests"]').click();
+    await page.locator('#syncHistory').click();
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('laplace-mobile-forecasts-v2'))
+      .every(f=>f.status==='verified'),null,{timeout:15000});
+    assert.equal(await page.locator('#asset').inputValue(),'BTC-USD');
+    assert.equal(await page.locator('.history-entry').count(),20);
+    await page.locator('#historyMore').click();assert.equal(await page.locator('.history-entry').count(),40);
+    await page.locator('#historyMore').click();assert.equal(await page.locator('.history-entry').count(),44);
+    assert.equal(await page.locator('#historyMore').isVisible(),false);
+    const allMetrics=await page.locator('#historySummary').innerText();
+    await page.locator('#historyFilter').selectOption('missed');
+    assert.equal(await page.locator('#historySummary').innerText(),allMetrics,
+      'Filtrar aciertos no puede mejorar artificialmente las métricas');
+    assert.ok(await page.locator('.history-entry').count()>=1);
+    await page.locator('.history-entry > summary').first().click();
+    assert.match(await page.locator('.history-entry[open]').innerText(),/Error relativo|Error absoluto/);
+    await page.locator('#historyFilter').selectOption('all');
+    await page.locator('#historyAsset').selectOption('ETH-USD');
+    assert.equal(await page.locator('.history-entry').count(),1);
+    assert.match(await page.locator('#history').innerText(),/ETH-USD/);
+    await page.locator('#historyAsset').selectOption('all');
+    const downloaded=page.waitForEvent('download');await page.locator('#exportHistory').click();
+    const download=await downloaded,exported=JSON.parse(fs.readFileSync(await download.path(),'utf8'));
+    assert.equal(exported.records.length,44);assert.equal(exported.records[1].estimate,100.2);
+    await page.screenshot({path:path.join(captures,'LAPLACE-3.9-REGISTRO-SIMULADO.png')});
+    await page.locator('[data-tab="panel"]').click();
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
+    assert.equal(await page.locator('#motionToggle').isDisabled(),true);
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    await page.locator('[data-tab="world"]').click();
+    assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
+    await page.setViewportSize({width:393,height:852});
+    await page.locator('[data-tab="panel"]').click();
+    const bounds=await page.locator('#smartRun').boundingBox(),nav=await page.locator('.tabs').boundingBox();
+    assert.ok(bounds.y+bounds.height<nav.y,'Analizar ahora debe ser accesible en la primera pantalla');
     assert.deepEqual(errors,[],'La interfaz emitió errores Javascript');
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
       capabilities:20,smartAnalysis:true,moduleFilters:true,validationNow:true,F001:true,rowsF001:14,fallbackHTTP429:true,noHorizontalOverflow:true,
       stream:true,stockQuotes:true,assetCount:31,stockMultiHorizon:true,
       robinhoodLink:true,localFavorites:true,livePauseResume:true,
-      streamOutOfOrderIgnored:true,jsErrors:errors.length}));
+      streamOutOfOrderIgnored:true,ledgerCrossAssetAndResolution:true,ledgerExport44:true,ledgerPagination:true,reducedMotion:true,jsErrors:errors.length}));
+  }catch(error){
+    await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-3.9-FAILURE.png')});
+    throw error;
   }finally{
     await browser.close();
+    server.close();
   }
 })().catch(error=>{console.error(error);process.exitCode=1});

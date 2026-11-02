@@ -6,14 +6,15 @@ const root=path.resolve(__dirname,'../app/src/main/assets');
 const read=x=>fs.readFileSync(path.join(root,x),'utf8');
 test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=>{
   const html=read('index.html');
-  for(const tab of ['panel','tests','world','equation','integral'])
+  for(const tab of ['panel','tests','world','integral'])
     assert.ok(html.includes('data-tab="'+tab+'"'));
   for(const code of ['BTC-USD','ETH-USD','SOL-USD'])
     assert.ok(html.includes('data-quote-asset="'+code+'"'));
   for(const id of ['train','test','evaluate','forecast','refresh','worldSearch',
     'worldObservations','worldCaptureCount','worldSourceCount','history'])
     assert.ok(html.includes('id="'+id+'"'));
-  assert.ok(html.indexOf('class="quote-console"')<html.indexOf('class="hero"'));
+  assert.match(html,/id="openMath"/);
+  assert.ok(!html.includes('data-tab="equation"'));
   assert.equal((html.match(/data-minutes="\d+"/g)||[]).length,16);
   assert.match(html,/5 min/);assert.match(html,/90 d/);
   assert.match(html,/id="notice"/);
@@ -24,7 +25,7 @@ test('Panel real conserva cotizaciones, vórtice, modelo, mundo y ecuación',()=
     assert.ok(html.includes('id="'+id+'"'),id);
   assert.ok(html.includes('src="live-feed.js"'));
   assert.ok(html.includes('id="horizonSelect"'));
-  assert.ok(html.indexOf('class="card selector"')<html.indexOf('class="hero"'));
+  assert.ok(html.includes('class="hero portal-banner"'));
   assert.ok(html.indexOf('class="actions legacy-actions"')<html.indexOf('class="two-metrics"'));
   for(const id of ['smartRun','smartResult','validationRun','capabilityFilter','jumpSignals'])
     assert.ok(html.includes('id="'+id+'"'),id);
@@ -60,15 +61,15 @@ test('La UI separa ticker, velas, referencia y candidato; no simula datos mundia
   assert.match(world,/world-ef002-verified-v2/);
   assert.match(world,/forecast_model_uses_world:false/);
 });
-test('Vórtice animado mantiene acceso reducido',()=>{
-  const html=read('index.html'),css=read('style.css');
-  assert.match(html,/class="swirl"/);
-  assert.match(html,/class="moving-particles"/);
-  assert.equal((html.match(/<animateMotion /g)||[]).length,4);
-  assert.match(css,/@keyframes dataFlow/);
-  assert.match(css,/@keyframes rotateVortex/);
+test('Video decorativo respeta movimiento reducido y se pausa al navegar',()=>{
+  const html=read('index.html'),js=read('decoration.js'),css=read('style.css');
+  assert.match(html,/id="portalVideo" muted autoplay loop playsinline/);
+  assert.match(html,/data-src="laplace-portal.mp4"/);
+  assert.match(js,/prefers-reduced-motion: reduce/);
+  assert.match(js,/visibilitychange/);
+  assert.match(js,/video.pause/);
+  assert.match(js,/page!=='panel'/);
   assert.match(css,/prefers-reduced-motion:reduce/);
-  assert.match(css,/moving-particles\{display:none\}/);
 });
 test('PDE sigue funcionando sin contaminar M001 ni añadir un 3er puente',()=>{
   const html=read('index.html'),js=read('app.js');
@@ -78,5 +79,5 @@ test('PDE sigue funcionando sin contaminar M001 ni añadir un 3er puente',()=>{
   assert.match(html,/id="pdeSolve"/);
   assert.match(html,/id="graphSolve"/);
   assert.match(js,/function show\(page\)/);
-  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,5);
+  assert.equal((java.match(/@JavascriptInterface/g)||[]).length,6);
 });

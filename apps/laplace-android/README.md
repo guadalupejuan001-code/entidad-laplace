@@ -1,3 +1,14 @@
+## LAPLACE Android 3.9 — herramienta y registro de resultados
+
+Cuatro destinos: Analizar, Plazos, Historial y Datos. La animación aportada es sólo estética, local y pausable. Icono triangular refinado y paleta carbón, marfil y cobre.
+
+El registro compara escenarios guardados con cierres posteriores: dirección, error USD y %, cercanía configurable, rango, fuente, fechas y referencia de persistencia. Comprueba activos y resoluciones pendientes sin cambiar la selección; conserva entradas sin cierre disponible y exporta todas las cifras en JSON. El laboratorio matemático se conserva en Datos como herramienta avanzada.
+
+Véase [diagnóstico y pruebas](../../docs/ANDROID_3_9_DIAGNOSTICO.md).
+Instalación de prueba paralela: `com.entidadlaplace.mobile.tool39`, versionCode 14, **LAPLACE 3.9**. No transfiere los historiales de otras instalaciones.
+
+---
+
 ## LAPLACE Android 3.8 — regímenes y aprendizaje M004
 
 La nueva versión incorpora inteligencia estadística experimental, no pesos

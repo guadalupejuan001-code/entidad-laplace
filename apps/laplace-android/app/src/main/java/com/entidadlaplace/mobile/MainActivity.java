@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -43,13 +44,15 @@ public final class MainActivity extends Activity {
     private final ExecutorService io=Executors.newFixedThreadPool(4);
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
     private static final int MAX_QUOTE_BYTES=64*1024;
+    private static final int EXPORT_HISTORY=812;
+    private String pendingExport;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(Color.rgb(6,17,30));
-        getWindow().setNavigationBarColor(Color.rgb(6,17,30));
+        getWindow().setStatusBarColor(Color.rgb(16,19,24));
+        getWindow().setNavigationBarColor(Color.rgb(16,19,24));
         webView=new WebView(this);
-        webView.setBackgroundColor(Color.rgb(6,16,29));
+        webView.setBackgroundColor(Color.rgb(16,19,24));
         webView.setLayoutParams(new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
         WebSettings settings=webView.getSettings();
@@ -122,6 +125,22 @@ public final class MainActivity extends Activity {
     }
 
     private final class MarketBridge {
+        @JavascriptInterface
+        public void exportHistory(String json){
+            if(json==null||json.length()>8*1024*1024){
+                exportFeedback("El registro excede el tamaño de exportación permitido.");return;
+            }
+            runOnUiThread(()->{
+                if(pendingExport!=null){exportFeedback("Ya hay una exportación abierta.");return;}
+                pendingExport=json;
+                Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/json");
+                intent.putExtra(Intent.EXTRA_TITLE,"LAPLACE-registro.json");
+                try{startActivityForResult(intent,EXPORT_HISTORY);}
+                catch(Exception error){pendingExport=null;exportFeedback("No se pudo abrir el selector de archivos.");}
+            });
+        }
         @JavascriptInterface
         public void fetchCandles(String requestId,String asset,int granularity,int days){
             int expectedDays=MarketCatalog.days(granularity,asset);
@@ -355,6 +374,34 @@ public final class MainActivity extends Activity {
                 if(webView!=null)webView.evaluateJavascript(javascript,null);
             });
         }catch(Exception ignored){}
+    }
+    private void exportFeedback(String message){
+        runOnUiThread(()->{
+            if(webView!=null)webView.evaluateJavascript(
+                "window.LaplaceExportResult&&window.LaplaceExportResult("+
+                JSONObject.quote(message)+")",null);
+        });
+    }
+    @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode!=EXPORT_HISTORY)return;
+        final String json=pendingExport;pendingExport=null;
+        if(resultCode!=RESULT_OK||data==null||data.getData()==null){
+            exportFeedback("Exportación cancelada. Tu registro sigue guardado.");return;
+        }
+        final Uri destination=data.getData();
+        io.execute(()->{
+            try(OutputStream out=getContentResolver().openOutputStream(destination,"wt")){
+                if(out==null||json==null)throw new IOException("Archivo no disponible");
+                out.write(json.getBytes(StandardCharsets.UTF_8));
+                exportFeedback("Registro exportado con sus cifras originales.");
+            }catch(Exception error){exportFeedback("No se pudo exportar el archivo. Tu registro sigue guardado.");}
+        });
+    }
+    @Override public void onBackPressed(){
+        if(webView==null){super.onBackPressed();return;}
+        webView.evaluateJavascript("Boolean(window.LaplaceNavigation&&window.LaplaceNavigation.back())",
+            handled->{if(!"true".equals(handled))MainActivity.super.onBackPressed();});
     }
     @Override protected void onDestroy(){
         if(liveFeed!=null){
