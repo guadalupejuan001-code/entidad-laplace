@@ -497,11 +497,13 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
         estimate:1000+e,actual:1000,baseline:900,status:'verified'}));
       records.push({...records[0],id:'another-horizon',minutes:60,estimate:1000});
       records.push({...records[0],id:'another-asset',asset:'ETH-USD',estimate:1001});
+      records.push({...records[0],id:'stock-session',asset:'AAPL',market:'equity',minutes:1440,
+        granularity:86400,horizonBars:1,targetAt:null,estimate:1000});
       localStorage.setItem('laplace-mobile-forecasts-v2',JSON.stringify(records));
     });
     await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();
     assert.match(await page.locator('#historyScope').innerText(),/Resumen de error relativo/);
-    assert.equal(await page.locator('.history-group').count(),3);
+    assert.equal(await page.locator('.history-group').count(),4);
     await page.locator('#historyAsset').selectOption('BTC-USD');
     await page.locator('#historyHorizon').selectOption('5');
     const statistics=await page.locator('#historySummary').innerText();
@@ -515,6 +517,9 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3));
     await page.locator('#historySummary').scrollIntoViewIfNeeded();
     await page.screenshot({path:path.join(captures,'LAPLACE-4.2-PRECISION-SIMULADA.png')});
+    await page.locator('#historyAsset').selectOption('AAPL');
+    assert.match(await page.locator('#historyScope').innerText(),/1 sesión/);
+    assert.match(await page.locator('#historyHorizon').innerText(),/1 sesión/);
     await page.locator('[data-tab="panel"]').click();
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>document.querySelector('#portalVideo').paused&&document.querySelector('#motionToggle').disabled,null,{timeout:5000});

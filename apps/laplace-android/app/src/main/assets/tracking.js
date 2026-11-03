@@ -94,7 +94,7 @@ function summarize(records,tolerance=.5){
     unknownTime:n-delayed.length,maxDelaySeconds:delayed.length?delayed.reduce((a,b)=>Math.max(a,b),0):null,
     worst:worst?{id:worst.f.id,asset:worst.f.asset,minutes:worst.f.minutes,
       absoluteError:worst.m.absoluteError,errorPercent:worst.m.errorPercent}:null,
-    price:homogeneous?{asset:pairs[0].f.asset,minutes:pairs[0].f.minutes,
+    price:homogeneous?{asset:pairs[0].f.asset,minutes:pairs[0].f.minutes,market:pairs[0].f.market??'crypto',
       mean:absolute.length?average(absolute):null,median:median(absolute),p90:p90(absolute),
       max:absolute[n-1],baselineMean:average(measured.map(m=>m.baselineError)),
       improvementPercent:average(measured.map(m=>m.baselineError))>0?

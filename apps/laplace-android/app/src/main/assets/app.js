@@ -1612,9 +1612,10 @@ function renderHistory(){
   const byAsset=log.filter(f=>assetSelect.value==='all'||f.asset===assetSelect.value);
   const horizonSelect=$('historyHorizon'),selectedHorizon=horizonSelect.value;
   const horizons=[...new Set(byAsset.map(f=>f.minutes))].sort((a,b)=>a-b);
-  const horizonLabel=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
+  const horizonLabel=(m,market)=>market==='equity'&&m>=1440?
+    (m===1440?'1 sesión':m/1440+' sesiones'):(E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min');
   horizonSelect.replaceChildren(new Option('Todos los plazos','all'),
-    ...horizons.map(m=>new Option(horizonLabel(m),String(m))));
+    ...horizons.map(m=>new Option(horizonLabel(m,assetSelect.value==='all'?null:byAsset[0]?.market),String(m))));
   horizonSelect.value=horizons.some(m=>String(m)===selectedHorizon)?selectedHorizon:'all';
   const base=byAsset.filter(f=>horizonSelect.value==='all'||String(f.minutes)===horizonSelect.value);
   const tolerance=Number($('historyTolerance').value),summary=T.summarize(base,tolerance);
@@ -1626,7 +1627,7 @@ function renderHistory(){
     {median:'medianErrorPercent',mean:'meanErrorPercent',p90:'p90ErrorPercent',max:'maxErrorPercent'}[key]]);
   const improvement=summary.price?summary.price.improvementPercent:summary.improvementPercent;
   $('historyScope').textContent=summary.price?
-    summary.price.asset+' · '+horizonLabel(summary.price.minutes)+' · errores de precio en USD.':
+    summary.price.asset+' · '+horizonLabel(summary.price.minutes,summary.price.market)+' · errores de precio en USD.':
     'Resumen de error relativo. Elige un activo y plazo, o abre la comparación, para ver errores en USD sin mezclar series.';
   for(const [value,name] of [[amount('median'),'Error típico · mediana'],
     [amount('max'),'Mayor error observado'],[amount('mean'),'Error medio · MAE'],
@@ -1650,7 +1651,7 @@ function renderHistory(){
   $('historyGroups').replaceChildren();
   for(const group of T.groups(base,tolerance)){
     const card=make('article','','history-group');card.dataset.asset=group.asset;card.dataset.minutes=String(group.minutes);
-    card.append(make('strong',group.asset+' · '+horizonLabel(group.minutes)),
+    card.append(make('strong',group.asset+' · '+horizonLabel(group.minutes,group.market)),
       make('small',group.evaluated+' evaluados · '+group.pending+' pendientes · velas de '+group.granularity/60+' min'));
     const dl=make('dl','','record-facts');
     for(const [key,value] of [['Error típico',group.price?money(group.price.median):'—'],
