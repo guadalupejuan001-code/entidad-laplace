@@ -1322,9 +1322,39 @@ async function syncHistory(){
   }finally{syncBusy=false;$('syncHistory').disabled=false;$('syncHistory').textContent='Comprobar pendientes'}
 }
 window.LaplaceExportResult=message=>{$('historyStatus').textContent=String(message)};
+function acceptHistoryImport(text,name){
+  try{
+    const result=T.importEvidence(log,text,{allowedAssets:E.ALLOWED_ASSETS,name});
+    if(result.added){
+      // Commit storage first. Quota failures leave the original in-memory log intact.
+      localStorage.setItem(STORAGE,JSON.stringify(result.records));
+      log=result.records;storageError=null;historyLimit=20;renderHistory();
+    }
+    $('historyStatus').textContent='Importados '+result.added+' registros · '+result.duplicates+
+      ' identificadores ya existentes conservados. Las métricas se recalcularon; los resultados importados proceden del archivo.';
+  }catch(error){$('historyStatus').textContent='No se importó ningún registro: '+error.message;}
+  finally{$('importHistory').disabled=false;}
+}
+window.LaplaceImportResult=payload=>{
+  if(payload?.ok)acceptHistoryImport(payload.text,payload.name??'Registro seleccionado en Android');
+  else{
+    $('importHistory').disabled=false;
+    $('historyStatus').textContent=payload?.cancelled?'Importación cancelada. Tu registro sigue guardado.':
+      'No se importó: '+String(payload?.error??'No se pudo leer el archivo.');
+  }
+};
+function importHistory(){
+  if(window.LaplaceBridge?.importHistory){
+    $('importHistory').disabled=true;
+    try{window.LaplaceBridge.importHistory();}
+    catch(error){window.LaplaceImportResult({ok:false,error:error.message});}
+  }else $('historyImportFile').click();
+}
 function exportHistory(){
-  const text=JSON.stringify({schema:'laplace-local-evidence-v3',exportedAt:new Date().toISOString(),
+  const text=JSON.stringify({schema:'laplace-local-evidence-v4',exportedAt:new Date().toISOString(),
     records:log,metrics:log.map(f=>({id:f.id,...T.metrics(f)})),
+    summary:T.summarize(log,Number($('historyTolerance').value)),
+    groups:T.groups(log,Number($('historyTolerance').value)),
     note:'Cierre OHLCV de referencia, no operación al segundo exacto ni rentabilidad de una cartera.'},null,2);
   if(window.LaplaceBridge?.exportHistory){
     try{window.LaplaceBridge.exportHistory(text);return}catch(error){status('Exportación no disponible: '+error.message,'error');return}
@@ -1579,18 +1609,56 @@ function renderHistory(){
   const available=[...new Set(log.map(f=>f.asset))].sort();
   assetSelect.replaceChildren(new Option('Todos los activos','all'),...available.map(a=>new Option(a,a)));
   assetSelect.value=available.includes(selected)?selected:'all';
-  const base=log.filter(f=>assetSelect.value==='all'||f.asset===assetSelect.value);
+  const byAsset=log.filter(f=>assetSelect.value==='all'||f.asset===assetSelect.value);
+  const horizonSelect=$('historyHorizon'),selectedHorizon=horizonSelect.value;
+  const horizons=[...new Set(byAsset.map(f=>f.minutes))].sort((a,b)=>a-b);
+  const horizonLabel=m=>E.HORIZONS.find(h=>h.minutes===m)?.label??m+' min';
+  horizonSelect.replaceChildren(new Option('Todos los plazos','all'),
+    ...horizons.map(m=>new Option(horizonLabel(m),String(m))));
+  horizonSelect.value=horizons.some(m=>String(m)===selectedHorizon)?selectedHorizon:'all';
+  const base=byAsset.filter(f=>horizonSelect.value==='all'||String(f.minutes)===horizonSelect.value);
   const tolerance=Number($('historyTolerance').value),summary=T.summarize(base,tolerance);
   $('historyCount').textContent=log.length+' REGISTROS';
   const make=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};
   const root=$('historySummary');root.replaceChildren();
   const pct=n=>Number.isFinite(n)?n.toFixed(3)+' %':'—';
-  for(const [value,name] of [[summary.evaluated,'Evaluados'],[summary.pending,'Pendientes'],
-    [summary.evaluated?summary.correctDirections+'/'+summary.evaluated:'—','Direcciones acertadas'],
+  const amount=key=>summary.price?money(summary.price[key]):pct(summary[
+    {median:'medianErrorPercent',mean:'meanErrorPercent',p90:'p90ErrorPercent',max:'maxErrorPercent'}[key]]);
+  const improvement=summary.price?summary.price.improvementPercent:summary.improvementPercent;
+  $('historyScope').textContent=summary.price?
+    summary.price.asset+' · '+horizonLabel(summary.price.minutes)+' · errores de precio en USD.':
+    'Resumen de error relativo. Elige un activo y plazo, o abre la comparación, para ver errores en USD sin mezclar series.';
+  for(const [value,name] of [[amount('median'),'Error típico · mediana'],
+    [amount('max'),'Mayor error observado'],[amount('mean'),'Error medio · MAE'],
+    [amount('p90'),'Error P90 · desde 10 casos'],[summary.evaluated,'Evaluados'],[summary.pending,'Pendientes'],
     [summary.evaluated?summary.near+'/'+summary.evaluated:'—','Con error ≤ '+tolerance+' %'],
-    [pct(summary.meanErrorPercent),'Error absoluto medio (%)'],
     [summary.evaluated?summary.beatsBaseline+'/'+summary.evaluated:'—','Mejores que precio inicial']]){
     const tile=make('div','');tile.append(make('strong',String(value)),make('small',name));root.append(tile);
+  }
+  $('historyComparison').textContent=summary.evaluated?
+    (summary.price?'Error medio: '+money(summary.price.mean)+' · mantener el precio inicial: '+money(summary.price.baselineMean):
+      'Error relativo medio: '+pct(summary.meanErrorPercent)+' · mantener el precio inicial: '+pct(summary.meanBaselineErrorPercent))+
+    (Number.isFinite(improvement)?' · '+(improvement>=0?'Reducción':'Aumento')+
+      ' del error '+(summary.price?'medio':'relativo')+': '+Math.abs(improvement).toFixed(1)+' %.':' · Sin reducción porcentual calculable: la referencia tuvo error cero.'):
+    'Todavía no hay cierres evaluados para medir el error.';
+  $('historyTiming').textContent='Coinciden con la hora objetivo: '+summary.exactTime+' · cierres posteriores: '+summary.delayedTime+
+    ' · plazo bursátil o fecha no comparable: '+summary.unknownTime+
+    (summary.maxDelaySeconds>0?' · retraso máximo del cierre: '+Math.round(summary.maxDelaySeconds)+' s.':'.');
+  $('historySecondary').textContent='Direcciones acertadas: '+summary.correctDirections+'/'+summary.evaluated+
+    '. Cambiar el filtro de resultados sólo cambia la lista; las métricas conservan todos los casos del activo y plazo.'+
+    (summary.imported?' '+summary.imported+' registros importados conservan los resultados del archivo; no se han reconsultado por importarlos.':'');
+  $('historyGroups').replaceChildren();
+  for(const group of T.groups(base,tolerance)){
+    const card=make('article','','history-group');card.dataset.asset=group.asset;card.dataset.minutes=String(group.minutes);
+    card.append(make('strong',group.asset+' · '+horizonLabel(group.minutes)),
+      make('small',group.evaluated+' evaluados · '+group.pending+' pendientes · velas de '+group.granularity/60+' min'));
+    const dl=make('dl','','record-facts');
+    for(const [key,value] of [['Error típico',group.price?money(group.price.median):'—'],
+      ['Error medio',group.price?money(group.price.mean):'—'],['Error P90',group.price?money(group.price.p90):'—'],
+      ['Mayor error',group.price?money(group.price.max):'—'],
+      ['Media manteniendo precio inicial',group.price?money(group.price.baselineMean):'—'],
+      ['Sesgo medio · previsto − real',group.price?money(group.price.signedBias):'—']])dl.append(make('dt',key),make('dd',value));
+    card.append(dl);$('historyGroups').append(card);
   }
   const filter=$('historyFilter').value;
   const rows=base.filter(f=>filter==='all'||f.status===filter||
@@ -1600,12 +1668,14 @@ function renderHistory(){
   for(const f of rows.slice(0,historyLimit)){
     const m=T.metrics(f),row=make('details','','history-entry');
     const head=make('summary',''),name=make('div',''),state=make('span',m?
-      (m.directionCorrect?'Dirección acertada':'Dirección fallida'):'Pendiente','result-tag');
-    state.dataset.state=m?(m.directionCorrect?'correct':'missed'):'pending';
+      'Error '+money(m.absoluteError):'Pendiente','result-tag');
+    state.dataset.state=m?(m.errorPercent<=tolerance?'correct':'missed'):'pending';
     const horizon=E.HORIZONS.find(h=>h.minutes===f.minutes)?.label??f.minutes+' min';
     name.append(make('strong',f.asset+' · '+(f.market==='equity'&&f.minutes>=1440?f.minutes/1440+' sesiones':horizon)),
       make('small',m?'Previsto '+money(f.estimate)+' → real '+money(f.actual):
         'Previsto '+money(f.estimate)+' · '+(f.market==='equity'?'Tras '+f.horizonBars+' velas bursátiles':date(f.targetAt))));
+    if(m)name.append(make('small',(m.errorPercent<=tolerance?'Precio dentro del margen':'Precio fuera del margen')+
+      ' · '+(m.directionCorrect?'dirección acertada':'dirección fallida')));
     head.append(name,state);row.append(head);
     if(m){
       const result=make('div','','result-strip');
@@ -1619,6 +1689,7 @@ function renderHistory(){
       ['Emitido',date(f.issuedAt)],['Hora de referencia',date(f.sourceTime)],
       ['Objetivo',f.market==='equity'?f.horizonBars+' velas/sesiones posteriores al origen':date(f.targetAt)],
       ['Fuente del escenario',f.sourceType??'No registrada'],['Resolución',f.granularity/60+' minutos por vela']];
+    if(f.importedFromFile)fields.push(['Procedencia del registro','Importado de '+f.importedFromFile.name+'; conserva el resultado del archivo.']);
     if(m)fields.push(['Cierre observado',money(f.actual)],['Hora del cierre usado',date(f.observedCloseAt)],
       ['Fuente del resultado',f.resultSource??'Cierre histórico de la fuente original'],
       ['Diferencia prevista − real',money(m.signedError)],['Error absoluto',money(m.absoluteError)],
@@ -1714,7 +1785,17 @@ $('confirmClear').addEventListener('click',()=>{
 });
 $('syncHistory').addEventListener('click',syncHistory);
 $('exportHistory').addEventListener('click',exportHistory);
-for(const id of ['historyAsset','historyFilter','historyTolerance'])
+$('importHistory').addEventListener('click',importHistory);
+$('historyImportFile').addEventListener('change',async event=>{
+  const file=event.target.files?.[0];if(!file)return;
+  $('importHistory').disabled=true;
+  try{
+    if(file.size>8*1024*1024)throw Error('El archivo supera 8 MiB.');
+    acceptHistoryImport(await file.text(),file.name);
+  }catch(error){window.LaplaceImportResult({ok:false,error:error.message});}
+  finally{event.target.value='';}
+});
+for(const id of ['historyAsset','historyHorizon','historyFilter','historyTolerance'])
   $(id).addEventListener('change',()=>{historyLimit=20;renderHistory()});
 $('historyMore').addEventListener('click',()=>{historyLimit+=20;renderHistory()});
 $('openMath').addEventListener('click',()=>show('equation'));
@@ -1765,11 +1846,11 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.1',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.2',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
-    'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','openMath','closeMath','motionToggle']};
+    'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','importHistory','openMath','closeMath','motionToggle']};
 window.addEventListener('laplace:ef004',()=>{renderSignals();renderCapabilities()});
 window.addEventListener('laplace:broker',renderSignals);
 window.addEventListener('laplace:paper-quote-needed',async event=>{

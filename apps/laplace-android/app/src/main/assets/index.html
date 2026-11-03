@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.1 · Aprendizaje XI</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.2 · Precisión de precio</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -25,7 +25,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.1</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.2</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -266,15 +266,22 @@
     <article class="card tracking-card">
       <div class="section-head"><div><small class="eyebrow">ESCENARIOS GUARDADOS</small><h2>¿Qué tan cerca estuvo?</h2></div><span id="historyCount" class="outline-tag">0 REGISTROS</span></div>
       <p>Cada escenario conserva su precio y fecha originales. Comprobamos el cierre de una vela al llegar al objetivo.</p>
-      <div class="history-actions"><button id="syncHistory" class="pde-primary" type="button">Comprobar pendientes</button><button id="exportHistory" class="secondary" type="button">Exportar JSON</button></div>
+      <div class="history-actions"><button id="syncHistory" class="pde-primary" type="button">Comprobar pendientes</button><button id="exportHistory" class="secondary" type="button">Exportar JSON</button><button id="importHistory" class="secondary" type="button">Importar JSON</button></div>
+      <input id="historyImportFile" type="file" accept="application/json,.json" hidden aria-label="Seleccionar registro LAPLACE">
       <p id="historyStatus" class="helper" role="status" aria-live="polite">Se comprueban también otros activos y resoluciones. La app debe estar abierta.</p>
       <div class="tracking-filters">
         <label>Activo<select id="historyAsset" aria-label="Filtrar registro por activo"><option value="all">Todos los activos</option></select></label>
+        <label>Plazo<select id="historyHorizon" aria-label="Filtrar registro por plazo"><option value="all">Todos los plazos</option></select></label>
         <label>Estado<select id="historyFilter" aria-label="Filtrar registro por resultado"><option value="all">Todos</option><option value="pending">Pendientes</option><option value="verified">Evaluados</option><option value="correct">Dirección acertada</option><option value="missed">Dirección fallida</option></select></label>
-        <label>Cercanía de precio<select id="historyTolerance" aria-label="Tolerancia de cercanía"><option value="0.1">Error ≤ 0.1 %</option><option value="0.5" selected>Error ≤ 0.5 %</option><option value="1">Error ≤ 1 %</option></select></label>
+        <label>Cercanía de precio<select id="historyTolerance" aria-label="Tolerancia de cercanía"><option value="0.01">Error ≤ 0.01 %</option><option value="0.05">Error ≤ 0.05 %</option><option value="0.1">Error ≤ 0.1 %</option><option value="0.5" selected>Error ≤ 0.5 %</option><option value="1">Error ≤ 1 %</option></select></label>
       </div>
+      <p id="historyScope" class="helper"></p>
       <div id="historySummary" class="tracking-summary" aria-live="polite"></div>
-      <p class="fineprint">La cercanía es un umbral de error elegido, no un porcentaje de confianza. Acertar la dirección no implica acertar el precio.</p>
+      <p id="historyComparison" class="helper"></p>
+      <p id="historyTiming" class="fineprint"></p>
+      <p id="historySecondary" class="fineprint"></p>
+      <details id="historyGroupDetails" class="raw-details"><summary>Comparar activos y plazos por separado</summary><div id="historyGroups" class="history-groups"></div></details>
+      <p class="fineprint">El error típico es la mediana; el error medio es el promedio de las diferencias absolutas (MAE). P90 es el error que no supera al menos el 90 % de los registros y se muestra desde 10 casos. La cercanía usa el umbral elegido. Las cifras describen el registro evaluado; no son confianza ni una garantía futura.</p>
       <div id="history" class="history"></div><button id="historyMore" class="secondary" type="button" hidden>Mostrar más registros</button>
       <details class="history-maintenance"><summary>Administrar registro local</summary><p>El archivo JSON conserva las cifras sin redondear. Los registros permanecen en este dispositivo.</p><button id="clearHistory" class="secondary" type="button">Borrar registro…</button><div id="clearConfirm" hidden><p>Se eliminarán todos los registros de esta instalación. Exporta primero si quieres conservarlos.</p><button id="confirmClear" type="button">Sí, borrar</button><button id="cancelClear" type="button">Conservar registros</button></div></details>
     </article>

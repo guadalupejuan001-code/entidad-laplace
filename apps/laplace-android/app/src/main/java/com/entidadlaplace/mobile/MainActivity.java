@@ -47,7 +47,9 @@ public final class MainActivity extends Activity {
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
     private static final int MAX_QUOTE_BYTES=64*1024;
     private static final int EXPORT_HISTORY=812;
+    private static final int IMPORT_HISTORY=813;
     private String pendingExport;
+    private boolean importPickerOpen;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +153,20 @@ public final class MainActivity extends Activity {
             });
         }
 
+        @JavascriptInterface
+        public void importHistory(){
+            runOnUiThread(()->{
+                if(importPickerOpen)return;
+                importPickerOpen=true;
+                Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/json");
+                try{startActivityForResult(intent,IMPORT_HISTORY);}
+                catch(Exception error){
+                    importPickerOpen=false;importFeedback(false,false,null,"No se pudo abrir el selector de archivos.");
+                }
+            });
+        }
         @JavascriptInterface
         public void exportHistory(String json){
             if(json==null||json.length()>8*1024*1024){
@@ -443,8 +459,36 @@ public final class MainActivity extends Activity {
                 JSONObject.quote(message)+")",null);
         });
     }
+    private void importFeedback(boolean ok,boolean cancelled,String text,String error){
+        try{
+            JSONObject payload=new JSONObject().put("ok",ok).put("cancelled",cancelled);
+            if(ok)payload.put("text",text).put("name","Registro seleccionado en Android");
+            else if(error!=null)payload.put("error",error);
+            final String javascript="window.LaplaceImportResult&&window.LaplaceImportResult("+payload+")";
+            runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(javascript,null);});
+        }catch(Exception ignored){}
+    }
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){
         super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode==IMPORT_HISTORY){
+            importPickerOpen=false;
+            if(resultCode!=RESULT_OK||data==null||data.getData()==null){
+                importFeedback(false,true,null,null);return;
+            }
+            final Uri source=data.getData();
+            io.execute(()->{
+                try(InputStream in=getContentResolver().openInputStream(source)){
+                    if(in==null)throw new IOException("Archivo no disponible");
+                    ByteArrayOutputStream out=new ByteArrayOutputStream();
+                    byte[] buffer=new byte[8192];int n;
+                    while((n=in.read(buffer))!=-1){
+                        if(out.size()+n>8*1024*1024)throw new IOException("El archivo supera 8 MiB");
+                        out.write(buffer,0,n);
+                    }
+                    importFeedback(true,false,out.toString(StandardCharsets.UTF_8.name()),null);
+                }catch(Exception error){importFeedback(false,false,null,error.getMessage());}
+            });return;
+        }
         if(requestCode!=EXPORT_HISTORY)return;
         final String json=pendingExport;pendingExport=null;
         if(resultCode!=RESULT_OK||data==null||data.getData()==null){

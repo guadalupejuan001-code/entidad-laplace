@@ -1,7 +1,7 @@
-name: LAPLACE Android 4.1 - entrenamiento XI ampliado
+name: LAPLACE Android 4.2 - precision del precio
 on:
   push:
-    branches: [feature/laplace-4-1-xn02-wide-learning-20261101, main]
+    branches: [feature/laplace-4-2-price-metrics-20261102, main]
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
@@ -177,7 +177,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-4-1-PREVIEWS-XI
+          name: LAPLACE-4-2-PREVIEWS-PRECISION
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -233,14 +233,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn41'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn42'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.1'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.2'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-1-XI-AMPLIADO
+          name: LAPLACE-ANDROID-V4-2-PRECISION
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

@@ -1,10 +1,17 @@
-## LAPLACE Android 4.1 — entrenamiento XI ampliado
+## LAPLACE Android 4.2 — precisión del precio
+
+El historial prioriza error típico (mediana), error medio (MAE), P90 desde diez casos y máximo observado. Permite elegir activo y plazo; muestra dólares sólo en grupos comparables y mantiene la comparación con el precio inicial y el desfase del cierre. La dirección se conserva como otra medida.
+
+**Conservar el historial anterior:** exporta JSON desde tu instalación actual e impórtalo en 4.2. La importación acepta archivos v3/v4, conserva los identificadores existentes y recalcula métricas desde las cifras originales. Los resultados importados se identifican como procedentes del archivo, sin afirmar una nueva consulta al proveedor. [Implementación y comprobaciones](../../docs/ANDROID_4_2_PRECISION.md).
+
+Paquete `com.entidadlaplace.mobile.learn42`, versionCode 17: instalación paralela; las credenciales de otras instalaciones no se trasladan.
+
+## Entrenamiento XI ampliado
 
 El selector de historia de **Dirección XI/Ether** conserva XN01 con 240 velas y añade XN02 con 288, 864 o 1.440. Las fórmulas y el ejecutor XI/Ether son los originales; XN02 amplía cuatro contadores de un byte a uint32 para evitar desbordamientos. Repetir las mismas velas no añade aprendizaje.
 
 La app presenta soporte, ejemplos entrenados y una comparación retrospectiva separada de la confianza interna. Las ventanas ampliadas no se activan automáticamente: no mejoraron la comprobación reservada. [Resultados y reproducción](../../docs/ANDROID_4_1_XI_APRENDIZAJE.md).
 
-Paquete `com.entidadlaplace.mobile.learn41`, versionCode 16, **LAPLACE 4.1**. Se instala en paralelo; los registros y las credenciales de otras instalaciones no se migran automáticamente.
 
 ## EF004 local y órdenes
 
