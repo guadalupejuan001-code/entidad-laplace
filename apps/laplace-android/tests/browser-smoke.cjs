@@ -116,7 +116,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.1');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.2');
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
@@ -184,7 +184,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const captures=path.resolve(__dirname,'../build/ux-previews');
     fs.mkdirSync(captures,{recursive:true});
     await page.locator('[data-tab="panel"]').click();
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-MOVIL-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-MOVIL-SIMULADO.png')});
     await page.locator('.xn01-card > summary').click();
     await page.locator('#xn01Run').click();
     await page.waitForFunction(()=>document.querySelector('#xn01Confidence').textContent==='54.00 %',null,{timeout:20000});
@@ -205,7 +205,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,
       'Entrenamiento ampliado y tabla deben caber en móvil de 320 px');
     await page.locator('#xn01Window').scrollIntoViewIfNeeded();
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-XI-AMPLIADO-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-XI-AMPLIADO-SIMULADO.png')});
     await page.setViewportSize({width:393,height:852});
     await page.evaluate(()=>{window.__badXI=true});
     await page.locator('#xn01Run').click();
@@ -254,7 +254,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(await page.locator('#capabilityRows .signal-row').count()>0);
     await page.locator('#capabilityRefresh').click();
     assert.equal(await page.locator('#capabilityRows .signal-row').count(),20);
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-FUENTES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-FUENTES-SIMULADO.png')});
     const overflowSources=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflowSources<=3,'Fuentes desbordan ancho de 393 px: '+overflowSources);
     await page.locator('#openMath').click();
@@ -317,7 +317,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.match(await page.locator('#mareaIntro').textContent(),/Bitcoin|M003/);
     assert.match(await page.locator('#rawF001').textContent(),/not_same_calibrated_model_as_f001_btc/);
     assert.equal(await page.locator('#xn01Run').isDisabled(),true);
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-ACCIONES-SIMULADO.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-ACCIONES-SIMULADO.png')});
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#asset','BTC-USD');
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
@@ -355,7 +355,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().archiveCount),realArchiveCount,'Actualizar no duplica capturas');
     await page.locator('#ef004Evaluate').click();
     await page.waitForFunction(()=>!window.LaplaceEF004Mobile.state().busy,null,{timeout:20000});
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-EF004-REAL-LOCAL.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-EF004-REAL-LOCAL.png')});
     await page.locator('[data-tab="orders"]').click();
     assert.equal(await page.locator('#orderMode').inputValue(),'paper');
     await page.locator('#orderQuantity').fill('0.001');
@@ -388,7 +388,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>!window.LaplaceBroker.state().configured);
     assert.equal(await page.locator('#brokerPrepare').isDisabled(),true);
     await page.locator('#orderMode').selectOption('paper');
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-ORDENES-SIMULADAS.png')});
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-ORDENES-SIMULADAS.png')});
     await page.locator('[data-tab="panel"]').click();
     // Cambiar resolución exige otro lote y desactiva botones hasta recibirlo.
     await page.locator('[data-tab="panel"]').click();
@@ -451,7 +451,75 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     const downloaded=page.waitForEvent('download');await page.locator('#exportHistory').click();
     const download=await downloaded,exported=JSON.parse(fs.readFileSync(await download.path(),'utf8'));
     assert.equal(exported.records.length,44);assert.equal(exported.records[1].estimate,100.2);
-    await page.screenshot({path:path.join(captures,'LAPLACE-4.1-REGISTRO-SIMULADO.png')});
+    assert.equal(exported.schema,'laplace-local-evidence-v4');
+    assert.ok(exported.groups.length>=2);
+    // Import a real-format SIMULATED file; existing IDs and raw prices stay immutable.
+    const screenshotCase=await page.evaluate(()=>{
+      const now=Math.floor(Date.now()/1000/300)*300;
+      return {id:'screenshot-case-simulated',asset:'BTC-USD',minutes:5,granularity:300,
+        market:'crypto',issuedAt:now-2400,sourceTime:now-2400,targetAt:now-2100,
+        observedCloseAt:now-2100,status:'verified',baseline:78305.5,estimate:78308,actual:78287.8};
+    });
+    const importJson=JSON.stringify({schema:'laplace-local-evidence-v3',
+      records:[exported.records[0],screenshotCase],metrics:[{absoluteError:0}]});
+    const chosen=page.waitForEvent('filechooser');await page.locator('#importHistory').click();
+    await (await chosen).setFiles({name:'registro-simulado.json',mimeType:'application/json',buffer:Buffer.from(importJson)});
+    await page.waitForFunction(()=>document.querySelector('#historyStatus').textContent.includes('Importados 1 registros'));
+    let stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('laplace-mobile-forecasts-v2')));
+    assert.equal(stored.length,45);
+    assert.deepEqual(stored.slice(0,44),exported.records);
+    assert.equal(stored[44].estimate,78308);assert.equal(stored[44].actual,78287.8);
+    assert.match(await page.locator('#history').innerText(),/USD\s20\.20/);
+    assert.match(await page.locator('#history').innerText(),/Precio dentro del margen · dirección fallida/);
+    const snapshot=JSON.stringify(stored);
+    await page.locator('#historyImportFile').setInputFiles({name:'invalido.json',mimeType:'application/json',buffer:Buffer.from('{')});
+    await page.waitForFunction(()=>document.querySelector('#historyStatus').textContent.includes('No se importó ningún registro'));
+    assert.equal(await page.evaluate(()=>localStorage.getItem('laplace-mobile-forecasts-v2')),snapshot);
+    await page.evaluate(()=>{
+      window.__storageSet=Storage.prototype.setItem;
+      Storage.prototype.setItem=function(key,value){
+        if(key==='laplace-mobile-forecasts-v2')throw new DOMException('Cuota simulada','QuotaExceededError');
+        return window.__storageSet.call(this,key,value);
+      };
+    });
+    const quotaFile=JSON.stringify({schema:'laplace-local-evidence-v4',records:[{...screenshotCase,id:'quota-case'}]});
+    await page.locator('#historyImportFile').setInputFiles({name:'cuota.json',mimeType:'application/json',buffer:Buffer.from(quotaFile)});
+    await page.waitForFunction(()=>document.querySelector('#historyStatus').textContent.includes('Cuota simulada'));
+    await page.evaluate(()=>{Storage.prototype.setItem=window.__storageSet});
+    assert.equal(await page.evaluate(()=>localStorage.getItem('laplace-mobile-forecasts-v2')),snapshot);
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-REGISTRO-SIMULADO.png')});
+    // Known errors isolate metrics independently of the market bridge's fixtures.
+    await page.evaluate(()=>{
+      const now=Math.floor(Date.now()/1000/300)*300;
+      const records=[1,2,3,4,5,6,7,8,9,500].map((e,i)=>({id:'precision-'+i,asset:'BTC-USD',
+        minutes:5,granularity:300,market:'crypto',issuedAt:now-900,sourceTime:now-900,
+        targetAt:now-600,observedCloseAt:now-600+(i===9?197:0),
+        estimate:1000+e,actual:1000,baseline:900,status:'verified'}));
+      records.push({...records[0],id:'another-horizon',minutes:60,estimate:1000});
+      records.push({...records[0],id:'another-asset',asset:'ETH-USD',estimate:1001});
+      records.push({...records[0],id:'stock-session',asset:'AAPL',market:'equity',minutes:1440,
+        granularity:86400,horizonBars:1,targetAt:null,estimate:1000});
+      localStorage.setItem('laplace-mobile-forecasts-v2',JSON.stringify(records));
+    });
+    await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();
+    assert.match(await page.locator('#historyScope').innerText(),/Resumen de error relativo/);
+    assert.equal(await page.locator('.history-group').count(),4);
+    await page.locator('#historyAsset').selectOption('BTC-USD');
+    await page.locator('#historyHorizon').selectOption('5');
+    const statistics=await page.locator('#historySummary').innerText();
+    for(const amount of ['USD 5.50','USD 54.50','USD 9.00','USD 500.00'])assert.ok(statistics.replace(/\s+/g,' ').includes(amount),amount);
+    assert.match(await page.locator('#historyComparison').innerText(),/45\.5 %/);
+    assert.match(await page.locator('#historyTiming').innerText(),/197 s/);
+    await page.locator('#historyFilter').selectOption('missed');
+    assert.equal(await page.locator('.history-entry').count(),0);
+    assert.equal(await page.locator('#historySummary').innerText(),statistics);
+    await page.locator('#historyFilter').selectOption('all');
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3));
+    await page.locator('#historySummary').scrollIntoViewIfNeeded();
+    await page.screenshot({path:path.join(captures,'LAPLACE-4.2-PRECISION-SIMULADA.png')});
+    await page.locator('#historyAsset').selectOption('AAPL');
+    assert.match(await page.locator('#historyScope').innerText(),/1 sesión/);
+    assert.match(await page.locator('#historyHorizon').innerText(),/1 sesión/);
     await page.locator('[data-tab="panel"]').click();
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>document.querySelector('#portalVideo').paused&&document.querySelector('#motionToggle').disabled,null,{timeout:5000});

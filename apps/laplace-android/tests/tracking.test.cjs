@@ -68,3 +68,69 @@ test('el resumen no mezcla dólares de activos distintos; usa error relativo por
   assert.equal(s.meanErrorPercent,T.metrics(verified).errorPercent);
   assert.equal(T.summarize([]).meanErrorPercent,null);
 });
+const measured=(error,extra={})=>record({status:'verified',actual:1000,baseline:900,
+  estimate:1000+error,observedCloseAt:1200,...extra});
+test('mediana, MAE, P90 y máximo distinguen un caso extremo de un error habitual',()=>{
+  const records=[1,2,3,4,5,6,7,8,9,500].map((e,i)=>measured(e,{id:'case-'+i}));
+  const s=T.summarize(records);
+  assert.equal(s.price.median,5.5);assert.equal(s.price.p90,9);assert.equal(s.price.max,500);
+  assert.ok(Math.abs(s.price.mean-54.5)<1e-10);
+  assert.equal(s.price.baselineMean,100);
+  assert.ok(Math.abs(s.price.improvementPercent-45.5)<1e-10);
+  assert.equal(s.maxErrorPercent,50);assert.equal(s.p90ErrorPercent,.9);
+  assert.equal(s.correctDirections,10);assert.equal(s.near,5);
+  assert.equal(s.worst.id,'case-9');assert.equal(s.evaluated,10);
+});
+test('no muestra P90 con menos de diez casos ni inventa un máximo con pendientes',()=>{
+  assert.equal(T.summarize([measured(20)]).price.p90,null);
+  const empty=T.summarize([record()]);
+  assert.equal(empty.maxErrorPercent,null);assert.equal(empty.price,null);
+  assert.equal(empty.improvementPercent,null);
+});
+test('separa dólares por activo, plazo y resolución aun cuando todos usan USD',()=>{
+  const records=[measured(20),measured(500,{id:'hour',minutes:60}),
+    measured(1,{id:'eth',asset:'ETH-USD'}),measured(10,{id:'resolution',granularity:3600})];
+  const all=T.summarize(records);assert.equal(all.price,null);
+  const groups=T.groups(records);assert.equal(groups.length,4);
+  assert.deepEqual(groups.map(g=>g.price.max),[20,10,500,1]);
+  assert.equal(T.summarize([measured(0,{baseline:1000})]).price.improvementPercent,null);
+});
+test('muestra las demoras del cierre y distingue las fechas no comparables',()=>{
+  const s=T.summarize([measured(1),measured(1,{observedCloseAt:1397}),
+    measured(1,{observedCloseAt:undefined}),measured(1,{market:'equity',targetAt:null})]);
+  assert.equal(s.exactTime,1);assert.equal(s.delayedTime,1);assert.equal(s.unknownTime,2);
+  assert.equal(s.maxDelaySeconds,197);
+});
+test('los ejemplos de la captura separan cercanía, dirección y persistencia',()=>{
+  const first=measured(0,{actual:78287.8,estimate:78308,baseline:78305.5});
+  const second=measured(0,{actual:78263.19,estimate:78301.18,baseline:78314.54,minutes:60});
+  const a=T.metrics(first),b=T.metrics(second);
+  assert.ok(Math.abs(a.absoluteError-20.2)<1e-8);assert.equal(a.directionCorrect,false);
+  assert.ok(Math.abs(a.improvement+2.5)<1e-8);
+  assert.ok(Math.abs(b.absoluteError-37.99)<1e-8);assert.equal(b.directionCorrect,true);
+  assert.ok(Math.abs(b.improvement-13.36)<1e-8);
+});
+const file=records=>JSON.stringify({schema:'laplace-local-evidence-v3',records,
+  metrics:[{absoluteError:0}],summary:{maxError:0}});
+test('importa cifras originales, recalcula métricas y conserva IDs ya presentes',()=>{
+  const original=measured(20,{id:'kept'}),snapshot=JSON.stringify(original);
+  const imported=measured(500,{id:'new'});
+  const out=T.importEvidence([original],file([measured(0,{id:'kept'}),imported]),
+    {allowedAssets:['BTC-USD'],now:5000,name:'mi-registro.json'});
+  assert.equal(out.added,1);assert.equal(out.duplicates,1);
+  assert.equal(JSON.stringify(original),snapshot);assert.equal(out.records[0],original);
+  assert.equal(out.records[1].estimate,1500);assert.equal(out.records[1].actual,1000);
+  assert.equal(out.records[1].importedFromFile.name,'mi-registro.json');
+  assert.equal(T.summarize(out.records).price.max,500);
+  assert.equal(T.summarize(out.records).imported,1);
+  assert.equal(T.importEvidence(out.records,file([imported]),{now:5000}).added,0);
+});
+test('archivo inválido no importa parcialmente ni reemplaza los registros anteriores',()=>{
+  const current=[measured(1)],snapshot=JSON.stringify(current);
+  for(const text of ['{','{}',file([measured(1,{asset:'UNKNOWN'})]),
+    file([measured(1),measured(2,{actual:-1})]),file([measured(1,{observedCloseAt:6000})]),
+    file([measured(1,{targetAt:800})]),'x'.repeat(8*1024*1024+1)]){
+    assert.throws(()=>T.importEvidence(current,text,{allowedAssets:['BTC-USD'],now:5000}));
+    assert.equal(JSON.stringify(current),snapshot);
+  }
+});
