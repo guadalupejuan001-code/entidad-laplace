@@ -172,13 +172,16 @@ public final class MainActivity extends Activity {
             if(json==null||json.length()>8*1024*1024){
                 exportFeedback("El registro excede el tamaño de exportación permitido.");return;
             }
+            String schema;
+            try{schema=new JSONObject(json).optString("schema");}catch(Exception ignored){schema="";}
+            final String title="laplace-activity-evidence-v1".equals(schema)?"LAPLACE-actividad.json":"LAPLACE-registro.json";
             runOnUiThread(()->{
                 if(pendingExport!=null){exportFeedback("Ya hay una exportación abierta.");return;}
                 pendingExport=json;
                 Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("application/json");
-                intent.putExtra(Intent.EXTRA_TITLE,"LAPLACE-registro.json");
+                intent.putExtra(Intent.EXTRA_TITLE,title);
                 try{startActivityForResult(intent,EXPORT_HISTORY);}
                 catch(Exception error){pendingExport=null;exportFeedback("No se pudo abrir el selector de archivos.");}
             });

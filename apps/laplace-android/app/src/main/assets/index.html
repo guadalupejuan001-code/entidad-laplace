@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.2 · Precisión de precio</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.3 · Volatilidad y volumen</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -16,6 +16,9 @@
 <script src="tracking.js" defer></script>
 <script src="xn02-evidence.js" defer></script>
 <script src="app.js" defer></script>
+<script src="activity-engine.js" defer></script>
+<script src="activity-runtime.js" defer></script>
+<script src="activity-panel.js" defer></script>
 <script src="ef004-runtime.js" defer></script>
 <script src="ef004-archive.js" defer></script>
 <script src="ef004-mobile.js" defer></script>
@@ -25,7 +28,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.2</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.3</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -183,6 +186,21 @@
       <p id="chartComment" class="helper">Sin historial cargado. Pulsa Actualizar para consultar velas verificables.</p>
     </article>
 
+    <article class="card activity-card" id="activityCard">
+      <div class="section-head"><div><small class="eyebrow">NUEVAS PREDICCIONES</small><h2>Volatilidad y volumen futuros</h2></div></div>
+      <p id="activitySelection" class="helper"></p>
+      <button type="button" id="activityRun" class="pde-primary">Predecir volatilidad y volumen</button>
+      <p id="activityStatus" class="helper" role="status" aria-live="polite">Se aprenderá de períodos históricos ya cerrados y se guardará el pronóstico.</p>
+      <div class="stats activity-metrics">
+        <div><span>Volatilidad prevista del período</span><strong id="activityVolatility">—</strong></div>
+        <div><span>Volumen total previsto</span><strong id="activityVolume">—</strong></div>
+      </div>
+      <p id="activityPeriod" class="helper"></p>
+      <p class="fineprint">La volatilidad estima cuánto podría agitarse el precio. El volumen estima la cantidad negociada. Cada uno se aprende y comprueba con su propio resultado.</p>
+      <div id="activityValidation" class="activity-validation"></div>
+      <details class="raw-details"><summary>Modelo y predicción sin redondear</summary><pre id="activityRaw">Sin cálculo.</pre></details>
+    </article>
+
     <details class="card xn01-card advanced-fold">
       <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Entrenar con más historia</small></summary>
       <div class="section-head">
@@ -284,6 +302,20 @@
       <p class="fineprint">El error típico es la mediana; el error medio es el promedio de las diferencias absolutas (MAE). P90 es el error que no supera al menos el 90 % de los registros y se muestra desde 10 casos. La cercanía usa el umbral elegido. Las cifras describen el registro evaluado; no son confianza ni una garantía futura.</p>
       <div id="history" class="history"></div><button id="historyMore" class="secondary" type="button" hidden>Mostrar más registros</button>
       <details class="history-maintenance"><summary>Administrar registro local</summary><p>El archivo JSON conserva las cifras sin redondear. Los registros permanecen en este dispositivo.</p><button id="clearHistory" class="secondary" type="button">Borrar registro…</button><div id="clearConfirm" hidden><p>Se eliminarán todos los registros de esta instalación. Exporta primero si quieres conservarlos.</p><button id="confirmClear" type="button">Sí, borrar</button><button id="cancelClear" type="button">Conservar registros</button></div></details>
+    </article>
+    <article class="card" id="activityHistoryCard">
+      <div class="section-head"><div><small class="eyebrow">PRONÓSTICOS DE ACTIVIDAD</small><h2>¿Cuánto movimiento y volumen hubo?</h2></div></div>
+      <div class="history-actions"><button type="button" id="activitySync">Comprobar actividad</button><button type="button" id="activityExport">Exportar actividad</button><button type="button" id="activityImport">Importar actividad</button></div>
+      <input id="activityImportFile" type="file" accept="application/json,.json" hidden aria-label="Seleccionar registro de actividad">
+      <p class="helper" id="activityHistoryStatus" role="status" aria-live="polite">Cada resultado espera el período completo de velas. La app debe estar abierta para consultar cierres nuevos.</p>
+      <div id="activityHistory" class="history"></div>
+      <button type="button" id="activityMore" hidden>Mostrar más actividad</button>
+      <details class="history-maintenance"><summary>Administrar registro de actividad</summary>
+        <p class="helper">Exporta la actividad para conservar una copia antes de vaciar este registro.</p>
+        <button type="button" id="activityClear">Vaciar actividad…</button>
+        <div id="activityClearConfirm" hidden><p>Se borrarán sólo los pronósticos de actividad de esta instalación.</p>
+          <button type="button" id="activityClearYes">Sí, vaciar actividad</button><button type="button" id="activityClearNo">Conservar actividad</button></div>
+      </details>
     </article>
     <details id="backtestDetails" class="card advanced-fold"><summary>Prueba histórica del modelo · M001</summary>
       <p>Compara M001 con mantener el precio inicial. Es una prueba retrospectiva, separada de tus escenarios guardados.</p>

@@ -1,10 +1,19 @@
-## LAPLACE Android 4.2 — precisión del precio
+## LAPLACE Android 4.3 — nuevas predicciones de volatilidad y volumen
+
+En **Analizar → Volatilidad y volumen futuros**, el activo y plazo elegidos generan dos pronósticos: volatilidad realizada del período y volumen total negociado en la fuente. Se aprende de patrones anteriores con resultados conocidos, se elige una combinación con actividad reciente en validación y se comprueba en un bloque posterior. La app muestra el error de ambos objetivos frente a su referencia.
+
+Cada pronóstico queda congelado y se comprueba al terminar todas las velas del período. **Historial → Pronósticos de actividad** permite comprobar, exportar, importar y vaciar ese registro. La importación/exportación de precios conserva sus botones propios.
+
+La auditoría de las APK 4.0, 4.1 y 4.2 confirmó el mismo motor y los mismos precios con las mismas velas. El margen de cercanía ya no colorea el error como un acierto. [Diagnóstico, protocolo y resultados](../../docs/ANDROID_4_3_ACTIVIDAD.md).
+
+Paquete `com.entidadlaplace.mobile.learn43`, versionCode 18: instalación paralela. Los registros de precio anteriores pueden exportarse desde su instalación e importarse en 4.3.
+
+## Precisión del precio
 
 El historial prioriza error típico (mediana), error medio (MAE), P90 desde diez casos y máximo observado. Permite elegir activo y plazo; muestra dólares sólo en grupos comparables y mantiene la comparación con el precio inicial y el desfase del cierre. La dirección se conserva como otra medida.
 
 **Conservar el historial anterior:** exporta JSON desde tu instalación actual e impórtalo en 4.2. La importación acepta archivos v3/v4, conserva los identificadores existentes y recalcula métricas desde las cifras originales. Los resultados importados se identifican como procedentes del archivo, sin afirmar una nueva consulta al proveedor. [Implementación y comprobaciones](../../docs/ANDROID_4_2_PRECISION.md).
 
-Paquete `com.entidadlaplace.mobile.learn42`, versionCode 17: instalación paralela; las credenciales de otras instalaciones no se trasladan.
 
 ## Entrenamiento XI ampliado
 

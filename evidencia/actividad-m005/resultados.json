@@ -1,0 +1,3952 @@
+{
+  "schema": "laplace-m005-retrospective-study-v1",
+  "data_sha256": "9239d6d29f9b415537d720e5aa87dc232d944352cae277c462fff1326e860713",
+  "engine_sha256": "2e159bb98cf35bc4bf36474c9ee9b844c35a030032190c6b7854221a161304f2",
+  "data_cutoff": "2026-10-30T18:05:00.000Z",
+  "rows": 4032,
+  "source": "BTC-USD · Coinbase Exchange archive",
+  "knowledge": "retrospective candle-close assumption; no authenticated past vintages",
+  "prospectively_validated": false,
+  "reports": [
+    {
+      "schema": "laplace-activity-analysis-v1",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 5,
+      "granularity": 300,
+      "horizonBars": 1,
+      "dataKnownThrough": 1793383500,
+      "originTime": 1793383200,
+      "sourceRows": 4032,
+      "retrospective": true,
+      "prospectivelyValidated": false,
+      "automaticTrading": false,
+      "protocol": {
+        "lookback": 24,
+        "minCases": 8,
+        "trainEnd": 2419,
+        "validationEnd": 3225,
+        "candidateWeights": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "selection": "validation MAE only; per target",
+        "reference": "last 24 closed bars; RMS returns and mean volume, scaled to horizon"
+      },
+      "status": "forecast",
+      "weights": {
+        "volatility": 1,
+        "volume": 0.25
+      },
+      "outputs": {
+        "volatility": {
+          "predicted": 0.10375054105340682,
+          "baseline": 0.12117296585902859,
+          "analog": 0.10375054105340682,
+          "weight": 1,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 48,
+            "mae": 0.04390018716409065,
+            "baselineMAE": 0.052638781796594196,
+            "skill": 0.166010578783359,
+            "wape": 68.81194116303466
+          },
+          "test": {
+            "cases": 48,
+            "mae": 0.06246946049283267,
+            "baselineMAE": 0.08187251541478648,
+            "skill": 0.23699106865903796,
+            "wape": 71.23346665664972
+          }
+        },
+        "volume": {
+          "predicted": 40.162428468419144,
+          "baseline": 37.18743858166696,
+          "analog": 49.087398128675694,
+          "weight": 0.25,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 48,
+            "mae": 11.085019345413894,
+            "baselineMAE": 11.218339878402814,
+            "skill": 0.011884158835799297,
+            "wape": 64.71402715008567
+          },
+          "test": {
+            "cases": 48,
+            "mae": 13.852029283428381,
+            "baselineMAE": 14.891903041441127,
+            "skill": 0.06982813110715191,
+            "wape": 44.5538220376886
+          }
+        }
+      },
+      "examples": [
+        {
+          "index": 2967,
+          "knownAt": 1793064600,
+          "distance": 0.05345403909174541
+        },
+        {
+          "index": 772,
+          "knownAt": 1792406100,
+          "distance": 0.10458460999774549
+        },
+        {
+          "index": 1979,
+          "knownAt": 1792768200,
+          "distance": 0.10468044860289685
+        },
+        {
+          "index": 1451,
+          "knownAt": 1792609800,
+          "distance": 0.107957860266892
+        },
+        {
+          "index": 1130,
+          "knownAt": 1792513500,
+          "distance": 0.11002433554320423
+        },
+        {
+          "index": 3971,
+          "knownAt": 1793365800,
+          "distance": 0.1117891096545749
+        },
+        {
+          "index": 1727,
+          "knownAt": 1792692600,
+          "distance": 0.11358177887607493
+        },
+        {
+          "index": 2853,
+          "knownAt": 1793030400,
+          "distance": 0.11761034662097548
+        },
+        {
+          "index": 2672,
+          "knownAt": 1792976100,
+          "distance": 0.1256737491016801
+        },
+        {
+          "index": 4016,
+          "knownAt": 1793379300,
+          "distance": 0.1300184992332071
+        },
+        {
+          "index": 1391,
+          "knownAt": 1792591800,
+          "distance": 0.13286882426350186
+        },
+        {
+          "index": 3689,
+          "knownAt": 1793281200,
+          "distance": 0.134056359435121
+        },
+        {
+          "index": 3722,
+          "knownAt": 1793291100,
+          "distance": 0.13546910721118924
+        },
+        {
+          "index": 1235,
+          "knownAt": 1792545000,
+          "distance": 0.13809036034074434
+        },
+        {
+          "index": 2819,
+          "knownAt": 1793020200,
+          "distance": 0.1388847642704798
+        },
+        {
+          "index": 1691,
+          "knownAt": 1792681800,
+          "distance": 0.14199550773340516
+        },
+        {
+          "index": 867,
+          "knownAt": 1792434600,
+          "distance": 0.1420630463431678
+        },
+        {
+          "index": 1711,
+          "knownAt": 1792687800,
+          "distance": 0.14220065216840533
+        }
+      ],
+      "targetCloseAt": 1793383800,
+      "evidence": [
+        {
+          "origin": 1793141400,
+          "actual": {
+            "volatility": 0.010544994274925468,
+            "volume": 11.57599281000148
+          },
+          "baseline": {
+            "volatility": 0.14418292352258838,
+            "volume": 19.149660253750273
+          },
+          "predicted": {
+            "volatility": 0.09588315726157956,
+            "volume": 18.67361811487705
+          }
+        },
+        {
+          "origin": 1793146500,
+          "actual": {
+            "volatility": 0.039282723769993116,
+            "volume": 12.313724209998327
+          },
+          "baseline": {
+            "volatility": 0.07636502331711956,
+            "volume": 17.10952244416694
+          },
+          "predicted": {
+            "volatility": 0.0590579492344819,
+            "volume": 15.25016344676886
+          }
+        },
+        {
+          "origin": 1793151600,
+          "actual": {
+            "volatility": 0.06741242950423612,
+            "volume": 15.328059300001769
+          },
+          "baseline": {
+            "volatility": 0.07305518929578204,
+            "volume": 15.652909145416743
+          },
+          "predicted": {
+            "volatility": 0.05346512062499366,
+            "volume": 16.18466576716454
+          }
+        },
+        {
+          "origin": 1793156700,
+          "actual": {
+            "volatility": 0.014044152239173787,
+            "volume": 5.817046570002276
+          },
+          "baseline": {
+            "volatility": 0.06873425209249528,
+            "volume": 11.089869064583581
+          },
+          "predicted": {
+            "volatility": 0.030723523895470357,
+            "volume": 9.614901007143315
+          }
+        },
+        {
+          "origin": 1793161800,
+          "actual": {
+            "volatility": 0.02326541334851877,
+            "volume": 2.584104709996609
+          },
+          "baseline": {
+            "volatility": 0.05702373018770205,
+            "volume": 8.978240533750068
+          },
+          "predicted": {
+            "volatility": 0.04705189612278599,
+            "volume": 10.570850203875793
+          }
+        },
+        {
+          "origin": 1793166900,
+          "actual": {
+            "volatility": 0.006474077110463153,
+            "volume": 2.9067668599964236
+          },
+          "baseline": {
+            "volatility": 0.04893841285109807,
+            "volume": 4.7010223320833875
+          },
+          "predicted": {
+            "volatility": 0.03861914754394498,
+            "volume": 5.332999043313846
+          }
+        },
+        {
+          "origin": 1793172000,
+          "actual": {
+            "volatility": 0.02051685656290566,
+            "volume": 9.209333359998709
+          },
+          "baseline": {
+            "volatility": 0.030676860701371968,
+            "volume": 4.7263287508330905
+          },
+          "predicted": {
+            "volatility": 0.05084610114934,
+            "volume": 6.4105871650035375
+          }
+        },
+        {
+          "origin": 1793177100,
+          "actual": {
+            "volatility": 0.006032414215338436,
+            "volume": 4.94833256000129
+          },
+          "baseline": {
+            "volatility": 0.09726554524628712,
+            "volume": 21.273065580416187
+          },
+          "predicted": {
+            "volatility": 0.08428032095007833,
+            "volume": 22.404133112273485
+          }
+        },
+        {
+          "origin": 1793182200,
+          "actual": {
+            "volatility": 0.02103420732566067,
+            "volume": 10.583796920000168
+          },
+          "baseline": {
+            "volatility": 0.1083991826553883,
+            "volume": 16.684101213332724
+          },
+          "predicted": {
+            "volatility": 0.051881745113838584,
+            "volume": 15.116866615635367
+          }
+        },
+        {
+          "origin": 1793187300,
+          "actual": {
+            "volatility": 0.07837111984513549,
+            "volume": 26.468462240001827
+          },
+          "baseline": {
+            "volatility": 0.05765411075224061,
+            "volume": 5.959175475832732
+          },
+          "predicted": {
+            "volatility": 0.03877677813632504,
+            "volume": 5.766188503736155
+          }
+        },
+        {
+          "origin": 1793192400,
+          "actual": {
+            "volatility": 0.044447347961337355,
+            "volume": 34.55452882999816
+          },
+          "baseline": {
+            "volatility": 0.11335372679996981,
+            "volume": 15.328219614999398
+          },
+          "predicted": {
+            "volatility": 0.04517331218772622,
+            "volume": 13.472917117792175
+          }
+        },
+        {
+          "origin": 1793197500,
+          "actual": {
+            "volatility": 0.018939870940919628,
+            "volume": 23.652802490003523
+          },
+          "baseline": {
+            "volatility": 0.13849688470985455,
+            "volume": 28.85478768291614
+          },
+          "predicted": {
+            "volatility": 0.08253810969346426,
+            "volume": 25.64914770762613
+          }
+        },
+        {
+          "origin": 1793202600,
+          "actual": {
+            "volatility": 0.06093746885197997,
+            "volume": 14.890182379996986
+          },
+          "baseline": {
+            "volatility": 0.08777307605270593,
+            "volume": 20.340466262083282
+          },
+          "predicted": {
+            "volatility": 0.059745259066971305,
+            "volume": 19.001488602778302
+          }
+        },
+        {
+          "origin": 1793207700,
+          "actual": {
+            "volatility": 0.14533124764102437,
+            "volume": 39.40922015999968
+          },
+          "baseline": {
+            "volatility": 0.09267443811197894,
+            "volume": 20.08941175791703
+          },
+          "predicted": {
+            "volatility": 0.05255486481416729,
+            "volume": 18.10716843845362
+          }
+        },
+        {
+          "origin": 1793212800,
+          "actual": {
+            "volatility": 0.12893395115913353,
+            "volume": 38.96404397000151
+          },
+          "baseline": {
+            "volatility": 0.11943253335762954,
+            "volume": 37.10156053875047
+          },
+          "predicted": {
+            "volatility": 0.1184818900983739,
+            "volume": 41.57775495116416
+          }
+        },
+        {
+          "origin": 1793217900,
+          "actual": {
+            "volatility": 0.24100242158679344,
+            "volume": 26.19530038999801
+          },
+          "baseline": {
+            "volatility": 0.11220652932911956,
+            "volume": 38.21128110708408
+          },
+          "predicted": {
+            "volatility": 0.06422055946717774,
+            "volume": 33.38265974147783
+          }
+        },
+        {
+          "origin": 1793223000,
+          "actual": {
+            "volatility": 0,
+            "volume": 19.52444935999665
+          },
+          "baseline": {
+            "volatility": 0.10952015340758929,
+            "volume": 35.21283840791633
+          },
+          "predicted": {
+            "volatility": 0.06481264752593774,
+            "volume": 29.398341705019433
+          }
+        },
+        {
+          "origin": 1793228100,
+          "actual": {
+            "volatility": 0.0008622481049821852,
+            "volume": 11.77377264000097
+          },
+          "baseline": {
+            "volatility": 0.08136550501001759,
+            "volume": 16.552765906665325
+          },
+          "predicted": {
+            "volatility": 0.05025509596295184,
+            "volume": 14.597541419548211
+          }
+        },
+        {
+          "origin": 1793233200,
+          "actual": {
+            "volatility": 0.0065955225549199,
+            "volume": 6.6560919800031115
+          },
+          "baseline": {
+            "volatility": 0.0567657926552809,
+            "volume": 11.828646322082628
+          },
+          "predicted": {
+            "volatility": 0.04881444606988962,
+            "volume": 11.262297606965156
+          }
+        },
+        {
+          "origin": 1793238300,
+          "actual": {
+            "volatility": 0.20442715940573955,
+            "volume": 24.73144609999872
+          },
+          "baseline": {
+            "volatility": 0.14193119066675583,
+            "volume": 22.499944780416627
+          },
+          "predicted": {
+            "volatility": 0.15368009061992136,
+            "volume": 32.31570745476609
+          }
+        },
+        {
+          "origin": 1793243400,
+          "actual": {
+            "volatility": 0.020184159537654227,
+            "volume": 10.329931859996577
+          },
+          "baseline": {
+            "volatility": 0.17373650270627972,
+            "volume": 26.455860274584364
+          },
+          "predicted": {
+            "volatility": 0.049890120989071335,
+            "volume": 23.812673534546406
+          }
+        },
+        {
+          "origin": 1793248500,
+          "actual": {
+            "volatility": 0.04081270640513988,
+            "volume": 20.328731809997407
+          },
+          "baseline": {
+            "volatility": 0.07701662932716345,
+            "volume": 9.245902028334058
+          },
+          "predicted": {
+            "volatility": 0.07023272711253738,
+            "volume": 9.58943920096574
+          }
+        },
+        {
+          "origin": 1793253600,
+          "actual": {
+            "volatility": 0.06749952958552567,
+            "volume": 2.6020928299985826
+          },
+          "baseline": {
+            "volatility": 0.07170161397455128,
+            "volume": 11.074046244583164
+          },
+          "predicted": {
+            "volatility": 0.05169690110569071,
+            "volume": 11.134760329453881
+          }
+        },
+        {
+          "origin": 1793258700,
+          "actual": {
+            "volatility": 0.05732022173773363,
+            "volume": 16.164370600003167
+          },
+          "baseline": {
+            "volatility": 0.0596446172989031,
+            "volume": 6.1900156075004515
+          },
+          "predicted": {
+            "volatility": 0.03168986161313972,
+            "volume": 7.921536259436287
+          }
+        },
+        {
+          "origin": 1793263800,
+          "actual": {
+            "volatility": 0.1682874722481413,
+            "volume": 27.56204216000333
+          },
+          "baseline": {
+            "volatility": 0.05096705300869998,
+            "volume": 9.265089229167037
+          },
+          "predicted": {
+            "volatility": 0.04893571665504798,
+            "volume": 11.044411942267395
+          }
+        },
+        {
+          "origin": 1793268900,
+          "actual": {
+            "volatility": 0.056010325954944734,
+            "volume": 4.985485550001613
+          },
+          "baseline": {
+            "volatility": 0.06370088931449748,
+            "volume": 9.42392913625008
+          },
+          "predicted": {
+            "volatility": 0.04879315545071947,
+            "volume": 9.133126342319095
+          }
+        },
+        {
+          "origin": 1793274000,
+          "actual": {
+            "volatility": 0.07567845569235723,
+            "volume": 7.245391290001862
+          },
+          "baseline": {
+            "volatility": 0.0593666568577785,
+            "volume": 5.9356520208336105
+          },
+          "predicted": {
+            "volatility": 0.06886951920283482,
+            "volume": 8.370229531805638
+          }
+        },
+        {
+          "origin": 1793279100,
+          "actual": {
+            "volatility": 0.013261643814554688,
+            "volume": 16.513421900002868
+          },
+          "baseline": {
+            "volatility": 0.05834780284998622,
+            "volume": 11.543936606667254
+          },
+          "predicted": {
+            "volatility": 0.0635671579942398,
+            "volume": 11.604853142995301
+          }
+        },
+        {
+          "origin": 1793284200,
+          "actual": {
+            "volatility": 0.6966361716128936,
+            "volume": 137.72081502999936
+          },
+          "baseline": {
+            "volatility": 0.14828209906032588,
+            "volume": 32.79619806291703
+          },
+          "predicted": {
+            "volatility": 0.16386366216565912,
+            "volume": 39.63374473182578
+          }
+        },
+        {
+          "origin": 1793289300,
+          "actual": {
+            "volatility": 0.0058873248056129125,
+            "volume": 52.42774582000129
+          },
+          "baseline": {
+            "volatility": 0.245124501036064,
+            "volume": 53.41670305999954
+          },
+          "predicted": {
+            "volatility": 0.08087259598063226,
+            "volume": 44.31216752564148
+          }
+        },
+        {
+          "origin": 1793294400,
+          "actual": {
+            "volatility": 0.02154810084674415,
+            "volume": 12.852349849999882
+          },
+          "baseline": {
+            "volatility": 0.15747528686247428,
+            "volume": 40.3857181770824
+          },
+          "predicted": {
+            "volatility": 0.08986685508216748,
+            "volume": 33.51563533410789
+          }
+        },
+        {
+          "origin": 1793299500,
+          "actual": {
+            "volatility": 0.18801917103766771,
+            "volume": 16.90198147999763
+          },
+          "baseline": {
+            "volatility": 0.093792934133837,
+            "volume": 25.152607927916808
+          },
+          "predicted": {
+            "volatility": 0.0656584905759322,
+            "volume": 22.147022111484567
+          }
+        },
+        {
+          "origin": 1793304600,
+          "actual": {
+            "volatility": 0.05703786149978648,
+            "volume": 71.36930903999746
+          },
+          "baseline": {
+            "volatility": 0.12936038462209712,
+            "volume": 34.136296023750525
+          },
+          "predicted": {
+            "volatility": 0.1286515206904149,
+            "volume": 35.203827028370036
+          }
+        },
+        {
+          "origin": 1793309700,
+          "actual": {
+            "volatility": 0.4557483263671831,
+            "volume": 41.07132149000245
+          },
+          "baseline": {
+            "volatility": 0.34030295529140525,
+            "volume": 109.16354783708266
+          },
+          "predicted": {
+            "volatility": 0.14714773088483482,
+            "volume": 88.92566714273259
+          }
+        },
+        {
+          "origin": 1793314800,
+          "actual": {
+            "volatility": 0.005568001636908233,
+            "volume": 64.5459138199949
+          },
+          "baseline": {
+            "volatility": 0.20872087175055506,
+            "volume": 93.14338143083296
+          },
+          "predicted": {
+            "volatility": 0.11225748608169181,
+            "volume": 80.43551638735009
+          }
+        },
+        {
+          "origin": 1793319900,
+          "actual": {
+            "volatility": 0.23612470264120414,
+            "volume": 165.7266363700037
+          },
+          "baseline": {
+            "volatility": 0.1958826553632295,
+            "volume": 91.41479527791792
+          },
+          "predicted": {
+            "volatility": 0.22336971277276474,
+            "volume": 88.81609070373236
+          }
+        },
+        {
+          "origin": 1793325000,
+          "actual": {
+            "volatility": 0.08502962103349426,
+            "volume": 119.35301269999763
+          },
+          "baseline": {
+            "volatility": 0.2252623671341656,
+            "volume": 119.96143243500046
+          },
+          "predicted": {
+            "volatility": 0.09233325313281113,
+            "volume": 96.1960806389778
+          }
+        },
+        {
+          "origin": 1793330100,
+          "actual": {
+            "volatility": 0.15597545662578413,
+            "volume": 87.9858017200022
+          },
+          "baseline": {
+            "volatility": 0.1719194673377963,
+            "volume": 77.71357211333391
+          },
+          "predicted": {
+            "volatility": 0.06683889788641445,
+            "volume": 63.45286855896433
+          }
+        },
+        {
+          "origin": 1793335200,
+          "actual": {
+            "volatility": 0.06967449625341683,
+            "volume": 29.30491946999973
+          },
+          "baseline": {
+            "volatility": 0.14190320284295627,
+            "volume": 37.06018145583342
+          },
+          "predicted": {
+            "volatility": 0.04123039750538736,
+            "volume": 30.822183983983944
+          }
+        },
+        {
+          "origin": 1793340300,
+          "actual": {
+            "volatility": 0.02741498329481409,
+            "volume": 20.005887690000236
+          },
+          "baseline": {
+            "volatility": 0.09530273004879822,
+            "volume": 30.901649372917745
+          },
+          "predicted": {
+            "volatility": 0.05065958816097755,
+            "volume": 26.55585375152296
+          }
+        },
+        {
+          "origin": 1793345400,
+          "actual": {
+            "volatility": 0.012929933908424776,
+            "volume": 26.22712285000307
+          },
+          "baseline": {
+            "volatility": 0.09585300329765566,
+            "volume": 27.73680241416696
+          },
+          "predicted": {
+            "volatility": 0.09545201038189967,
+            "volume": 27.056175298980456
+          }
+        },
+        {
+          "origin": 1793350500,
+          "actual": {
+            "volatility": 0.014856371211503553,
+            "volume": 22.194277090005926
+          },
+          "baseline": {
+            "volatility": 0.12136597750065571,
+            "volume": 27.118959025416796
+          },
+          "predicted": {
+            "volatility": 0.06043948871600282,
+            "volume": 23.368087362399113
+          }
+        },
+        {
+          "origin": 1793355600,
+          "actual": {
+            "volatility": 0.10702896960935823,
+            "volume": 24.159192949999124
+          },
+          "baseline": {
+            "volatility": 0.12580812871534436,
+            "volume": 25.621044927501014
+          },
+          "predicted": {
+            "volatility": 0.08805142237162879,
+            "volume": 25.512674805742726
+          }
+        },
+        {
+          "origin": 1793360700,
+          "actual": {
+            "volatility": 0.07064181838835681,
+            "volume": 18.377601479995064
+          },
+          "baseline": {
+            "volatility": 0.12337588960064498,
+            "volume": 25.709507147499608
+          },
+          "predicted": {
+            "volatility": 0.07279300595059654,
+            "volume": 25.73856080013081
+          }
+        },
+        {
+          "origin": 1793365800,
+          "actual": {
+            "volatility": 0.04085135735938046,
+            "volume": 21.569459360005567
+          },
+          "baseline": {
+            "volatility": 0.11433820923462973,
+            "volume": 28.565386519999567
+          },
+          "predicted": {
+            "volatility": 0.09999274132950535,
+            "volume": 29.264183621537043
+          }
+        },
+        {
+          "origin": 1793370900,
+          "actual": {
+            "volatility": 0.06745047618137531,
+            "volume": 48.582520540003316
+          },
+          "baseline": {
+            "volatility": 0.1878965903146756,
+            "volume": 73.10014545666611
+          },
+          "predicted": {
+            "volatility": 0.13545632533791452,
+            "volume": 73.3685109625672
+          }
+        },
+        {
+          "origin": 1793376000,
+          "actual": {
+            "volatility": 0.10839965085135952,
+            "volume": 25.516178279998712
+          },
+          "baseline": {
+            "volatility": 0.219956559206889,
+            "volume": 67.18352864999967
+          },
+          "predicted": {
+            "volatility": 0.12544565077146286,
+            "volume": 60.44880787253261
+          }
+        },
+        {
+          "origin": 1793381100,
+          "actual": {
+            "volatility": 0.14511276979618679,
+            "volume": 38.63553118999698
+          },
+          "baseline": {
+            "volatility": 0.13525381936551628,
+            "volume": 46.38323102875014
+          },
+          "predicted": {
+            "volatility": 0.0938618737216549,
+            "volume": 39.24612146912204
+          }
+        }
+      ]
+    },
+    {
+      "schema": "laplace-activity-analysis-v1",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 15,
+      "granularity": 300,
+      "horizonBars": 3,
+      "dataKnownThrough": 1793383500,
+      "originTime": 1793383200,
+      "sourceRows": 4032,
+      "retrospective": true,
+      "prospectivelyValidated": false,
+      "automaticTrading": false,
+      "protocol": {
+        "lookback": 24,
+        "minCases": 8,
+        "trainEnd": 2419,
+        "validationEnd": 3225,
+        "candidateWeights": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "selection": "validation MAE only; per target",
+        "reference": "last 24 closed bars; RMS returns and mean volume, scaled to horizon"
+      },
+      "status": "forecast",
+      "weights": {
+        "volatility": 0.5,
+        "volume": 0.5
+      },
+      "outputs": {
+        "volatility": {
+          "predicted": 0.20584084489759397,
+          "baseline": 0.20987773337164647,
+          "analog": 0.2018039564235415,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 45,
+            "mae": 0.0566663443639699,
+            "baselineMAE": 0.059466816435882607,
+            "skill": 0.04709302161705908,
+            "wape": 40.411285906284284
+          },
+          "test": {
+            "cases": 45,
+            "mae": 0.07067742211779587,
+            "baselineMAE": 0.07201810406310843,
+            "skill": 0.018615901692409786,
+            "wape": 33.483100625586175
+          }
+        },
+        "volume": {
+          "predicted": 123.21492532617606,
+          "baseline": 111.56231574500089,
+          "analog": 134.86753490735123,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 45,
+            "mae": 22.24954232408537,
+            "baselineMAE": 25.751775867054942,
+            "skill": 0.1359996903145655,
+            "wape": 47.3558285694661
+          },
+          "test": {
+            "cases": 45,
+            "mae": 37.364826046200385,
+            "baselineMAE": 43.28515852738836,
+            "skill": 0.13677511374809748,
+            "wape": 39.41230220871506
+          }
+        }
+      },
+      "examples": [
+        {
+          "index": 2967,
+          "knownAt": 1793065200,
+          "distance": 0.05345403909174541
+        },
+        {
+          "index": 772,
+          "knownAt": 1792406700,
+          "distance": 0.10458460999774549
+        },
+        {
+          "index": 1979,
+          "knownAt": 1792768800,
+          "distance": 0.10468044860289685
+        },
+        {
+          "index": 1451,
+          "knownAt": 1792610400,
+          "distance": 0.107957860266892
+        },
+        {
+          "index": 1130,
+          "knownAt": 1792514100,
+          "distance": 0.11002433554320423
+        },
+        {
+          "index": 3971,
+          "knownAt": 1793366400,
+          "distance": 0.1117891096545749
+        },
+        {
+          "index": 1727,
+          "knownAt": 1792693200,
+          "distance": 0.11358177887607493
+        },
+        {
+          "index": 2853,
+          "knownAt": 1793031000,
+          "distance": 0.11761034662097548
+        },
+        {
+          "index": 2672,
+          "knownAt": 1792976700,
+          "distance": 0.1256737491016801
+        },
+        {
+          "index": 4016,
+          "knownAt": 1793379900,
+          "distance": 0.1300184992332071
+        },
+        {
+          "index": 1391,
+          "knownAt": 1792592400,
+          "distance": 0.13286882426350186
+        },
+        {
+          "index": 3689,
+          "knownAt": 1793281800,
+          "distance": 0.134056359435121
+        },
+        {
+          "index": 3722,
+          "knownAt": 1793291700,
+          "distance": 0.13546910721118924
+        },
+        {
+          "index": 1235,
+          "knownAt": 1792545600,
+          "distance": 0.13809036034074434
+        },
+        {
+          "index": 2819,
+          "knownAt": 1793020800,
+          "distance": 0.1388847642704798
+        },
+        {
+          "index": 1691,
+          "knownAt": 1792682400,
+          "distance": 0.14199550773340516
+        },
+        {
+          "index": 867,
+          "knownAt": 1792435200,
+          "distance": 0.1420630463431678
+        },
+        {
+          "index": 1711,
+          "knownAt": 1792688400,
+          "distance": 0.14220065216840533
+        }
+      ],
+      "targetCloseAt": 1793384400,
+      "evidence": [
+        {
+          "origin": 1793141400,
+          "actual": {
+            "volatility": 0.05873365570572091,
+            "volume": 27.227767410004162
+          },
+          "baseline": {
+            "volatility": 0.24973214912494085,
+            "volume": 57.44898076125082
+          },
+          "predicted": {
+            "volatility": 0.20145267252504612,
+            "volume": 50.96665940003652
+          }
+        },
+        {
+          "origin": 1793146800,
+          "actual": {
+            "volatility": 0.06328413216426922,
+            "volume": 21.254334420002124
+          },
+          "baseline": {
+            "volatility": 0.13284379375504474,
+            "volume": 50.3296462975004
+          },
+          "predicted": {
+            "volatility": 0.1171959077753573,
+            "volume": 51.32307346492224
+          }
+        },
+        {
+          "origin": 1793152200,
+          "actual": {
+            "volatility": 0.09161988440683792,
+            "volume": 25.918164779999643
+          },
+          "baseline": {
+            "volatility": 0.12588593409477736,
+            "volume": 44.08828145125062
+          },
+          "predicted": {
+            "volatility": 0.13127455325571874,
+            "volume": 44.04341787585885
+          }
+        },
+        {
+          "origin": 1793157600,
+          "actual": {
+            "volatility": 0.19378841862264762,
+            "volume": 63.81784211999911
+          },
+          "baseline": {
+            "volatility": 0.09752204372344794,
+            "volume": 33.15287653125142
+          },
+          "predicted": {
+            "volatility": 0.1024153736062147,
+            "volume": 33.76376929646812
+          }
+        },
+        {
+          "origin": 1793163000,
+          "actual": {
+            "volatility": 0.1155241918436515,
+            "volume": 21.061689010006376
+          },
+          "baseline": {
+            "volatility": 0.0985783820470855,
+            "volume": 23.20824343499953
+          },
+          "predicted": {
+            "volatility": 0.09179762375747166,
+            "volume": 22.61432143502326
+          }
+        },
+        {
+          "origin": 1793168400,
+          "actual": {
+            "volatility": 0.06148434811427502,
+            "volume": 7.885680630002753
+          },
+          "baseline": {
+            "volatility": 0.06812797226729499,
+            "volume": 14.338634173749597
+          },
+          "predicted": {
+            "volatility": 0.07475840650662618,
+            "volume": 19.518793476658946
+          }
+        },
+        {
+          "origin": 1793173800,
+          "actual": {
+            "volatility": 0.11666905503578294,
+            "volume": 73.06094348999613
+          },
+          "baseline": {
+            "volatility": 0.05046594530665594,
+            "volume": 23.15320384624829
+          },
+          "predicted": {
+            "volatility": 0.08010958448614011,
+            "volume": 37.81583621130464
+          }
+        },
+        {
+          "origin": 1793179200,
+          "actual": {
+            "volatility": 0.16680725740852453,
+            "volume": 19.419848899997305
+          },
+          "baseline": {
+            "volatility": 0.17060569740884998,
+            "volume": 63.07366591874779
+          },
+          "predicted": {
+            "volatility": 0.14453860087280862,
+            "volume": 52.10192258340525
+          }
+        },
+        {
+          "origin": 1793184600,
+          "actual": {
+            "volatility": 0.12304123894691392,
+            "volume": 11.955757950003317
+          },
+          "baseline": {
+            "volatility": 0.1081840795070316,
+            "volume": 18.73972598124783
+          },
+          "predicted": {
+            "volatility": 0.09841628434666691,
+            "volume": 21.17023736355725
+          }
+        },
+        {
+          "origin": 1793190000,
+          "actual": {
+            "volatility": 0.3016864948578786,
+            "volume": 96.56565232999856
+          },
+          "baseline": {
+            "volatility": 0.16417225419568696,
+            "volume": 27.100266712497614
+          },
+          "predicted": {
+            "volatility": 0.184838391067418,
+            "volume": 52.85289272298548
+          }
+        },
+        {
+          "origin": 1793195400,
+          "actual": {
+            "volatility": 0.28557817559409665,
+            "volume": 89.6289592999965
+          },
+          "baseline": {
+            "volatility": 0.25830829634859637,
+            "volume": 80.76743107249786
+          },
+          "predicted": {
+            "volatility": 0.2188010961397723,
+            "volume": 80.53329911893792
+          }
+        },
+        {
+          "origin": 1793200800,
+          "actual": {
+            "volatility": 0.15289549864392046,
+            "volume": 33.580295970001316
+          },
+          "baseline": {
+            "volatility": 0.22020385087742705,
+            "volume": 79.78343588499865
+          },
+          "predicted": {
+            "volatility": 0.16546770582397757,
+            "volume": 52.443639642538066
+          }
+        },
+        {
+          "origin": 1793206200,
+          "actual": {
+            "volatility": 0.18188361622570914,
+            "volume": 94.47080355000799
+          },
+          "baseline": {
+            "volatility": 0.15472101321918627,
+            "volume": 56.553193520000605
+          },
+          "predicted": {
+            "volatility": 0.17985157473175473,
+            "volume": 76.18595486668463
+          }
+        },
+        {
+          "origin": 1793211600,
+          "actual": {
+            "volatility": 0.21007513254935622,
+            "volume": 152.2838175299985
+          },
+          "baseline": {
+            "volatility": 0.19423587411160198,
+            "volume": 95.05977028375128
+          },
+          "predicted": {
+            "volatility": 0.1667989464519904,
+            "volume": 81.9931014608467
+          }
+        },
+        {
+          "origin": 1793217000,
+          "actual": {
+            "volatility": 0.21250006123325446,
+            "volume": 238.24275871000282
+          },
+          "baseline": {
+            "volatility": 0.20259569291555235,
+            "volume": 116.6452962450021
+          },
+          "predicted": {
+            "volatility": 0.1814685413766921,
+            "volume": 92.87871448433825
+          }
+        },
+        {
+          "origin": 1793222400,
+          "actual": {
+            "volatility": 0.2393336482831913,
+            "volume": 49.9774583699982
+          },
+          "baseline": {
+            "volatility": 0.17878033117424463,
+            "volume": 109.43693198249912
+          },
+          "predicted": {
+            "volatility": 0.16228725445060865,
+            "volume": 75.1269118913454
+          }
+        },
+        {
+          "origin": 1793227800,
+          "actual": {
+            "volatility": 0.042644567813899865,
+            "volume": 28.10992578999867
+          },
+          "baseline": {
+            "volatility": 0.15301074821961014,
+            "volume": 54.156029314995976
+          },
+          "predicted": {
+            "volatility": 0.1242707559127694,
+            "volume": 38.825820123663426
+          }
+        },
+        {
+          "origin": 1793233200,
+          "actual": {
+            "volatility": 0.07713778115604597,
+            "volume": 18.327473490004195
+          },
+          "baseline": {
+            "volatility": 0.09832123701086673,
+            "volume": 35.485938966247886
+          },
+          "predicted": {
+            "volatility": 0.0978635551853764,
+            "volume": 33.233865711996756
+          }
+        },
+        {
+          "origin": 1793238600,
+          "actual": {
+            "volatility": 0.3146719777659306,
+            "volume": 71.15946451000491
+          },
+          "baseline": {
+            "volatility": 0.25594046248580027,
+            "volume": 69.02057662124935
+          },
+          "predicted": {
+            "volatility": 0.23827502067011863,
+            "volume": 85.62407231194572
+          }
+        },
+        {
+          "origin": 1793244000,
+          "actual": {
+            "volatility": 0.10047833738366235,
+            "volume": 25.13025538000511
+          },
+          "baseline": {
+            "volatility": 0.30043763186056294,
+            "volume": 77.39704135125248
+          },
+          "predicted": {
+            "volatility": 0.20691326717899766,
+            "volume": 52.0777990536935
+          }
+        },
+        {
+          "origin": 1793249400,
+          "actual": {
+            "volatility": 0.11241055237096992,
+            "volume": 49.154305889998795
+          },
+          "baseline": {
+            "volatility": 0.12436995815522552,
+            "volume": 31.675350722501207
+          },
+          "predicted": {
+            "volatility": 0.13660325697740366,
+            "volume": 52.109417096936156
+          }
+        },
+        {
+          "origin": 1793254800,
+          "actual": {
+            "volatility": 0.11002926187263545,
+            "volume": 18.51753751999786
+          },
+          "baseline": {
+            "volatility": 0.12448647150716953,
+            "volume": 29.34996558874991
+          },
+          "predicted": {
+            "volatility": 0.1324650514225484,
+            "volume": 38.00205242369547
+          }
+        },
+        {
+          "origin": 1793260200,
+          "actual": {
+            "volatility": 0.13553883641905198,
+            "volume": 50.1422895900032
+          },
+          "baseline": {
+            "volatility": 0.0936508938061805,
+            "volume": 20.17239226750098
+          },
+          "predicted": {
+            "volatility": 0.08999826054112905,
+            "volume": 21.658961223188154
+          }
+        },
+        {
+          "origin": 1793265600,
+          "actual": {
+            "volatility": 0.1371616698214136,
+            "volume": 11.94061363000219
+          },
+          "baseline": {
+            "volatility": 0.11360793964403455,
+            "volume": 37.683362560000205
+          },
+          "predicted": {
+            "volatility": 0.1260070663505439,
+            "volume": 42.60937793604108
+          }
+        },
+        {
+          "origin": 1793271000,
+          "actual": {
+            "volatility": 0.10387026398621761,
+            "volume": 21.611498010002833
+          },
+          "baseline": {
+            "volatility": 0.13381145970623815,
+            "volume": 25.206623955001305
+          },
+          "predicted": {
+            "volatility": 0.13849620323766837,
+            "volume": 39.98924503525342
+          }
+        },
+        {
+          "origin": 1793276400,
+          "actual": {
+            "volatility": 0.13390599180849178,
+            "volume": 48.75738341000397
+          },
+          "baseline": {
+            "volatility": 0.11460173679873605,
+            "volume": 23.509734031251355
+          },
+          "predicted": {
+            "volatility": 0.0986774451133429,
+            "volume": 28.971938142041612
+          }
+        },
+        {
+          "origin": 1793281800,
+          "actual": {
+            "volatility": 0.1819569152603326,
+            "volume": 81.95638353999675
+          },
+          "baseline": {
+            "volatility": 0.16198199950738942,
+            "volume": 69.68292607125204
+          },
+          "predicted": {
+            "volatility": 0.15257292115139193,
+            "volume": 72.90446425061478
+          }
+        },
+        {
+          "origin": 1793287200,
+          "actual": {
+            "volatility": 0.3790825024126117,
+            "volume": 119.3437199100008
+          },
+          "baseline": {
+            "volatility": 0.4168789278750276,
+            "volume": 159.1171912212494
+          },
+          "predicted": {
+            "volatility": 0.2869152785504864,
+            "volume": 122.11341765851574
+          }
+        },
+        {
+          "origin": 1793292600,
+          "actual": {
+            "volatility": 0.20849292032901903,
+            "volume": 122.73362497000198
+          },
+          "baseline": {
+            "volatility": 0.28223906873159177,
+            "volume": 141.95757982749637
+          },
+          "predicted": {
+            "volatility": 0.25383682017575704,
+            "volume": 115.88824603773797
+          }
+        },
+        {
+          "origin": 1793298000,
+          "actual": {
+            "volatility": 0.1506197049321324,
+            "volume": 59.74201901000197
+          },
+          "baseline": {
+            "volatility": 0.2111403064547771,
+            "volume": 81.55366922124904
+          },
+          "predicted": {
+            "volatility": 0.17331115332421998,
+            "volume": 60.230199545198886
+          }
+        },
+        {
+          "origin": 1793303400,
+          "actual": {
+            "volatility": 0.5398283820448788,
+            "volume": 177.4304248499975
+          },
+          "baseline": {
+            "volatility": 0.12999029374920348,
+            "volume": 83.08610910250081
+          },
+          "predicted": {
+            "volatility": 0.11025152617650817,
+            "volume": 57.73726181188135
+          }
+        },
+        {
+          "origin": 1793308800,
+          "actual": {
+            "volatility": 0.3186430511962633,
+            "volume": 136.3169191699999
+          },
+          "baseline": {
+            "volatility": 0.5804328131112443,
+            "volume": 321.0400211374981
+          },
+          "predicted": {
+            "volatility": 0.40687432708546417,
+            "volume": 225.12659800635086
+          }
+        },
+        {
+          "origin": 1793314200,
+          "actual": {
+            "volatility": 0.257546993711183,
+            "volume": 147.95640123999328
+          },
+          "baseline": {
+            "volatility": 0.37129173069833216,
+            "volume": 294.3158706887489
+          },
+          "predicted": {
+            "volatility": 0.27541906895875623,
+            "volume": 176.69275896172846
+          }
+        },
+        {
+          "origin": 1793319600,
+          "actual": {
+            "volatility": 0.4022871181077434,
+            "volume": 419.3100300399965
+          },
+          "baseline": {
+            "volatility": 0.337312464645831,
+            "volume": 268.11962459125425
+          },
+          "predicted": {
+            "volatility": 0.3104981178713977,
+            "volume": 227.19023665134586
+          }
+        },
+        {
+          "origin": 1793325000,
+          "actual": {
+            "volatility": 0.46772306782435524,
+            "volume": 395.3771418200049
+          },
+          "baseline": {
+            "volatility": 0.3901658649096084,
+            "volume": 359.8842973050014
+          },
+          "predicted": {
+            "volatility": 0.2841121897355578,
+            "volume": 217.93203865951793
+          }
+        },
+        {
+          "origin": 1793330400,
+          "actual": {
+            "volatility": 0.38299343371391525,
+            "volume": 153.5868105499976
+          },
+          "baseline": {
+            "volatility": 0.300914385029653,
+            "volume": 235.03345656750207
+          },
+          "predicted": {
+            "volatility": 0.2292056287730628,
+            "volume": 149.00591342077416
+          }
+        },
+        {
+          "origin": 1793335800,
+          "actual": {
+            "volatility": 0.2828027920022957,
+            "volume": 187.95303447001788
+          },
+          "baseline": {
+            "volatility": 0.2363336391575409,
+            "volume": 112.04721305000021
+          },
+          "predicted": {
+            "volatility": 0.15764434786739162,
+            "volume": 75.83406197918221
+          }
+        },
+        {
+          "origin": 1793341200,
+          "actual": {
+            "volatility": 0.21224717138099233,
+            "volume": 104.24006111999915
+          },
+          "baseline": {
+            "volatility": 0.1395413061991498,
+            "volume": 88.90409592625292
+          },
+          "predicted": {
+            "volatility": 0.13177389799939204,
+            "volume": 67.01287736902593
+          }
+        },
+        {
+          "origin": 1793346600,
+          "actual": {
+            "volatility": 0.19836160716093904,
+            "volume": 99.32680194999557
+          },
+          "baseline": {
+            "volatility": 0.2030556708486612,
+            "volume": 89.06963713750156
+          },
+          "predicted": {
+            "volatility": 0.25128089028584205,
+            "volume": 141.36170235258086
+          }
+        },
+        {
+          "origin": 1793352000,
+          "actual": {
+            "volatility": 0.2889271885945334,
+            "volume": 35.52710644999752
+          },
+          "baseline": {
+            "volatility": 0.2231158848206299,
+            "volume": 94.30961000500247
+          },
+          "predicted": {
+            "volatility": 0.22465223657228844,
+            "volume": 106.4484079060768
+          }
+        },
+        {
+          "origin": 1793357400,
+          "actual": {
+            "volatility": 0.1825819470497276,
+            "volume": 88.23743486999592
+          },
+          "baseline": {
+            "volatility": 0.22912255388962788,
+            "volume": 79.82022845874963
+          },
+          "predicted": {
+            "volatility": 0.22326101440158025,
+            "volume": 77.19639160133174
+          }
+        },
+        {
+          "origin": 1793362800,
+          "actual": {
+            "volatility": 0.09866096616996894,
+            "volume": 54.23673768999288
+          },
+          "baseline": {
+            "volatility": 0.18804234457215624,
+            "volume": 87.20515417999923
+          },
+          "predicted": {
+            "volatility": 0.1632161247064805,
+            "volume": 69.04101781872733
+          }
+        },
+        {
+          "origin": 1793368200,
+          "actual": {
+            "volatility": 0.3989460032140567,
+            "volume": 195.65690904999792
+          },
+          "baseline": {
+            "volatility": 0.2282974536351869,
+            "volume": 178.24290684624975
+          },
+          "predicted": {
+            "volatility": 0.2334290577779473,
+            "volume": 155.41695613320059
+          }
+        },
+        {
+          "origin": 1793373600,
+          "actual": {
+            "volatility": 0.4627249663500599,
+            "volume": 185.30781186000968
+          },
+          "baseline": {
+            "volatility": 0.3913035462140178,
+            "volume": 262.54250575624974
+          },
+          "predicted": {
+            "volatility": 0.34426570219589625,
+            "volume": 195.2160820908848
+          }
+        },
+        {
+          "origin": 1793379000,
+          "actual": {
+            "volatility": 0.24159303538482177,
+            "volume": 132.78229933998955
+          },
+          "baseline": {
+            "volatility": 0.3362788676956166,
+            "volume": 169.3770071575018
+          },
+          "predicted": {
+            "volatility": 0.2995284314260567,
+            "volume": 135.49885932378862
+          }
+        }
+      ]
+    },
+    {
+      "schema": "laplace-activity-analysis-v1",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 30,
+      "granularity": 300,
+      "horizonBars": 6,
+      "dataKnownThrough": 1793383500,
+      "originTime": 1793383200,
+      "sourceRows": 4032,
+      "retrospective": true,
+      "prospectivelyValidated": false,
+      "automaticTrading": false,
+      "protocol": {
+        "lookback": 24,
+        "minCases": 8,
+        "trainEnd": 2419,
+        "validationEnd": 3225,
+        "candidateWeights": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "selection": "validation MAE only; per target",
+        "reference": "last 24 closed bars; RMS returns and mean volume, scaled to horizon"
+      },
+      "status": "forecast",
+      "weights": {
+        "volatility": 0.25,
+        "volume": 0.5
+      },
+      "outputs": {
+        "volatility": {
+          "predicted": 0.29537537910990974,
+          "baseline": 0.29681193697430674,
+          "analog": 0.2910657055167188,
+          "weight": 0.25,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 45,
+            "mae": 0.07906580905231922,
+            "baselineMAE": 0.08144288567288716,
+            "skill": 0.029187038265262255,
+            "wape": 38.378052256786724
+          },
+          "test": {
+            "cases": 45,
+            "mae": 0.07235396466364308,
+            "baselineMAE": 0.08292155721317919,
+            "skill": 0.12744083570896259,
+            "wape": 26.69923943790618
+          }
+        },
+        "volume": {
+          "predicted": 240.71723327698746,
+          "baseline": 223.12463149000178,
+          "analog": 258.30983506397314,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 45,
+            "mae": 43.314651984853526,
+            "baselineMAE": 47.30851515055615,
+            "skill": 0.08442165544601055,
+            "wape": 50.12051856946919
+          },
+          "test": {
+            "cases": 45,
+            "mae": 62.15675266905371,
+            "baselineMAE": 76.05078600155475,
+            "skill": 0.1826941450968962,
+            "wape": 35.546552434157086
+          }
+        }
+      },
+      "examples": [
+        {
+          "index": 2967,
+          "knownAt": 1793066100,
+          "distance": 0.05345403909174541
+        },
+        {
+          "index": 772,
+          "knownAt": 1792407600,
+          "distance": 0.10458460999774549
+        },
+        {
+          "index": 1979,
+          "knownAt": 1792769700,
+          "distance": 0.10468044860289685
+        },
+        {
+          "index": 1451,
+          "knownAt": 1792611300,
+          "distance": 0.107957860266892
+        },
+        {
+          "index": 1130,
+          "knownAt": 1792515000,
+          "distance": 0.11002433554320423
+        },
+        {
+          "index": 3971,
+          "knownAt": 1793367300,
+          "distance": 0.1117891096545749
+        },
+        {
+          "index": 1727,
+          "knownAt": 1792694100,
+          "distance": 0.11358177887607493
+        },
+        {
+          "index": 2853,
+          "knownAt": 1793031900,
+          "distance": 0.11761034662097548
+        },
+        {
+          "index": 2672,
+          "knownAt": 1792977600,
+          "distance": 0.1256737491016801
+        },
+        {
+          "index": 4016,
+          "knownAt": 1793380800,
+          "distance": 0.1300184992332071
+        },
+        {
+          "index": 1391,
+          "knownAt": 1792593300,
+          "distance": 0.13286882426350186
+        },
+        {
+          "index": 3689,
+          "knownAt": 1793282700,
+          "distance": 0.134056359435121
+        },
+        {
+          "index": 3722,
+          "knownAt": 1793292600,
+          "distance": 0.13546910721118924
+        },
+        {
+          "index": 1235,
+          "knownAt": 1792546500,
+          "distance": 0.13809036034074434
+        },
+        {
+          "index": 2819,
+          "knownAt": 1793021700,
+          "distance": 0.1388847642704798
+        },
+        {
+          "index": 1691,
+          "knownAt": 1792683300,
+          "distance": 0.14199550773340516
+        },
+        {
+          "index": 867,
+          "knownAt": 1792436100,
+          "distance": 0.1420630463431678
+        },
+        {
+          "index": 1711,
+          "knownAt": 1792689300,
+          "distance": 0.14220065216840533
+        }
+      ],
+      "targetCloseAt": 1793385300,
+      "evidence": [
+        {
+          "origin": 1793141400,
+          "actual": {
+            "volatility": 0.12341482016106431,
+            "volume": 80.27069057000335
+          },
+          "baseline": {
+            "volatility": 0.35317459225307163,
+            "volume": 114.89796152250165
+          },
+          "predicted": {
+            "volatility": 0.31483263772210923,
+            "volume": 93.01351329210182
+          }
+        },
+        {
+          "origin": 1793146800,
+          "actual": {
+            "volatility": 0.10556862680055859,
+            "volume": 44.98945202000323
+          },
+          "baseline": {
+            "volatility": 0.18786949480547854,
+            "volume": 100.6592925950008
+          },
+          "predicted": {
+            "volatility": 0.17950972875800547,
+            "volume": 100.79500007999653
+          }
+        },
+        {
+          "origin": 1793152200,
+          "actual": {
+            "volatility": 0.1881545719516158,
+            "volume": 81.80832485000428
+          },
+          "baseline": {
+            "volatility": 0.17802959530883974,
+            "volume": 88.17656290250125
+          },
+          "predicted": {
+            "volatility": 0.17820003057027503,
+            "volume": 85.58312778939691
+          }
+        },
+        {
+          "origin": 1793157600,
+          "actual": {
+            "volatility": 0.20272888469061012,
+            "volume": 99.35893299999589
+          },
+          "baseline": {
+            "volatility": 0.13791699686404205,
+            "volume": 66.30575306250284
+          },
+          "predicted": {
+            "volatility": 0.14027797561618774,
+            "volume": 65.08764749742717
+          }
+        },
+        {
+          "origin": 1793163000,
+          "actual": {
+            "volatility": 0.12783927773032236,
+            "volume": 29.74006575000385
+          },
+          "baseline": {
+            "volatility": 0.13941088484778472,
+            "volume": 46.41648686999906
+          },
+          "predicted": {
+            "volatility": 0.1391336604573913,
+            "volume": 47.42321164808691
+          }
+        },
+        {
+          "origin": 1793168400,
+          "actual": {
+            "volatility": 0.08006665362535537,
+            "volume": 16.849044880000292
+          },
+          "baseline": {
+            "volatility": 0.09634750235738668,
+            "volume": 28.677268347499194
+          },
+          "predicted": {
+            "volatility": 0.1039363869385918,
+            "volume": 37.455621174993354
+          }
+        },
+        {
+          "origin": 1793173800,
+          "actual": {
+            "volatility": 0.13257222933243518,
+            "volume": 96.91125746000034
+          },
+          "baseline": {
+            "volatility": 0.07136962429065169,
+            "volume": 46.30640769249658
+          },
+          "predicted": {
+            "volatility": 0.08992503871343913,
+            "volume": 65.6127324962477
+          }
+        },
+        {
+          "origin": 1793179200,
+          "actual": {
+            "volatility": 0.22347390295571778,
+            "volume": 42.19441939999524
+          },
+          "baseline": {
+            "volatility": 0.24127289109371605,
+            "volume": 126.14733183749559
+          },
+          "predicted": {
+            "volatility": 0.2212625590005167,
+            "volume": 100.07850366268777
+          }
+        },
+        {
+          "origin": 1793184600,
+          "actual": {
+            "volatility": 0.14130169945345492,
+            "volume": 26.423856909997994
+          },
+          "baseline": {
+            "volatility": 0.1529953924716933,
+            "volume": 37.47945196249566
+          },
+          "predicted": {
+            "volatility": 0.14430436761500257,
+            "volume": 43.714370228290804
+          }
+        },
+        {
+          "origin": 1793190000,
+          "actual": {
+            "volatility": 0.3260953892951406,
+            "volume": 155.46553765000135
+          },
+          "baseline": {
+            "volatility": 0.23217462844890374,
+            "volume": 54.20053342499523
+          },
+          "predicted": {
+            "volatility": 0.24890708415983326,
+            "volume": 107.46408552798299
+          }
+        },
+        {
+          "origin": 1793195400,
+          "actual": {
+            "volatility": 0.32258177251306275,
+            "volume": 143.52686560999427
+          },
+          "baseline": {
+            "volatility": 0.3653030959696736,
+            "volume": 161.5348621449957
+          },
+          "predicted": {
+            "volatility": 0.3450495968984644,
+            "volume": 165.2518547855885
+          }
+        },
+        {
+          "origin": 1793200800,
+          "actual": {
+            "volatility": 0.2010055245081144,
+            "volume": 84.62589921000472
+          },
+          "baseline": {
+            "volatility": 0.3114152723976399,
+            "volume": 159.5668717699973
+          },
+          "predicted": {
+            "volatility": 0.28147756567862103,
+            "volume": 114.61040415243309
+          }
+        },
+        {
+          "origin": 1793206200,
+          "actual": {
+            "volatility": 0.23314102514287077,
+            "volume": 162.60739230000763
+          },
+          "baseline": {
+            "volatility": 0.21880855527868018,
+            "volume": 113.10638704000121
+          },
+          "predicted": {
+            "volatility": 0.23465696495904875,
+            "volume": 149.00794187885606
+          }
+        },
+        {
+          "origin": 1793211600,
+          "actual": {
+            "volatility": 0.27931878294999196,
+            "volume": 269.2065662200039
+          },
+          "baseline": {
+            "volatility": 0.27469100746802066,
+            "volume": 190.11954056750255
+          },
+          "predicted": {
+            "volatility": 0.262817310167046,
+            "volume": 158.04667998681649
+          }
+        },
+        {
+          "origin": 1793217000,
+          "actual": {
+            "volatility": 0.3303805788441031,
+            "volume": 293.46901508000155
+          },
+          "baseline": {
+            "volatility": 0.2865135765995489,
+            "volume": 233.2905924900042
+          },
+          "predicted": {
+            "volatility": 0.27392274617034784,
+            "volume": 195.49605248203494
+          }
+        },
+        {
+          "origin": 1793222400,
+          "actual": {
+            "volatility": 0.2768049937788658,
+            "volume": 86.97564223999507
+          },
+          "baseline": {
+            "volatility": 0.25283356903217025,
+            "volume": 218.87386396499824
+          },
+          "predicted": {
+            "volatility": 0.23991103333875113,
+            "volume": 152.38208373825168
+          }
+        },
+        {
+          "origin": 1793227800,
+          "actual": {
+            "volatility": 0.10195162599455805,
+            "volume": 55.16358211998886
+          },
+          "baseline": {
+            "volatility": 0.21638987532102757,
+            "volume": 108.31205862999195
+          },
+          "predicted": {
+            "volatility": 0.19798382338263593,
+            "volume": 77.9303103029217
+          }
+        },
+        {
+          "origin": 1793233200,
+          "actual": {
+            "volatility": 0.08839800161185193,
+            "volume": 53.4607284800004
+          },
+          "baseline": {
+            "volatility": 0.13904722685006723,
+            "volume": 70.97187793249577
+          },
+          "predicted": {
+            "volatility": 0.14417764025785607,
+            "volume": 67.7677889687103
+          }
+        },
+        {
+          "origin": 1793238600,
+          "actual": {
+            "volatility": 0.36124740846468084,
+            "volume": 121.27261596000608
+          },
+          "baseline": {
+            "volatility": 0.36195447320746105,
+            "volume": 138.0411532424987
+          },
+          "predicted": {
+            "volatility": 0.3478085462027642,
+            "volume": 161.8674563486547
+          }
+        },
+        {
+          "origin": 1793244000,
+          "actual": {
+            "volatility": 0.1523101388747606,
+            "volume": 49.576831020007376
+          },
+          "baseline": {
+            "volatility": 0.4248829736244632,
+            "volume": 154.79408270250497
+          },
+          "predicted": {
+            "volatility": 0.3582647468119872,
+            "volume": 105.32931887502636
+          }
+        },
+        {
+          "origin": 1793249400,
+          "actual": {
+            "volatility": 0.16993324979698404,
+            "volume": 75.48080676999962
+          },
+          "baseline": {
+            "volatility": 0.17588568157489423,
+            "volume": 63.350701445002414
+          },
+          "predicted": {
+            "volatility": 0.18490944718887486,
+            "volume": 100.00532353572774
+          }
+        },
+        {
+          "origin": 1793254800,
+          "actual": {
+            "volatility": 0.17840038059072882,
+            "volume": 32.72046047999902
+          },
+          "baseline": {
+            "volatility": 0.176050456337411,
+            "volume": 58.69993117749982
+          },
+          "predicted": {
+            "volatility": 0.18350782832585685,
+            "volume": 75.2394173354825
+          }
+        },
+        {
+          "origin": 1793260200,
+          "actual": {
+            "volatility": 0.17685577053361481,
+            "volume": 86.74445260000357
+          },
+          "baseline": {
+            "volatility": 0.13244236414906294,
+            "volume": 40.34478453500196
+          },
+          "predicted": {
+            "volatility": 0.13495190038970944,
+            "volume": 42.18385028583015
+          }
+        },
+        {
+          "origin": 1793265600,
+          "actual": {
+            "volatility": 0.16508947475698546,
+            "volume": 21.048854080007004
+          },
+          "baseline": {
+            "volatility": 0.16066588903785767,
+            "volume": 75.36672512000041
+          },
+          "predicted": {
+            "volatility": 0.17802714408854423,
+            "volume": 88.63086462293415
+          }
+        },
+        {
+          "origin": 1793271000,
+          "actual": {
+            "volatility": 0.117219342420821,
+            "volume": 51.633291470003314
+          },
+          "baseline": {
+            "volatility": 0.18923798111750292,
+            "volume": 50.41324791000261
+          },
+          "predicted": {
+            "volatility": 0.18642022658879057,
+            "volume": 72.49070064562784
+          }
+        },
+        {
+          "origin": 1793276400,
+          "actual": {
+            "volatility": 0.1621818453652751,
+            "volume": 79.19026384000608
+          },
+          "baseline": {
+            "volatility": 0.16207133045228433,
+            "volume": 47.01946806250271
+          },
+          "predicted": {
+            "volatility": 0.16329957867456596,
+            "volume": 62.85647678576976
+          }
+        },
+        {
+          "origin": 1793281800,
+          "actual": {
+            "volatility": 0.24966354903535162,
+            "volume": 207.92196876999515
+          },
+          "baseline": {
+            "volatility": 0.2290771405636621,
+            "volume": 139.36585214250408
+          },
+          "predicted": {
+            "volatility": 0.24438746743143133,
+            "volume": 153.61803939137684
+          }
+        },
+        {
+          "origin": 1793287200,
+          "actual": {
+            "volatility": 0.44868356928649605,
+            "volume": 293.8334167099965
+          },
+          "baseline": {
+            "volatility": 0.5895558336684193,
+            "volume": 318.2343824424988
+          },
+          "predicted": {
+            "volatility": 0.5009012630496611,
+            "volume": 242.53944205256235
+          }
+        },
+        {
+          "origin": 1793292600,
+          "actual": {
+            "volatility": 0.2671461484307005,
+            "volume": 197.9028254299992
+          },
+          "baseline": {
+            "volatility": 0.3991463188317692,
+            "volume": 283.91515965499275
+          },
+          "predicted": {
+            "volatility": 0.38315934269923047,
+            "volume": 226.6428413226854
+          }
+        },
+        {
+          "origin": 1793298000,
+          "actual": {
+            "volatility": 0.25985949432849265,
+            "volume": 116.16103309000027
+          },
+          "baseline": {
+            "volatility": 0.2985974849519573,
+            "volume": 163.10733844249808
+          },
+          "predicted": {
+            "volatility": 0.275703340331015,
+            "volume": 127.73997367188507
+          }
+        },
+        {
+          "origin": 1793303400,
+          "actual": {
+            "volatility": 0.5579286556597994,
+            "volume": 349.2532873599994
+          },
+          "baseline": {
+            "volatility": 0.18383403639698612,
+            "volume": 166.17221820500163
+          },
+          "predicted": {
+            "volatility": 0.17713361054241614,
+            "volume": 115.18247908172582
+          }
+        },
+        {
+          "origin": 1793308800,
+          "actual": {
+            "volatility": 0.593949126806486,
+            "volume": 260.05206877000455
+          },
+          "baseline": {
+            "volatility": 0.8208559563482897,
+            "volume": 642.0800422749962
+          },
+          "predicted": {
+            "volatility": 0.7095430235848779,
+            "volume": 457.3893653276044
+          }
+        },
+        {
+          "origin": 1793314200,
+          "actual": {
+            "volatility": 0.26026580614590067,
+            "volume": 264.6949302999856
+          },
+          "baseline": {
+            "volatility": 0.5250858011505601,
+            "volume": 588.6317413774977
+          },
+          "predicted": {
+            "volatility": 0.4634391556026892,
+            "volume": 361.8487028429563
+          }
+        },
+        {
+          "origin": 1793319600,
+          "actual": {
+            "volatility": 0.5939630102642596,
+            "volume": 803.9015306299843
+          },
+          "baseline": {
+            "volatility": 0.4770318622596293,
+            "volume": 536.2392491825085
+          },
+          "predicted": {
+            "volatility": 0.4619337285814539,
+            "volume": 431.0046473976138
+          }
+        },
+        {
+          "origin": 1793325000,
+          "actual": {
+            "volatility": 0.5747129059161806,
+            "volume": 611.2197894200071
+          },
+          "baseline": {
+            "volatility": 0.551777857730197,
+            "volume": 719.7685946100028
+          },
+          "predicted": {
+            "volatility": 0.4763687691353056,
+            "volume": 436.09401236462145
+          }
+        },
+        {
+          "origin": 1793330400,
+          "actual": {
+            "volatility": 0.41231215311574243,
+            "volume": 271.6363801700063
+          },
+          "baseline": {
+            "volatility": 0.4255572044220947,
+            "volume": 470.06691313500414
+          },
+          "predicted": {
+            "volatility": 0.3714132704543064,
+            "volume": 294.516786199458
+          }
+        },
+        {
+          "origin": 1793335800,
+          "actual": {
+            "volatility": 0.29415920570110615,
+            "volume": 277.40744458002155
+          },
+          "baseline": {
+            "volatility": 0.33422623774158355,
+            "volume": 224.09442610000042
+          },
+          "predicted": {
+            "volatility": 0.2862467992020226,
+            "volume": 153.20133457862795
+          }
+        },
+        {
+          "origin": 1793341200,
+          "actual": {
+            "volatility": 0.2830269465051372,
+            "volume": 264.5017814600142
+          },
+          "baseline": {
+            "volatility": 0.19734120773809452,
+            "volume": 177.80819185250584
+          },
+          "predicted": {
+            "volatility": 0.2007121635833218,
+            "volume": 138.83399380183323
+          }
+        },
+        {
+          "origin": 1793346600,
+          "actual": {
+            "volatility": 0.23009192337983309,
+            "volume": 192.21997117999126
+          },
+          "baseline": {
+            "volatility": 0.2871640836309438,
+            "volume": 178.13927427500312
+          },
+          "predicted": {
+            "volatility": 0.31435022693370945,
+            "volume": 256.09720322472646
+          }
+        },
+        {
+          "origin": 1793352000,
+          "actual": {
+            "volatility": 0.29575339248899546,
+            "volume": 102.5992427799938
+          },
+          "baseline": {
+            "volatility": 0.3155335102942082,
+            "volume": 188.61922001000494
+          },
+          "predicted": {
+            "volatility": 0.30754553245882565,
+            "volume": 197.83445942171073
+          }
+        },
+        {
+          "origin": 1793357400,
+          "actual": {
+            "volatility": 0.20097032009754007,
+            "volume": 163.83040625999274
+          },
+          "baseline": {
+            "volatility": 0.3240282231562721,
+            "volume": 159.64045691749925
+          },
+          "predicted": {
+            "volatility": 0.31886200239043494,
+            "volume": 155.2261120517232
+          }
+        },
+        {
+          "origin": 1793362800,
+          "actual": {
+            "volatility": 0.3691510888529095,
+            "volume": 150.93444411997916
+          },
+          "baseline": {
+            "volatility": 0.2659320339943781,
+            "volume": 174.41030835999845
+          },
+          "predicted": {
+            "volatility": 0.25168333967844064,
+            "volume": 141.6931465311469
+          }
+        },
+        {
+          "origin": 1793368200,
+          "actual": {
+            "volatility": 0.5867469436606523,
+            "volume": 386.9492066699895
+          },
+          "baseline": {
+            "volatility": 0.32286135518612413,
+            "volume": 356.4858136924995
+          },
+          "predicted": {
+            "volatility": 0.33923339490095145,
+            "volume": 302.6664724346822
+          }
+        },
+        {
+          "origin": 1793373600,
+          "actual": {
+            "volatility": 0.48011767041439635,
+            "volume": 377.69339832001424
+          },
+          "baseline": {
+            "volatility": 0.5533867820605511,
+            "volume": 525.0850115124995
+          },
+          "predicted": {
+            "volatility": 0.5080515699378793,
+            "volume": 403.5302149923412
+          }
+        },
+        {
+          "origin": 1793379000,
+          "actual": {
+            "volatility": 0.2682979198730414,
+            "volume": 235.2784907999885
+          },
+          "baseline": {
+            "volatility": 0.47557013543460874,
+            "volume": 338.7540143150036
+          },
+          "predicted": {
+            "volatility": 0.4382202354585254,
+            "volume": 260.993677074013
+          }
+        }
+      ]
+    },
+    {
+      "schema": "laplace-activity-analysis-v1",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 60,
+      "granularity": 300,
+      "horizonBars": 12,
+      "dataKnownThrough": 1793383500,
+      "originTime": 1793383200,
+      "sourceRows": 4032,
+      "retrospective": true,
+      "prospectivelyValidated": false,
+      "automaticTrading": false,
+      "protocol": {
+        "lookback": 24,
+        "minCases": 8,
+        "trainEnd": 2419,
+        "validationEnd": 3225,
+        "candidateWeights": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "selection": "validation MAE only; per target",
+        "reference": "last 24 closed bars; RMS returns and mean volume, scaled to horizon"
+      },
+      "status": "forecast",
+      "weights": {
+        "volatility": 0.5,
+        "volume": 0.25
+      },
+      "outputs": {
+        "volatility": {
+          "predicted": 0.42985878786734044,
+          "baseline": 0.41975546674329295,
+          "analog": 0.4399621089913879,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 34,
+            "mae": 0.10124541691047002,
+            "baselineMAE": 0.11390098975588572,
+            "skill": 0.11111029739547751,
+            "wape": 34.855386554232574
+          },
+          "test": {
+            "cases": 34,
+            "mae": 0.10184540928661254,
+            "baselineMAE": 0.14228025754520093,
+            "skill": 0.2841915593647465,
+            "wape": 27.538403677599142
+          }
+        },
+        "volume": {
+          "predicted": 468.8859692191042,
+          "baseline": 446.24926298000355,
+          "analog": 536.7960879364061,
+          "weight": 0.25,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 34,
+            "mae": 70.3588780618257,
+            "baselineMAE": 76.00973908220563,
+            "skill": 0.07434390761779142,
+            "wape": 40.17536723629846
+          },
+          "test": {
+            "cases": 34,
+            "mae": 125.78663460060633,
+            "baselineMAE": 140.9839511180883,
+            "skill": 0.10779465603679017,
+            "wape": 33.440568951606345
+          }
+        }
+      },
+      "examples": [
+        {
+          "index": 2967,
+          "knownAt": 1793067900,
+          "distance": 0.05345403909174541
+        },
+        {
+          "index": 772,
+          "knownAt": 1792409400,
+          "distance": 0.10458460999774549
+        },
+        {
+          "index": 1979,
+          "knownAt": 1792771500,
+          "distance": 0.10468044860289685
+        },
+        {
+          "index": 1451,
+          "knownAt": 1792613100,
+          "distance": 0.107957860266892
+        },
+        {
+          "index": 1130,
+          "knownAt": 1792516800,
+          "distance": 0.11002433554320423
+        },
+        {
+          "index": 3971,
+          "knownAt": 1793369100,
+          "distance": 0.1117891096545749
+        },
+        {
+          "index": 1727,
+          "knownAt": 1792695900,
+          "distance": 0.11358177887607493
+        },
+        {
+          "index": 2853,
+          "knownAt": 1793033700,
+          "distance": 0.11761034662097548
+        },
+        {
+          "index": 2672,
+          "knownAt": 1792979400,
+          "distance": 0.1256737491016801
+        },
+        {
+          "index": 4016,
+          "knownAt": 1793382600,
+          "distance": 0.1300184992332071
+        },
+        {
+          "index": 1391,
+          "knownAt": 1792595100,
+          "distance": 0.13286882426350186
+        },
+        {
+          "index": 3689,
+          "knownAt": 1793284500,
+          "distance": 0.134056359435121
+        },
+        {
+          "index": 3722,
+          "knownAt": 1793294400,
+          "distance": 0.13546910721118924
+        },
+        {
+          "index": 1235,
+          "knownAt": 1792548300,
+          "distance": 0.13809036034074434
+        },
+        {
+          "index": 2819,
+          "knownAt": 1793023500,
+          "distance": 0.1388847642704798
+        },
+        {
+          "index": 1691,
+          "knownAt": 1792685100,
+          "distance": 0.14199550773340516
+        },
+        {
+          "index": 867,
+          "knownAt": 1792437900,
+          "distance": 0.1420630463431678
+        },
+        {
+          "index": 1711,
+          "knownAt": 1792691100,
+          "distance": 0.14220065216840533
+        }
+      ],
+      "targetCloseAt": 1793387100,
+      "evidence": [
+        {
+          "origin": 1793141400,
+          "actual": {
+            "volatility": 0.29450813182092805,
+            "volume": 183.5311926899958
+          },
+          "baseline": {
+            "volatility": 0.4994642982498817,
+            "volume": 229.7959230450033
+          },
+          "predicted": {
+            "volatility": 0.37481105581296975,
+            "volume": 206.7909925499241
+          }
+        },
+        {
+          "origin": 1793148600,
+          "actual": {
+            "volatility": 0.2954275271671121,
+            "volume": 152.0215511599963
+          },
+          "baseline": {
+            "volatility": 0.2512327239074315,
+            "volume": 192.10794657000224
+          },
+          "predicted": {
+            "volatility": 0.2510394488324344,
+            "volume": 183.7352507681553
+          }
+        },
+        {
+          "origin": 1793155800,
+          "actual": {
+            "volatility": 0.20978574880444836,
+            "volume": 125.91034906000277
+          },
+          "baseline": {
+            "volatility": 0.2515581562587257,
+            "volume": 141.1840714050013
+          },
+          "predicted": {
+            "volatility": 0.25310983092628414,
+            "volume": 139.99068067332075
+          }
+        },
+        {
+          "origin": 1793163000,
+          "actual": {
+            "volatility": 0.15583005356880564,
+            "volume": 57.34169297000335
+          },
+          "baseline": {
+            "volatility": 0.197156764094171,
+            "volume": 92.83297373999812
+          },
+          "predicted": {
+            "volatility": 0.21837630639597358,
+            "volume": 98.8356675107795
+          }
+        },
+        {
+          "origin": 1793170200,
+          "actual": {
+            "volatility": 0.09785663469729701,
+            "volume": 138.5748967999898
+          },
+          "baseline": {
+            "volatility": 0.13244164323680774,
+            "volume": 51.99621346999993
+          },
+          "predicted": {
+            "volatility": 0.18114840607879062,
+            "volume": 64.78199129246121
+          }
+        },
+        {
+          "origin": 1793177400,
+          "actual": {
+            "volatility": 0.24412961459286714,
+            "volume": 73.32734995998908
+          },
+          "baseline": {
+            "volatility": 0.33692634690073753,
+            "volume": 256.31796280999333
+          },
+          "predicted": {
+            "volatility": 0.3112632503864328,
+            "volume": 238.6520036359099
+          }
+        },
+        {
+          "origin": 1793184600,
+          "actual": {
+            "volatility": 0.1753711868118298,
+            "volume": 76.51787408999371
+          },
+          "baseline": {
+            "volatility": 0.2163681590140632,
+            "volume": 74.95890392499132
+          },
+          "predicted": {
+            "volatility": 0.19990596242054562,
+            "volume": 83.38336686951243
+          }
+        },
+        {
+          "origin": 1793191800,
+          "actual": {
+            "volatility": 0.5007531295213612,
+            "volume": 380.69060855999123
+          },
+          "baseline": {
+            "volatility": 0.3960976925825666,
+            "volume": 170.98335705499267
+          },
+          "predicted": {
+            "volatility": 0.36793521041685745,
+            "volume": 196.48676597348606
+          }
+        },
+        {
+          "origin": 1793199000,
+          "actual": {
+            "volatility": 0.24584732835187006,
+            "volume": 188.44958366001083
+          },
+          "baseline": {
+            "volatility": 0.43313479251947845,
+            "volume": 340.2061075949896
+          },
+          "predicted": {
+            "volatility": 0.35783316410630495,
+            "volume": 311.12170760897504
+          }
+        },
+        {
+          "origin": 1793206200,
+          "actual": {
+            "volatility": 0.30743794047268885,
+            "volume": 287.12019541001064
+          },
+          "baseline": {
+            "volatility": 0.30944202643837254,
+            "volume": 226.21277408000242
+          },
+          "predicted": {
+            "volatility": 0.3554893477013446,
+            "volume": 253.21672244936826
+          }
+        },
+        {
+          "origin": 1793213400,
+          "actual": {
+            "volatility": 0.4052865249553168,
+            "volume": 345.92825734001235
+          },
+          "baseline": {
+            "volatility": 0.3595977184543822,
+            "volume": 437.17715401500755
+          },
+          "predicted": {
+            "volatility": 0.4217475508181471,
+            "volume": 413.0451984543718
+          }
+        },
+        {
+          "origin": 1793220600,
+          "actual": {
+            "volatility": 0.3475341326949453,
+            "volume": 302.28609936997964
+          },
+          "baseline": {
+            "volatility": 0.3974066757007444,
+            "volume": 398.13039145000585
+          },
+          "predicted": {
+            "volatility": 0.35233363494099085,
+            "volume": 354.2781567089254
+          }
+        },
+        {
+          "origin": 1793227800,
+          "actual": {
+            "volatility": 0.1278662222007512,
+            "volume": 125.04011332999653
+          },
+          "baseline": {
+            "volatility": 0.3060214964392203,
+            "volume": 216.6241172599839
+          },
+          "predicted": {
+            "volatility": 0.26344508302244685,
+            "volume": 188.28035398706436
+          }
+        },
+        {
+          "origin": 1793235000,
+          "actual": {
+            "volatility": 0.7061321620687542,
+            "volume": 409.40541030999884
+          },
+          "baseline": {
+            "volatility": 0.14451868939960866,
+            "volume": 133.89965799499623
+          },
+          "predicted": {
+            "volatility": 0.18098334130996596,
+            "volume": 133.82399161930772
+          }
+        },
+        {
+          "origin": 1793242200,
+          "actual": {
+            "volatility": 0.21809907807197904,
+            "volume": 101.78658329000609
+          },
+          "baseline": {
+            "volatility": 0.6016656912706522,
+            "volume": 328.43935401000635
+          },
+          "predicted": {
+            "volatility": 0.47227460444987246,
+            "volume": 306.6024246457897
+          }
+        },
+        {
+          "origin": 1793249400,
+          "actual": {
+            "volatility": 0.23172393379100203,
+            "volume": 106.17246155999601
+          },
+          "baseline": {
+            "volatility": 0.24873991631045103,
+            "volume": 126.70140289000483
+          },
+          "predicted": {
+            "volatility": 0.2809201667997875,
+            "volume": 154.96098627904968
+          }
+        },
+        {
+          "origin": 1793256600,
+          "actual": {
+            "volatility": 0.15260806931344187,
+            "volume": 91.15673190000962
+          },
+          "baseline": {
+            "volatility": 0.2242439274067108,
+            "volume": 88.19743389999712
+          },
+          "predicted": {
+            "volatility": 0.2526099926157604,
+            "volume": 111.20574066734513
+          }
+        },
+        {
+          "origin": 1793263800,
+          "actual": {
+            "volatility": 0.28928680439277016,
+            "volume": 141.93801799001085
+          },
+          "baseline": {
+            "volatility": 0.17655505064624916,
+            "volume": 111.18107075000444
+          },
+          "predicted": {
+            "volatility": 0.20899389599806828,
+            "volume": 121.65965913453317
+          }
+        },
+        {
+          "origin": 1793271000,
+          "actual": {
+            "volatility": 0.19120906226302475,
+            "volume": 101.89967764000903
+          },
+          "baseline": {
+            "volatility": 0.2676229194124763,
+            "volume": 100.82649582000522
+          },
+          "predicted": {
+            "volatility": 0.27170503010612446,
+            "volume": 127.49221906228145
+          }
+        },
+        {
+          "origin": 1793278200,
+          "actual": {
+            "volatility": 0.4104677309265967,
+            "volume": 423.90756653001154
+          },
+          "baseline": {
+            "volatility": 0.19746201239070205,
+            "volume": 117.72775984000691
+          },
+          "predicted": {
+            "volatility": 0.2538667337230013,
+            "volume": 137.83268456093546
+          }
+        },
+        {
+          "origin": 1793285400,
+          "actual": {
+            "volatility": 0.561063242405695,
+            "volume": 658.139644509989
+          },
+          "baseline": {
+            "volatility": 0.8087287643801967,
+            "volume": 528.2440199150042
+          },
+          "predicted": {
+            "volatility": 0.5936480065140658,
+            "volume": 471.29946027623055
+          }
+        },
+        {
+          "origin": 1793292600,
+          "actual": {
+            "volatility": 0.36895591675526856,
+            "volume": 383.59250669000176
+          },
+          "baseline": {
+            "volatility": 0.5644781374631835,
+            "volume": 567.8303193099855
+          },
+          "predicted": {
+            "volatility": 0.48424736684442093,
+            "volume": 498.1568444747207
+          }
+        },
+        {
+          "origin": 1793299800,
+          "actual": {
+            "volatility": 0.16224059526424875,
+            "volume": 464.60778082000616
+          },
+          "baseline": {
+            "volatility": 0.3499901923690552,
+            "volume": 291.83679934500105
+          },
+          "predicted": {
+            "volatility": 0.3425510313891709,
+            "volume": 283.71834606127914
+          }
+        },
+        {
+          "origin": 1793307000,
+          "actual": {
+            "volatility": 0.8824388475173037,
+            "volume": 1133.3039603299912
+          },
+          "baseline": {
+            "volatility": 1.0670517292840183,
+            "volume": 941.9499562100027
+          },
+          "predicted": {
+            "volatility": 0.7735778420894681,
+            "volume": 800.6432321129499
+          }
+        },
+        {
+          "origin": 1793314200,
+          "actual": {
+            "volatility": 0.5741625468215202,
+            "volume": 940.6499589199957
+          },
+          "baseline": {
+            "volatility": 0.7425834613966643,
+            "volume": 1177.2634827549955
+          },
+          "predicted": {
+            "volatility": 0.5495463960517168,
+            "volume": 940.945652983009
+          }
+        },
+        {
+          "origin": 1793321400,
+          "actual": {
+            "volatility": 0.5899010553120139,
+            "volume": 1301.4521628899965
+          },
+          "baseline": {
+            "volatility": 0.7744399887143126,
+            "volume": 1259.136087235005
+          },
+          "predicted": {
+            "volatility": 0.6337389068355604,
+            "volume": 1063.744943354588
+          }
+        },
+        {
+          "origin": 1793328600,
+          "actual": {
+            "volatility": 0.5000719379898131,
+            "volume": 533.9627933900047
+          },
+          "baseline": {
+            "volatility": 0.6851105004071908,
+            "volume": 1097.0303535800049
+          },
+          "predicted": {
+            "volatility": 0.530418066477664,
+            "volume": 910.304999091608
+          }
+        },
+        {
+          "origin": 1793335800,
+          "actual": {
+            "volatility": 0.3465943791558587,
+            "volume": 434.4406712900236
+          },
+          "baseline": {
+            "volatility": 0.4726672783150818,
+            "volume": 448.18885220000084
+          },
+          "predicted": {
+            "volatility": 0.35961393502113503,
+            "volume": 380.87176513210744
+          }
+        },
+        {
+          "origin": 1793343000,
+          "actual": {
+            "volatility": 0.4842764716485247,
+            "volume": 304.03490846000204
+          },
+          "baseline": {
+            "volatility": 0.32822005299835766,
+            "volume": 421.481429965017
+          },
+          "predicted": {
+            "volatility": 0.3186667880385187,
+            "volume": 366.12467180907834
+          }
+        },
+        {
+          "origin": 1793350200,
+          "actual": {
+            "volatility": 0.43603462348981775,
+            "volume": 301.4502585700102
+          },
+          "baseline": {
+            "volatility": 0.42643561805279323,
+            "volume": 322.31491779500357
+          },
+          "predicted": {
+            "volatility": 0.36908032525145273,
+            "volume": 293.86228763972844
+          }
+        },
+        {
+          "origin": 1793357400,
+          "actual": {
+            "volatility": 0.37462829162725486,
+            "volume": 287.8441742499999
+          },
+          "baseline": {
+            "volatility": 0.45824510777925576,
+            "volume": 319.2809138349985
+          },
+          "predicted": {
+            "volatility": 0.4369539687586514,
+            "volume": 319.9676298532613
+          }
+        },
+        {
+          "origin": 1793364600,
+          "actual": {
+            "volatility": 0.5044736389912213,
+            "volume": 1037.2434568200115
+          },
+          "baseline": {
+            "volatility": 0.38910829028754507,
+            "volume": 338.2719860999932
+          },
+          "predicted": {
+            "volatility": 0.4026904646050381,
+            "volume": 356.6445087473001
+          }
+        },
+        {
+          "origin": 1793371800,
+          "actual": {
+            "volatility": 0.821820933747913,
+            "volume": 795.4842077600042
+          },
+          "baseline": {
+            "volatility": 0.6449720277669315,
+            "volume": 935.638520915003
+          },
+          "predicted": {
+            "volatility": 0.5842336869633551,
+            "volume": 842.3193813284072
+          }
+        },
+        {
+          "origin": 1793379000,
+          "actual": {
+            "volatility": 0.36041267233381885,
+            "volume": 399.8806409999961
+          },
+          "baseline": {
+            "volatility": 0.6725577353912332,
+            "volume": 677.5080286300072
+          },
+          "predicted": {
+            "volatility": 0.5389007175645313,
+            "volume": 603.6820834733654
+          }
+        }
+      ]
+    },
+    {
+      "schema": "laplace-activity-analysis-v1",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 120,
+      "granularity": 300,
+      "horizonBars": 24,
+      "dataKnownThrough": 1793383500,
+      "originTime": 1793383200,
+      "sourceRows": 4032,
+      "retrospective": true,
+      "prospectivelyValidated": false,
+      "automaticTrading": false,
+      "protocol": {
+        "lookback": 24,
+        "minCases": 8,
+        "trainEnd": 2419,
+        "validationEnd": 3225,
+        "candidateWeights": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "selection": "validation MAE only; per target",
+        "reference": "last 24 closed bars; RMS returns and mean volume, scaled to horizon"
+      },
+      "status": "forecast",
+      "weights": {
+        "volatility": 0.5,
+        "volume": 0.5
+      },
+      "outputs": {
+        "volatility": {
+          "predicted": 0.5906602793210667,
+          "baseline": 0.5936238739486135,
+          "analog": 0.5876966846935199,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 33,
+            "mae": 0.1227919463488106,
+            "baselineMAE": 0.13661859202077395,
+            "skill": 0.10120617895008677,
+            "wape": 27.54737857124603
+          },
+          "test": {
+            "cases": 33,
+            "mae": 0.18707310985515552,
+            "baselineMAE": 0.23526247314360846,
+            "skill": 0.2048323417013358,
+            "wape": 31.55736969875765
+          }
+        },
+        "volume": {
+          "predicted": 876.3035547683558,
+          "baseline": 892.4985259600071,
+          "analog": 860.1085835767043,
+          "weight": 0.5,
+          "method": "M001_analogs_blended",
+          "validation": {
+            "cases": 33,
+            "mae": 156.63849662522472,
+            "baselineMAE": 177.39213733636345,
+            "skill": 0.11699301346026714,
+            "wape": 41.38650563310819
+          },
+          "test": {
+            "cases": 33,
+            "mae": 319.91545562146734,
+            "baselineMAE": 330.28622199727283,
+            "skill": 0.03139933089879576,
+            "wape": 40.8191718672186
+          }
+        }
+      },
+      "examples": [
+        {
+          "index": 2967,
+          "knownAt": 1793071500,
+          "distance": 0.05345403909174541
+        },
+        {
+          "index": 772,
+          "knownAt": 1792413000,
+          "distance": 0.10458460999774549
+        },
+        {
+          "index": 1979,
+          "knownAt": 1792775100,
+          "distance": 0.10468044860289685
+        },
+        {
+          "index": 1451,
+          "knownAt": 1792616700,
+          "distance": 0.107957860266892
+        },
+        {
+          "index": 1130,
+          "knownAt": 1792520400,
+          "distance": 0.11002433554320423
+        },
+        {
+          "index": 3971,
+          "knownAt": 1793372700,
+          "distance": 0.1117891096545749
+        },
+        {
+          "index": 1727,
+          "knownAt": 1792699500,
+          "distance": 0.11358177887607493
+        },
+        {
+          "index": 2853,
+          "knownAt": 1793037300,
+          "distance": 0.11761034662097548
+        },
+        {
+          "index": 2672,
+          "knownAt": 1792983000,
+          "distance": 0.1256737491016801
+        },
+        {
+          "index": 1391,
+          "knownAt": 1792598700,
+          "distance": 0.13286882426350186
+        },
+        {
+          "index": 3689,
+          "knownAt": 1793288100,
+          "distance": 0.134056359435121
+        },
+        {
+          "index": 3722,
+          "knownAt": 1793298000,
+          "distance": 0.13546910721118924
+        },
+        {
+          "index": 1235,
+          "knownAt": 1792551900,
+          "distance": 0.13809036034074434
+        },
+        {
+          "index": 2819,
+          "knownAt": 1793027100,
+          "distance": 0.1388847642704798
+        },
+        {
+          "index": 1691,
+          "knownAt": 1792688700,
+          "distance": 0.14199550773340516
+        },
+        {
+          "index": 867,
+          "knownAt": 1792441500,
+          "distance": 0.1420630463431678
+        },
+        {
+          "index": 1006,
+          "knownAt": 1792483200,
+          "distance": 0.14644332036706684
+        },
+        {
+          "index": 3073,
+          "knownAt": 1793103300,
+          "distance": 0.14771872985264525
+        }
+      ],
+      "targetCloseAt": 1793390700,
+      "evidence": [
+        {
+          "origin": 1793141400,
+          "actual": {
+            "volatility": 0.3552967254618249,
+            "volume": 384.2158931400045
+          },
+          "baseline": {
+            "volatility": 0.7063491845061433,
+            "volume": 459.5918460900066
+          },
+          "predicted": {
+            "volatility": 0.5442839966877842,
+            "volume": 409.864804418172
+          }
+        },
+        {
+          "origin": 1793148600,
+          "actual": {
+            "volatility": 0.35575695630666015,
+            "volume": 282.3681428100026
+          },
+          "baseline": {
+            "volatility": 0.3552967254618249,
+            "volume": 384.2158931400045
+          },
+          "predicted": {
+            "volatility": 0.3436653808856597,
+            "volume": 342.23782433775614
+          }
+        },
+        {
+          "origin": 1793155800,
+          "actual": {
+            "volatility": 0.27882176969556943,
+            "volume": 185.66594747999625
+          },
+          "baseline": {
+            "volatility": 0.35575695630666015,
+            "volume": 282.3681428100026
+          },
+          "predicted": {
+            "volatility": 0.35047588419576026,
+            "volume": 269.1121360774842
+          }
+        },
+        {
+          "origin": 1793163000,
+          "actual": {
+            "volatility": 0.1873007680884724,
+            "volume": 103.99242693999986
+          },
+          "baseline": {
+            "volatility": 0.27882176969556943,
+            "volume": 185.66594747999625
+          },
+          "predicted": {
+            "volatility": 0.33710148170675647,
+            "volume": 239.67609590910175
+          }
+        },
+        {
+          "origin": 1793170200,
+          "actual": {
+            "volatility": 0.47648580930784523,
+            "volume": 512.6359256199867
+          },
+          "baseline": {
+            "volatility": 0.1873007680884724,
+            "volume": 103.99242693999986
+          },
+          "predicted": {
+            "volatility": 0.2623250943249356,
+            "volume": 161.20082347180363
+          }
+        },
+        {
+          "origin": 1793177400,
+          "actual": {
+            "volatility": 0.3059907849433866,
+            "volume": 149.91780784998264
+          },
+          "baseline": {
+            "volatility": 0.47648580930784523,
+            "volume": 512.6359256199867
+          },
+          "predicted": {
+            "volatility": 0.42411535391386496,
+            "volume": 419.88836225638704
+          }
+        },
+        {
+          "origin": 1793184600,
+          "actual": {
+            "volatility": 0.5601667288749546,
+            "volume": 341.96671410998533
+          },
+          "baseline": {
+            "volatility": 0.3059907849433866,
+            "volume": 149.91780784998264
+          },
+          "predicted": {
+            "volatility": 0.3300476491354093,
+            "volume": 217.6253651844656
+          }
+        },
+        {
+          "origin": 1793191800,
+          "actual": {
+            "volatility": 0.612545097916703,
+            "volume": 680.4122151899792
+          },
+          "baseline": {
+            "volatility": 0.5601667288749546,
+            "volume": 341.96671410998533
+          },
+          "predicted": {
+            "volatility": 0.5023198539372907,
+            "volume": 433.7216385056865
+          }
+        },
+        {
+          "origin": 1793199000,
+          "actual": {
+            "volatility": 0.43761711055736036,
+            "volume": 452.42554816000484
+          },
+          "baseline": {
+            "volatility": 0.612545097916703,
+            "volume": 680.4122151899792
+          },
+          "predicted": {
+            "volatility": 0.5003332828918015,
+            "volume": 556.0856635995915
+          }
+        },
+        {
+          "origin": 1793206200,
+          "actual": {
+            "volatility": 0.5085479704366092,
+            "volume": 874.3543080300151
+          },
+          "baseline": {
+            "volatility": 0.43761711055736036,
+            "volume": 452.42554816000484
+          },
+          "predicted": {
+            "volatility": 0.4642621018888117,
+            "volume": 496.1064719366365
+          }
+        },
+        {
+          "origin": 1793213400,
+          "actual": {
+            "volatility": 0.562017910553599,
+            "volume": 796.2607829000117
+          },
+          "baseline": {
+            "volatility": 0.5085479704366092,
+            "volume": 874.3543080300151
+          },
+          "predicted": {
+            "volatility": 0.5194608590011143,
+            "volume": 717.3425897423272
+          }
+        },
+        {
+          "origin": 1793220600,
+          "actual": {
+            "volatility": 0.43277975064205515,
+            "volume": 433.2482345199678
+          },
+          "baseline": {
+            "volatility": 0.562017910553599,
+            "volume": 796.2607829000117
+          },
+          "predicted": {
+            "volatility": 0.49154307820819604,
+            "volume": 625.5766035961627
+          }
+        },
+        {
+          "origin": 1793227800,
+          "actual": {
+            "volatility": 0.2043802905653114,
+            "volume": 267.79931598999246
+          },
+          "baseline": {
+            "volatility": 0.43277975064205515,
+            "volume": 433.2482345199678
+          },
+          "predicted": {
+            "volatility": 0.3788263226085558,
+            "volume": 329.0736274571433
+          }
+        },
+        {
+          "origin": 1793235000,
+          "actual": {
+            "volatility": 0.8508837806095398,
+            "volume": 656.8787080200127
+          },
+          "baseline": {
+            "volatility": 0.2043802905653114,
+            "volume": 267.79931598999246
+          },
+          "predicted": {
+            "volatility": 0.31579321987603265,
+            "volume": 277.7768741803119
+          }
+        },
+        {
+          "origin": 1793242200,
+          "actual": {
+            "volatility": 0.35177136314978846,
+            "volume": 253.40280578000966
+          },
+          "baseline": {
+            "volatility": 0.8508837806095398,
+            "volume": 656.8787080200127
+          },
+          "predicted": {
+            "volatility": 0.6616737737403654,
+            "volume": 547.4398615157738
+          }
+        },
+        {
+          "origin": 1793249400,
+          "actual": {
+            "volatility": 0.31712880341837824,
+            "volume": 176.39486779999424
+          },
+          "baseline": {
+            "volatility": 0.35177136314978846,
+            "volume": 253.40280578000966
+          },
+          "predicted": {
+            "volatility": 0.39191088041812916,
+            "volume": 345.6199604326064
+          }
+        },
+        {
+          "origin": 1793256600,
+          "actual": {
+            "volatility": 0.24968654712939423,
+            "volume": 222.36214150000887
+          },
+          "baseline": {
+            "volatility": 0.31712880341837824,
+            "volume": 176.39486779999424
+          },
+          "predicted": {
+            "volatility": 0.3578529172247675,
+            "volume": 262.80977299886774
+          }
+        },
+        {
+          "origin": 1793263800,
+          "actual": {
+            "volatility": 0.37847596223500585,
+            "volume": 201.65299164001044
+          },
+          "baseline": {
+            "volatility": 0.24968654712939423,
+            "volume": 222.36214150000887
+          },
+          "predicted": {
+            "volatility": 0.3225806915287436,
+            "volume": 286.95897094546285
+          }
+        },
+        {
+          "origin": 1793271000,
+          "actual": {
+            "volatility": 0.27925345597641493,
+            "volume": 235.45551968001382
+          },
+          "baseline": {
+            "volatility": 0.37847596223500585,
+            "volume": 201.65299164001044
+          },
+          "predicted": {
+            "volatility": 0.4045472359221315,
+            "volume": 289.2232855990908
+          }
+        },
+        {
+          "origin": 1793278200,
+          "actual": {
+            "volatility": 1.1437151868677096,
+            "volume": 1056.4880398300083
+          },
+          "baseline": {
+            "volatility": 0.27925345597641493,
+            "volume": 235.45551968001382
+          },
+          "predicted": {
+            "volatility": 0.3598037366744975,
+            "volume": 375.5673453643202
+          }
+        },
+        {
+          "origin": 1793285400,
+          "actual": {
+            "volatility": 0.7982926376635384,
+            "volume": 1135.660638619971
+          },
+          "baseline": {
+            "volatility": 1.1437151868677096,
+            "volume": 1056.4880398300083
+          },
+          "predicted": {
+            "volatility": 0.8308240952565811,
+            "volume": 817.3975012008382
+          }
+        },
+        {
+          "origin": 1793292600,
+          "actual": {
+            "volatility": 0.4949608767458864,
+            "volume": 583.6735986900021
+          },
+          "baseline": {
+            "volatility": 0.7982926376635384,
+            "volume": 1135.660638619971
+          },
+          "predicted": {
+            "volatility": 0.6517920760117735,
+            "volume": 860.497404486759
+          }
+        },
+        {
+          "origin": 1793299800,
+          "actual": {
+            "volatility": 1.509039027307123,
+            "volume": 1883.8999124200054
+          },
+          "baseline": {
+            "volatility": 0.4949608767458864,
+            "volume": 583.6735986900021
+          },
+          "predicted": {
+            "volatility": 0.4875780102449934,
+            "volume": 540.2889948489146
+          }
+        },
+        {
+          "origin": 1793307000,
+          "actual": {
+            "volatility": 1.0501716023011203,
+            "volume": 2354.526965509991
+          },
+          "baseline": {
+            "volatility": 1.509039027307123,
+            "volume": 1883.8999124200054
+          },
+          "predicted": {
+            "volatility": 1.0390608035605808,
+            "volume": 1258.1144253447817
+          }
+        },
+        {
+          "origin": 1793314200,
+          "actual": {
+            "volatility": 1.0952235352838475,
+            "volume": 2518.27217447001
+          },
+          "baseline": {
+            "volatility": 1.0501716023011203,
+            "volume": 2354.526965509991
+          },
+          "predicted": {
+            "volatility": 0.7521633734723363,
+            "volume": 1407.6220877799183
+          }
+        },
+        {
+          "origin": 1793321400,
+          "actual": {
+            "volatility": 0.9688925614000671,
+            "volume": 2194.0607071600098
+          },
+          "baseline": {
+            "volatility": 1.0952235352838475,
+            "volume": 2518.27217447001
+          },
+          "predicted": {
+            "volatility": 0.8596155487045163,
+            "volume": 1672.4590704167485
+          }
+        },
+        {
+          "origin": 1793328600,
+          "actual": {
+            "volatility": 0.6684524754831671,
+            "volume": 896.3777044000017
+          },
+          "baseline": {
+            "volatility": 0.9688925614000671,
+            "volume": 2194.0607071600098
+          },
+          "predicted": {
+            "volatility": 0.7483989081055208,
+            "volume": 1420.2856279865287
+          }
+        },
+        {
+          "origin": 1793335800,
+          "actual": {
+            "volatility": 0.46417325039309343,
+            "volume": 842.962859930034
+          },
+          "baseline": {
+            "volatility": 0.6684524754831671,
+            "volume": 896.3777044000017
+          },
+          "predicted": {
+            "volatility": 0.5395171129860071,
+            "volume": 645.1514965879988
+          }
+        },
+        {
+          "origin": 1793343000,
+          "actual": {
+            "volatility": 0.6030710345292133,
+            "volume": 644.6298355900071
+          },
+          "baseline": {
+            "volatility": 0.46417325039309343,
+            "volume": 842.962859930034
+          },
+          "predicted": {
+            "volatility": 0.43949699983404855,
+            "volume": 606.7701920963234
+          }
+        },
+        {
+          "origin": 1793350200,
+          "actual": {
+            "volatility": 0.6480564463125442,
+            "volume": 638.561827669997
+          },
+          "baseline": {
+            "volatility": 0.6030710345292133,
+            "volume": 644.6298355900071
+          },
+          "predicted": {
+            "volatility": 0.5182647542514148,
+            "volume": 515.3384482866761
+          }
+        },
+        {
+          "origin": 1793357400,
+          "actual": {
+            "volatility": 0.5502822213564535,
+            "volume": 676.5439721999865
+          },
+          "baseline": {
+            "volatility": 0.6480564463125442,
+            "volume": 638.561827669997
+          },
+          "predicted": {
+            "volatility": 0.6036479543605874,
+            "volume": 624.2879589335444
+          }
+        },
+        {
+          "origin": 1793364600,
+          "actual": {
+            "volatility": 0.912128189019271,
+            "volume": 1871.277041830006
+          },
+          "baseline": {
+            "volatility": 0.5502822213564535,
+            "volume": 676.5439721999865
+          },
+          "predicted": {
+            "volatility": 0.5800515817322128,
+            "volume": 742.5409415693211
+          }
+        },
+        {
+          "origin": 1793371800,
+          "actual": {
+            "volatility": 0.9511402708692175,
+            "volume": 1355.0160572600143
+          },
+          "baseline": {
+            "volatility": 0.912128189019271,
+            "volume": 1871.277041830006
+          },
+          "predicted": {
+            "volatility": 0.7570713088267874,
+            "volume": 1366.7486338821418
+          }
+        }
+      ]
+    }
+  ]
+}

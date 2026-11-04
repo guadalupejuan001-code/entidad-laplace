@@ -913,6 +913,7 @@ function useHorizon(value){
     'Listo para '+label(m)+'.','Pulsa Analizar ahora para trabajar con el horizonte elegido.',
     asset.replace('-','/'));
   renderSignals();renderRegime();drawChart();setActionAvailability();
+  window.dispatchEvent(new CustomEvent('laplace:horizon',{detail:{asset,minutes}}));
 }
 function remote(request){
   return new Promise((resolve,reject)=>{
@@ -1321,7 +1322,10 @@ async function syncHistory(){
       (errors.length?'Fuentes no disponibles: '+errors.join(' · '):'Registro actualizado.'));
   }finally{syncBusy=false;$('syncHistory').disabled=false;$('syncHistory').textContent='Comprobar pendientes'}
 }
-window.LaplaceExportResult=message=>{$('historyStatus').textContent=String(message)};
+window.LaplaceExportResult=message=>{
+  if(window.LaplaceActivityMobile?.consumeExport(message))return;
+  $('historyStatus').textContent=String(message);
+};
 function acceptHistoryImport(text,name){
   try{
     const result=T.importEvidence(log,text,{allowedAssets:E.ALLOWED_ASSETS,name});
@@ -1336,6 +1340,7 @@ function acceptHistoryImport(text,name){
   finally{$('importHistory').disabled=false;}
 }
 window.LaplaceImportResult=payload=>{
+  if(window.LaplaceActivityMobile?.consumeImport(payload))return;
   if(payload?.ok)acceptHistoryImport(payload.text,payload.name??'Registro seleccionado en Android');
   else{
     $('importHistory').disabled=false;
@@ -1670,7 +1675,7 @@ function renderHistory(){
     const m=T.metrics(f),row=make('details','','history-entry');
     const head=make('summary',''),name=make('div',''),state=make('span',m?
       'Error '+money(m.absoluteError):'Pendiente','result-tag');
-    state.dataset.state=m?(m.errorPercent<=tolerance?'correct':'missed'):'pending';
+    state.dataset.state=m?'evaluated':'pending';
     const horizon=E.HORIZONS.find(h=>h.minutes===f.minutes)?.label??f.minutes+' min';
     name.append(make('strong',f.asset+' · '+(f.market==='equity'&&f.minutes>=1440?f.minutes/1440+' sesiones':horizon)),
       make('small',m?'Previsto '+money(f.estimate)+' → real '+money(f.actual):
@@ -1847,11 +1852,28 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.2',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.3',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
     'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','importHistory','openMath','closeMath','motionToggle']};
+const activityHistoryCache=new Map();
+window.LaplaceActivityData={
+  selection:()=>({asset,minutes,granularity:E.selectResolution(minutes,asset),market:isEquity()?'equity':'crypto'}),
+  async history(selection){
+    const key=selection.asset+':'+selection.granularity,now=Date.now(),cached=activityHistoryCache.get(key);
+    const current=entry=>entry?.rows?.length&&now-entry.receivedAt<180000&&
+      entry.rows.at(-1).time+2*selection.granularity>now/1000;
+    if(current(cached))return cached.rows;
+    const shared=selection.asset===asset&&selection.granularity===historyGranularity?
+      {rows:history,receivedAt:lastHistoryFetch}:null;
+    if(current(shared))return shared.rows;
+    const cfg=E.historyConfig(selection.asset,selection.minutes);
+    const rows=await remote({kind:'history',asset:selection.asset,granularity:selection.granularity,days:cfg.days});
+    activityHistoryCache.set(key,{rows,receivedAt:Date.now()});return rows;
+  },
+  freshness:(selection,last)=>marketTimeStatus(last.time+selection.granularity,selection.granularity)
+};
 window.addEventListener('laplace:ef004',()=>{renderSignals();renderCapabilities()});
 window.addEventListener('laplace:broker',renderSignals);
 window.addEventListener('laplace:paper-quote-needed',async event=>{
