@@ -1,5 +1,18 @@
 # Entidad Laplace
 
+## Android 4.4 · LQT-1000
+
+Motor temporal propio: registro conectado de 1.000 qubits, rotaciones aprendidas
+y cuatro salidas para precio, dirección, volatilidad y volumen. Extensión nativa
+de XI/Ether, checkpoints por activo/plazo y registro de resultados futuros.
+El motor anterior se conserva como comparación. La evidencia actual es
+retrospectiva y mixta; no demuestra una ventaja cuántica ni una mejora general
+frente a M001/M005.
+
+[Arquitectura, ecuaciones, pruebas y límites de LQT-1000](docs/LQT1000.md).
+[Resultados reproducibles](evidencia/lqt1000/resultados.json).
+
+
 ## Ecuación de Laplace — PDE auténtica (propuesta)
 
 Núcleo matemático de Laplace: ∇²φ=0, diferencias finitas/Dirichlet y

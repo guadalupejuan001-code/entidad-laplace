@@ -37,3 +37,13 @@ select,input{width:100%;background:#11161d;border:1px solid #48505c;border-radiu
 .history-groups{display:grid;gap:12px;margin:12px 0}.history-group{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}.history-group>strong{font-size:13px;display:block}.history-group>small{font-size:10px;color:var(--muted);display:block;margin-top:5px}.tracking-summary strong{font-size:clamp(14px,3.8vw,22px);overflow-wrap:anywhere}.history-actions button{font-size:11px}.tracking-filters label:last-child{grid-column:auto}#historyComparison{border-left:2px solid var(--accent);padding-left:10px;margin-top:14px}#historySecondary{margin:10px 0}#historyScope{margin:12px 0}.tracking-filters{grid-template-columns:repeat(2,minmax(0,1fr))}@media(min-width:740px){.tracking-filters{grid-template-columns:repeat(4,minmax(0,1fr))}.history-groups{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .activity-metrics{margin-top:15px}.activity-metrics strong{font-size:clamp(15px,4vw,22px);overflow-wrap:anywhere}.activity-validation-row{padding:12px 0;border-top:1px solid var(--line)}.activity-validation-row>strong{font-size:12px}.activity-card>.pde-primary{margin-top:12px;width:100%}.activity-validation{margin-top:14px}#activityRaw{white-space:pre-wrap;overflow-wrap:anywhere}#activityHistory .result-tag{color:var(--muted);border-color:var(--line)}
+/* LQT keeps the current palette and gives its four outputs one clear entry. */
+.lqt-card{border-color:#79604e;background:linear-gradient(155deg,#202127,#151b21 65%)}
+.lqt-card>.smart-action{width:100%}
+.lqt-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.lqt-metrics>div{min-width:0;padding:14px;background:#11171e;border:1px solid #343b44;border-radius:14px}
+.lqt-metrics span{display:block;color:#b6bac3;font-size:.8rem;margin-bottom:8px}
+.lqt-metrics strong{display:block;font-size:clamp(1rem,4.5vw,1.45rem);overflow-wrap:anywhere;color:#e6c3a7}
+.classical-reference{margin:20px 0;border:1px solid #343b44;border-radius:18px;padding:16px}
+.classical-reference>summary{cursor:pointer;color:#c3c5cb;font-weight:600;padding:4px}
+.classical-reference[open]>summary{margin-bottom:18px}

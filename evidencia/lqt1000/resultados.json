@@ -1,0 +1,839 @@
+{
+  "schema": "laplace-lqt1000-study-v1",
+  "source": "evidencia/entrenamiento-x002-20261030/velas.json",
+  "sourceSHA256": "9239d6d29f9b415537d720e5aa87dc232d944352cae277c462fff1326e860713",
+  "algorithmSHA256": "138c579dbd70f97ae6b8d6dba8e63c064d43fb6e7a1f936b981c08c030079d9c",
+  "rows": 4032,
+  "firstOpen": 1792173900,
+  "lastClose": 1793383500,
+  "protocol": {
+    "train": 0.6,
+    "selection": "validation only; initial test never enters online learning",
+    "calibration": 0.1,
+    "test": 0.15,
+    "epochs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "temporalLags": [
+      0,
+      3,
+      12
+    ],
+    "nonoverlappingLabelsWithinEachSplit": true,
+    "intervalNominalCoverage": 0.8,
+    "matchedClassical": "same parameters and training; entangling CZ removed"
+  },
+  "nativeVerification": {
+    "nativeTests": 7,
+    "qubits": 1000,
+    "components": 1,
+    "maxObservableError": 7.77156e-16,
+    "maxGradientError": 2.46756e-11,
+    "unseenLossBefore": 0.361854,
+    "unseenLossAfter": 0.148571,
+    "allRotationsLearned": true,
+    "originalEtherParity": true
+  },
+  "retention": {
+    "saveReloadIdentical": true,
+    "laterUpdates": 8,
+    "repeatedLabelsNotLearnedTwice": true,
+    "testPerturbationDoesNotTrain": true
+  },
+  "rejectedRequests": {
+    "unclosed": "LQT: candle not closed at as-of",
+    "expired": "LQT: future period already expired; refresh candles",
+    "checkpoint_context": "LQT: checkpoint context mismatch",
+    "checkpoint_trailing": "LQT: trailing checkpoint content",
+    "recent_gap": "LQT: insufficient continuous temporal context"
+  },
+  "horizons": [
+    {
+      "minutes": 5,
+      "quantum": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 1,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793383800,
+        "qubits": 1000,
+        "components": 1,
+        "graphEdges": 1795,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 512,
+        "onlineUpdates": 0,
+        "quantum": true,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 436.102543,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 512,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 36,
+          "brier": 0.25022311560136057,
+          "outputs": [
+            {
+              "mae": 72.30856827996786,
+              "baselineMAE": 72.7815625000012,
+              "intervalCoverage": 0.75
+            },
+            {
+              "mae": 0.0618757344982087,
+              "baselineMAE": 0.08456739961656828,
+              "intervalCoverage": 0.625
+            },
+            {
+              "mae": 22.441999725215407,
+              "baselineMAE": 22.198979096647133,
+              "intervalCoverage": 0.859375
+            }
+          ]
+        },
+        "probabilityUp": 0.4982200963819035,
+        "outputs": [
+          {
+            "predicted": 76851.66257577304,
+            "baseline": 76849.91,
+            "lower": 76723.8200571293,
+            "upper": 76948.92895915617
+          },
+          {
+            "predicted": 0.06230546926554953,
+            "baseline": 0.12117296585903194,
+            "lower": 0.021568646466932875,
+            "upper": 0.1761551107779033
+          },
+          {
+            "predicted": 28.72967005898461,
+            "baseline": 37.18743858166667,
+            "lower": 9.123995486577389,
+            "upper": 88.61249215342998
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "matchedClassical": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 1,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793383800,
+        "qubits": 1000,
+        "components": 1000,
+        "graphEdges": 0,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 512,
+        "onlineUpdates": 0,
+        "quantum": false,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 480.085386,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 512,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 36,
+          "brier": 0.2502128440969646,
+          "outputs": [
+            {
+              "mae": 72.39067553679592,
+              "baselineMAE": 72.7815625000012,
+              "intervalCoverage": 0.75
+            },
+            {
+              "mae": 0.06192408478269257,
+              "baselineMAE": 0.08456739961656828,
+              "intervalCoverage": 0.625
+            },
+            {
+              "mae": 22.432644564437933,
+              "baselineMAE": 22.198979096647133,
+              "intervalCoverage": 0.859375
+            }
+          ]
+        },
+        "probabilityUp": 0.4983077760322848,
+        "outputs": [
+          {
+            "predicted": 76851.33451514837,
+            "baseline": 76849.91,
+            "lower": 76723.80478614451,
+            "upper": 76948.91959808486
+          },
+          {
+            "predicted": 0.06262616258761856,
+            "baseline": 0.12117296585903194,
+            "lower": 0.02159864499489628,
+            "upper": 0.17633444480213067
+          },
+          {
+            "predicted": 28.773790257381812,
+            "baseline": 37.18743858166667,
+            "lower": 9.12734237503594,
+            "upper": 88.64061508984099
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "checkpointSHA256": "5f27b03f6ac9aaae55f0b74b81b9dacc5004433f441609658358a39eb7bc7846"
+    },
+    {
+      "minutes": 15,
+      "quantum": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 3,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793384400,
+        "qubits": 1000,
+        "components": 1,
+        "graphEdges": 2735,
+        "selectedTemporalLag": 12,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 2048,
+        "onlineUpdates": 0,
+        "quantum": true,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 316760,
+        "nativeMilliseconds": 547.595955,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 2048,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 33,
+          "brier": 0.25080753267301675,
+          "outputs": [
+            {
+              "mae": 121.44057496970186,
+              "baselineMAE": 119.39453124999864,
+              "intervalCoverage": 0.78125
+            },
+            {
+              "mae": 0.08453930347971071,
+              "baselineMAE": 0.10814288918531378,
+              "intervalCoverage": 0.671875
+            },
+            {
+              "mae": 47.801702062975664,
+              "baselineMAE": 50.192428796894525,
+              "intervalCoverage": 0.828125
+            }
+          ]
+        },
+        "probabilityUp": 0.4518318227691188,
+        "outputs": [
+          {
+            "predicted": 76831.89331774395,
+            "baseline": 76849.91,
+            "lower": 76645.64771630353,
+            "upper": 76999.90919610078
+          },
+          {
+            "predicted": 0.16829337290411528,
+            "baseline": 0.20987773337165222,
+            "lower": 0.0863057691132212,
+            "upper": 0.30011939048788033
+          },
+          {
+            "predicted": 95.2952943653385,
+            "baseline": 111.562315745,
+            "lower": 41.19879605085473,
+            "upper": 235.46780928751213
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "matchedClassical": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 3,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793384400,
+        "qubits": 1000,
+        "components": 1000,
+        "graphEdges": 0,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 2048,
+        "onlineUpdates": 0,
+        "quantum": false,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 485.727308,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 2048,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 33,
+          "brier": 0.2506975344483681,
+          "outputs": [
+            {
+              "mae": 121.20230230964012,
+              "baselineMAE": 119.39453124999864,
+              "intervalCoverage": 0.78125
+            },
+            {
+              "mae": 0.08455562406131004,
+              "baselineMAE": 0.10814288918531378,
+              "intervalCoverage": 0.671875
+            },
+            {
+              "mae": 47.81135260057473,
+              "baselineMAE": 50.192428796894525,
+              "intervalCoverage": 0.828125
+            }
+          ]
+        },
+        "probabilityUp": 0.45355552058972776,
+        "outputs": [
+          {
+            "predicted": 76833.08680172461,
+            "baseline": 76849.91,
+            "lower": 76645.68245113139,
+            "upper": 76999.93504686329
+          },
+          {
+            "predicted": 0.1682829584098495,
+            "baseline": 0.20987773337165222,
+            "lower": 0.08632750344689236,
+            "upper": 0.3001522507574795
+          },
+          {
+            "predicted": 95.57183856714019,
+            "baseline": 111.562315745,
+            "lower": 41.21416857359755,
+            "upper": 235.4568952990738
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "checkpointSHA256": "ae33f9685292fae2dbb4f526db78a0c3f3ab43f8576642bbf4acffd858a94b91"
+    },
+    {
+      "minutes": 30,
+      "quantum": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 6,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793385300,
+        "qubits": 1000,
+        "components": 1,
+        "graphEdges": 1795,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 365,
+        "onlineUpdates": 0,
+        "quantum": true,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 407.856278,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 365,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 39,
+          "brier": 0.24709230988109723,
+          "outputs": [
+            {
+              "mae": 194.33218359436887,
+              "baselineMAE": 194.9170312499989,
+              "intervalCoverage": 0.78125
+            },
+            {
+              "mae": 0.11996040023957501,
+              "baselineMAE": 0.1370954078522489,
+              "intervalCoverage": 0.796875
+            },
+            {
+              "mae": 85.49180675106102,
+              "baselineMAE": 87.13760524882812,
+              "intervalCoverage": 0.828125
+            }
+          ]
+        },
+        "probabilityUp": 0.48573282532105916,
+        "outputs": [
+          {
+            "predicted": 76847.37070901449,
+            "baseline": 76849.91,
+            "lower": 76605.34329421545,
+            "upper": 77226.16497240872
+          },
+          {
+            "predicted": 0.2543922063942431,
+            "baseline": 0.2968119369743149,
+            "lower": 0.12995186948011064,
+            "upper": 0.490145468225698
+          },
+          {
+            "predicted": 197.53913977885276,
+            "baseline": 223.12463149,
+            "lower": 98.70874006004375,
+            "upper": 546.206428077732
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "matchedClassical": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 6,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793385300,
+        "qubits": 1000,
+        "components": 1000,
+        "graphEdges": 0,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 365,
+        "onlineUpdates": 0,
+        "quantum": false,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 358.116807,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 365,
+        "validationCases": 64,
+        "calibrationCases": 64,
+        "test": {
+          "cases": 64,
+          "directionCorrect": 39,
+          "brier": 0.24719512198634985,
+          "outputs": [
+            {
+              "mae": 194.2020634065068,
+              "baselineMAE": 194.9170312499989,
+              "intervalCoverage": 0.78125
+            },
+            {
+              "mae": 0.12006007154607003,
+              "baselineMAE": 0.1370954078522489,
+              "intervalCoverage": 0.796875
+            },
+            {
+              "mae": 85.49536389557535,
+              "baselineMAE": 87.13760524882812,
+              "intervalCoverage": 0.828125
+            }
+          ]
+        },
+        "probabilityUp": 0.48630787874723486,
+        "outputs": [
+          {
+            "predicted": 76846.77458437439,
+            "baseline": 76849.91,
+            "lower": 76605.33238627164,
+            "upper": 77226.14780815273
+          },
+          {
+            "predicted": 0.2548158489557619,
+            "baseline": 0.2968119369743149,
+            "lower": 0.12997566360851528,
+            "upper": 0.49020801009105447
+          },
+          {
+            "predicted": 197.91698608945845,
+            "baseline": 223.12463149,
+            "lower": 98.71194298188146,
+            "upper": 546.2141305509915
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "checkpointSHA256": "b8e175cd4d1c169c82e44716670c4283d0c140e5b53aca139673326587292528"
+    },
+    {
+      "minutes": 60,
+      "quantum": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 12,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793387100,
+        "qubits": 1000,
+        "components": 1,
+        "graphEdges": 2735,
+        "selectedTemporalLag": 12,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 364,
+        "onlineUpdates": 0,
+        "quantum": true,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 316760,
+        "nativeMilliseconds": 207.436845,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 364,
+        "validationCases": 50,
+        "calibrationCases": 33,
+        "test": {
+          "cases": 50,
+          "directionCorrect": 29,
+          "brier": 0.2506776267812328,
+          "outputs": [
+            {
+              "mae": 329.79880522659346,
+              "baselineMAE": 330.7359999999994,
+              "intervalCoverage": 0.7200000000000003
+            },
+            {
+              "mae": 0.18332453663811193,
+              "baselineMAE": 0.19561395275176857,
+              "intervalCoverage": 0.8400000000000004
+            },
+            {
+              "mae": 192.61879635015106,
+              "baselineMAE": 200.36614871789996,
+              "intervalCoverage": 0.8800000000000004
+            }
+          ]
+        },
+        "probabilityUp": 0.5041330632207088,
+        "outputs": [
+          {
+            "predicted": 76843.88039438677,
+            "baseline": 76849.91,
+            "lower": 76588.56543414011,
+            "upper": 77303.89352232275
+          },
+          {
+            "predicted": 0.39333556983753204,
+            "baseline": 0.41975546674330444,
+            "lower": 0.21168188238262772,
+            "upper": 0.7914793339774638
+          },
+          {
+            "predicted": 418.0911518235074,
+            "baseline": 446.24926298,
+            "lower": 197.48074119599818,
+            "upper": 1162.6823334425242
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "matchedClassical": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 12,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793387100,
+        "qubits": 1000,
+        "components": 1000,
+        "graphEdges": 0,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 364,
+        "onlineUpdates": 0,
+        "quantum": false,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 233.395216,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 364,
+        "validationCases": 50,
+        "calibrationCases": 33,
+        "test": {
+          "cases": 50,
+          "directionCorrect": 29,
+          "brier": 0.25063502088462636,
+          "outputs": [
+            {
+              "mae": 329.8333314512033,
+              "baselineMAE": 330.7359999999994,
+              "intervalCoverage": 0.7200000000000003
+            },
+            {
+              "mae": 0.18350218509238328,
+              "baselineMAE": 0.19561395275176857,
+              "intervalCoverage": 0.8400000000000004
+            },
+            {
+              "mae": 192.83527291898548,
+              "baselineMAE": 200.36614871789996,
+              "intervalCoverage": 0.8800000000000004
+            }
+          ]
+        },
+        "probabilityUp": 0.5038875176704107,
+        "outputs": [
+          {
+            "predicted": 76843.99156967127,
+            "baseline": 76849.91,
+            "lower": 76588.52600645492,
+            "upper": 77303.83630794997
+          },
+          {
+            "predicted": 0.39370308131323106,
+            "baseline": 0.41975546674330444,
+            "lower": 0.2117002465779655,
+            "upper": 0.7914607624501419
+          },
+          {
+            "predicted": 418.8606931777767,
+            "baseline": 446.24926298,
+            "lower": 197.44670887649283,
+            "upper": 1162.7187771435958
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "checkpointSHA256": "b699332772201fc4ea4a679f5281ffe0090cd1855e2ae91cefca1de53074edd0"
+    },
+    {
+      "minutes": 120,
+      "quantum": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 24,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793390700,
+        "qubits": 1000,
+        "components": 1,
+        "graphEdges": 2735,
+        "selectedTemporalLag": 12,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 364,
+        "onlineUpdates": 0,
+        "quantum": true,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 316760,
+        "nativeMilliseconds": 154.210589,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 364,
+        "validationCases": 25,
+        "calibrationCases": 16,
+        "test": {
+          "cases": 25,
+          "directionCorrect": 16,
+          "brier": 0.25015079415704167,
+          "outputs": [
+            {
+              "mae": 578.8233733107876,
+              "baselineMAE": 584.0751999999984,
+              "intervalCoverage": 0.4799999999999999
+            },
+            {
+              "mae": 0.3127743894461105,
+              "baselineMAE": 0.3140399963545425,
+              "intervalCoverage": 0.7600000000000001
+            },
+            {
+              "mae": 449.0793806529971,
+              "baselineMAE": 461.32429240000005,
+              "intervalCoverage": 0.8400000000000002
+            }
+          ]
+        },
+        "probabilityUp": 0.5005434883438749,
+        "outputs": [
+          {
+            "predicted": 76833.94641693881,
+            "baseline": 76849.91,
+            "lower": 76553.30294796485,
+            "upper": 77480.75133751113
+          },
+          {
+            "predicted": 0.5896976377915741,
+            "baseline": 0.5936238739486298,
+            "lower": 0.33631511655007473,
+            "upper": 1.4522265291811083
+          },
+          {
+            "predicted": 860.1059721740663,
+            "baseline": 892.49852596,
+            "lower": 394.80189264667274,
+            "upper": 2027.4584834374707
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "matchedClassical": {
+        "schema": "laplace-lqt1000-v1",
+        "model": "LQT-1000",
+        "asset": "BTC-USD",
+        "market": "crypto",
+        "granularity": 300,
+        "horizonBars": 24,
+        "sourceCloseAt": 1793383500,
+        "originTime": 1793383200,
+        "reference": 76849.91,
+        "targetCloseAt": 1793390700,
+        "qubits": 1000,
+        "components": 1000,
+        "graphEdges": 0,
+        "selectedTemporalLag": 0,
+        "trainableRotations": 1000,
+        "updatedRotations": 1000,
+        "updates": 364,
+        "onlineUpdates": 0,
+        "quantum": false,
+        "nativeXI": true,
+        "representation": "exact rotated-product graph / Heisenberg observables",
+        "mps": false,
+        "physicalQPU": false,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 137.899869,
+        "initialTestThrough": 1793383500,
+        "initialUpdates": 364,
+        "validationCases": 25,
+        "calibrationCases": 16,
+        "test": {
+          "cases": 25,
+          "directionCorrect": 16,
+          "brier": 0.25014987748630646,
+          "outputs": [
+            {
+              "mae": 579.0259453613654,
+              "baselineMAE": 584.0751999999984,
+              "intervalCoverage": 0.4799999999999999
+            },
+            {
+              "mae": 0.3128609366453915,
+              "baselineMAE": 0.3140399963545425,
+              "intervalCoverage": 0.7600000000000001
+            },
+            {
+              "mae": 449.4981409995665,
+              "baselineMAE": 461.32429240000005,
+              "intervalCoverage": 0.8400000000000002
+            }
+          ]
+        },
+        "probabilityUp": 0.5005470681887676,
+        "outputs": [
+          {
+            "predicted": 76834.49427417981,
+            "baseline": 76849.91,
+            "lower": 76553.24543537533,
+            "upper": 77480.7321823952
+          },
+          {
+            "predicted": 0.5898728404787427,
+            "baseline": 0.5936238739486298,
+            "lower": 0.3362681754354168,
+            "upper": 1.4521632278715326
+          },
+          {
+            "predicted": 861.2557523655005,
+            "baseline": 892.49852596,
+            "lower": 394.80074194825016,
+            "upper": 2027.252927287588
+          }
+        ],
+        "automaticTrading": false,
+        "prospectivelyValidated": false
+      },
+      "checkpointSHA256": "2c70ef209d8e1d3cc117921527a0b7ef2baceed24bd1477fb6920cb1a4d9259f"
+    }
+  ],
+  "prospectivelyValidated": false,
+  "physicalQPU": false,
+  "automaticTrading": false,
+  "scope": "one archived BTC period; host timings are not Android device timings"
+}

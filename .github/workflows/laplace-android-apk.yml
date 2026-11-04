@@ -1,7 +1,7 @@
-name: LAPLACE Android 4.3 - volatilidad y volumen
+name: LAPLACE Android 4.4 - motor propio LQT1000
 on:
   push:
-    branches: [feature/laplace-4-3-volatility-volume-20261104, main]
+    branches: [feature/laplace-lqt1000-20261104, main]
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
@@ -73,11 +73,20 @@ jobs:
           test -e "$SDK/platforms/android-35/android.jar"
       - name: Instalar dependencias del núcleo de Laplace
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Probar LQT nativo, retención y evidencia temporal reproducible
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-runner.cpp -o build/lqt-runner
+          g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-native.cpp -o build/lqt-native
+          python3 apps/laplace-android/study-lqt1000.py --verify
+          node apps/laplace-android/compare-lqt1000.mjs --verify
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
           set -euo pipefail
           node apps/laplace-android/build-xn02.mjs --verify
           node apps/laplace-android/build-activity-assets.mjs --verify
+          node apps/laplace-android/build-lqt-assets.mjs --verify
           node apps/laplace-android/build-integral-assets.mjs --verify
           node apps/laplace-android/build-ef004-assets.mjs --verify
           node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
@@ -176,10 +185,11 @@ jobs:
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
           node apps/laplace-android/tests/browser-smoke.cjs
           node apps/laplace-android/tests/activity-file-origin.cjs
+          node apps/laplace-android/tests/quantum-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-4-3-PREVIEWS-ACTIVIDAD
+          name: LAPLACE-4-4-PREVIEWS-LQT
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -199,6 +209,8 @@ jobs:
           set -euo pipefail
           g++ -O2 -std=c++17 -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ideps/reverse-pc/src apps/laplace-android/tests/native-xi-runner.cpp -o build/native-xi-runner
           python3 apps/laplace-android/tests/xn02-native.py
+          mkdir -p build/lqt-host-jni
+          g++ -O2 -std=c++17 -shared -fPIC -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ideps/reverse-pc/src -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/linux" apps/laplace-android/app/src/main/cpp/native_xn01_jni.cpp -o build/lqt-host-jni/liblaplace_xi.so
       - name: Probar protocolo WebSocket nativo con JUnit
         run: |
           set -euo pipefail
@@ -218,6 +230,10 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/activity-engine.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/activity-runtime.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/activity-panel.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/lqt1000-native.xi'
+          unzip -Z1 "$APK" | grep -Fx 'assets/lqt-evidence.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/quantum-panel.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/quantum-tracking.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-archive.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-mobile.js'
@@ -238,14 +254,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn43'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn44'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.3'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.4'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-3-ACTIVIDAD
+          name: LAPLACE-ANDROID-V4-4-LQT1000
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

@@ -1323,6 +1323,7 @@ async function syncHistory(){
   }finally{syncBusy=false;$('syncHistory').disabled=false;$('syncHistory').textContent='Comprobar pendientes'}
 }
 window.LaplaceExportResult=message=>{
+  if(window.LaplaceQuantumMobile?.consumeExport(message))return;
   if(window.LaplaceActivityMobile?.consumeExport(message))return;
   $('historyStatus').textContent=String(message);
 };
@@ -1340,6 +1341,7 @@ function acceptHistoryImport(text,name){
   finally{$('importHistory').disabled=false;}
 }
 window.LaplaceImportResult=payload=>{
+  if(window.LaplaceQuantumMobile?.consumeImport(payload))return;
   if(window.LaplaceActivityMobile?.consumeImport(payload))return;
   if(payload?.ok)acceptHistoryImport(payload.text,payload.name??'Registro seleccionado en Android');
   else{
@@ -1852,7 +1854,7 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.3',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.4',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',

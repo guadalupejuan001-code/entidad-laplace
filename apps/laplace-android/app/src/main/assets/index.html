@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.3 · Volatilidad y volumen</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.4 · LQT-1000</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -19,6 +19,9 @@
 <script src="activity-engine.js" defer></script>
 <script src="activity-runtime.js" defer></script>
 <script src="activity-panel.js" defer></script>
+<script src="lqt-evidence.js" defer></script>
+<script src="quantum-tracking.js" defer></script>
+<script src="quantum-panel.js" defer></script>
 <script src="ef004-runtime.js" defer></script>
 <script src="ef004-archive.js" defer></script>
 <script src="ef004-mobile.js" defer></script>
@@ -28,7 +31,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.3</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.4</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -49,11 +52,6 @@
 
 
   <section id="panel" class="tabpage">
-    <div class="hero portal-banner">
-      <div class="portal-copy"><small class="eyebrow">LAPLACE / OBSERVA</small><strong>Del escenario<br>al resultado.</strong><span>Tu registro conserva ambos.</span></div>
-      <video id="portalVideo" muted autoplay loop playsinline preload="none" poster="laplace-portal-poster.jpg" aria-hidden="true" tabindex="-1"><source data-src="laplace-portal.mp4" type="video/mp4"></video>
-      <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa">Ⅱ</button>
-    </div>
     <article class="card selector">
       <div class="section-head"><div><small class="eyebrow">01 / ACTIVO</small><h2>¿Qué quieres observar?</h2></div><span id="selectedMarketTag" class="outline-tag">CRIPTO</span></div>
       <div class="asset-row">
@@ -65,7 +63,7 @@
         </select>
       </div>
       <div class="market-selected">
-        <div><small>PRECIO DE REFERENCIA</small>
+        <div><small>PRECIO DE MERCADO</small>
           <strong id="selectedQuote">—</strong>
           <span id="selectedProvider">Coinbase · operaciones públicas</span></div>
         <button id="favoriteToggle" class="favorite-toggle" type="button" aria-pressed="false"
@@ -130,6 +128,34 @@
       </details>
     </article>
 
+    <article class="card lqt-card" id="lqtCard">
+      <div class="section-head"><div><small class="eyebrow">03 / MOTOR PROPIO · LQT-1000</small><h2>Un escenario, cuatro predicciones.</h2></div><span class="outline-tag">EN PRUEBA</span></div>
+      <p id="lqtSelection" class="helper"></p>
+      <button id="lqtRun" class="smart-action" type="button"><span class="smart-action-symbol" aria-hidden="true">◈</span><span><strong>Predecir y guardar</strong><small>Aprende con los nuevos resultados</small></span><span class="smart-arrow" aria-hidden="true">→</span></button>
+      <p id="lqtStatus" class="helper" role="status" aria-live="polite">El aprendizaje se conserva por activo y plazo.</p>
+      <div class="stats lqt-metrics">
+        <div><span>Precio previsto</span><strong id="lqtPrice">—</strong></div>
+        <div><span>Dirección del precio previsto</span><strong id="lqtDirection">—</strong></div>
+        <div><span>Volatilidad del período</span><strong id="lqtVolatility">—</strong></div>
+        <div><span>Volumen negociado</span><strong id="lqtVolume">—</strong></div>
+      </div>
+      <p id="lqtProbability" class="helper"></p><p id="lqtPeriod" class="helper"></p>
+      <p class="fineprint">La dirección se obtiene del precio previsto. La probabilidad de subida es otra salida del modelo y puede discrepar. Cada resultado se mide por separado.</p>
+      <details class="raw-details"><summary>Intervalos, entrenamiento y prueba histórica</summary>
+        <p class="helper">Circuito temporal conectado de 1.000 qubits con 1.000 rotaciones entrenables. Cálculo local con una extensión propia de XI/Ether. Los intervalos se ajustan con un bloque histórico separado; su cobertura futura se comprueba en tu registro.</p>
+        <div id="lqtValidation" class="activity-validation"></div>
+      </details>
+      <details class="raw-details"><summary>Modelo y pronóstico sin redondear</summary><pre id="lqtRaw">Sin cálculo.</pre></details>
+    </article>
+
+    <div class="hero portal-banner">
+      <div class="portal-copy"><small class="eyebrow">LAPLACE / OBSERVA</small><strong>Del escenario<br>al resultado.</strong><span>Tu registro conserva ambos.</span></div>
+      <video id="portalVideo" muted autoplay loop playsinline preload="none" poster="laplace-portal-poster.jpg" aria-hidden="true" tabindex="-1"><source data-src="laplace-portal.mp4" type="video/mp4"></video>
+      <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa">Ⅱ</button>
+    </div>
+
+    <details class="classical-reference advanced-fold" id="classicalReference">
+      <summary>Comparar con el motor anterior · M001 y actividad</summary>
     <article class="card decision-deck">
       <div class="section-head">
         <div><small class="eyebrow">03 / ESCENARIO</small><h2>Calcula tu escenario.</h2></div>
@@ -200,6 +226,8 @@
       <div id="activityValidation" class="activity-validation"></div>
       <details class="raw-details"><summary>Modelo y predicción sin redondear</summary><pre id="activityRaw">Sin cálculo.</pre></details>
     </article>
+
+    </details>
 
     <details class="card xn01-card advanced-fold">
       <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Entrenar con más historia</small></summary>
@@ -281,6 +309,15 @@
   </section>
 
   <section id="tests" class="tabpage" hidden>
+    <article class="card" id="lqtHistoryCard">
+      <div class="section-head"><div><small class="eyebrow">RESULTADOS LQT-1000</small><h2>Lo previsto y lo que ocurrió.</h2></div></div>
+      <p id="lqtSummary" class="helper"></p>
+      <div class="history-actions"><button id="lqtSync" type="button" class="pde-primary">Comprobar resultados</button><button id="lqtExport" type="button">Exportar aprendizaje</button><button id="lqtImport" type="button">Importar respaldo</button></div>
+      <p class="fineprint">El respaldo incluye el aprendizaje del activo y plazo seleccionados y todos los pronósticos LQT. Los modelos de otros activos y plazos se exportan desde su selección.</p>
+      <input id="lqtImportFile" type="file" accept="application/json,.json" hidden aria-label="Seleccionar respaldo LQT">
+      <p id="lqtHistoryStatus" class="helper" role="status" aria-live="polite">La app comprueba los pendientes en primer plano. También puedes hacerlo aquí.</p>
+      <div id="lqtHistory" class="history"></div><button id="lqtMore" type="button" hidden>Mostrar más resultados LQT</button>
+    </article>
     <article class="card tracking-card">
       <div class="section-head"><div><small class="eyebrow">ESCENARIOS GUARDADOS</small><h2>¿Qué tan cerca estuvo?</h2></div><span id="historyCount" class="outline-tag">0 REGISTROS</span></div>
       <p>Cada escenario conserva su precio y fecha originales. Comprobamos el cierre de una vela al llegar al objetivo.</p>
