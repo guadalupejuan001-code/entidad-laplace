@@ -18,6 +18,7 @@ const {pathToFileURL}=require('node:url');
   });
   await page.goto(pathToFileURL(path.resolve(__dirname,'../app/src/main/assets/index.html')).href);
   await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
+  await page.locator('#classicalReference > summary').click();
   await page.locator('#activityRun').click();
   await page.waitForFunction(()=>window.LaplaceActivityMobile.state().records.length===1,null,{timeout:20000});
   assert.match(await page.locator('#activityVolume').textContent(),/BTC/);

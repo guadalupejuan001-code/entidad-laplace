@@ -43,6 +43,7 @@ public final class MainActivity extends Activity {
     private WebView webView;
     private CoinbaseLiveFeed liveFeed;
     private RobinhoodController robinhood;
+    private QuantumTemporalController quantum;
     private final ExecutorService io=Executors.newFixedThreadPool(4);
     private static final int MAX_NETWORK_BYTES=2*1024*1024;
     private static final int MAX_QUOTE_BYTES=64*1024;
@@ -93,6 +94,11 @@ public final class MainActivity extends Activity {
         }));
         webView.addJavascriptInterface(new MarketBridge(),"LaplaceBridge");
         webView.addJavascriptInterface(new LiveBridge(),"LaplaceLiveBridge");
+        quantum=new QuantumTemporalController(this,(id,payload)->runOnUiThread(()->{
+            if(webView!=null)webView.evaluateJavascript("window.LaplaceQuantumMobile&&window.LaplaceQuantumMobile.receive("+
+                JSONObject.quote(id)+","+payload.toString()+")",null);
+        }));
+        webView.addJavascriptInterface(quantum,"LaplaceQuantumBridge");
         setContentView(webView);
         webView.loadUrl("file:///android_asset/index.html");
     }
@@ -174,7 +180,8 @@ public final class MainActivity extends Activity {
             }
             String schema;
             try{schema=new JSONObject(json).optString("schema");}catch(Exception ignored){schema="";}
-            final String title="laplace-activity-evidence-v1".equals(schema)?"LAPLACE-actividad.json":"LAPLACE-registro.json";
+            final String title="laplace-lqt-backup-v1".equals(schema)?"LAPLACE-LQT-aprendizaje.json":
+                "laplace-activity-evidence-v1".equals(schema)?"LAPLACE-actividad.json":"LAPLACE-registro.json";
             runOnUiThread(()->{
                 if(pendingExport!=null){exportFeedback("Ya hay una exportación abierta.");return;}
                 pendingExport=json;
@@ -512,6 +519,7 @@ public final class MainActivity extends Activity {
             handled->{if(!"true".equals(handled))MainActivity.super.onBackPressed();});
     }
     @Override protected void onDestroy(){
+        if(quantum!=null){quantum.close();quantum=null;}
         if(robinhood!=null){robinhood.shutdown();robinhood=null;}
         if(liveFeed!=null){
             liveFeed.shutdown();
@@ -521,6 +529,7 @@ public final class MainActivity extends Activity {
         if(webView!=null){
             webView.removeJavascriptInterface("LaplaceBridge");
             webView.removeJavascriptInterface("LaplaceLiveBridge");
+            webView.removeJavascriptInterface("LaplaceQuantumBridge");
             webView.loadUrl("about:blank");
             webView.destroy();
             webView=null;

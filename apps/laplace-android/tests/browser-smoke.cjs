@@ -117,7 +117,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.3');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.4');
+    await page.locator('#classicalReference > summary').click();
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
     assert.match(await page.locator('#robinhoodLink').getAttribute('href'),/robinhood\.com/);
@@ -443,6 +444,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     });
     await page.reload({waitUntil:'networkidle'});
     await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
+    await page.locator('#classicalReference > summary').click();
     await page.locator('[data-tab="tests"]').click();
     await page.locator('#syncHistory').click();
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('laplace-mobile-forecasts-v2'))
@@ -579,8 +581,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
     await page.setViewportSize({width:393,height:852});
     await page.locator('[data-tab="panel"]').click();
-    const bounds=await page.locator('#smartRun').boundingBox(),nav=await page.locator('.tabs').boundingBox();
-    assert.ok(bounds.y+bounds.height<nav.y,'Analizar ahora debe ser accesible en la primera pantalla');
+    await page.locator('#classicalReference').evaluate(e=>e.open=false);
+    await page.evaluate(()=>window.scrollTo(0,0));
+    const bounds=await page.locator('#lqtRun').boundingBox(),nav=await page.locator('.tabs').boundingBox();
+    assert.ok(bounds.y+bounds.height<nav.y,'El pronóstico LQT debe ser accesible en la primera pantalla');
     assert.deepEqual(errors,[],'La interfaz emitió errores Javascript');
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
