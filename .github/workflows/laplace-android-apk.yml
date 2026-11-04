@@ -1,7 +1,7 @@
-name: LAPLACE Android 4.2 - precision del precio
+name: LAPLACE Android 4.3 - volatilidad y volumen
 on:
   push:
-    branches: [feature/laplace-4-2-price-metrics-20261102, main]
+    branches: [feature/laplace-4-3-volatility-volume-20261104, main]
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
@@ -77,6 +77,7 @@ jobs:
         run: |
           set -euo pipefail
           node apps/laplace-android/build-xn02.mjs --verify
+          node apps/laplace-android/build-activity-assets.mjs --verify
           node apps/laplace-android/build-integral-assets.mjs --verify
           node apps/laplace-android/build-ef004-assets.mjs --verify
           node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
@@ -174,10 +175,11 @@ jobs:
           node --check apps/laplace-android/app/src/main/assets/app.js
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
           node apps/laplace-android/tests/browser-smoke.cjs
+          node apps/laplace-android/tests/activity-file-origin.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: LAPLACE-4-2-PREVIEWS-PRECISION
+          name: LAPLACE-4-3-PREVIEWS-ACTIVIDAD
           path: apps/laplace-android/build/ux-previews/*.png
           if-no-files-found: warn
           retention-days: 7
@@ -213,6 +215,9 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/math-pde.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/pde-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/engine.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/activity-engine.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/activity-runtime.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/activity-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-archive.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-mobile.js'
@@ -233,14 +238,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn42'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn43'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.2'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.3'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-2-PRECISION
+          name: LAPLACE-ANDROID-V4-3-ACTIVIDAD
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

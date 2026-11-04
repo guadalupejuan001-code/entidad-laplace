@@ -1,0 +1,149 @@
+{
+  "schema": "laplace-apk-price-parity-v1",
+  "versions": [
+    {
+      "version": "4.0",
+      "engine_sha256": "7aa226bce6d4a063b40bd9d0f3d3240d163ca92a853557c0e719de335b34c83e",
+      "functions": {
+        "quoteAnchor": "644e72d38618cafef55de116949b05f213efcef216c1738c7ed804d8710318ad",
+        "forecastAction": "5337c8cdcc72971e117e1fe4c8f3e8d17fec95a0a9a5b933589b0fad6579ce0d",
+        "saveForecast": "da3abd527478f802dd21bee85c34ee71e839496110c671c988a87c8bc39b6441",
+        "calculateModel": "68d5cf804474dd83ea5911514a86bfb78ebf3bcd4534402b974bfc4623bec324"
+      },
+      "forecasts": [
+        {
+          "minutes": 5,
+          "price": 76837.70406729175,
+          "lower": 76751.25821299049,
+          "upper": 76944.85899475138,
+          "change": -0.00015882819782431223
+        },
+        {
+          "minutes": 15,
+          "price": 76796.62418528163,
+          "lower": 76584.60801510232,
+          "upper": 76956.92578513254,
+          "change": -0.0006933751089411855
+        },
+        {
+          "minutes": 30,
+          "price": 76783.19485346037,
+          "lower": 76354.67687930059,
+          "upper": 77053.13789089261,
+          "change": -0.0008681226372241335
+        },
+        {
+          "minutes": 60,
+          "price": 76779.90027291716,
+          "lower": 76310.75693005946,
+          "upper": 77418.24664901552,
+          "change": -0.0009109929612518552
+        },
+        {
+          "minutes": 120,
+          "price": 76867.72158091562,
+          "lower": 76129.65097630251,
+          "upper": 77766.88914198325,
+          "change": 0.0002317710055304012
+        }
+      ]
+    },
+    {
+      "version": "4.1",
+      "engine_sha256": "7aa226bce6d4a063b40bd9d0f3d3240d163ca92a853557c0e719de335b34c83e",
+      "functions": {
+        "quoteAnchor": "644e72d38618cafef55de116949b05f213efcef216c1738c7ed804d8710318ad",
+        "forecastAction": "5337c8cdcc72971e117e1fe4c8f3e8d17fec95a0a9a5b933589b0fad6579ce0d",
+        "saveForecast": "da3abd527478f802dd21bee85c34ee71e839496110c671c988a87c8bc39b6441",
+        "calculateModel": "68d5cf804474dd83ea5911514a86bfb78ebf3bcd4534402b974bfc4623bec324"
+      },
+      "forecasts": [
+        {
+          "minutes": 5,
+          "price": 76837.70406729175,
+          "lower": 76751.25821299049,
+          "upper": 76944.85899475138,
+          "change": -0.00015882819782431223
+        },
+        {
+          "minutes": 15,
+          "price": 76796.62418528163,
+          "lower": 76584.60801510232,
+          "upper": 76956.92578513254,
+          "change": -0.0006933751089411855
+        },
+        {
+          "minutes": 30,
+          "price": 76783.19485346037,
+          "lower": 76354.67687930059,
+          "upper": 77053.13789089261,
+          "change": -0.0008681226372241335
+        },
+        {
+          "minutes": 60,
+          "price": 76779.90027291716,
+          "lower": 76310.75693005946,
+          "upper": 77418.24664901552,
+          "change": -0.0009109929612518552
+        },
+        {
+          "minutes": 120,
+          "price": 76867.72158091562,
+          "lower": 76129.65097630251,
+          "upper": 77766.88914198325,
+          "change": 0.0002317710055304012
+        }
+      ]
+    },
+    {
+      "version": "4.2",
+      "engine_sha256": "7aa226bce6d4a063b40bd9d0f3d3240d163ca92a853557c0e719de335b34c83e",
+      "functions": {
+        "quoteAnchor": "644e72d38618cafef55de116949b05f213efcef216c1738c7ed804d8710318ad",
+        "forecastAction": "5337c8cdcc72971e117e1fe4c8f3e8d17fec95a0a9a5b933589b0fad6579ce0d",
+        "saveForecast": "da3abd527478f802dd21bee85c34ee71e839496110c671c988a87c8bc39b6441",
+        "calculateModel": "68d5cf804474dd83ea5911514a86bfb78ebf3bcd4534402b974bfc4623bec324"
+      },
+      "forecasts": [
+        {
+          "minutes": 5,
+          "price": 76837.70406729175,
+          "lower": 76751.25821299049,
+          "upper": 76944.85899475138,
+          "change": -0.00015882819782431223
+        },
+        {
+          "minutes": 15,
+          "price": 76796.62418528163,
+          "lower": 76584.60801510232,
+          "upper": 76956.92578513254,
+          "change": -0.0006933751089411855
+        },
+        {
+          "minutes": 30,
+          "price": 76783.19485346037,
+          "lower": 76354.67687930059,
+          "upper": 77053.13789089261,
+          "change": -0.0008681226372241335
+        },
+        {
+          "minutes": 60,
+          "price": 76779.90027291716,
+          "lower": 76310.75693005946,
+          "upper": 77418.24664901552,
+          "change": -0.0009109929612518552
+        },
+        {
+          "minutes": 120,
+          "price": 76867.72158091562,
+          "lower": 76129.65097630251,
+          "upper": 77766.88914198325,
+          "change": 0.0002317710055304012
+        }
+      ]
+    }
+  ],
+  "same_input_predictions_equal": true,
+  "source": "Authentic saved APK assets; identical 800 archived BTC candles.",
+  "limit": "Does not establish accuracy on the phone records or compare different market periods."
+}
