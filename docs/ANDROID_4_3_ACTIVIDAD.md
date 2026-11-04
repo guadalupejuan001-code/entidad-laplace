@@ -16,7 +16,7 @@ El verde indicaba estar dentro del umbral elegido, antes 0,5 % por defecto: alre
 
 **Volumen futuro:** suma de volumen en las próximas H velas, en las unidades entregadas por la fuente. Para cripto se presenta la moneda base, por ejemplo BTC; en bolsa se indican unidades. Es el volumen de Coinbase Exchange o Yahoo indicativo, según el activo, no la suma de todo el mercado mundial.
 
-El período empieza al cierre de la última vela conocida. Cripto fija una hora final en esa cuadrícula. Bolsa cuenta H velas/sesiones de negociación, sin inventar un vencimiento durante el cierre del mercado. Si falta historia suficiente se explica la abstención. Ocho períodos sin solapamiento son el mínimo de validación y de prueba; algunos plazos largos carecerán de ese historial.
+El período empieza al cierre de la última vela conocida. Cripto fija una hora final en esa cuadrícula. Bolsa cuenta H velas/sesiones de negociación, sin inventar un vencimiento durante el cierre del mercado. Se rechaza una emisión si el origen más H intervalos de reloj ya quedó atrás: es una condición conservadora que puede impedir plazos bursátiles cortos fuera de sesión o con fuentes retrasadas. Si falta historia suficiente se explica la abstención. Ocho períodos sin solapamiento son el mínimo de validación y de prueba; algunos plazos largos carecerán de ese historial.
 
 ## Aprendizaje y comprobación
 

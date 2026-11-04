@@ -1857,11 +1857,20 @@ window.LaplaceUIHealth={initialized:true,version:'4.3',tabs:5,
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
     'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','importHistory','openMath','closeMath','motionToggle']};
+const activityHistoryCache=new Map();
 window.LaplaceActivityData={
   selection:()=>({asset,minutes,granularity:E.selectResolution(minutes,asset),market:isEquity()?'equity':'crypto'}),
   async history(selection){
+    const key=selection.asset+':'+selection.granularity,now=Date.now(),cached=activityHistoryCache.get(key);
+    const current=entry=>entry?.rows?.length&&now-entry.receivedAt<180000&&
+      entry.rows.at(-1).time+2*selection.granularity>now/1000;
+    if(current(cached))return cached.rows;
+    const shared=selection.asset===asset&&selection.granularity===historyGranularity?
+      {rows:history,receivedAt:lastHistoryFetch}:null;
+    if(current(shared))return shared.rows;
     const cfg=E.historyConfig(selection.asset,selection.minutes);
-    return remote({kind:'history',asset:selection.asset,granularity:selection.granularity,days:cfg.days});
+    const rows=await remote({kind:'history',asset:selection.asset,granularity:selection.granularity,days:cfg.days});
+    activityHistoryCache.set(key,{rows,receivedAt:Date.now()});return rows;
   },
   freshness:(selection,last)=>marketTimeStatus(last.time+selection.granularity,selection.granularity)
 };

@@ -50,6 +50,11 @@ test('se abstiene ante huecos actuales o historia independiente insuficiente',()
  assert.equal(A.analyze(r,opts).status,'abstained');
  assert.equal(A.analyze(rows(100),opts).status,'abstained');
 });
+test('tampoco publica como futuro un plazo ya transcurrido de datos bursátiles retrasados',()=>{
+ const r=rows(),result=A.analyze(r,opts),expired=result.dataKnownThrough+result.horizonBars*300;
+ assert.throws(()=>A.freeze(result,{issuedAt:expired}),/demasiado antigua/);
+ assert.throws(()=>A.freeze({...result,market:'equity',targetCloseAt:null},{issuedAt:expired}),/demasiado antigua/);
+});
 test('ceros no se convierten en porcentajes infinitos ni falsa ventaja',()=>{
  const r=rows().map(x=>[x[0],100,100,100,100,0]),result=A.analyze(r,opts);
  assert.equal(result.status,'forecast');

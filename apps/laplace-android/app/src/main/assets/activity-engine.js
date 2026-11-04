@@ -102,7 +102,8 @@ function analyze(raw,options={}){
 function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
  need(result?.status==='forecast','No hay pronóstico de actividad válido.');
  need(result.dataKnownThrough<=issuedAt,'El origen todavía no había cerrado.');
- need(result.market==='equity'||result.targetCloseAt>issuedAt,'El plazo ya pasó; actualiza las velas.');
+ need(result.dataKnownThrough+result.horizonBars*result.granularity>issuedAt,
+  'La referencia es demasiado antigua para emitir este plazo como futuro. Actualiza las velas o elige un plazo mayor.');
  return {schema:KEY,id:id??(root.crypto?.randomUUID?.()??String(Date.now())),status:'pending',
   asset:result.asset,market:result.market,minutes:result.minutes,granularity:result.granularity,
   horizonBars:result.horizonBars,originTime:result.originTime,sourceCloseAt:result.dataKnownThrough,
