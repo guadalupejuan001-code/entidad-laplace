@@ -50,7 +50,10 @@ async function native(action,json){
     const captures=value.captures.filter(c=>Date.parse(c.at)<=Date.now());
     packedArchive={...value,captures,archive_count:captures.length,index:value.index.filter(x=>Date.parse(x.captured_at)<=Date.now())};
    }});
-   window.LaplaceBridge={
+   window.__rangeCalls=[];window.LaplaceBridge={
+    fetchCandleRange(id,asset,g,start,end){window.__rangeCalls.push({asset,g,start,end});
+     const rows=window.__rows.filter(r=>r[0]>=start&&r[0]<end);
+     setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:g,candles:rows}),5);},
     fetchCandles(id,asset,g){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:g,candles:window.__rows}),5);},
     fetchQuote(id,asset){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:window.__rows.at(-1)[4],
      time:new Date().toISOString(),receivedAt:Date.now(),market:'crypto',source:'Archived Coinbase data / native UI test'}}),5);},
@@ -76,6 +79,12 @@ async function native(action,json){
   },{rows:initial,clock:now});
   await page.goto(pathToFileURL(path.join(root,'apps/laplace-android/app/src/main/assets/index.html')).href);
   await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
+  await page.setViewportSize({width:360,height:780});
+  const runBounds=await page.locator('#lqtRun').boundingBox(),tabsBounds=await page.locator('.tabs').boundingBox();
+  const shortLayoutOK=runBounds.y+runBounds.height<tabsBounds.y;
+  fs.mkdirSync(path.join(root,'apps/laplace-android/build/ux-previews'),{recursive:true});
+  await page.screenshot({path:path.join(root,'apps/laplace-android/build/ux-previews/LAPLACE-4.9-COMPACTO.png')});
+  await page.setViewportSize({width:393,height:852});
   assert.equal(await page.locator('#classicalReference').getAttribute('open'),null);
   await page.locator('#lqtRun').click();
   await page.waitForFunction(()=>document.documentElement.dataset.instrument==='calculating');
@@ -91,16 +100,28 @@ async function native(action,json){
   await page.locator('#lqtRun').click();assert.equal(analyzeCalls,1,'same origin must preserve original forecast and checkpoint');
   now=all.at(-1)[0]+302;
   await page.evaluate(({rows,clock})=>{window.__rows=rows;window.__clock=clock;localStorage.setItem('qa-lqt-clock',String(clock));},{rows:all,clock:now});
+  // Vuelve al primer plano con el objetivo vencido: se comprueba sin botón.
+  await page.evaluate(()=>window.LaplaceVerifier.wake());
+  await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records[0].status==='verified',null,{timeout:10000});
+  await page.waitForFunction(()=>!window.LaplaceVerifier.state().running);
+  const ranges=await page.evaluate(()=>window.__rangeCalls);
+  assert.ok(ranges.some(r=>r.start===first.originTime&&r.end===first.targetCloseAt&&r.g===first.granularity));
   await page.locator('#lqtRun').click();
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===2,null,{timeout:30000});
   const second=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1]);
   assert.equal(second.training.onlineUpdates,first.campaign.pooledWeight>0?8:0);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
   assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),2);
-  await page.locator('[data-tab="tests"]').click();await page.locator('#lqtSync').click();
+  await page.locator('[data-tab="tests"]').click();
+  await page.waitForFunction(()=>document.querySelectorAll('#ledgerEntries .ledger-entry').length===2);
+  assert.equal(await page.locator('#ledgerArchive').evaluate(e=>e.open),false);
+  fs.mkdirSync(path.join(root,'apps/laplace-android/build/ux-previews'),{recursive:true});
+  await page.screenshot({path:path.join(root,'apps/laplace-android/build/ux-previews/LAPLACE-4.9-REGISTRO-AUTOMATICO.png')});
+  await page.locator('#ledgerSync').click();await page.waitForFunction(()=>!window.LaplaceVerifier.state().running);
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records[0].status==='verified');
   const checked=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records);
   assert.deepEqual(checked[0].outputs,first.outputs);assert.equal(checked[0].measurement[0].actual,all[initial.length-1+3][4]);
-  assert.equal(checked[1].status,'pending');assert.equal(await page.locator('#lqtHistory .history-entry').count(),2);
+  assert.equal(checked[1].status,'pending');assert.equal(await page.locator('#ledgerEntries .ledger-entry').count(),2);
+  await page.locator('#ledgerBackups').click();
   await page.locator('#lqtExport').click();await page.waitForFunction(()=>window.__exported);
   const backup=await page.evaluate(()=>JSON.parse(window.__exported));
   assert.equal(backup.model.checkpointSHA256,second.checkpointSHA256);assert.equal(backup.records.length,2);
@@ -112,12 +133,13 @@ async function native(action,json){
   assert.match(await page.locator('#lqtValidation').textContent(),/No mejoró|Mejoró/);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   const captures=path.join(root,'apps/laplace-android/build/ux-previews');fs.mkdirSync(captures,{recursive:true});
-  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.8-SERPIENTE-NATIVO.png')});
+  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.9-NATIVO.png')});
   await page.reload();await page.waitForFunction(()=>window.LaplaceQuantumMobile?.state().records.length===2);
   await page.waitForFunction(()=>window.LaplaceEF004Mobile?.state().marketFrames===2);
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0].status),'verified');
+  assert.ok(shortLayoutOK,'El pronóstico debe caber en 360×780: '+JSON.stringify({runBounds,tabsBounds}));
   assert.deepEqual(errors,[]);console.log(JSON.stringify({nativeXI:true,actualArchivedOHLCV:true,connected1000:true,
    learningRetained:true,laterUpdates:8,immutableForecasts:true,threeObservedErrors:true,backupAndImport:true,
-   compactContextFramesRetained:2,contextOrderBookFixtures:true,fileOrigin:true,jsErrors:0}));
+   compactContextFramesRetained:2,contextOrderBookFixtures:true,automaticCloseVerification:true,exactRangeRecovery:true,unifiedLedger:true,fileOrigin:true,jsErrors:0}));
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1});

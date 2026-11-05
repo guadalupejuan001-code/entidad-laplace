@@ -11,7 +11,7 @@ const node=(tag,text,cls)=>{const n=document.createElement(tag);n.textContent=te
 const unit=s=>s.market==='crypto'?s.asset.split('-')[0]:'unidades';
 function selection(){const s=D.selection();$('lqtSelection').textContent=s.asset+' · '+s.minutes+' min · velas de '+s.granularity/60+
  ' min'+(s.market==='equity'?' de negociación':'')+'.';return s;}
-function commit(next){localStorage.setItem(KEY,JSON.stringify(next));records=next;renderHistory();}
+function commit(next){localStorage.setItem(KEY,JSON.stringify(next));records=next;renderHistory();window.LaplaceVerifier?.changed();}
 function request(action,payload){
  if(!window.LaplaceQuantumBridge?.request)return Promise.reject(Error('LQT se ejecuta en el núcleo nativo de la APK Android.'));
  const id='lqt-'+crypto.randomUUID();return new Promise((resolve,reject)=>{
@@ -123,6 +123,7 @@ async function run(){
  finally{busy=false;availability();}
 }
 function renderHistory(){
+ if(!$('ledgerArchive').open)return;
  const out=$('lqtHistory');out.replaceChildren();
  for(const f of records.slice().reverse().slice(0,limit)){
   const row=node('details','','history-entry'),head=node('summary',''),label=node('div','');
@@ -156,19 +157,8 @@ function renderHistory(){
   (summary.cases?' Error medio de precio: USD '+fmt(summary.mae[0],2)+'; referencia USD '+fmt(summary.baselineMAE[0],2)+
    '. Dirección: '+summary.directionCorrect+'/'+summary.directionCases+'. Brier: '+fmt(summary.brier,4)+'.':'');
 }
-async function sync(){
- if(busy||syncing||importing||exporting)return;syncing=true;lastSyncAt=Date.now();availability();
- try{
-  const groups=new Map();for(const f of records)if(f.status==='pending'&&(f.market==='equity'||f.targetCloseAt<=Date.now()/1000))
-   groups.set(f.asset+':'+f.granularity,{asset:f.asset,minutes:f.minutes,granularity:f.granularity,market:f.market});
-  let count=0;for(const s of groups.values()){
-   const rows=await D.history(s),checked=T.evaluate(records,rows,{...s,now:Date.now()/1000});
-   if(checked.evaluated){commit(checked.records);count+=checked.evaluated;}
-  }
-  $('lqtHistoryStatus').textContent='Comprobados '+count+' períodos nuevos. Se conservan pendientes los que aún no tienen todas sus velas.';
- }catch(error){$('lqtHistoryStatus').textContent='Comprobación LQT: '+error.message;}
- finally{syncing=false;availability();}
-}
+async function sync(){return window.LaplaceVerifier.sync({force:true})}
+
 async function exportBackup(){
  if(busy||syncing||importing||exporting)return;
  try{
@@ -194,7 +184,7 @@ async function acceptImport(text){
 window.LaplaceQuantumMobile={
  receive(id,payload){const pending=requests.get(id);if(!pending)return;clearTimeout(pending.timer);requests.delete(id);
   payload?.ok?pending.resolve(payload.result):pending.reject(Error(payload?.error||'El núcleo no devolvió un resultado válido.'));},
- state:()=>({records:JSON.parse(JSON.stringify(records)),last,busy}),run,sync,
+ state:()=>({records:JSON.parse(JSON.stringify(records)),last,busy}),run,sync,renderHistory,
  consumeImport(payload){if(!importing)return false;
   if(payload?.ok)acceptImport(payload.text);else{importing=false;availability();$('lqtHistoryStatus').textContent=
    payload?.cancelled?'Importación LQT cancelada.':'No se importó LQT: '+payload?.error;}return true;},
@@ -214,9 +204,14 @@ $('lqtImportFile').addEventListener('change',async event=>{
  event.target.value='';
 });
 for(const event of ['laplace:selection','laplace:horizon'])window.addEventListener(event,reset);
-setInterval(()=>{
- if(document.visibilityState==='visible'&&!busy&&!syncing&&!importing&&!exporting&&Date.now()-lastSyncAt>120000&&
-  records.some(f=>f.status==='pending'&&(f.market==='equity'||f.targetCloseAt<=Date.now()/1000)))sync();
-},15000);
+window.LaplaceVerifier.register('native',{records:()=>records,busy:()=>busy||importing||exporting,
+ evaluate:T.evaluate,update:commit});
+window.addEventListener('laplace:verification',event=>{
+ syncing=event.detail.running;availability();
+ $('lqtSync').textContent=syncing?'Consultando cierres…':'Comprobar ahora';
+ if(!syncing)$('lqtHistoryStatus').textContent='Revisión automática activa. '+
+  (event.detail.lastReport?.evaluated??0)+' resultados nuevos comprobados.';
+});
+
 reset();
 })();

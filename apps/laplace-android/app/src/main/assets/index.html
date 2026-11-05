@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#151911"><title>LAPLACE 4.8 · Observatorio</title>
+<meta name="theme-color" content="#151911"><title>LAPLACE 4.9 · Observatorio</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="serpent-theme.css">
+<link rel="stylesheet" href="ledger-theme.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
 <script src="marea.js" defer></script>
 <script src="regime-m004.js" defer></script>
 <script src="m004-evidence.js" defer></script>
 <script src="engine.js" defer></script>
+<script src="history-verifier.js" defer></script>
 <script src="math-pde.js" defer></script>
 <script src="fusion-integral.js" defer></script>
 <script src="pde-panel.js" defer></script>
@@ -32,10 +34,12 @@
 <script src="paper-orders.js" defer></script>
 <script src="broker-panel.js" defer></script>
 <script src="decoration.js" defer></script>
+<script src="instrument-icons.js" defer></script>
+<script src="ledger-panel.js" defer></script>
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-dragon-seal.webp" width="48" height="48" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.8</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.9</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -55,11 +59,11 @@
     <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa" title="Pausar el movimiento">Ⅱ</button>
   </div>
   <nav class="tabs" aria-label="Navegación principal de Laplace">
-    <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Analizar</button>
-    <button type="button" data-tab="integral"><span class="tab-symbol" aria-hidden="true">⌁</span>Plazos</button>
-    <button type="button" data-tab="tests"><span class="tab-symbol" aria-hidden="true">▤</span>Historial</button>
-    <button type="button" data-tab="orders"><span class="tab-symbol" aria-hidden="true">⇄</span>Operar</button>
-    <button type="button" data-tab="world"><span class="tab-symbol" aria-hidden="true">◈</span>Datos</button>
+    <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol icon-medallion" data-icon="observe" aria-hidden="true"></span>Analizar</button>
+    <button type="button" data-tab="integral"><span class="tab-symbol icon-medallion" data-icon="horizon" aria-hidden="true"></span>Plazos</button>
+    <button type="button" data-tab="tests"><span class="tab-symbol icon-medallion" data-icon="ledger" aria-hidden="true"></span>Historial</button>
+    <button type="button" data-tab="orders"><span class="tab-symbol icon-medallion" data-icon="exchange" aria-hidden="true"></span>Operar</button>
+    <button type="button" data-tab="world"><span class="tab-symbol icon-medallion" data-icon="world" aria-hidden="true"></span>Datos</button>
   </nav>
 
 
@@ -141,9 +145,9 @@
     </article>
 
     <article class="card lqt-card" id="lqtCard">
-      <div class="section-head"><div><small class="eyebrow">03 / CAMPAÑA DE APRENDIZAJE</small><h2>Pronóstico y evidencia juntos.</h2></div><span class="outline-tag">EN PRUEBA</span></div>
+      <div class="section-head"><div><small class="eyebrow">03 / TU PRONÓSTICO</small><h2>Precio, movimiento y volumen.</h2></div><span class="outline-tag">EN PRUEBA</span></div>
       <p id="lqtSelection" class="helper"></p>
-      <button id="lqtRun" class="smart-action" type="button"><span class="smart-action-symbol" aria-hidden="true">◈</span><span><strong>Predecir y guardar</strong><small>Aprende con los nuevos resultados</small></span><span class="smart-arrow" aria-hidden="true">→</span></button>
+      <button id="lqtRun" class="smart-action" type="button"><span class="smart-action-symbol" data-icon="observe" aria-hidden="true"></span><span><strong>Predecir y guardar</strong><small>Aprende con los nuevos resultados</small></span><span class="smart-arrow" data-icon="up" aria-hidden="true"></span></button>
       <p id="lqtStatus" class="helper" role="status" aria-live="polite">El aprendizaje se conserva por activo y plazo.</p>
       <div class="stats lqt-metrics">
         <div><span>Precio previsto</span><strong id="lqtPrice">—</strong></div>
@@ -161,13 +165,14 @@
       <details class="raw-details"><summary>Modelo y pronóstico sin redondear</summary><pre id="lqtRaw">Sin cálculo.</pre></details>
     </article>
 
+    <details class="classical-reference advanced-fold" id="classicalReference">
+      <summary>Motores anteriores, gráficas y pruebas</summary>
     <div class="hero portal-banner">
       <div class="portal-copy"><small class="eyebrow">LAPLACE / OBSERVA</small><strong>Del escenario<br>al resultado.</strong><span>Tu registro conserva ambos.</span></div>
       <video id="portalVideo" muted autoplay loop playsinline preload="none" poster="laplace-portal-poster.jpg" aria-hidden="true" tabindex="-1"><source data-src="laplace-portal.mp4" type="video/mp4"></video>
     </div>
 
-    <details class="classical-reference advanced-fold" id="classicalReference">
-      <summary>Comparar con el motor anterior · M001 y actividad</summary>
+
     <article class="card decision-deck">
       <div class="section-head">
         <div><small class="eyebrow">03 / ESCENARIO</small><h2>Calcula tu escenario.</h2></div>
@@ -175,9 +180,9 @@
       </div>
       <div class="smart-actions">
         <button id="smartRun" class="smart-action" type="button">
-          <span class="smart-action-symbol" aria-hidden="true">◈</span>
+          <span class="smart-action-symbol" data-icon="observe" aria-hidden="true"></span>
           <span><strong>Analizar ahora</strong><small>Obtiene datos y guarda el resultado</small></span>
-          <span class="smart-arrow" aria-hidden="true">→</span>
+          <span class="smart-arrow" data-icon="up" aria-hidden="true"></span>
         </button>
         <button id="jumpValidation" class="smart-secondary" type="button">Ver mis resultados</button>
       </div>
@@ -239,7 +244,6 @@
       <details class="raw-details"><summary>Modelo y predicción sin redondear</summary><pre id="activityRaw">Sin cálculo.</pre></details>
     </article>
 
-    </details>
 
     <details class="card xn01-card advanced-fold">
       <summary><span>Dirección XI/Ether nativa · solo BTC 5 min</span><small>Entrenar con más historia</small></summary>
@@ -299,7 +303,7 @@
     <details class="card audit-card advanced-fold">
       <summary><span>Métricas de validación M001</span><small>Errores y referencia de persistencia</small></summary>
       <div class="section-head"><div><small class="eyebrow">VALIDACIÓN</small><h2>Estado del cálculo</h2></div><span class="outline-tag amber">SIN GARANTÍAS</span></div>
-      <p id="activityStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
+      <p id="analysisStatus" role="status">Selecciona un activo y actualiza las velas de mercado.</p>
       <div class="stats">
         <div><span>Patrones históricos usados</span><strong id="trainingCount">—</strong></div>
         <div><span>Casos retrospectivos válidos</span><strong id="testingCount">—</strong></div>
@@ -310,6 +314,7 @@
     </details>
 
 
+    </details>
   </section>
 
   <section id="signals" class="tabpage" hidden>
@@ -321,6 +326,30 @@
   </section>
 
   <section id="tests" class="tabpage" hidden>
+    <article class="card ledger-card" id="ledgerCard">
+      <div class="ledger-heading"><span class="ledger-emblem icon-medallion" data-icon="ledger" aria-hidden="true"></span>
+        <div><small class="eyebrow">REGISTRO DE RESULTADOS</small><h2>Cada pronóstico, su cierre.</h2></div>
+        <span class="auto-badge"><i aria-hidden="true"></i>Automático</span></div>
+      <p class="ledger-intro">El registro comprueba los cierres al vencer el plazo y cuando vuelves a la app.</p>
+      <div id="ledgerMetrics" class="ledger-metrics" aria-live="polite"></div>
+      <div class="ledger-toolbar"><button id="ledgerSync" type="button"><span data-icon="refresh" aria-hidden="true"></span>Comprobar ahora</button>
+        <button id="ledgerBackups" type="button"><span data-icon="archive" aria-hidden="true"></span>Respaldos</button></div>
+      <p id="ledgerStatus" class="ledger-status" role="status" aria-live="polite">Preparando la comprobación de los cierres guardados.</p>
+      <details id="ledgerFilterPanel" class="ledger-filter-panel"><summary>Filtrar registros<span id="ledgerFilterScope">Todos los activos y plazos</span></summary>
+      <div class="ledger-filters">
+        <label>Activo<select id="ledgerAsset" aria-label="Activo del registro"><option value="all">Todos los activos</option></select></label>
+        <label>Plazo<select id="ledgerHorizon" aria-label="Plazo del registro"><option value="all">Todos los plazos</option></select></label>
+        <label>Estado<select id="ledgerState" aria-label="Estado del registro"><option value="all">Todos</option><option value="waiting">En plazo</option><option value="due">Esperando datos</option><option value="verified">Evaluados</option></select></label>
+        <label>Origen<select id="ledgerEngine" aria-label="Origen del registro"><option value="all">Todos los registros</option><option value="native">Aprendizaje actual</option><option value="m001">Anterior · precio</option><option value="activity">Anterior · actividad</option></select></label>
+      </div>
+      </details>
+      <p id="ledgerScope" class="ledger-scope"></p>
+      <div id="ledgerEntries" class="ledger-entries"></div>
+      <button id="ledgerMore" type="button" hidden>Mostrar más registros</button>
+    </article>
+    <details id="ledgerArchive" class="card advanced-fold ledger-archive"><summary><span data-icon="archive" aria-hidden="true"></span>Respaldos, registros originales y pruebas</summary>
+      <p class="helper">Los registros anteriores también se comprueban automáticamente. Aquí conservas sus exportadores y los detalles de cada motor.</p>
+
     <article class="card" id="lqtHistoryCard">
       <div class="section-head"><div><small class="eyebrow">RESULTADOS LQT-1000</small><h2>Lo previsto y lo que ocurrió.</h2></div></div>
       <p id="lqtSummary" class="helper"></p>
@@ -371,6 +400,7 @@
       <button id="validationRun" type="button" class="pde-primary">Calcular validación del activo elegido</button>
       <p id="validationStatus" class="helper" role="status">Sin evaluación nueva.</p>
       <div id="testResults"><p>Pulsa el botón para evaluar el historial del activo elegido.</p></div>
+    </details>
     </details>
   </section>
 

@@ -1,4 +1,4 @@
-name: LAPLACE Android 4.8 - instrumento serpiente
+name: LAPLACE Android 4.9 - registro automatico
 on:
   push:
     branches: [main]
@@ -205,9 +205,11 @@ jobs:
           set -euo pipefail
           node --check apps/laplace-android/app/src/main/assets/app.js
           npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.56.1
-          node apps/laplace-android/tests/browser-smoke.cjs
-          node apps/laplace-android/tests/activity-file-origin.cjs
-          node apps/laplace-android/tests/quantum-browser.cjs
+          ui_check_exit=0
+          node apps/laplace-android/tests/browser-smoke.cjs || ui_check_exit=1
+          node apps/laplace-android/tests/activity-file-origin.cjs || ui_check_exit=1
+          node apps/laplace-android/tests/quantum-browser.cjs || ui_check_exit=1
+          exit "$ui_check_exit"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -263,6 +265,10 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/quantum-tracking.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/comparison-c04.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/serpent-theme.css'
+          unzip -Z1 "$APK" | grep -Fx 'assets/history-verifier.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/ledger-panel.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/ledger-theme.css'
+          unzip -Z1 "$APK" | grep -Fx 'assets/instrument-icons.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/laplace-dragon-seal.webp'
           unzip -Z1 "$APK" | grep -Fx 'assets/laplace-snakeskin.webp'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
@@ -285,14 +291,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn48'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn49'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.8'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.9'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-8-SERPIENTE-VINTAGE
+          name: LAPLACE-ANDROID-V4-9-REGISTRO-AUTOMATICO
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
