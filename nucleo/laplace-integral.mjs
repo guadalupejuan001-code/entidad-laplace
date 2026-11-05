@@ -8,12 +8,13 @@
 import {fusionTemporal} from '../prediccion/fusion-temporal.mjs';
 import {aprenderNucleoEF004} from '../demonio/finanzas-ef004.mjs';
 import {ejecutarPrediccionF002} from '../prediccion/conjunta-f002.mjs';
+import {ejecutarConjuntoC03} from '../prediccion/conjunta-c03.mjs';
 import {resolverLaplaceGrafo} from '../ecuacion/laplace-grafo.mjs';
 import {resumirCapacidades} from './registro-capacidades.mjs';
 import {aplicarLaplaceAHorizontes,auditarUniversoLaplace} from '../ecuacion/laplace-financiero.mjs';
 export const INTEGRAL_SCHEMA='laplace-integral-investigacion-v1';
 
-export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,captures=null}={}){
+export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,captures=null,c03Options={}}={}){
   const fusion=fusionTemporal({quote,series,world,asOf});
   const field=aplicarLaplaceAHorizontes(fusion.horizons,{
     quotePrice:Number(quote.value),asset:'BTC-USD',solver:resolverLaplaceGrafo});
@@ -41,7 +42,8 @@ export function ejecutarLaplaceIntegral({quote,series={},world=null,asOf,capture
     reason:x.reason,source:x.source
   }));
   return {schema:INTEGRAL_SCHEMA,as_of:asOf,quote:fusion.quote,
-    F001:fusion,F002:f002,laplace_field:field,world:coverage,EF004:ef004,
+    F001:fusion,F002:f002,C03:ejecutarConjuntoC03(captures??[],{...c03Options,asOf}),
+    laplace_field:field,world:coverage,EF004:ef004,
     modules:availability,capabilities,global_price_predictive_skill_proven:false,
     all_financial_sources_available:false,no_auto_trading:true};
 }

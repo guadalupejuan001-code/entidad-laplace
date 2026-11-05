@@ -5,6 +5,9 @@ on:
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
+      - 'prediccion/conjunta-c03.mjs'
+      - 'nucleo/confianza-c03.mjs'
+      - 'tests/conjunta-c03.test.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
       - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
@@ -13,6 +16,9 @@ on:
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
+      - 'prediccion/conjunta-c03.mjs'
+      - 'nucleo/confianza-c03.mjs'
+      - 'tests/conjunta-c03.test.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
       - 'apps/laplace-android/app/src/main/assets/regime-m004.js'
@@ -100,7 +106,7 @@ jobs:
           node --test apps/laplace-android/tests/*.test.cjs
           node --test tests/marea-m003.test.mjs
           node --test apps/laplace-android/tests/regime-m004.test.cjs
-          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs
+          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs tests/conjunta-c03.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: F002 · ejecutar predictor conjunto verificable sobre archivo verdadero

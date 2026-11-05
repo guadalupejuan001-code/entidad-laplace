@@ -108,6 +108,30 @@ async function readJSON(url,fetchImpl,timeoutMs){
   need(data.length<=1500000,'lectura de mercado excede 1.5 MiB');
   return JSON.parse(data);
 }
+/** Reutiliza los parsers U001 para que el archivo mundial reciba L2 y trades.
+ * No necesita calcular I015 ni otra descarga de precios para medir el libro.
+ */
+export async function fetchMarketMicrostructure({fetchImpl=fetch,now=()=>new Date().toISOString(),timeoutMs=9000}={}){
+  const jobs=[['book',URLS.book,measureBook],['trades',URLS.trades,measureTrades]];
+  const settled=await Promise.all(jobs.map(async([name,url,measure])=>{
+    try{const raw=await readJSON(url,fetchImpl,timeoutMs),at=utcTime(now());
+      return {name,url,at,status:'observed',data:measure(raw,{at})};
+    }catch(error){return {name,url,status:'unavailable',reason:String(error.message).slice(0,180)}}
+  }));
+  const observations=[],sources=[];
+  for(const r of settled){
+    if(r.status!=='observed'){sources.push({name:'Coinbase-'+r.name,url:r.url,status:r.status,signals:0,reason:r.reason});continue}
+    const fields=r.name==='book'?[['spread_bps','bps'],['bid_depth_usd_top10','USD'],
+      ['ask_depth_usd_top10','USD'],['top10_notional_imbalance','ratio']]:
+      [['observed_trade_count','trades'],['maker_buy_notional_usd','USD'],['maker_sell_notional_usd','USD']];
+    for(const [variable,unit]of fields)if(Number.isFinite(r.data[variable]))observations.push(
+      ob('micro-'+r.name+'-'+variable+'-'+r.at,r.name==='book'?'liquidez':'flujo',
+        'BTC_'+variable,r.data[variable],unit,r.at,r.url));
+    sources.push({name:'Coinbase-'+r.name,url:r.url,status:'observed',signals:fields.length,
+      coverage:r.name==='book'?'L2_snapshot_top10_not_executed_orders':'recent_REST_trades_not_complete_flow'});
+  }
+  return {observations,sources};
+}
 export async function observeUniverseBTC({
   fetchImpl=fetch,now=()=>new Date().toISOString(),timeoutMs=9000,
   additionalObservations=[]

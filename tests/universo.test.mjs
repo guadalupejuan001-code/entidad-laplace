@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {observation,causalHypothesis,universeSnapshot,verifyUniverseSnapshot}
   from '../universo/estados.mjs';
 import {measureKp,KP_URL} from '../universo/geomagnetismo.mjs';
-import {measureBook,measureTrades,measureTicker,observeUniverseBTC,URLS}
+import {measureBook,measureTrades,measureTicker,observeUniverseBTC,fetchMarketMicrostructure,URLS}
   from '../universo/mercado.mjs';
 const stamp='2026-10-29T18:00:40.000Z';
 const rec=(id,domain='fisica',known_at=stamp,observed_at=stamp,value=8)=>({
@@ -34,6 +34,25 @@ test('U001 prohíbe ids repetidos, datos sin fuentes y afirmaciones causales sin
 const levels=()=>({
   sequence:456,bids:Array.from({length:15},(_,i)=>[(80700-i).toFixed(2),'0.1','1']),
   asks:Array.from({length:15},(_,i)=>[(80701+i).toFixed(2),'0.2','2'])
+});
+test('el archivo mundial recibe microestructura U001 sin ejecutar otro predictor',async()=>{
+  const calls=[];
+  const result=await fetchMarketMicrostructure({now:()=>stamp,fetchImpl:async url=>{
+    calls.push(url);return new Response(JSON.stringify(url===URLS.book?levels():[
+      {trade_id:1,side:'buy',size:'0.2',price:'80000',time:'2026-10-29T17:58:00Z'}]));
+  }});
+  assert.deepEqual(new Set(calls),new Set([URLS.book,URLS.trades]));
+  assert.equal(result.observations.length,7);
+  assert.ok(result.observations.every(x=>['liquidez','flujo'].includes(x.domain)&&x.known_at===stamp));
+  assert.ok(result.sources.every(x=>x.status==='observed'));
+  assert.ok(result.sources.some(x=>/not_complete_flow/.test(x.coverage)));
+});
+test('fallo L2 conserva operaciones observadas y registra ausencia sin ceros falsos',async()=>{
+  const r=await fetchMarketMicrostructure({now:()=>stamp,fetchImpl:async url=>
+    url===URLS.book?new Response('down',{status:503}):new Response('[]')});
+  assert.equal(r.sources.find(x=>x.name==='Coinbase-book').status,'unavailable');
+  assert.ok(r.observations.every(x=>x.domain==='flujo'));
+  assert.equal(r.observations.some(x=>x.variable.includes('depth')),false);
 });
 test('profundidad y spread reales son magnitudes, no promesas predictivas',()=>{
   const b=measureBook(levels(),{at:stamp});

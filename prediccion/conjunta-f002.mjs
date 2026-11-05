@@ -251,34 +251,47 @@ function solve(A,b){
   }
   return rows.map(x=>x[n]);
 }
-function train(rows,lambda){
-  const n=F002_FEATURE_NAMES.length,means=Array.from({length:n},(_,j)=>
+// C03 reutiliza exactamente esta regresión con columnas individuales. La ruta
+// dual permite más series que capturas sin construir una matriz fuentes².
+export function ajustarRidgeConjunto(rows,lambda,featureNames=F002_FEATURE_NAMES){
+  const n=featureNames.length;
+  need(rows.length>0&&n>0&&lambda>0&&finite(lambda)&&rows.every(r=>
+    r.features.length===n&&r.features.every(finite)&&finite(r.actual_log_return)),
+    'entrenamiento conjunto incompatible');
+  const means=Array.from({length:n},(_,j)=>
     mean(rows.map(r=>r.features[j])));
   const scales=Array.from({length:n},(_,j)=>
     Math.max(1e-5,Math.sqrt(mean(rows.map(r=>
       (r.features[j]-means[j])**2)))));
   const X=rows.map(r=>r.features.map((v,j)=>(v-means[j])/scales[j]));
   const yMean=mean(rows.map(r=>r.actual_log_return));
-  const A=Array.from({length:n},(_,j)=>Array.from({length:n},(_,k)=>
-    X.reduce((sum,row)=>sum+row[j]*row[k],0)+(j===k?lambda:0)));
-  const b=Array.from({length:n},(_,j)=>X.reduce((sum,row,i)=>
-    sum+row[j]*(rows[i].actual_log_return-yMean),0));
-  const coefficients=solve(A,b);
+  let coefficients;
+  if(n>rows.length){
+    const A=X.map((a,i)=>X.map((b,j)=>a.reduce((s,v,k)=>s+v*b[k],0)+(i===j?lambda:0)));
+    const alpha=solve(A,rows.map(r=>r.actual_log_return-yMean));
+    coefficients=alpha&&Array.from({length:n},(_,j)=>X.reduce((s,r,i)=>s+r[j]*alpha[i],0));
+  }else{
+    const A=Array.from({length:n},(_,j)=>Array.from({length:n},(_,k)=>
+      X.reduce((sum,row)=>sum+row[j]*row[k],0)+(j===k?lambda:0)));
+    const b=Array.from({length:n},(_,j)=>X.reduce((sum,row,i)=>
+      sum+row[j]*(rows[i].actual_log_return-yMean),0));
+    coefficients=solve(A,b);
+  }
   need(coefficients&&coefficients.every(finite),'regresión inestable');
-  return {kind:'ridge_on_verified_joint_shocks',feature_names:F002_FEATURE_NAMES,
+  return {kind:'ridge_on_verified_joint_shocks',feature_names:featureNames,
     means,scales,intercept:yMean,coefficients,lambda,
     trained_rows:rows.length,training_cutoff:rows.at(-1).decision_at,
     training_last_outcome:rows.at(-1).outcome_capture_at};
 }
-function predict(model,features){
+export function predecirRidgeConjunto(model,features){
   need(features?.length===model.coefficients.length&&features.every(finite),
     'vector de predicción incompatible');
   return clamp(model.intercept+features.reduce((sum,v,j)=>
     sum+(v-model.means[j])/model.scales[j]*model.coefficients[j],0),-0.25,0.25);
 }
-function metrics(model,rows){
+export function medirRidgeConjunto(model,rows){
   const details=rows.map(r=>{
-    const proposed=predict(model,r.features),actual=r.actual_log_return;
+    const proposed=predecirRidgeConjunto(model,r.features),actual=r.actual_log_return;
     const modelError=Math.abs(Math.exp(proposed)-Math.exp(actual))*100;
     const baselineError=Math.abs(1-Math.exp(actual))*100;
     return {decision_at:r.decision_at,target_at:r.outcome_capture_at,
@@ -326,11 +339,11 @@ export function ejecutarPrediccionF002(captures,options={}){
   if(fitRows.length<24||validateRows.length<8||holdRows.length<8)
     return abstain(panel,'insufficient_nonoverlapping_train_validation_holdout',counts);
   const candidates=[1,10,100].map(lambda=>{
-    const model=train(fitRows,lambda),validation=metrics(model,validateRows);
+    const model=ajustarRidgeConjunto(fitRows,lambda),validation=medirRidgeConjunto(model,validateRows);
     return {model,validation};
   }).sort((a,b)=>a.validation.model_mae_pct-b.validation.model_mae_pct||
     a.model.lambda-b.model.lambda);
-  const best=candidates[0],holdout=metrics(best.model,holdRows);
+  const best=candidates[0],holdout=medirRidgeConjunto(best.model,holdRows);
   const validation={...best.validation,details:undefined};
   const test={...holdout,details:undefined};
   const modelSha=digest(best.model);
@@ -357,7 +370,7 @@ export function ejecutarPrediccionF002(captures,options={}){
     'latest_verified_price_unavailable':'snapshot_not_fresh_at_publication',{
       ...audit,model_ready:true,retrospective_candidate_only:true,
       publication_cutoff:iso(Number.isFinite(issuedAt)?issuedAt:latestAt)});
-  const returnLog=predict(best.model,feat.features);
+  const returnLog=predecirRidgeConjunto(best.model,feat.features);
   const body={schema:'laplace-f002-shadow-forecast-v1',status:'shadow_forecast_frozen',
     asset:'BTC-USD',decision_at:panel.latest_capture_at,
     issued_at:iso(issuedAt),

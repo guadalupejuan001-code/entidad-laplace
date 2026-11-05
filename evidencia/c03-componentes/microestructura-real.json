@@ -1,0 +1,92 @@
+{
+  "as_of": "2026-11-05T02:14:33.451Z",
+  "synthetic_data": false,
+  "observations": [
+    {
+      "id": "micro-book-spread_bps-2026-11-05T02:14:33.448Z",
+      "domain": "liquidez",
+      "variable": "BTC_spread_bps",
+      "value": 0.00124005,
+      "unit": "bps",
+      "observed_at": "2026-11-05T02:14:33.448Z",
+      "known_at": "2026-11-05T02:14:33.448Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "micro-book-bid_depth_usd_top10-2026-11-05T02:14:33.448Z",
+      "domain": "liquidez",
+      "variable": "BTC_bid_depth_usd_top10",
+      "value": 163428.1727079,
+      "unit": "USD",
+      "observed_at": "2026-11-05T02:14:33.448Z",
+      "known_at": "2026-11-05T02:14:33.448Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "micro-book-ask_depth_usd_top10-2026-11-05T02:14:33.448Z",
+      "domain": "liquidez",
+      "variable": "BTC_ask_depth_usd_top10",
+      "value": 37826.35182415,
+      "unit": "USD",
+      "observed_at": "2026-11-05T02:14:33.448Z",
+      "known_at": "2026-11-05T02:14:33.448Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "micro-book-top10_notional_imbalance-2026-11-05T02:14:33.448Z",
+      "domain": "liquidez",
+      "variable": "BTC_top10_notional_imbalance",
+      "value": 0.6240944,
+      "unit": "ratio",
+      "observed_at": "2026-11-05T02:14:33.448Z",
+      "known_at": "2026-11-05T02:14:33.448Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "micro-trades-observed_trade_count-2026-11-05T02:14:32.851Z",
+      "domain": "flujo",
+      "variable": "BTC_observed_trade_count",
+      "value": 1000,
+      "unit": "trades",
+      "observed_at": "2026-11-05T02:14:32.851Z",
+      "known_at": "2026-11-05T02:14:32.851Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    },
+    {
+      "id": "micro-trades-maker_buy_notional_usd-2026-11-05T02:14:32.851Z",
+      "domain": "flujo",
+      "variable": "BTC_maker_buy_notional_usd",
+      "value": 421726.75289081,
+      "unit": "USD",
+      "observed_at": "2026-11-05T02:14:32.851Z",
+      "known_at": "2026-11-05T02:14:32.851Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    },
+    {
+      "id": "micro-trades-maker_sell_notional_usd-2026-11-05T02:14:32.851Z",
+      "domain": "flujo",
+      "variable": "BTC_maker_sell_notional_usd",
+      "value": 172151.99138653,
+      "unit": "USD",
+      "observed_at": "2026-11-05T02:14:32.851Z",
+      "known_at": "2026-11-05T02:14:32.851Z",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Coinbase-book",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2",
+      "status": "observed",
+      "signals": 4,
+      "coverage": "L2_snapshot_top10_not_executed_orders"
+    },
+    {
+      "name": "Coinbase-trades",
+      "url": "https://api.exchange.coinbase.com/products/BTC-USD/trades",
+      "status": "observed",
+      "signals": 3,
+      "coverage": "recent_REST_trades_not_complete_flow"
+    }
+  ]
+}

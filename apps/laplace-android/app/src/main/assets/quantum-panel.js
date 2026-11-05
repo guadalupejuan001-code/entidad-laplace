@@ -44,6 +44,28 @@ function render(f){
  $('lqtPeriod').textContent='Referencia: USD '+fmt(f.reference,2)+' al cierre de '+when(f.sourceCloseAt)+'. '+
   (f.market==='equity'?'Objetivo: próximas '+f.horizonBars+' velas de negociación.':'Objetivo: '+when(f.targetCloseAt)+'.');
  const out=$('lqtValidation');out.replaceChildren();
+ const reliability=f.confidence??window.LaplaceIntegral?.medirConfianzaInterna(records,f,{asOf:f.issuedAt});
+ if(reliability){
+  out.append(node('p','Confianza interna: '+reliability.similar_cases+' resultados posteriores comparables ('+
+   reliability.nonoverlapping_cases+' períodos sin solapamiento en total). '+
+   (reliability.status==='insufficient_similar_prospective_outcomes'?
+    'Todavía no hay evidencia suficiente para calibrar esta probabilidad.':
+    'En ese grupo, la subida ocurrió en '+fmt(reliability.observed_up_rate*100,1)+' % de los períodos.'),'helper'));
+  if(reliability.brier!==null)out.append(node('p','Error de probabilidad Brier: '+fmt(reliability.brier,4)+
+   '. Se usan emisiones locales comprobadas; el examen histórico no se cuenta como resultados nuevos.','fineprint'));
+ }
+ const joint=f.jointContext;
+ if(joint){
+  const why={independent_world_history_unavailable:'Falta historia mundial independiente.',
+   insufficient_purged_independent_outcomes:'Faltan suficientes objetivos comprobados del mismo plazo.',
+   latest_world_capture_not_fresh_at_issue:'La captura mundial necesita actualizarse.',
+   asset_has_no_verified_c03_target_adapter:'Falta conectar objetivos mundiales verificables de este activo.',
+   world_worker_busy:'El cálculo mundial estaba ocupado.',world_context_unavailable:'El cálculo mundial no estuvo disponible.'};
+  out.append(node('p','Contexto mundial: '+(joint.trained_series??0)+' series con pesos ajustados. '+
+   (why[joint.reason]??(joint.forecast?'Candidato contextual calculado; pendiente de comparar con este modelo en predicciones nuevas.':joint.reason??'')),'helper'));
+  if(joint.forecast)out.append(node('p','Candidato mundial: USD '+fmt(joint.forecast.estimated_price,2)+
+   ' al '+new Date(joint.forecast.target_at).toLocaleString('es-MX')+'. Conserva su propia referencia y objetivo.','fineprint'));
+ }
  const names=['Precio','Volatilidad','Volumen'];
  for(let i=0;i<3;i++){
   const x=f.outputs[i],score=f.training.test.outputs[i],row=node('div','','activity-validation-row');
@@ -84,7 +106,14 @@ async function run(){
   if(existing){render(existing);$('lqtStatus').textContent='Este cierre ya tenía un pronóstico; se conserva el original.';return;}
   const result=await request('analyze',{...s,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])});
   if(token!==epoch)return;
-  const f=T.freeze(result);commit([...records,f]);render(f);
+  $('lqtStatus').textContent='Comprobando el contexto mundial y la evidencia de confianza…';
+  try{result.jointContext=window.LaplaceEF004Mobile?.joint?
+   await window.LaplaceEF004Mobile.joint(s,result,rows):{status:'abstained',reason:'world_context_unavailable'};
+  }catch(error){result.jointContext={status:'abstained',reason:'world_context_unavailable',detail:String(error.message)}}
+  if(token!==epoch)return;
+  const f=T.freeze(result);
+  if(window.LaplaceIntegral?.medirConfianzaInterna)f.confidence=window.LaplaceIntegral.medirConfianzaInterna(records,f);
+  commit([...records,f]);render(f);
   $('lqtStatus').textContent='Precio, dirección, volatilidad y volumen guardados. El resultado se comprobará al cerrar el período.';
  }catch(error){if(token===epoch)$('lqtStatus').textContent='LQT: '+error.message;}
  finally{busy=false;availability();}
