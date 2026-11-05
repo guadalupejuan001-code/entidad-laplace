@@ -1,0 +1,24 @@
+name: LAPLACE C02 - capturar datos reservados
+on:
+  push:
+    branches: [feature/laplace-campaign-c02-20261104]
+    paths:
+      - 'apps/laplace-android/capture-campaign.py'
+      - '.github/workflows/laplace-campaign-capture.yml'
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 apps/laplace-android/capture-campaign.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LAPLACE-C02-CLOSED-OHLCV
+          path: build/campaign-capture/*.json
+          retention-days: 30
+          if-no-files-found: error
