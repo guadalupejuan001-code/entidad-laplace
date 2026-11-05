@@ -1,0 +1,14 @@
+{
+  "schema": "laplace-v48-original-art-v1",
+  "generation": "built_in_image_generation",
+  "opaque": true,
+  "delivery_size": [
+    512,
+    512
+  ],
+  "delivery_format": "WebP",
+  "prompts": {
+    "icon": "Use case: logo-brand. Asset type: final square Android application icon for LAPLACE, an original vintage financial observation instrument. Create a tactile, premium artisan emblem, perfectly front facing, square edge to edge opaque artwork, no mockup or scene. Entire icon surface upholstered in realistic dark olive-black snakeskin with individual small overlapping scales, worn edges and restrained antique bronze highlights. In the middle a clean upright triangle physically embossed in aged bronze. Behind and surrounding the triangle, visibly engraved into the snakeskin, the symbol of chaos: exactly eight radial arrows pointing outward in the eight compass directions, balanced symmetric, readable but secondary. Inside the triangle one vivid realistic DRAGON EYE with amber-gold iris, black VERTICAL SLIT pupil, reptile eyelids and subtle emerald scales. The eye must be clearly recognisable at launcher icon size. One eye only, no dragon head, no snake body. Center eye and triangle. Essential marks contained within central 64 percent so Android circular/squircle adaptive masks preserve the eye, triangle and arrowheads. Small arrows, triangle and eye overlap as a coherent embossed seal, no floating pasted graphics. Restrained copper rim integrated in the hide, sculptural shallow relief and directional warm light, strong silhouette. Rich natural texture, dark cream/bronze contrast, elegant hand crafted instrument, realistic material, no plastic, no neon glow, no flat generic vector look. No text, no letters, no numerals, no watermark. 1024x1024 square.",
+    "texture": "Use case: photorealistic-natural. Asset type: tileable square material texture for the background of a vintage handheld observation instrument. A perfectly flat front facing close-up of dark olive-black snakeskin upholstery, small natural overlapping irregular reptile scales, real worn leather grain, subtle antique bronze edges on a few scales and very subtle green variation. Even soft lighting across all edges, seamless repeat pattern without a visible central object or large feature. Dark desaturated luxurious tactile material, enough detail to recognise snakeskin at 300 pixels but low contrast enough to sit behind readable warm ivory text. No emblems, no triangle, no eyes, no snake body, no stitching, no frame, no text, no diagonal light streak, no bright specular reflections, no plastic. Original physical material, not vector. Color palette black olive #131811, deep brown #241e16, restrained aged copper #76603f. Opaque 1024x1024 square, seamless edges."
+  }
+}

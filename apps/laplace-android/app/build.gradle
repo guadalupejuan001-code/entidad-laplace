@@ -6,8 +6,8 @@ android {
         applicationId 'com.entidadlaplace.mobile'
         minSdk 26
         targetSdk 34
-        versionCode 22
-        versionName '4.7.0-Contexto-Vivo'
+        versionCode 23
+        versionName '4.8.0-Serpiente-Vintage'
     }
     defaultConfig {
         ndk { abiFilters 'arm64-v8a' }
@@ -20,7 +20,7 @@ android {
         }
     }
     buildTypes {
-        debug { applicationIdSuffix '.learn47' }
+        debug { applicationIdSuffix '.learn48' }
         release { minifyEnabled false }
     }
     testOptions {
