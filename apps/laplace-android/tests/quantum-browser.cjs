@@ -93,6 +93,11 @@ async function native(action,json){
   assert.equal(await page.evaluate(()=>document.documentElement.dataset.instrument),'idle');
   assert.equal(first.training.updatedRotations,1000);assert.match(await page.locator('#lqtVolume').textContent(),/BTC/);
   assert.equal(first.algorithmVersion,3);
+  assert.equal(first.riskDiagnostics.mode,'issued');
+  assert.equal(first.riskDiagnostics.inputWindow.length,31);
+  assert.equal(first.riskDiagnostics.inputProgramSHA256,first.programSHA256);
+  assert.equal(first.riskDiagnostics.tailProbability,null);
+  assert.ok(first.riskDiagnostics.inputWindow.every(r=>r[0]+first.granularity<=first.sourceCloseAt));
   assert.equal(first.jointContext.market_capture.observations,8);
   assert.equal(first.jointContext.market_capture.journal_saved,true);
   assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),1);
@@ -109,6 +114,8 @@ async function native(action,json){
   await page.locator('#lqtRun').click();
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===2,null,{timeout:30000});
   const second=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1]);
+  assert.equal(second.riskDiagnostics.comparison.sourceCloseAt,first.sourceCloseAt);
+  assert.equal(await page.locator('#lqtRisk').isVisible(),second.riskDiagnostics.status==='activity_shift');
   assert.equal(second.training.onlineUpdates,first.campaign.pooledWeight>0?8:0);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
   assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),2);
   await page.locator('[data-tab="tests"]').click();
@@ -125,6 +132,7 @@ async function native(action,json){
   await page.locator('#lqtExport').click();await page.waitForFunction(()=>window.__exported);
   const backup=await page.evaluate(()=>JSON.parse(window.__exported));
   assert.equal(backup.model.checkpointSHA256,second.checkpointSHA256);assert.equal(backup.records.length,2);
+  assert.deepEqual(backup.records[1].riskDiagnostics,second.riskDiagnostics);
   assert.ok(backup.model.checkpoint.startsWith('LQC3 3\n'));
   await page.locator('#lqtImport').click();
   await page.waitForFunction(()=>document.querySelector('#lqtHistoryStatus').textContent.includes('2 ya existentes'));

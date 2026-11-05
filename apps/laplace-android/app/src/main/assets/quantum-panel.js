@@ -30,6 +30,7 @@ function availability(){
  $('lqtImport').disabled=occupied||!window.LaplaceQuantumBridge?.request;
 }
 function reset(){epoch++;last=null;for(const id of ['lqtPrice','lqtVolatility','lqtVolume','lqtDirection'])$(id).textContent='—';
+ $('lqtRisk').hidden=true;$('lqtRisk').textContent='';
  $('lqtPeriod').textContent='';$('lqtValidation').replaceChildren();$('lqtRaw').textContent='Sin cálculo para esta selección.';
  $('lqtStatus').textContent=window.LaplaceQuantumBridge?.request?
   'Pulsa Predecir. El aprendizaje se conserva por activo y plazo.':'Instala la APK para ejecutar LQT en XI/Ether.';
@@ -45,6 +46,16 @@ function render(f){
  $('lqtPeriod').textContent='Referencia: USD '+fmt(f.reference,2)+' al cierre de '+when(f.sourceCloseAt)+'. '+
   (f.market==='equity'?'Objetivo: próximas '+f.horizonBars+' velas de negociación.':'Objetivo: '+when(f.targetCloseAt)+'.');
  const out=$('lqtValidation');out.replaceChildren();
+ const risk=window.LaplaceForecastRisk;
+ $('lqtRisk').hidden=f.riskDiagnostics?.status!=='activity_shift';
+ $('lqtRisk').textContent=risk?risk.describe(f.riskDiagnostics):'';
+ if(risk){
+  out.append(node('p',risk.describe(f.riskDiagnostics),'helper'));
+  const d=f.riskDiagnostics;
+  if(d?.comparison)out.append(node('p','Frente al cierre anterior registrado de este plazo ('+
+   when(d.comparison.sourceCloseAt)+'): volumen de referencia ×'+fmt(d.comparison.volumeRatio,2)+
+   ' y volatilidad ×'+fmt(d.comparison.volatilityRatio,2)+'.','fineprint'));
+ }
  const reliability=f.confidence??window.LaplaceIntegral?.medirConfianzaInterna(records,f,{asOf:f.issuedAt});
  if(reliability){
   out.append(node('p','Confianza interna: '+reliability.similar_cases+' resultados posteriores comparables ('+
@@ -117,6 +128,8 @@ async function run(){
   if(token!==epoch)return;
   const f=T.freeze(result);
   if(window.LaplaceIntegral?.medirConfianzaInterna)f.confidence=window.LaplaceIntegral.medirConfianzaInterna(records,f);
+  f.riskDiagnostics=window.LaplaceForecastRisk.assess(f,{records,rows});
+  T.validate(f);
   commit([...records,f]);render(f);
   $('lqtStatus').textContent='Precio, dirección, volatilidad y volumen guardados. El resultado se comprobará al cerrar el período.';
  }catch(error){if(token===epoch)$('lqtStatus').textContent='LQT: '+error.message;}
@@ -146,6 +159,7 @@ function renderHistory(){
     ['Diferencia frente al modelo nativo','USD '+fmt(f.comparison.paired_improvement,6)]);
   }
   fields.push(['Versión del aprendizaje',f.checkpointSHA256.slice(0,16)]);
+  if(window.LaplaceForecastRisk)fields.push(['Actividad al emitir',window.LaplaceForecastRisk.describe(f.riskDiagnostics)]);
   if(f.importedFromFile)fields.push(['Procedencia','Respaldo importado; conserva sus resultados observados.']);
   for(const [name,value]of fields)facts.append(node('dt',name),node('dd',value));row.append(facts);
   const raw=node('details','');raw.append(node('summary','Registro sin redondear'),node('pre',JSON.stringify(f,null,2)));row.append(raw);out.append(row);

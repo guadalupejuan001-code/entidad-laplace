@@ -58,6 +58,8 @@ function makeRow(entry,now,open){
  for(const [name,value]of [['Emitido',time(f.issuedAt)],['Objetivo',f.market==='equity'?f.horizonBars+' velas de negociación':time(H.targetOf(f))],
   ['Última comprobación',f.verification?.checkedAt?time(f.verification.checkedAt):done?time(f.checkedAt):'Automática al cerrar el período']])date.append(node('dt',name),node('dd',value));
  body.append(date);
+ if(engine==='native'&&window.LaplaceForecastRisk)body.append(node('p',
+  window.LaplaceForecastRisk.describe(f.riskDiagnostics),'helper'));
  for(const x of fields){const metric=node('div',undefined,'ledger-measure');metric.append(node('strong',x.name));
   const values=node('dl');for(const [name,value]of [['Previsto',x.predicted],['Observado',x.actual],['Error absoluto',x.error]]){
    if(!done&&name!=='Previsto')continue;values.append(node('dt',name),node('dd',fmt(value,6)+' '+(name==='Error absoluto'?x.errorUnit:x.unit)))}
