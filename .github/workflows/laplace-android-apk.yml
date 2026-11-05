@@ -1,4 +1,4 @@
-name: LAPLACE Android 4.5 - aprendizaje LQT1000 con respuesta a datos
+name: LAPLACE Android 4.6 - campaña integrada
 on:
   push:
     branches: [main]
@@ -81,8 +81,11 @@ jobs:
           g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-native.cpp -o build/lqt-native
           g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-learning.cpp -o build/lqt-learning
           g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-response.cpp -o build/lqt-response
+          g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/campaign-runner.cpp -o build/campaign-runner
           python3 apps/laplace-android/study-lqt1000.py --verify
           python3 apps/laplace-android/study-lqt-response.py --verify
+          python3 apps/laplace-android/study-campaign.py --verify
+          python3 apps/laplace-android/tests/campaign-native.py
           node apps/laplace-android/compare-lqt1000.mjs --verify
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
@@ -90,6 +93,7 @@ jobs:
           node apps/laplace-android/build-xn02.mjs --verify
           node apps/laplace-android/build-activity-assets.mjs --verify
           node apps/laplace-android/build-lqt-assets.mjs --verify
+          node apps/laplace-android/build-campaign-assets.mjs --verify
           node apps/laplace-android/build-integral-assets.mjs --verify
           node apps/laplace-android/build-ef004-assets.mjs --verify
           node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
@@ -235,6 +239,11 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'assets/activity-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/lqt1000-native.xi'
           unzip -Z1 "$APK" | grep -Fx 'assets/lqt-evidence.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/lqc-native.xi'
+          unzip -Z1 "$APK" | grep -Fx 'assets/campaign-data.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/campaign-evidence.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/campaign-models/BTC-USD-300-3.json.gz.b64'
+          test "$(unzip -Z1 "$APK" | grep -c '^assets/campaign-models/.*\.json\.gz\.b64$')" = 33
           unzip -Z1 "$APK" | grep -Fx 'assets/quantum-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/quantum-tracking.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
@@ -257,14 +266,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn45'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn46'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.5'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.6'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-5-LQT1000-RESPONSIVE
+          name: LAPLACE-ANDROID-V4-6-CAMPANA-INTEGRADA
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

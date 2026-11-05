@@ -140,7 +140,9 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   assert.match(equity,/query1\.finance\.yahoo\.com/);
   assert.match(equity,/includePrePost=false/);
   assert.match(equity,/puede tener retraso|retraso|indicativo/);
-  assert.match(code,/days!=expectedDays/);
+  assert.match(code,/expectedDays<0\|\|!MarketCatalog\.allowedHistoryDays\(granularity,asset,days\)/);
+  assert.match(catalog,/return days==days\(granularity,asset\)\|\|days==campaignDays\(granularity,asset\)/);
+  assert.match(catalog,/granularity==300\?28:granularity==3600\?360:granularity==86400\?2200:-1/);
   assert.match(code,/fetchCoinbaseHistory/);
   assert.match(code,/api\.exchange\.coinbase\.com\/products\//);
   assert.match(code,/MarketCatalog\.allowed\(asset\)/);
@@ -151,3 +153,4 @@ test('Android restringe URL, permisos, periodos y fuentes; conserva la PDE',()=>
   assert.match(manifest,/android\.permission\.INTERNET/);
   assert.doesNotMatch(manifest,/READ_EXTERNAL_STORAGE|CAMERA|RECORD_AUDIO/);
 });
+

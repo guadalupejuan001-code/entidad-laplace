@@ -197,7 +197,7 @@ public final class MainActivity extends Activity {
         public void fetchCandles(String requestId,String asset,int granularity,int days){
             int expectedDays=MarketCatalog.days(granularity,asset);
             if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}")||
-               !MarketCatalog.allowed(asset)||expectedDays<0||days!=expectedDays){
+               !MarketCatalog.allowed(asset)||expectedDays<0||!MarketCatalog.allowedHistoryDays(granularity,asset,days)){
                 emit(requestId,"Solicitud inválida: fuente o ventana no permitida.",null,granularity);
                 return;
             }
@@ -335,7 +335,7 @@ public final class MainActivity extends Activity {
         long end=(System.currentTimeMillis()/1000L/granularity)*granularity;
         long earliest=end-days*86400L;
         int total=(int)Math.ceil((end-earliest)/(280.0*granularity));
-        if(total<1||total>20)throw new IOException("Presupuesto de consultas excedido");
+        if(total<1||total>36)throw new IOException("Presupuesto de consultas excedido");
         TreeMap<Long,JSONArray> candles=new TreeMap<>();
         int count=0;
         while(end>earliest){
@@ -359,7 +359,7 @@ public final class MainActivity extends Activity {
             if(end>earliest)Thread.sleep(130);
         }
         if(candles.size()<10)throw new IOException("Historial verificado insuficiente");
-        if(candles.size()>5000)throw new IOException("Exceso de velas recibidas");
+        if(candles.size()>8640)throw new IOException("Exceso de velas recibidas");
         JSONArray ordered=new JSONArray();
         for(JSONArray bar:candles.values())ordered.put(bar);
         return ordered;

@@ -9,7 +9,9 @@ function validate(f,now=Date.now()/1000){
  need(f?.schema==='laplace-lqt-record-v1'&&typeof f.id==='string'&&f.id.length>0&&f.id.length<=160&&
   E.ALLOWED_ASSETS.includes(f.asset)&&f.market===(M.isEquity(f.asset)?'equity':'crypto')&&
   ['pending','verified'].includes(f.status),'Registro LQT inválido.');
- need(E.selectResolution(f.minutes,f.asset)===f.granularity&&f.horizonBars===f.minutes*60/f.granularity&&
+ const legacyResolution=E.selectResolution(f.minutes,f.asset);
+ const expected=(f.algorithmVersion??1)>=3?(f.market==='crypto'?(f.minutes<=120?300:f.minutes<=1440?3600:86400):(f.minutes<=30?300:f.minutes<1440?3600:86400)):legacyResolution;
+ need(expected===f.granularity&&f.horizonBars===f.minutes*60/f.granularity&&
   Number.isSafeInteger(f.originTime)&&f.originTime>0&&f.originTime%f.granularity===0&&
   f.sourceCloseAt===f.originTime+f.granularity&&finite(f.issuedAt)&&f.sourceCloseAt<=f.issuedAt&&f.issuedAt<=now&&
   finite(f.reference)&&f.reference>0,'Fechas o referencia LQT inválidas.');
@@ -19,7 +21,7 @@ function validate(f,now=Date.now()/1000){
  need(typeof f.checkpointSHA256==='string'&&/^[a-f0-9]{64}$/.test(f.checkpointSHA256)&&
   typeof f.kernelSHA256==='string'&&/^[a-f0-9]{64}$/.test(f.kernelSHA256)&&
   finite(f.probabilityUp)&&f.probabilityUp>0&&f.probabilityUp<1,'Modelo LQT inválido.');
- need([1,2].includes(f.algorithmVersion??1),'Versión del aprendizaje LQT inválida.');
+ need([1,2,3].includes(f.algorithmVersion??1),'Versión del aprendizaje LQT inválida.');
  need(Array.isArray(f.outputs)&&f.outputs.length===3&&f.outputs.every(x=>x&&
   ['predicted','baseline','lower','upper'].every(k=>finite(x[k])&&x[k]>=0)&&x.lower<=x.upper),
   'Predicciones LQT inválidas.');
@@ -28,9 +30,9 @@ function validate(f,now=Date.now()/1000){
   Number.isSafeInteger(tr.onlineUpdates)&&tr.onlineUpdates>=0&&tr.onlineUpdates<=tr.updates&&
   [0,3,12].includes(tr.selectedTemporalLag)&&finite(tr.initialTestThrough)&&tr.initialTestThrough<=f.issuedAt&&
   tr.updatedRotations===1000&&[1795,2735,2780].includes(tr.graphEdges)&&
-  Number.isSafeInteger(tr.calibrationCases)&&tr.calibrationCases>=12&&tr.calibrationCases<=64&&
+  Number.isSafeInteger(tr.calibrationCases)&&tr.calibrationCases>=12&&tr.calibrationCases<=((f.algorithmVersion??1)>=3?128:64)&&
   finite(tr.nativeMilliseconds)&&tr.nativeMilliseconds>=0&&
-  te&&Number.isSafeInteger(te.cases)&&te.cases>=8&&te.cases<=64&&
+  te&&Number.isSafeInteger(te.cases)&&te.cases>=8&&te.cases<=((f.algorithmVersion??1)>=3?256:64)&&
   Number.isSafeInteger(te.directionCorrect)&&te.directionCorrect>=0&&te.directionCorrect<=te.cases&&
   finite(te.brier)&&te.brier>=0&&te.brier<=1&&Array.isArray(te.outputs)&&te.outputs.length===3&&te.outputs.every(x=>
    x&&finite(x.mae)&&x.mae>=0&&finite(x.baselineMAE)&&x.baselineMAE>=0&&finite(x.intervalCoverage)&&
@@ -40,6 +42,13 @@ function validate(f,now=Date.now()/1000){
   te.predictedUp+te.predictedDown<=te.cases&&finite(te.probabilityMin)&&finite(te.probabilityMax)&&te.probabilityMin>0&&
   te.probabilityMin<=te.probabilityMax&&te.probabilityMax<1&&finite(te.normalizedPriceSD)&&te.normalizedPriceSD>=0,
   'Diagnóstico de respuesta LQT inválido.');
+ if((f.algorithmVersion??1)>=3){const c=f.campaign,r=f.referenceTest;
+  need(c&&c.candidates===216&&Number.isSafeInteger(c.trainCases)&&c.trainCases>=64&&c.trainCases<=512&&
+   finite(c.validationAccuracy)&&c.validationAccuracy>=0&&c.validationAccuracy<=1&&finite(c.pooledWeight)&&c.pooledWeight>=0&&c.pooledWeight<=1&&
+   Number.isSafeInteger(c.acceptedCases)&&c.acceptedCases>=0&&c.acceptedCases<=te.cases&&Number.isSafeInteger(c.acceptedCorrect)&&c.acceptedCorrect>=0&&c.acceptedCorrect<=c.acceptedCases&&
+   r&&r.cases===te.cases&&Number.isSafeInteger(r.directionCorrect)&&r.directionCorrect>=0&&r.directionCorrect<=r.cases,
+   'Campaña o comparación inválida.');
+ }
  if(f.status==='verified')need(Array.isArray(f.measurement)&&f.measurement.length===3&&
   f.measurement.every(x=>x&&finite(x.actual)&&x.actual>=0)&&f.measurement[0].actual>0&&
   finite(f.observedCloseAt)&&f.observedCloseAt>f.issuedAt&&f.observedCloseAt<=now&&
@@ -54,7 +63,7 @@ function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
   asset:result.asset,market:result.market,minutes:result.minutes,granularity:result.granularity,algorithmVersion:result.algorithmVersion??1,
   horizonBars:result.horizonBars,originTime:result.originTime,sourceCloseAt:result.sourceCloseAt,
   issuedAt,targetCloseAt:result.targetCloseAt,reference:result.reference,outputs:result.outputs,
-  probabilityUp:result.probabilityUp,checkpointSHA256:result.checkpointSHA256,kernelSHA256:result.kernelSHA256,
+  probabilityUp:result.probabilityUp,campaign:result.campaign??null,referenceTest:result.referenceTest??null,pretrainedLoaded:result.pretrainedLoaded===true,checkpointSHA256:result.checkpointSHA256,kernelSHA256:result.kernelSHA256,
   training:{updates:result.updates,onlineUpdates:result.onlineUpdates,selectedTemporalLag:result.selectedTemporalLag,
    initialTestThrough:result.initialTestThrough,test:result.test,nativeMilliseconds:result.nativeMilliseconds,
    updatedRotations:result.updatedRotations,graphEdges:result.graphEdges,calibrationCases:result.calibrationCases}};
