@@ -115,9 +115,11 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-3.9-INICIO-SIMULADO.png')});
     const ready=await page.evaluate(()=>window.LaplaceUIHealth?.initialized===true);
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
+    const uniqueIds=await page.evaluate(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return new Set(ids).size===ids.length});
+    assert.equal(uniqueIds,true,'Los paneles no pueden compartir identificadores');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.8');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.9');
     await page.waitForFunction(()=>document.querySelector('#instrumentSeal img').naturalWidth===512);
     assert.match(await page.evaluate(()=>getComputedStyle(document.body).backgroundImage),/laplace-snakeskin/);
     assert.equal(await page.locator('#motionToggle').count(),1);
@@ -353,7 +355,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.locator('[data-tab="panel"]').click();
     await page.selectOption('#asset','BTC-USD');
     await page.waitForFunction(()=>!document.querySelector('#refresh').disabled,null,{timeout:25000});
-    await page.locator('[data-tab="tests"]').click();
+    await page.locator('[data-tab="tests"]').click();await page.locator('#ledgerArchive').evaluate(el=>el.open=true);
+    await page.waitForFunction(()=>document.querySelector('#ledgerArchive').open);
     if(!await page.locator('#backtestDetails').evaluate(e=>e.open))await page.locator('#backtestDetails > summary').click();
     await page.locator('#validationRun').click();
     await page.waitForFunction(()=>!document.querySelector('#validationRun').disabled,null,{timeout:25000});
@@ -460,7 +463,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.reload({waitUntil:'networkidle'});
     await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
     await page.locator('#classicalReference > summary').click();
-    await page.locator('[data-tab="tests"]').click();
+    await page.locator('[data-tab="tests"]').click();await page.locator('#ledgerArchive').evaluate(el=>el.open=true);
+    await page.waitForFunction(()=>document.querySelector('#ledgerArchive').open);
     await page.locator('#syncHistory').click();
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('laplace-mobile-forecasts-v2'))
       .every(f=>f.status==='verified'),null,{timeout:15000});
@@ -534,7 +538,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
         granularity:86400,horizonBars:1,targetAt:null,estimate:1000});
       localStorage.setItem('laplace-mobile-forecasts-v2',JSON.stringify(records));
     });
-    await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();
+    await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();await page.locator('#ledgerArchive').evaluate(el=>el.open=true);
+    await page.waitForFunction(()=>document.querySelector('#ledgerArchive').open);
     assert.match(await page.locator('#historyScope').innerText(),/Resumen de error relativo/);
     assert.equal(await page.locator('.history-group').count(),4);
     await page.locator('#historyAsset').selectOption('BTC-USD');
@@ -560,7 +565,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
       const record=window.LaplaceActivity.freeze(result,{id:'activity-past-simulated',issuedAt:past.at(-1)[0]+301});
       localStorage.setItem('laplace-activity-records-v1',JSON.stringify([record]));
     });
-    await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();
+    await page.reload({waitUntil:'networkidle'});await page.locator('[data-tab="tests"]').click();await page.locator('#ledgerArchive').evaluate(el=>el.open=true);
+    await page.waitForFunction(()=>document.querySelector('#ledgerArchive').open);
     const originalActivity=await page.evaluate(()=>window.LaplaceActivityMobile.state().records[0]);
     const priceBefore=await page.evaluate(()=>localStorage.getItem('laplace-mobile-forecasts-v2'));
     await page.locator('#activitySync').click();

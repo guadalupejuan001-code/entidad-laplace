@@ -79,11 +79,12 @@ function connection(value,ready=false){
 }
 function status(message,kind='info'){
   $('noticeText').textContent=message;
-  $('noticeIcon').textContent=kind==='error'?'!':kind==='success'?'✓':'◎';
+  if(window.LaplaceIcons)window.LaplaceIcons.set($('noticeIcon'),kind==='error'?'warning':kind==='success'?'check':'observe');
+  else $('noticeIcon').textContent=kind==='error'?'!':kind==='success'?'✓':'◎';
   $('notice').dataset.kind=kind;
   $('inlineStatus').textContent=message;
   $('inlineStatus').dataset.kind=kind;
-  $('activityStatus').textContent=message;
+  $('analysisStatus').textContent=message;
 }
 function setActionAvailability(){
   const ready=Boolean(history&&historyGranularity===granularityNow()&&!loading);
@@ -747,6 +748,15 @@ async function runIntegral(){
 function show(page){
   const navPage=['signals','equation'].includes(page)?'world':page;
   if(window.LaplaceDecoration)window.LaplaceDecoration.setPage(page);
+  if(page==='tests')window.LaplaceVerifier?.wake();
+  document.body.dataset.page=page;
+  const pageCopy={panel:['Tu lectura de mercado.','Elige un activo, calcula y comprueba el resultado.'],
+   tests:['Tu registro, al día.','Pronósticos originales y cierres comprobados.'],
+   integral:['Cada plazo, su escenario.','Compara el mismo activo en distintos horizontes.'],
+   orders:['Tu mesa de operaciones.','Consulta tus órdenes y el modo de tu cuenta.'],
+   world:['Fuentes y estados.','Consulta la procedencia y la fecha de cada dato.']};
+  if(pageCopy[page]){document.querySelector('.instrument-copy h2').textContent=pageCopy[page][0];
+   document.querySelector('.instrument-copy>p').textContent=pageCopy[page][1];}
   for(const b of document.querySelectorAll('[data-tab]'))
     b.setAttribute('aria-current',b.dataset.tab===navPage?'page':'false');
   for(const section of document.querySelectorAll('.tabpage'))
@@ -772,7 +782,7 @@ function marketChoice(){
     'Coinbase es independiente de Robinhood. El precio de ejecución puede variar.';
   const robinhood=Markets?.robinhood(asset);
   $('robinhoodLink').href=robinhood??'https://robinhood.com/us/en/';
-  $('favoriteToggle').textContent=favorites.has(asset)?'★':'☆';
+  if(window.LaplaceIcons)window.LaplaceIcons.set($('favoriteToggle'),'star');else $('favoriteToggle').textContent=favorites.has(asset)?'★':'☆';
   $('favoriteToggle').setAttribute('aria-pressed',String(favorites.has(asset)));
   $('favoriteToggle').setAttribute('aria-label',favorites.has(asset)?
     'Quitar de favoritos locales':'Añadir a favoritos locales');
@@ -928,6 +938,8 @@ function remote(request){
         window.LaplaceBridge.fetchQuote(id,request.asset);
       else if(request.kind==='history')
         window.LaplaceBridge.fetchCandles(id,request.asset,request.granularity,request.days);
+      else if(request.kind==='range')
+        window.LaplaceBridge.fetchCandleRange(id,request.asset,request.granularity,request.start,request.end);
       else if(request.kind==='xn01')
         window.LaplaceBridge.analyzeXN01(id,request.asset,JSON.stringify(request.bars));
       else if(request.kind==='xn02')
@@ -972,7 +984,7 @@ window.LaplaceMobile={
         if(response.granularity!==p.granularity)throw Error('La fuente respondió con otra resolución.');
         const rows=E.candlesFromCoinbase(response.candles,response.granularity)
           .filter(b=>b.time+response.granularity<=Date.now()/1000);
-        if(!rows.length)throw Error('No hay velas cerradas verificables.');
+        if(!rows.length&&p.kind!=='range')throw Error('No hay velas cerradas verificables.');
         p.resolve(rows);
       }
     }catch(error){p.reject(error)}
@@ -1168,7 +1180,7 @@ async function runValidation(){
     if(asset!==chosenAsset||minutes!==chosenMinutes)throw Error('Cambiaste de activo o plazo. Vuelve a validar.');
     const m=calculateModel();
     const changed=evaluateHistory();
-    show('tests');$('backtestDetails').open=true;showTests();renderHistory();
+    show('tests');$('ledgerArchive').open=true;$('backtestDetails').open=true;showTests();renderHistory();
     const v=m.validation;
     $('validationStatus').textContent='Evaluados '+v.evaluated+
       ' casos retrospectivos; '+changed.evaluated+
@@ -1285,7 +1297,7 @@ function saveForecast(candidate,model){
   persist();renderHistory();
 }
 function persist(){
-  try{localStorage.setItem(STORAGE,JSON.stringify(log));storageError=null;return true}
+  try{localStorage.setItem(STORAGE,JSON.stringify(log));storageError=null;window.LaplaceVerifier?.changed();return true}
   catch(error){storageError='No se pudo guardar en el dispositivo. Exporta el registro antes de cerrar. '+error.message;
     $('historyStatus').textContent=storageError;status(storageError,'error');return false}
 }
@@ -1295,33 +1307,9 @@ function evaluateHistory(){
   log=result.records;if(result.evaluated)persist();renderHistory();return result;
 }
 async function syncHistory(){
-  if(syncBusy)return;
-  const groups=new Map();
-  for(const f of log){
-    if(f.status!=='pending'||!T.valid(f)||(!f.market&&f.targetAt>Date.now()/1000)||
-      (f.market==='crypto'&&f.targetAt>Date.now()/1000))continue;
-    groups.set(f.asset+':'+f.granularity,{asset:f.asset,granularity:f.granularity,minutes:f.minutes});
-  }
-  if(!groups.size){$('historyStatus').textContent=storageError??'No hay objetivos vencidos por comprobar. Los pendientes esperarán su plazo.';return}
-  syncBusy=true;lastSyncAt=Date.now();$('syncHistory').disabled=true;
-  $('syncHistory').textContent='Comprobando cierres…';
-  let checked=0,total=0;const errors=[];
-  try{
-    for(const request of groups.values()){
-      $('historyStatus').textContent='Consultando '+request.asset+' · '+(++checked)+'/'+groups.size+' fuentes pendientes…';
-      try{
-        const cfg=E.historyConfig(request.asset,request.minutes);
-        const bars=await remote({kind:'history',...request,days:cfg.days});
-        const result=T.evaluate(log,bars,request);log=result.records;total+=result.evaluated;
-        if(result.evaluated)persist();renderHistory();
-      }catch(error){errors.push(request.asset+': '+error.message)}
-    }
-    const pendingCount=log.filter(f=>f.status==='pending').length;
-    $('historyStatus').textContent=storageError??('Comprobados '+total+' escenarios nuevos · '+pendingCount+
-      ' pendientes. '+(pendingCount?'Se conserva pendiente si falta el cierre o está fuera de la ventana de la fuente. ':'')+
-      (errors.length?'Fuentes no disponibles: '+errors.join(' · '):'Registro actualizado.'));
-  }finally{syncBusy=false;$('syncHistory').disabled=false;$('syncHistory').textContent='Comprobar pendientes'}
+  return window.LaplaceVerifier.sync({force:true});
 }
+
 window.LaplaceExportResult=message=>{
   if(window.LaplaceQuantumMobile?.consumeExport(message))return;
   if(window.LaplaceActivityMobile?.consumeExport(message))return;
@@ -1375,7 +1363,7 @@ function evaluateAction(){
   try{
     const current=calculateModel();
     const r=evaluateHistory();
-    show('tests');$('backtestDetails').open=true;showTests();renderHistory();
+    show('tests');$('ledgerArchive').open=true;$('backtestDetails').open=true;showTests();renderHistory();
     status('Evaluación histórica M001: '+current.validation.evaluated+
       ' objetivos no solapados; MAE candidato '+
       money(current.validation.candidateMAE)+' frente a persistencia '+
@@ -1385,7 +1373,7 @@ function evaluateAction(){
 }
 function testAction(){
   const m=analyzeAction();if(!m)return;
-  show('tests');$('backtestDetails').open=true;showTests();
+  show('tests');$('ledgerArchive').open=true;$('backtestDetails').open=true;showTests();
   status('Se muestra prueba cronológica fuera de muestra disponible: '+
     m.validation.evaluated+' casos. No atribuye ventaja prospectiva.','success');
 }
@@ -1611,6 +1599,7 @@ function drawChart(){
     ctx.fillText('OBJETIVO '+label(minutes),right,bottom+18)}
 }
 function renderHistory(){
+  if(!$('ledgerArchive').open)return;
   const out=$('history');out.replaceChildren();
   const assetSelect=$('historyAsset'),selected=assetSelect.value;
   const available=[...new Set(log.map(f=>f.asset))].sort();
@@ -1844,9 +1833,6 @@ if(window.LaplaceLiveBridge){
   updateLiveBanner();
 }
 window.setInterval(()=>{
-  if(document.visibilityState==='visible'&&!syncBusy&&!smartBusy&&!loading&&
-    Date.now()-lastSyncAt>120000&&log.some(f=>f.status==='pending'&&
-      (f.market==='equity'||f.targetAt<=Date.now()/1000)))syncHistory();
   if(autoQuoteEnabled&&document.visibilityState==='visible'&&
     Date.now()-lastQuoteAt>120000&&!loading&&!integralBusy)
     refreshSelectedQuote({silent:true});
@@ -1854,11 +1840,26 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.8',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.9',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
     'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','importHistory','openMath','closeMath','motionToggle']};
+window.LaplaceVerifier.configure(request=>{
+ if(request.market==='crypto'&&window.LaplaceBridge?.fetchCandleRange)
+  return remote({kind:'range',...request});
+ return remote({kind:'history',...request});
+});
+window.LaplaceLegacyHistory={render:renderHistory};
+window.LaplaceVerifier.register('m001',{records:()=>log,busy:()=>smartBusy||loading,
+ evaluate:(records,rows,options)=>T.evaluate(records,rows,options),
+ update(next){const previous=log;log=next;if(!persist()){log=previous;throw Error(storageError)}renderHistory();}});
+window.addEventListener('laplace:verification',event=>{
+ syncBusy=event.detail.running;$('syncHistory').disabled=syncBusy;
+ $('syncHistory').textContent=syncBusy?'Consultando cierres…':'Comprobar ahora';
+ if(!syncBusy)$('historyStatus').textContent=storageError??('Comprobación automática activa. '+
+  (event.detail.lastReport?.evaluated??0)+' resultados actualizados en la última revisión.');
+});
 window.LaplaceCampaignFetch=selection=>remote({kind:"history",asset:selection.asset,granularity:selection.granularity,days:selection.days});
 const activityHistoryCache=new Map();
 window.LaplaceActivityData={

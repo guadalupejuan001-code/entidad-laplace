@@ -7,7 +7,7 @@ const unit=s=>s.market==='crypto'?s.asset.split('-')[0]:'unidades';
 let records=[],busy=false,syncBusy=false,worker=null,cancelCompute=null,epoch=0,last=null,limit=20,importing=false,exporting=false;
 try{const saved=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(saved))records=saved;}
 catch(error){$('activityHistoryStatus').textContent='No se pudo leer el registro de actividad: '+error.message;}
-function commit(next){localStorage.setItem(KEY,JSON.stringify(next));records=next;renderHistory();}
+function commit(next){localStorage.setItem(KEY,JSON.stringify(next));records=next;renderHistory();window.LaplaceVerifier?.changed();}
 function item(tag,text,cls){const node=document.createElement(tag);node.textContent=text;if(cls)node.className=cls;return node;}
 function selection(){const s=D.selection();$('activitySelection').textContent=s.asset+' · '+
  (s.market==='equity'&&s.minutes>=1440?s.minutes/1440+' sesiones':s.minutes+' min')+
@@ -71,6 +71,7 @@ async function run(){
  finally{if(token===epoch){busy=false;$('activityRun').disabled=syncBusy;$('activitySync').disabled=syncBusy;}}
 }
 function renderHistory(){
+ if(!$('ledgerArchive').open)return;
  const out=$('activityHistory');out.replaceChildren();
  if(!records.length)out.append(item('p','Sin pronósticos de actividad. Genera uno en Analizar.','helper'));
  for(const f of records.slice().reverse().slice(0,limit)){
@@ -95,21 +96,8 @@ function renderHistory(){
  }
  $('activityMore').hidden=records.length<=limit;
 }
-async function sync(){
- if(busy||syncBusy)return;syncBusy=true;$('activitySync').disabled=true;$('activityRun').disabled=true;
- try{
-  const groups=new Map();for(const f of records)if(f.status==='pending'&&(f.market==='equity'||f.targetCloseAt<=Date.now()/1000))groups.set(f.asset+':'+f.granularity,
-    {asset:f.asset,minutes:f.minutes,granularity:f.granularity,market:f.market});
-  let count=0;
-  for(const s of groups.values()){
-   const rows=await D.history(s),checked=A.evaluate(records,rows,{...s,now:Date.now()/1000});
-   if(checked.evaluated){commit(checked.records);count+=checked.evaluated;}
-  }
-  $('activityHistoryStatus').textContent='Comprobados '+count+' períodos nuevos · '+records.filter(f=>f.status==='pending').length+
-   ' pendientes. Si falta alguna vela del período, se conserva pendiente.';
- }catch(error){$('activityHistoryStatus').textContent='Comprobación de actividad: '+error.message;}
- finally{syncBusy=false;$('activitySync').disabled=busy;$('activityRun').disabled=busy;}
-}
+async function sync(){return window.LaplaceVerifier.sync({force:true})}
+
 function exportRecords(){
  const text=JSON.stringify({schema:'laplace-activity-evidence-v1',exportedAt:new Date().toISOString(),records},null,2);
  if(window.LaplaceBridge?.exportHistory){exporting=true;window.LaplaceBridge.exportHistory(text);return;}
@@ -123,7 +111,7 @@ function acceptImport(text){
  catch(error){$('activityHistoryStatus').textContent='No se importó actividad: '+error.message;}
  finally{importing=false;$('activityImport').disabled=false;}
 }
-window.LaplaceActivityMobile={state:()=>({records:records.slice(),last,busy}),run,sync,
+window.LaplaceActivityMobile={state:()=>({records:records.slice(),last,busy}),run,sync,renderHistory,
  consumeImport(payload){if(!importing)return false;
   if(payload?.ok)acceptImport(payload.text);else{importing=false;$('activityImport').disabled=false;
    $('activityHistoryStatus').textContent=payload?.cancelled?'Importación de actividad cancelada.':'No se importó actividad: '+payload?.error;}
@@ -151,5 +139,13 @@ $('activityImportFile').addEventListener('change',async e=>{
  finally{e.target.value='';}
 });
 window.addEventListener('laplace:selection',reset);window.addEventListener('laplace:horizon',reset);
+window.LaplaceVerifier.register('activity',{records:()=>records,busy:()=>busy||importing||exporting,
+ evaluate:A.evaluate,update:commit});
+window.addEventListener('laplace:verification',event=>{
+ syncBusy=event.detail.running;$('activitySync').disabled=syncBusy;$('activityRun').disabled=syncBusy||busy;
+ $('activitySync').textContent=syncBusy?'Consultando cierres…':'Comprobar ahora';
+ if(!syncBusy)$('activityHistoryStatus').textContent='Revisión automática activa. '+
+  (event.detail.lastReport?.evaluated??0)+' resultados nuevos comprobados.';
+});
 selection();renderHistory();
 })();

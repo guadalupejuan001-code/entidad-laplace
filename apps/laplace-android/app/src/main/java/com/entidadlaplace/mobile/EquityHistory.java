@@ -32,6 +32,7 @@ public final class EquityHistory {
     private static String download(String url) throws IOException {
         if(!url.startsWith(HOST))throw new IOException("Host de cotización prohibido");
         HttpURLConnection connection=(HttpURLConnection)new URL(url).openConnection();
+        connection.setUseCaches(false);
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(9000);

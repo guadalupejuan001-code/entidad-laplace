@@ -129,7 +129,8 @@ public final class MainActivity extends Activity {
 
     @Override protected void onResume(){
         super.onResume();
-        if(webView!=null)webView.onResume();
+        if(webView!=null){webView.onResume();webView.evaluateJavascript(
+            "window.LaplaceVerifier&&window.LaplaceVerifier.wake()",null);}
         if(liveFeed!=null)liveFeed.resume();
     }
 
@@ -205,6 +206,17 @@ public final class MainActivity extends Activity {
                 intent.putExtra(Intent.EXTRA_TITLE,title);
                 try{startActivityForResult(intent,EXPORT_HISTORY);}
                 catch(Exception error){pendingExport=null;exportFeedback("No se pudo abrir el selector de archivos.");}
+            });
+        }
+        @JavascriptInterface
+        public void fetchCandleRange(String requestId,String asset,int granularity,long start,long end){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+            try{HistoryRange.validate(asset,granularity,start,end,System.currentTimeMillis()/1000L);}
+            catch(Exception error){emit(requestId,error.getMessage(),null,granularity);return;}
+            io.execute(()->{
+                try{JSONArray rows=HistoryRange.fetch(asset,granularity,start,end,System.currentTimeMillis()/1000L,
+                    MainActivity::fetchCoinbaseWindow);emit(requestId,null,rows,granularity);}
+                catch(Exception error){emit(requestId,"Comprobación: "+error.getMessage(),null,granularity);}
             });
         }
         @JavascriptInterface
@@ -387,6 +399,7 @@ public final class MainActivity extends Activity {
         IOException latest=null;
         for(int attempt=0;attempt<2;attempt++){
             HttpURLConnection conn=(HttpURLConnection)new URL(api).openConnection();
+            conn.setUseCaches(false);
             conn.setInstanceFollowRedirects(false);
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(8000);

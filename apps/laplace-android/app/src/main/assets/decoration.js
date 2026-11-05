@@ -11,7 +11,7 @@ async function update(){
   root.dataset.motion=stop?'paused':'active';
   button.setAttribute('aria-pressed',String(stop));
   button.setAttribute('aria-label',stop?'Reproducir animación decorativa':'Pausar animación decorativa');
-  button.textContent=stop?'▷':'Ⅱ';
+  if(window.LaplaceIcons)window.LaplaceIcons.set(button,stop?'play':'pause');else button.textContent=stop?'▷':'Ⅱ';
   button.disabled=reduced.matches;
   if(stop){seal.style.removeProperty('--glint-x');seal.style.removeProperty('--glint-y');}
   if(stop||!videoVisible||page!=='panel'){video.pause();return}

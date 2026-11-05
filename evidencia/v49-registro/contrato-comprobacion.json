@@ -1,0 +1,16 @@
+{
+  "schema": "laplace-v49-history-contract-diagnosis-v1",
+  "financial_forecasts_evaluated": 0,
+  "before": {
+    "asset": "BTC-USD",
+    "granularity": 300,
+    "days": null,
+    "native_window_allowed": false
+  },
+  "after": {
+    "asset": "BTC-USD",
+    "granularity": 300,
+    "days": 28,
+    "native_window_allowed": true
+  }
+}
