@@ -89,11 +89,15 @@ function analyze(f,{rows=[],lossPct=2,direction='down',mode='issued',historyAsse
  }
  const losses=examples.filter(e=>e.event),others=examples.length-losses.length,currentSignals=signals(current,direction);
  const drivers=Object.keys(titles).map(id=>{
-  let eventsWithSignal=0,otherWithSignal=0;
-  for(const e of examples)if(signals(e.features,direction)[id])e.event?eventsWithSignal++:otherWithSignal++;
-  const shareAmongLosses=ratio(eventsWithSignal,losses.length),shareAmongOthers=ratio(otherWithSignal,others);
+  let eventsWithSignal=0,otherWithSignal=0,eventsWithKnownSignal=0,otherWithKnownSignal=0;
+  for(const e of examples){const present=signals(e.features,direction)[id];
+   if(present!==null)e.event?eventsWithKnownSignal++:otherWithKnownSignal++;
+   if(present)e.event?eventsWithSignal++:otherWithSignal++;
+  }
+  const shareAmongLosses=ratio(eventsWithSignal,eventsWithKnownSignal),shareAmongOthers=ratio(otherWithSignal,otherWithKnownSignal);
   return {id,title:titles[id],currentPresent:currentSignals[id],eventsWithSignal,otherWithSignal,
-   shareAmongLosses,shareAmongOthers,contrast:shareAmongLosses!==null&&shareAmongOthers!==null?shareAmongLosses-shareAmongOthers:null,
+   eventsWithKnownSignal,otherWithKnownSignal,shareAmongLosses,shareAmongOthers,
+   contrast:shareAmongLosses!==null&&shareAmongOthers!==null?shareAmongLosses-shareAmongOthers:null,
    interpretation:'observational_association_not_cause'};
  }).sort((a,b)=>(b.contrast??-2)-(a.contrast??-2)||a.id.localeCompare(b.id));
  const scales={};for(const key of keys){const xs=examples.map(e=>e.features[key]).filter(finite),m=xs.length?mean(xs):0;
@@ -150,7 +154,9 @@ function validate(a,f){
   Object.hasOwn(titles,d.id)&&d.title===titles[d.id]&&d.currentPresent===currentSignals[d.id]&&
   Number.isSafeInteger(d.eventsWithSignal)&&d.eventsWithSignal>=0&&d.eventsWithSignal<=b.lossCases&&
   Number.isSafeInteger(d.otherWithSignal)&&d.otherWithSignal>=0&&d.otherWithSignal<=b.otherCases&&
-  d.shareAmongLosses===ratio(d.eventsWithSignal,b.lossCases)&&d.shareAmongOthers===ratio(d.otherWithSignal,b.otherCases)&&
+  Number.isSafeInteger(d.eventsWithKnownSignal)&&d.eventsWithKnownSignal>=d.eventsWithSignal&&d.eventsWithKnownSignal<=b.lossCases&&
+  Number.isSafeInteger(d.otherWithKnownSignal)&&d.otherWithKnownSignal>=d.otherWithSignal&&d.otherWithKnownSignal<=b.otherCases&&
+  d.shareAmongLosses===ratio(d.eventsWithSignal,d.eventsWithKnownSignal)&&d.shareAmongOthers===ratio(d.otherWithSignal,d.otherWithKnownSignal)&&
   d.contrast===(d.shareAmongLosses!==null&&d.shareAmongOthers!==null?d.shareAmongLosses-d.shareAmongOthers:null)&&
   d.interpretation==='observational_association_not_cause'),'Inverso: condiciones contradictorias.');
  need(Array.isArray(a.candidates)&&a.candidates.length<=3&&a.candidates.length<=b.lossCases&&a.candidates.every(c=>

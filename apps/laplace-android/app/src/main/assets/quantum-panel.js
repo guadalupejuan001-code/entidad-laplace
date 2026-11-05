@@ -59,7 +59,8 @@ function renderInverse(a){
    'Las condiciones asociadas requieren validación en nuevas emisiones.'),'helper'));
  if(!a.currentWindowAvailable)out.append(node('p','Falta la ventana reciente de señales del cierre original.','helper'));
  for(const d of a.drivers)out.append(node('p',d.title+': '+(d.currentPresent===null?'sin dato actual':d.currentPresent?'presente ahora':'ausente ahora')+
-  '. Apareció antes de '+d.eventsWithSignal+'/'+b.lossCases+' pérdidas y '+d.otherWithSignal+'/'+b.otherCases+' períodos restantes.','fineprint'));
+  '. Apareció antes de '+d.eventsWithSignal+'/'+d.eventsWithKnownSignal+' pérdidas y '+d.otherWithSignal+'/'+d.otherWithKnownSignal+
+  ' períodos restantes con señal medible.','fineprint'));
  for(const c of a.candidates)out.append(node('p','Antecedente: '+when(c.originCloseAt)+' → '+when(c.targetCloseAt)+
   ', movimiento '+fmt(c.returnPct,2)+' %.','fineprint'));
  out.append(node('p','Son condiciones observadas, con causalidad y probabilidad de pérdida todavía sin validar. El análisis considera el cierre del plazo.','fineprint'));

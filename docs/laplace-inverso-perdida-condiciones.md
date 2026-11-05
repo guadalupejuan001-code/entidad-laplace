@@ -30,6 +30,10 @@ Esta implementación no pretende cumplir una prueba regulatoria bancaria.
 6. Se muestran los conteos de esas condiciones entre pérdidas y otros períodos,
    además de hasta tres antecedentes adversos cercanos al contexto actual.
 
+Las proporciones de cada señal usan sólo períodos donde esa señal pudo medirse.
+Una base de volumen o volatilidad nula deja su razón como desconocida, no como
+ausencia de expansión. Los conteos medibles se guardan y se muestran por condición.
+
 Los objetivos históricos no se solapan. Las ventanas de entrada pueden
 solaparse; no se presupone independencia estadística. La distancia entre
 antecedentes se normaliza con los datos históricos disponibles al emitir.

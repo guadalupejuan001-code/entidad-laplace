@@ -71,6 +71,14 @@ test('las pérdidas aún no maduras y los huecos no se convierten en antecedente
  assert.equal(gap.currentWindowAvailable,false);assert.ok(gap.history.cases<=complete.history.cases);
  assert.throws(()=>I.analyze(forecast,{rows:[...rows,rows[0]]}),/duplicadas/);
 });
+test('las condiciones desconocidas no se contabilizan como ausencia de señal',()=>{
+ const {rows,forecast}=synthetic();for(const row of rows)row[5]=0;
+ const a=I.analyze(forecast,{rows});I.validate(a,forecast);
+ const volume=a.drivers.find(d=>d.id==='volume_expansion');
+ assert.ok(a.history.lossCases>0);assert.equal(volume.currentPresent,null);
+ assert.equal(volume.eventsWithKnownSignal,0);assert.equal(volume.otherWithKnownSignal,0);
+ assert.equal(volume.shareAmongLosses,null);assert.equal(volume.shareAmongOthers,null);assert.equal(volume.contrast,null);
+});
 test('el respaldo conserva el inverso y rechaza objetivos, probabilidades o trayectorias adulteradas',()=>{
  const original=structuredClone(f);original.inverseLoss=I.analyze(original,{rows:archive.rows,mode:'retrospective'});
  const now=Date.parse(fixture.exportedAt)/1000;T.validate(original,now);
