@@ -1854,11 +1854,12 @@ window.setInterval(()=>{
   if(document.querySelector('#panel')?.hidden===false)drawLiveChart();
   renderQuotes();updateLivePreview();
 },2500);
-window.LaplaceUIHealth={initialized:true,version:'4.5',tabs:5,
+window.LaplaceUIHealth={initialized:true,version:'4.6',tabs:5,
   actions:['smartRun','jumpValidation','validationRun','refresh','forecast','train',
     'test','evaluate','integralRun','xn01Run','liveToggle','clearHistory',
     'pdeSolve','graphSolve','capabilityRefresh','capabilityFilter',
     'worldShowMore','jumpSignals','regimeStudy','syncHistory','exportHistory','importHistory','openMath','closeMath','motionToggle']};
+window.LaplaceCampaignFetch=selection=>remote({kind:"history",asset:selection.asset,granularity:selection.granularity,days:selection.days});
 const activityHistoryCache=new Map();
 window.LaplaceActivityData={
   selection:()=>({asset,minutes,granularity:E.selectResolution(minutes,asset),market:isEquity()?'equity':'crypto'}),

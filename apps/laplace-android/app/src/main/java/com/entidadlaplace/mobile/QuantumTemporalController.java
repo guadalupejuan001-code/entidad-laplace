@@ -23,13 +23,25 @@ public final class QuantumTemporalController {
             JSONObject answer=new JSONObject();
             try{
                 if(json==null||json.length()>8*1024*1024)throw new IllegalArgumentException("Solicitud LQT demasiado grande");
-                JSONObject payload=new JSONObject(json);QuantumTemporalStore store=new QuantumTemporalStore(context.getFilesDir());
+                JSONObject payload=new JSONObject(json);CampaignStore store=new CampaignStore(context.getFilesDir());
                 JSONObject result;
                 if("analyze".equals(action)){
                     String asset=payload.getString("asset");int g=payload.getInt("granularity"),minutes=payload.getInt("minutes");
-                    String key=QuantumTemporalStore.key(asset,g,minutes);JSONObject old=store.read(key);
+                    String key=CampaignStore.key(asset,g,minutes);JSONObject old=store.read(key);boolean bundled=false;
+                    if(old==null){
+                        try(InputStream input=context.getAssets().open("campaign-models/"+key+".json.gz.b64")){
+                            ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int count;
+                            while((count=input.read(buffer))!=-1){if(bytes.size()+count>1024*1024)throw new IllegalStateException("Modelo incluido demasiado grande");bytes.write(buffer,0,count);}
+                            byte[] compressed=android.util.Base64.decode(bytes.toByteArray(),android.util.Base64.DEFAULT);
+                            ByteArrayOutputStream decoded=new ByteArrayOutputStream();
+                            try(java.util.zip.GZIPInputStream gzip=new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(compressed))){
+                                while((count=gzip.read(buffer))!=-1){if(decoded.size()+count>1024*1024)throw new IllegalStateException("Modelo descomprimido demasiado grande");decoded.write(buffer,0,count);}
+                            }
+                            old=new JSONObject(new String(decoded.toByteArray(),StandardCharsets.UTF_8));CampaignStore.validate(old);bundled=true;
+                        }catch(java.io.FileNotFoundException absent){}
+                    }
                     String template;
-                    try(InputStream input=context.getAssets().open("lqt1000-native.xi")){
+                    try(InputStream input=context.getAssets().open("lqc-native.xi")){
                         ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[2048];int count;
                         while((count=input.read(buffer))!=-1){
                             if(bytes.size()+count>8192)throw new IllegalStateException("Plantilla LQT demasiado grande");
@@ -37,24 +49,34 @@ public final class QuantumTemporalController {
                         }
                         template=new String(bytes.toByteArray(),StandardCharsets.UTF_8);
                     }
-                    if(!QuantumTemporalStore.sha256(template).equals(LQTBuild.TEMPLATE_SHA256))throw new IllegalStateException("Plantilla LQT alterada");
-                    String source=QuantumTemporalCompiler.compile(asset,g,minutes,payload.getJSONArray("rows"),
+                    if(!CampaignStore.sha256(template).equals(LQTCampaignBuild.TEMPLATE_SHA256))throw new IllegalStateException("Plantilla LQT alterada");
+                    String source=CampaignCompiler.compile(asset,g,minutes,payload.getJSONArray("rows"),
                         System.currentTimeMillis()/1000,template);
                     result=new JSONObject(NativeQuantumTemporal.executeProgram(source,old==null?"":old.getString("checkpoint")));
-                    String checkpoint=result.getString("checkpoint"),hash=QuantumTemporalStore.sha256(checkpoint);
-                    JSONObject saved=new JSONObject().put("schema","laplace-lqt-checkpoint-v1").put("asset",asset)
-                        .put("granularity",g).put("minutes",minutes).put("kernelSHA256",LQTBuild.KERNEL_SHA256)
+                    String checkpoint=result.getString("checkpoint"),hash=CampaignStore.sha256(checkpoint);
+                    JSONObject saved=new JSONObject().put("schema","laplace-campaign-checkpoint-v1").put("asset",asset)
+                        .put("granularity",g).put("minutes",minutes).put("kernelSHA256",LQTCampaignBuild.KERNEL_SHA256)
                         .put("checkpointSHA256",hash).put("checkpoint",checkpoint);
                     store.write(key,saved);
-                    result.remove("checkpoint");result.put("checkpointSHA256",hash).put("kernelSHA256",LQTBuild.KERNEL_SHA256)
-                        .put("programSHA256",QuantumTemporalStore.sha256(source)).put("minutes",minutes).put("checkpointSaved",true);
+                    result.remove("checkpoint");result.put("checkpointSHA256",hash).put("kernelSHA256",LQTCampaignBuild.KERNEL_SHA256)
+                        .put("programSHA256",CampaignStore.sha256(source)).put("minutes",minutes).put("checkpointSaved",true).put("pretrainedLoaded",bundled);
                 }else if("backup".equals(action)){
-                    String key=QuantumTemporalStore.key(payload.getString("asset"),payload.getInt("granularity"),payload.getInt("minutes"));
+                    String key=CampaignStore.key(payload.getString("asset"),payload.getInt("granularity"),payload.getInt("minutes"));
                     JSONObject saved=store.read(key);if(saved==null)throw new IllegalStateException("Este activo y plazo aún no tienen aprendizaje guardado");
                     result=saved;
                 }else if("restore".equals(action)){
-                    JSONObject saved=payload.getJSONObject("model");QuantumTemporalStore.validate(saved);
-                    String key=QuantumTemporalStore.key(saved.getString("asset"),saved.getInt("granularity"),saved.getInt("minutes"));
+                    JSONObject saved=payload.getJSONObject("model");
+                    if("laplace-lqt-checkpoint-v1".equals(saved.optString("schema"))){
+                        QuantumTemporalStore.validate(saved);QuantumTemporalStore legacy=new QuantumTemporalStore(context.getFilesDir());
+                        String oldKey=QuantumTemporalStore.key(saved.getString("asset"),saved.getInt("granularity"),saved.getInt("minutes"));
+                        JSONObject existingOld=legacy.read(oldKey);
+                        if(existingOld!=null&&!existingOld.getString("checkpointSHA256").equals(saved.getString("checkpointSHA256")))throw new IllegalStateException("Se conserva el aprendizaje anterior que ya existe");
+                        NativeQuantumTemporal.validateCheckpoint(saved.getString("checkpoint"),saved.getString("asset"),saved.getInt("granularity"),saved.getInt("minutes"),MarketCatalog.isEquity(saved.getString("asset")),System.currentTimeMillis()/1000);
+                        if(existingOld==null)legacy.write(oldKey,saved);
+                        answer.put("ok",true).put("result",new JSONObject().put("restored",existingOld==null).put("legacyPreserved",true));listener.receive(id,answer);return;
+                    }
+                    CampaignStore.validate(saved);
+                    String key=CampaignStore.key(saved.getString("asset"),saved.getInt("granularity"),saved.getInt("minutes"));
                     JSONObject existing=store.read(key);
                     if(existing!=null&&!existing.getString("checkpointSHA256").equals(saved.getString("checkpointSHA256")))
                         throw new IllegalStateException("Ya existe otro aprendizaje local para este activo y plazo; se conserva el actual");

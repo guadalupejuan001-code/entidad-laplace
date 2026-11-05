@@ -1,6 +1,7 @@
 // XN01 and XN02 execute within ORIGINAL Mundo X / Inverse Ether Memory.
 #include "mundo_x/quantum_runtime.hpp"
 #include "laplace_temporal.hpp"
+#include "laplace_campaign.hpp"
 #include <jni.h>
 #include <exception>
 #include <stdexcept>
@@ -22,8 +23,10 @@ std::string bounded(JNIEnv* env,jstring input,jsize maximum){
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_entidadlaplace_mobile_NativeQuantumTemporal_executeProgram(JNIEnv* env,jclass,jstring program,jstring checkpoint){
   try{
-    auto source=bounded(env,program,2*1024*1024),saved=bounded(env,checkpoint,768*1024);
-    mundo_x::laplace::TemporalXiRuntime runtime;auto output=runtime.execute(source,saved);
+    auto source=bounded(env,program,2*1024*1024),saved=bounded(env,checkpoint,900*1024);
+    std::string output;
+    if(source.find("lqc.configure ")!=std::string::npos){mundo_x::laplace::CampaignXiRuntime runtime;output=runtime.execute(source,saved);}
+    else{mundo_x::laplace::TemporalXiRuntime runtime;output=runtime.execute(source,saved);}
     if(output.size()>1048576)throw std::length_error("LQT: native output exceeds limit");
     return env->NewStringUTF(output.c_str());
   }catch(const std::exception& error){fail(env,error.what());return nullptr;}
@@ -31,10 +34,11 @@ Java_com_entidadlaplace_mobile_NativeQuantumTemporal_executeProgram(JNIEnv* env,
 extern "C" JNIEXPORT void JNICALL
 Java_com_entidadlaplace_mobile_NativeQuantumTemporal_validateCheckpoint(JNIEnv* env,jclass,jstring checkpoint,jstring asset,jint g,jint minutes,jboolean equity,jlong asof){
   try{
-    auto saved=bounded(env,checkpoint,768*1024),symbol=bounded(env,asset,32);
+    auto saved=bounded(env,checkpoint,900*1024),symbol=bounded(env,asset,32);
     mundo_x::laplace::require(minutes>0&&minutes<=129600&&g>0&&minutes*60LL%g==0,"LQT: checkpoint resolution");
     mundo_x::laplace::Config c;c.asset=symbol;c.granularity=g;c.horizon=minutes*60/g;c.equity=equity;c.asof=double(asof);
-    mundo_x::laplace::Model::restore(saved,c,true);
+    if(saved.rfind("LQC3 3\n",0)==0)mundo_x::laplace::CampaignModel::restore(saved,c,true);
+    else mundo_x::laplace::Model::restore(saved,c,true);
   }catch(const std::exception& error){fail(env,error.what());}
 }
 extern "C" JNIEXPORT jstring JNICALL

@@ -4,8 +4,8 @@
 const {chromium}=require('playwright-core'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const {spawnSync}=require('node:child_process'),{createHash}=require('node:crypto'),assert=require('node:assert/strict');
 const {pathToFileURL}=require('node:url'),root=path.resolve(__dirname,'../../..');
-const report=JSON.parse(fs.readFileSync(path.join(root,'evidencia/lqt1000/resultados.json'))),
- all=JSON.parse(fs.readFileSync(path.join(root,report.source))).rows.slice(-4032),initial=all.slice(0,-24),states=new Map();
+const report=JSON.parse(fs.readFileSync(path.join(root,'evidencia/campana-c02/resultados.json'))),
+ all=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(fs.readFileSync(path.join(root,'evidencia/campana-c02/datos/BTC-USD-300.json.gz.b64'),'utf8').trim(),'base64'))).rows,initial=all.slice(0,-24),states=new Map();
 let now=initial.at(-1)[0]+302,analyzeCalls=0;
 const sha=s=>createHash('sha256').update(s).digest('hex');
 async function native(action,json){
@@ -21,16 +21,16 @@ async function native(action,json){
   assert.equal(action,'analyze');analyzeCalls++;
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'lqt-browser-'));
   try{
-   const source=`lqt.configure ${p.asset} ${p.granularity} ${h} crypto ${now} quantum\n`+
-    p.rows.map(r=>'lqt.candle '+r.join(' ')+' 0\n').join('')+'lqt.run\n';
+   const source=`lqc.configure ${p.asset} ${p.granularity} ${h} crypto ${now} quantum\n`+
+    p.rows.map(r=>'lqc.candle '+r.join(' ')+' 0\n').join('')+'lqc.run\n';
    const file=path.join(directory,'model.xi');fs.writeFileSync(file,source);const args=[file];
    if(states.has(key)){const checkpoint=path.join(directory,'model.lqt');fs.writeFileSync(checkpoint,states.get(key).checkpoint);args.push(checkpoint);}
-   const run=spawnSync(path.join(root,'build/lqt-runner'),args,{encoding:'utf8',maxBuffer:2*1024*1024,timeout:30000});
+   const run=spawnSync(path.join(root,'build/campaign-runner'),args,{encoding:'utf8',maxBuffer:2*1024*1024,timeout:30000});
    assert.equal(run.status,0,run.stderr);const result=JSON.parse(run.stdout),state=result.checkpoint;
-   const model={schema:'laplace-lqt-checkpoint-v1',asset:p.asset,granularity:p.granularity,minutes:p.minutes,
-    kernelSHA256:report.algorithmSHA256,checkpointSHA256:sha(state),checkpoint:state};states.set(key,model);
+   const model={schema:'laplace-campaign-checkpoint-v1',asset:p.asset,granularity:p.granularity,minutes:p.minutes,
+    kernelSHA256:report.kernelSHA256,checkpointSHA256:sha(state),checkpoint:state};states.set(key,model);
    delete result.checkpoint;Object.assign(result,{minutes:p.minutes,checkpointSaved:true,checkpointSHA256:sha(state),
-    kernelSHA256:report.algorithmSHA256,programSHA256:sha(source)});
+    kernelSHA256:report.kernelSHA256,programSHA256:sha(source)});
    return {ok:true,result};
   }finally{fs.rmSync(directory,{recursive:true,force:true});}
  }catch(error){return {ok:false,error:error.message};}
@@ -59,7 +59,7 @@ async function native(action,json){
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===1,null,{timeout:30000});
   const first=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0]);
   assert.equal(first.training.updatedRotations,1000);assert.match(await page.locator('#lqtVolume').textContent(),/BTC/);
-  assert.equal(first.algorithmVersion,2);
+  assert.equal(first.algorithmVersion,3);
   assert.match(await page.locator('#lqtValidation').textContent(),/subidas y .* bajadas/);
   await page.locator('#lqtRun').click();assert.equal(analyzeCalls,1,'same origin must preserve original forecast and checkpoint');
   now=all.at(-1)[0]+302;
@@ -67,7 +67,7 @@ async function native(action,json){
   await page.locator('#lqtRun').click();
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===2,null,{timeout:30000});
   const second=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1]);
-  assert.equal(second.training.onlineUpdates,8);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
+  assert.equal(second.training.onlineUpdates,first.campaign.pooledWeight>0?8:0);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
   await page.locator('[data-tab="tests"]').click();await page.locator('#lqtSync').click();
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records[0].status==='verified');
   const checked=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records);
@@ -76,7 +76,7 @@ async function native(action,json){
   await page.locator('#lqtExport').click();await page.waitForFunction(()=>window.__exported);
   const backup=await page.evaluate(()=>JSON.parse(window.__exported));
   assert.equal(backup.model.checkpointSHA256,second.checkpointSHA256);assert.equal(backup.records.length,2);
-  assert.ok(backup.model.checkpoint.startsWith('LQT2 2 BTC-USD 300 3 0 1'));
+  assert.ok(backup.model.checkpoint.startsWith('LQC3 3\n'));
   await page.locator('#lqtImport').click();
   await page.waitForFunction(()=>document.querySelector('#lqtHistoryStatus').textContent.includes('2 ya existentes'));
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records.length),2);
@@ -84,7 +84,7 @@ async function native(action,json){
   assert.match(await page.locator('#lqtValidation').textContent(),/No mejoró|Mejoró/);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   const captures=path.join(root,'apps/laplace-android/build/ux-previews');fs.mkdirSync(captures,{recursive:true});
-  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.4-LQT-NATIVO-ARCHIVO.png')});
+  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.6-CAMPANA-NATIVA.png')});
   await page.reload();await page.waitForFunction(()=>window.LaplaceQuantumMobile?.state().records.length===2);
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0].status),'verified');
   assert.deepEqual(errors,[]);console.log(JSON.stringify({nativeXI:true,actualArchivedOHLCV:true,connected1000:true,

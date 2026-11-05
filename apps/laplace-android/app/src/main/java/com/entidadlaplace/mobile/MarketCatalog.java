@@ -19,6 +19,13 @@ public final class MarketCatalog {
         if(isEquity(asset))return granularity==300?30:granularity==3600?180:granularity==86400?1825:-1;
         return -1;
     }
+    public static int campaignDays(int granularity,String asset){
+        if(isCrypto(asset))return granularity==300?28:granularity==3600?360:granularity==86400?2200:-1;
+        return days(granularity,asset);
+    }
+    public static boolean allowedHistoryDays(int granularity,String asset,int days){
+        return days==days(granularity,asset)||days==campaignDays(granularity,asset);
+    }
     public static Set<String> equities(){return EQUITIES;}
     public static Set<String> cryptos(){return CRYPTO;}
 }

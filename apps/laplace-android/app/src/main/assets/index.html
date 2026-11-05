@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.5 · LQT-1000</title>
+<meta name="theme-color" content="#101318"><title>LAPLACE 4.6 · LQT-1000</title>
 <link rel="stylesheet" href="style.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
@@ -21,6 +21,8 @@
 <script src="activity-panel.js" defer></script>
 <script src="lqt-evidence.js" defer></script>
 <script src="quantum-tracking.js" defer></script>
+<script src="campaign-evidence.js" defer></script>
+<script src="campaign-data.js" defer></script>
 <script src="quantum-panel.js" defer></script>
 <script src="ef004-runtime.js" defer></script>
 <script src="ef004-archive.js" defer></script>
@@ -31,7 +33,7 @@
 </head><body>
 <header class="topbar">
   <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.5</small></div>
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.6</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
@@ -129,7 +131,7 @@
     </article>
 
     <article class="card lqt-card" id="lqtCard">
-      <div class="section-head"><div><small class="eyebrow">03 / MOTOR PROPIO · LQT-1000</small><h2>Un escenario, cuatro predicciones.</h2></div><span class="outline-tag">EN PRUEBA</span></div>
+      <div class="section-head"><div><small class="eyebrow">03 / CAMPAÑA DE APRENDIZAJE</small><h2>Pronóstico y evidencia juntos.</h2></div><span class="outline-tag">EN PRUEBA</span></div>
       <p id="lqtSelection" class="helper"></p>
       <button id="lqtRun" class="smart-action" type="button"><span class="smart-action-symbol" aria-hidden="true">◈</span><span><strong>Predecir y guardar</strong><small>Aprende con los nuevos resultados</small></span><span class="smart-arrow" aria-hidden="true">→</span></button>
       <p id="lqtStatus" class="helper" role="status" aria-live="polite">El aprendizaje se conserva por activo y plazo.</p>
@@ -142,7 +144,8 @@
       <p id="lqtProbability" class="helper"></p><p id="lqtPeriod" class="helper"></p>
       <p class="fineprint">La dirección se obtiene del precio previsto. La probabilidad de subida es otra salida del modelo y puede discrepar. Cada resultado se mide por separado.</p>
       <details class="raw-details"><summary>Intervalos, entrenamiento y prueba histórica</summary>
-        <p class="helper">Circuito temporal conectado de 1.000 qubits con 1.000 rotaciones entrenables. Cálculo local con una extensión propia de XI/Ether. Los intervalos se ajustan con un bloque histórico separado; su cobertura futura se comprueba en tu registro.</p>
+        <p class="helper">Incluye 33 modelos entrenados de BTC, ETH y SOL. Circuito temporal conectado de 1.000 qubits simulados en XI/Ether; después de la campaña, los resultados nuevos actualizan su lectura. Los intervalos se ajustan con un bloque histórico separado y su cobertura posterior se comprueba en tu registro.</p>
+        <p class="fineprint">Campaña C02 frente a C01: más aciertos en 14 de 33 contextos, empate en 4 y menos aciertos en 15. Menor error de precio en 29. Resultados históricos; la mejora direccional general aún no está demostrada.</p>
         <div id="lqtValidation" class="activity-validation"></div>
       </details>
       <details class="raw-details"><summary>Modelo y pronóstico sin redondear</summary><pre id="lqtRaw">Sin cálculo.</pre></details>
