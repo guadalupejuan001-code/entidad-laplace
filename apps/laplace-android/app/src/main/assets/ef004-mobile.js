@@ -9,7 +9,7 @@ function state(){return {available:typeof window.LAPLACE_EF004_WORKER_SOURCE==='
  executed:runs.length>0,archiveCount:captures.length,lastRun:runs.at(-1)??null,
  forecasts:runs.filter(r=>r.result?.status==='experimental_model_frozen').length,
  evaluations:evaluations.length,busy,source}}
-window.LaplaceEF004Mobile={state,run:train};
+window.LaplaceEF004Mobile={state,run:train,joint:jointContext};
 function openDB(){return new Promise((resolve,reject)=>{
  const r=indexedDB.open(KEY,1);r.onupgradeneeded=()=>r.result.createObjectStore('state');
  r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
@@ -26,20 +26,41 @@ function merge(list){const byTime=new Map();for(const c of [...captures,...list]
  const old=byTime.get(c.at);if(old&&old.capture_sha256!==c.capture_sha256)throw Error('Capturas contradictorias en la misma fecha');
  byTime.set(c.at,c);
  }return [...byTime.values()].sort((a,b)=>a.at.localeCompare(b.at))}
-function execute(action,{list=captures,forecasts=[]}={}){
+function execute(action,{list=captures,forecasts=[],options=null}={}){
  if(worker)throw Error('Ya hay una tarea EF004 en curso');
  const id=++job,url=URL.createObjectURL(new Blob([window.LAPLACE_EF004_WORKER_SOURCE],{type:'text/javascript'}));
  return new Promise((resolve,reject)=>{
   try{worker=new Worker(url)}catch(error){URL.revokeObjectURL(url);reject(error);return}
-  const finish=()=>{worker?.terminate();worker=null;URL.revokeObjectURL(url);listeners.delete(cancel)};
+  let timer;
+  const finish=()=>{clearTimeout(timer);worker?.terminate();worker=null;URL.revokeObjectURL(url);listeners.delete(cancel)};
   const cancel=()=>{finish();reject(Error('Cálculo cancelado; se conserva el último resultado completo.'))};listeners.add(cancel);
+  if(action==='joint')timer=setTimeout(()=>{finish();reject(Error('El contexto mundial superó dos minutos; se conserva el pronóstico nativo.'))},120000);
   worker.onerror=event=>{finish();reject(Error(event.message||'El motor EF004 no pudo ejecutarse'))};
   worker.onmessage=({data})=>{if(data.id!==id)return;
    if(data.progress){$('ef004Status').textContent=data.progress;return}
    finish();data.ok?resolve(data.result):reject(Error(data.error));
   };
-  worker.postMessage({id,action,captures:list,forecasts,options:{horizonHours:Number($('ef004Horizon').value)}});
+  worker.postMessage({id,action,captures:list,forecasts,options:options??{horizonHours:Number($('ef004Horizon').value)}});
  });
+}
+async function jointContext(selection,nativeResult,rows){
+ if(busy||worker)return {schema:'laplace-joint-individual-series-c03-v1',status:'abstained',
+  reason:'world_worker_busy',central_price_modified:false};
+ busy=true;notify();
+ try{
+  const result=await execute('joint',{options:{asset:selection.asset,horizonHours:selection.minutes/60,
+   toleranceHours:0,asOf:new Date().toISOString(),
+   targetCandles:{granularity:selection.granularity,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])},
+   nativeResult:{nativeXI:nativeResult.nativeXI,qubits:nativeResult.qubits}}});
+  // Las capturas originales permanecen en IndexedDB; el registro conserva el
+  // corte y huella para reproducir el ajuste sin duplicar todo el archivo.
+  const {model,contributions,...summary}=result;
+  summary.contributionTotals=(contributions??[]).reduce((out,x)=>{
+   out[x.component]=(out[x.component]??0)+x.contribution_log_return;return out;
+  },{});
+  window.LaplaceLastJointContext=result;
+  return summary;
+ }finally{busy=false;notify()}
 }
 async function train(){
  if(busy)return;busy=true;notify();

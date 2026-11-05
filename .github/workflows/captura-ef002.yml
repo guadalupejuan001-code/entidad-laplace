@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/captura-ef002.yml'
       - 'estado-financiero/captura.mjs'
+      - 'universo/mercado.mjs'
+      - 'universo/global-u003.mjs'
       - 'tools/ciclo-financiero.mjs'
 permissions:
   contents: write

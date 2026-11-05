@@ -5,7 +5,8 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 const dir=dirname(fileURLToPath(import.meta.url)),root=resolve(dir,'../..');
 const sources=['demonio/finanzas-ef004.mjs','demonio/series.mjs','demonio/evaluacion-ef004.mjs',
- 'estado-financiero/modelo.mjs','universo/estados.mjs','universo/integridad.mjs','input/contrato.mjs'];
+ 'estado-financiero/modelo.mjs','universo/estados.mjs','universo/integridad.mjs','input/contrato.mjs',
+ 'prediccion/conjunta-c03.mjs','prediccion/conjunta-f002.mjs','prediccion/fusion-temporal.mjs','nucleo/registro-capacidades.mjs'];
 const hashes=Object.fromEntries(sources.map(p=>[p,createHash('sha256').update(readFileSync(resolve(root,p))).digest('hex')]));
 const result=await build({entryPoints:[resolve(dir,'mobile/ef004-entry.mjs')],bundle:true,
  write:false,format:'iife',platform:'browser',target:['chrome90'],minify:false,

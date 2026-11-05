@@ -67,6 +67,7 @@ function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
   training:{updates:result.updates,onlineUpdates:result.onlineUpdates,selectedTemporalLag:result.selectedTemporalLag,
    initialTestThrough:result.initialTestThrough,test:result.test,nativeMilliseconds:result.nativeMilliseconds,
    updatedRotations:result.updatedRotations,graphEdges:result.graphEdges,calibrationCases:result.calibrationCases}};
+ if(result.jointContext)f.jointContext=JSON.parse(JSON.stringify(result.jointContext));
  validate(f,issuedAt);return JSON.parse(JSON.stringify(f));
 }
 function measure(f,actual){return actual.map((value,i)=>({actual:value,error:Math.abs(f.outputs[i].predicted-value),

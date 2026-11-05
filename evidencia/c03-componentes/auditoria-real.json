@@ -1,0 +1,1865 @@
+{
+  "schema": "laplace-c03-real-archive-audit-v1",
+  "as_of": "2026-11-05T02:17:06.900Z",
+  "model_source_sha256": "de74a72416102f3f83384d089f7c1fa32d356de0b76e0e7b8b18a6bb20c0942f",
+  "archive_count": 15,
+  "first_capture": "2026-10-31T15:27:12.324Z",
+  "latest_capture": "2026-11-04T21:58:34.954Z",
+  "latest_capture_sha256": "f2b2f1714cc7374c496f434c16fa20243eb8d5b797593246b1655296dedfa22d",
+  "verified_real_archives_only": true,
+  "synthetic_data_used": false,
+  "label_file": "evidencia/campana-c02/datos/BTC-USD-300.json.gz.b64",
+  "horizons": [
+    {
+      "minutes": 5,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 15,
+        "training": 8,
+        "validation": 2,
+        "calibration": 2,
+        "test": 3,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 15,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 15,
+        "training": 8,
+        "validation": 2,
+        "calibration": 2,
+        "test": 3,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 30,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 15,
+        "training": 8,
+        "validation": 2,
+        "calibration": 2,
+        "test": 3,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 60,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 13,
+        "training": 7,
+        "validation": 2,
+        "calibration": 2,
+        "test": 2,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 120,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 13,
+        "training": 7,
+        "validation": 2,
+        "calibration": 2,
+        "test": 2,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 360,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 9,
+        "training": 4,
+        "validation": 2,
+        "calibration": 1,
+        "test": 2,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 1440,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 3,
+        "training": 1,
+        "validation": 1,
+        "calibration": 0,
+        "test": 1,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 2880,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 2,
+        "training": 1,
+        "validation": 0,
+        "calibration": 0,
+        "test": 1,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 10080,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 0,
+        "training": 0,
+        "validation": 0,
+        "calibration": 0,
+        "test": 0,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    },
+    {
+      "minutes": 20160,
+      "status": "abstained",
+      "reason": "insufficient_purged_independent_outcomes",
+      "counts": {
+        "matched_outcomes": 0,
+        "training": 0,
+        "validation": 0,
+        "calibration": 0,
+        "test": 0,
+        "required": {
+          "training": 24,
+          "validation": 8,
+          "calibration": 8,
+          "test": 8
+        }
+      },
+      "model_ready": false,
+      "source_series": 894,
+      "components": [
+        {
+          "id": "01",
+          "key": "XN01",
+          "title": "Dirección BTC 5m XI/Ether",
+          "role": "native_baseline",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "02",
+          "key": "XN01_RAW",
+          "title": "Máscara, prior, P(subida), soporte y registros XI",
+          "role": "native_provenance",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "03",
+          "key": "EQUITIES",
+          "title": "Dirección SPY/AAPL/NVDA",
+          "role": "individual_numeric_features",
+          "series": 249,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "04",
+          "key": "X002",
+          "title": "Entrenamiento/calibración temporal",
+          "role": "temporal_fit_and_calibration",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "05",
+          "key": "XG01",
+          "title": "Ablación local/global A/B con holdout",
+          "role": "heldout_sensitivity",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "06",
+          "key": "CAUSAL",
+          "title": "Trayectoria observacional BTC/eventos",
+          "role": "individual_numeric_features",
+          "series": 18,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "07",
+          "key": "M001_DIARY",
+          "title": "Pronóstico M001 y diario prospectivo",
+          "role": "prospective_scoring",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "08",
+          "key": "U002_XI",
+          "title": "Estados U002 y roundtrip XI",
+          "role": "native_execution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "09",
+          "key": "WORLD",
+          "title": "U003/U004 observación mundial",
+          "role": "individual_numeric_features",
+          "series": 197,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "10",
+          "key": "ORDER_FLOW",
+          "title": "Libro de órdenes/operaciones",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "11",
+          "key": "NOAA_EUR",
+          "title": "BTC/EUR, NOAA y contexto externo",
+          "role": "individual_numeric_features",
+          "series": 172,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "12",
+          "key": "C001",
+          "title": "ETF SEC N-PORT: flujos auténticos",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "13",
+          "key": "O001",
+          "title": "FINRA corto, ATS y Non-ATS",
+          "role": "individual_numeric_features",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "14",
+          "key": "D001_D002",
+          "title": "Derivados, funding, swaps OTC",
+          "role": "individual_numeric_features",
+          "series": 236,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "15",
+          "key": "B001",
+          "title": "Banca internacional BIS",
+          "role": "individual_numeric_features",
+          "series": 4,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "16",
+          "key": "K001",
+          "title": "Blockchain y DeFi público",
+          "role": "individual_numeric_features",
+          "series": 14,
+          "status": "observed_waiting_for_outcomes"
+        },
+        {
+          "id": "17",
+          "key": "EF001_EF005",
+          "title": "Archivo bitemporal persistente/escala",
+          "role": "verified_bitemporal_input",
+          "series": 0,
+          "status": "capture_hashes_and_cutoffs_checked"
+        },
+        {
+          "id": "18",
+          "key": "EF003",
+          "title": "Leyes y escenarios de transición",
+          "role": "conditional_scenarios",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "19",
+          "key": "EF004",
+          "title": "Aprendizaje conjunto multivariante",
+          "role": "separate_joint_evolution",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        },
+        {
+          "id": "20",
+          "key": "RAW_V001",
+          "title": "F001 crudo, trazas, ablación y evidencia V001",
+          "role": "unrounded_contribution_trace",
+          "series": 0,
+          "status": "not_supplied_to_c03"
+        }
+      ],
+      "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+      "model_sha256": null,
+      "holdout": null
+    }
+  ],
+  "automatic_trading": false
+}

@@ -21,12 +21,13 @@ import {observeCftcWeekly} from './swaps/cftc-semanal.mjs';
 import {observeEtfNport} from './fondos/global.mjs';
 import {observeBisBanking} from './banca/bis-sdmx.mjs';
 import {observeBlockchainDeFi} from './cripto/global-k001.mjs';
+import {fetchMarketMicrostructure} from './mercado.mjs';
 
 export const U003_VERSION='laplace-universo-global-u003-v4';
 const need=(c,m)=>{if(!c)throw Error(m)};
 export async function observeWorldU003({
   fetchImpl=fetch,now=()=>new Date().toISOString(),timeoutMs=15000,
-  includeAir=true,includeDirectExchanges=true,
+  includeAir=true,includeDirectExchanges=true,includeOrderFlow=true,
   openSkyClientId=process.env.OPENSKY_CLIENT_ID,
   openSkyClientSecret=process.env.OPENSKY_CLIENT_SECRET,
   jquantsApiKey=process.env.JQUANTS_API_KEY,
@@ -59,6 +60,7 @@ export async function observeWorldU003({
           project_modules:capture.project_modules}};
     }]
   ];
+  if(includeOrderFlow)jobs.push(['order_flow',()=>fetchMarketMicrostructure({fetchImpl,now,timeoutMs})]);
   // K001 es observación pública OPT-IN: no lee direcciones ni desanonimiza
   // usuarios. TVL y supply son stocks/estimaciones, NO flujos netos.
   if(includeBlockchainDeFi)jobs.push(['blockchain_defi_k001',async()=>{
