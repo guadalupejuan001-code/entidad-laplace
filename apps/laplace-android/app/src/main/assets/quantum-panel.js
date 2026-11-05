@@ -63,6 +63,9 @@ function render(f){
    world_worker_busy:'El cálculo mundial estaba ocupado.',world_context_unavailable:'El cálculo mundial no estuvo disponible.'};
   out.append(node('p','Contexto mundial: '+(joint.trained_series??0)+' series con pesos ajustados. '+
    (why[joint.reason]??(joint.forecast?'Candidato contextual calculado; pendiente de comparar con este modelo en predicciones nuevas.':joint.reason??'')),'helper'));
+  if(joint.market_capture)out.append(node('p','Captura nueva de '+joint.market_capture.asset+': '+
+   joint.market_capture.observations+' medidas de mercado. '+(joint.market_capture.journal_saved?
+    'Guardada para aprender y comprobar resultados posteriores.':'No se pudo guardar; revisa el almacenamiento.'),'fineprint'));
   if(joint.forecast)out.append(node('p','Candidato mundial: USD '+fmt(joint.forecast.estimated_price,2)+
    ' al '+new Date(joint.forecast.target_at).toLocaleString('es-MX')+'. Conserva su propia referencia y objetivo.','fineprint'));
  }
@@ -106,7 +109,7 @@ async function run(){
   if(existing){render(existing);$('lqtStatus').textContent='Este cierre ya tenía un pronóstico; se conserva el original.';return;}
   const result=await request('analyze',{...s,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])});
   if(token!==epoch)return;
-  $('lqtStatus').textContent='Comprobando el contexto mundial y la evidencia de confianza…';
+  $('lqtStatus').textContent='Actualizando libro y operaciones; comprobando el contexto y la confianza…';
   try{result.jointContext=window.LaplaceEF004Mobile?.joint?
    await window.LaplaceEF004Mobile.joint(s,result,rows):{status:'abstained',reason:'world_context_unavailable'};
   }catch(error){result.jointContext={status:'abstained',reason:'world_context_unavailable',detail:String(error.message)}}
@@ -136,6 +139,9 @@ function renderHistory(){
    });
    const expected=Math.sign(f.outputs[0].predicted-f.reference),actual=Math.sign(f.measurement[0].actual-f.reference);
    fields.push(['Dirección del precio',expected===actual?'Acertada':'Fallida'],['Cierre utilizado',when(f.observedCloseAt)]);
+   if(f.comparison?.status==='paired_evaluated')fields.push(
+    ['Error del candidato mundial','USD '+fmt(f.comparison.context_price_error,6)],
+    ['Diferencia frente al modelo nativo','USD '+fmt(f.comparison.paired_improvement,6)]);
   }
   fields.push(['Versión del aprendizaje',f.checkpointSHA256.slice(0,16)]);
   if(f.importedFromFile)fields.push(['Procedencia','Respaldo importado; conserva sus resultados observados.']);
