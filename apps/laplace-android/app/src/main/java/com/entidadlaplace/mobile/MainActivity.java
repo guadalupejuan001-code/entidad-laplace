@@ -141,6 +141,20 @@ public final class MainActivity extends Activity {
 
     private final class MarketBridge {
         @JavascriptInterface
+        public void fetchMarketContextC04(String requestId,String asset){
+            if(requestId==null||!requestId.matches("[A-Za-z0-9-]{1,80}"))return;
+            io.execute(()->{
+                JSONObject payload;
+                try{payload=MarketContextC04.capture(asset);}
+                catch(Exception error){payload=new JSONObject();try{payload.put("ok",false)
+                    .put("error","No se pudo obtener el contexto de mercado actual");}catch(Exception ignored){}}
+                final JSONObject answer=payload;
+                runOnUiThread(()->{if(webView!=null)webView.evaluateJavascript(
+                    "window.LaplaceEF004Archive&&window.LaplaceEF004Archive.receiveMarket("+
+                    JSONObject.quote(requestId)+","+answer.toString()+")",null);});
+            });
+        }
+        @JavascriptInterface
         public void brokerCommand(String requestId,String action,String json){
             if(robinhood!=null)robinhood.command(requestId,action,json);
         }

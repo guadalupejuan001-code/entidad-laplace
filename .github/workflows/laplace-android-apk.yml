@@ -1,4 +1,4 @@
-name: LAPLACE Android 4.6 - campaña integrada
+name: LAPLACE Android 4.7 - contexto vivo C04
 on:
   push:
     branches: [main]
@@ -7,6 +7,10 @@ on:
       - 'prediccion/conjunta-f002.mjs'
       - 'prediccion/conjunta-c03.mjs'
       - 'nucleo/confianza-c03.mjs'
+      - 'nucleo/comparacion-c04.mjs'
+      - 'estado-financiero/contexto-mercado-c04.mjs'
+      - 'universo/microestructura-medidas.mjs'
+      - 'tests/contexto-c04.test.mjs'
       - 'tests/conjunta-c03.test.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
@@ -18,6 +22,10 @@ on:
       - 'prediccion/conjunta-f002.mjs'
       - 'prediccion/conjunta-c03.mjs'
       - 'nucleo/confianza-c03.mjs'
+      - 'nucleo/comparacion-c04.mjs'
+      - 'estado-financiero/contexto-mercado-c04.mjs'
+      - 'universo/microestructura-medidas.mjs'
+      - 'tests/contexto-c04.test.mjs'
       - 'tests/conjunta-c03.test.mjs'
       - 'tools/conjunta-f002.mjs'
       - 'experimentos/marea-m003.mjs'
@@ -100,13 +108,14 @@ jobs:
           node apps/laplace-android/build-activity-assets.mjs --verify
           node apps/laplace-android/build-lqt-assets.mjs --verify
           node apps/laplace-android/build-campaign-assets.mjs --verify
+          node apps/laplace-android/build-c04-assets.mjs --verify
           node apps/laplace-android/build-integral-assets.mjs --verify
           node apps/laplace-android/build-ef004-assets.mjs --verify
           node apps/laplace-android/prepare-ef004.mjs world_archive/capturas
           node --test apps/laplace-android/tests/*.test.cjs
           node --test tests/marea-m003.test.mjs
           node --test apps/laplace-android/tests/regime-m004.test.cjs
-          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs tests/conjunta-c03.test.mjs
+          node --test tests/laplace-financiero.test.mjs tests/registro-capacidades.test.mjs tests/laplace-integral.test.mjs tests/resumen-fuentes.test.mjs tests/conjunta-f002.test.mjs tests/conjunta-c03.test.mjs tests/contexto-c04.test.mjs
           node --check apps/laplace-android/app/src/main/assets/live-feed.js
           # El ejecutor integral se prueba con npm ci en laplace-integral-v3.yml.
       - name: F002 · ejecutar predictor conjunto verificable sobre archivo verdadero
@@ -252,6 +261,7 @@ jobs:
           test "$(unzip -Z1 "$APK" | grep -c '^assets/campaign-models/.*\.json\.gz\.b64$')" = 33
           unzip -Z1 "$APK" | grep -Fx 'assets/quantum-panel.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/quantum-tracking.js'
+          unzip -Z1 "$APK" | grep -Fx 'assets/comparison-c04.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-runtime.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-archive.js'
           unzip -Z1 "$APK" | grep -Fx 'assets/ef004-mobile.js'
@@ -272,14 +282,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn46'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn47'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.6'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.7'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-6-CAMPANA-INTEGRADA
+          name: LAPLACE-ANDROID-V4-7-CONTEXTO-VIVO
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

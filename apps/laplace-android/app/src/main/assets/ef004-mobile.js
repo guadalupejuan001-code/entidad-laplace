@@ -2,21 +2,22 @@
 (function(){
 'use strict';
 const $=id=>document.getElementById(id),KEY='laplace-ef004-mobile-v1';
-let captures=[],runs=[],evaluations=[],busy=false,worker=null,job=0,archivePending=null,source='archivo empaquetado';
+let captures=[],marketFrames=[],runs=[],evaluations=[],busy=false,worker=null,job=0,archivePending=null,
+ marketPending=null,initialization=null,source='archivo empaquetado';
 const listeners=new Set();
 function notify(){render();window.dispatchEvent(new Event('laplace:ef004'))}
 function state(){return {available:typeof window.LAPLACE_EF004_WORKER_SOURCE==='string',
  executed:runs.length>0,archiveCount:captures.length,lastRun:runs.at(-1)??null,
  forecasts:runs.filter(r=>r.result?.status==='experimental_model_frozen').length,
- evaluations:evaluations.length,busy,source}}
+ evaluations:evaluations.length,marketFrames:marketFrames.length,busy,source}}
 window.LaplaceEF004Mobile={state,run:train,joint:jointContext};
 function openDB(){return new Promise((resolve,reject)=>{
  const r=indexedDB.open(KEY,1);r.onupgradeneeded=()=>r.result.createObjectStore('state');
  r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
 })}
-async function stored(value){const db=await openDB();try{return await new Promise((resolve,reject)=>{
+async function stored(value,key='archive'){const db=await openDB();try{return await new Promise((resolve,reject)=>{
  const tx=db.transaction('state',value?'readwrite':'readonly'),store=tx.objectStore('state');
- const r=value?store.put(value,'archive'):store.get('archive');
+ const r=value?store.put(value,key):store.get(key);
  tx.oncomplete=()=>resolve(r.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
 })}finally{db.close()}}
 async function persist(){try{await stored({captures,runs,evaluations,source});return true}
@@ -26,7 +27,7 @@ function merge(list){const byTime=new Map();for(const c of [...captures,...list]
  const old=byTime.get(c.at);if(old&&old.capture_sha256!==c.capture_sha256)throw Error('Capturas contradictorias en la misma fecha');
  byTime.set(c.at,c);
  }return [...byTime.values()].sort((a,b)=>a.at.localeCompare(b.at))}
-function execute(action,{list=captures,forecasts=[],options=null}={}){
+function execute(action,{list=captures,forecasts=[],options=null,market=null}={}){
  if(worker)throw Error('Ya hay una tarea EF004 en curso');
  const id=++job,url=URL.createObjectURL(new Blob([window.LAPLACE_EF004_WORKER_SOURCE],{type:'text/javascript'}));
  return new Promise((resolve,reject)=>{
@@ -40,21 +41,40 @@ function execute(action,{list=captures,forecasts=[],options=null}={}){
    if(data.progress){$('ef004Status').textContent=data.progress;return}
    finish();data.ok?resolve(data.result):reject(Error(data.error));
   };
-  worker.postMessage({id,action,captures:list,forecasts,options:options??{horizonHours:Number($('ef004Horizon').value)}});
+  worker.postMessage({id,action,captures:list,marketFrames,market,forecasts,
+   options:options??{horizonHours:Number($('ef004Horizon').value)}});
  });
 }
 async function jointContext(selection,nativeResult,rows){
+ if(initialization)await initialization;
  if(busy||worker)return {schema:'laplace-joint-individual-series-c03-v1',status:'abstained',
   reason:'world_worker_busy',central_price_modified:false};
  busy=true;notify();
  try{
+  let market=null,marketError=null;
+  if(['BTC-USD','ETH-USD','SOL-USD'].includes(selection.asset)&&window.LaplaceBridge?.fetchMarketContextC04){
+   try{market=await new Promise((resolve,reject)=>{
+    const id='c04-'+Date.now(),timer=setTimeout(()=>{marketPending=null;reject(Error('El mercado no respondió a tiempo'))},40000);
+    marketPending={id,resolve:r=>{clearTimeout(timer);resolve(r)},reject:e=>{clearTimeout(timer);reject(e)}};
+    try{window.LaplaceBridge.fetchMarketContextC04(id,selection.asset)}catch(error){clearTimeout(timer);marketPending=null;reject(error)}
+   })}catch(error){marketError=String(error.message)}
+  }
   const result=await execute('joint',{options:{asset:selection.asset,horizonHours:selection.minutes/60,
    toleranceHours:0,asOf:new Date().toISOString(),
-   targetCandles:{granularity:selection.granularity,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])},
-   nativeResult:{nativeXI:nativeResult.nativeXI,qubits:nativeResult.qubits}}});
+   targetCandles:{asset:selection.asset,granularity:selection.granularity,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])},
+   nativeResult:{nativeXI:nativeResult.nativeXI,qubits:nativeResult.qubits}},market});
+  let journalSaved=true;
+  if(result.market_frame&&!marketFrames.some(f=>f.frame_sha256===result.market_frame.frame_sha256)){
+   const next=[...marketFrames,result.market_frame];
+   try{await stored(next,'market-c04');marketFrames=next}
+   catch(error){journalSaved=false;$('ef004Status').textContent='No se pudo guardar la nueva captura de mercado. '+error.message}
+  }
   // Las capturas originales permanecen en IndexedDB; el registro conserva el
   // corte y huella para reproducir el ajuste sin duplicar todo el archivo.
-  const {model,contributions,...summary}=result;
+  const {model,contributions,market_frame,...summary}=result;
+  summary.market_capture=market_frame?{at:market_frame.captured_at,asset:market_frame.asset,
+   frame_sha256:market_frame.frame_sha256,observations:market_frame.observations.length,journal_saved:journalSaved}:null;
+  summary.market_error=marketError;
   summary.contributionTotals=(contributions??[]).reduce((out,x)=>{
    out[x.component]=(out[x.component]??0)+x.contribution_log_return;return out;
   },{});
@@ -102,7 +122,10 @@ async function refreshArchive(){
  }catch(error){$('ef004Status').textContent='No se pudo actualizar: '+error.message}
  finally{busy=false;notify()}
 }
-window.LaplaceEF004Archive={receive(id,response){
+window.LaplaceEF004Archive={receiveMarket(id,response){
+ if(!marketPending||marketPending.id!==id)return;const p=marketPending;marketPending=null;
+ response?.ok?p.resolve(response):p.reject(Error(response?.error??'Mercado no disponible'));
+},receive(id,response){
  if(!archivePending||archivePending.id!==id)return;const request=archivePending;archivePending=null;
  response?.ok?request.resolve(response):request.reject(Error(response?.error??'Archivo no disponible'));
 },progress(id,done,total){if(archivePending?.id===id)$('ef004Status').textContent='Descargando capturas '+done+'/'+total+'…'}};
@@ -118,7 +141,8 @@ async function evaluate(){
  finally{busy=false;notify()}
 }
 function exportData(){const payload=JSON.stringify({schema:KEY,exportedAt:new Date().toISOString(),
- source,runs,evaluations,captureIndex:captures.map(c=>({at:c.at,sha256:c.capture_sha256}))},null,2);
+ source,runs,evaluations,marketJournal:{schema:'laplace-market-journal-c04-v1',frames:marketFrames},
+ captureIndex:captures.map(c=>({at:c.at,sha256:c.capture_sha256}))},null,2);
  if(window.LaplaceBridge?.exportHistory){window.LaplaceBridge.exportHistory(payload);return}
  const url=URL.createObjectURL(new Blob([payload],{type:'application/json'})),a=document.createElement('a');
  a.href=url;a.download='LAPLACE-EF004.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -127,7 +151,8 @@ function render(){
  const s=state(),r=s.lastRun?.result,metrics=$('ef004Metrics');metrics.replaceChildren();
  const pairs=r?.model;
  for(const [label,value] of [['Motor',s.available?'Incluido en el móvil':'No disponible'],
-  ['Capturas completas',captures.length],['Consecutivas',r?.consecutive_captures??r?.contiguous_captures??'Por comprobar'],
+  ['Capturas completas',captures.length],['Capturas nuevas de mercado',marketFrames.length],
+  ['Consecutivas',r?.consecutive_captures??r?.contiguous_captures??'Por comprobar'],
   ['Pares entrenamiento',pairs?.train_pairs??r?.observed_training_pairs??'—'],
   ['Pares validación',pairs?.validation_pairs??r?.observed_validation_pairs??'—'],
   ['Prueba reservada',pairs?.holdout_pairs??r?.observed_holdout_pairs??'—']]){
@@ -139,6 +164,7 @@ function render(){
  $('ef004Refresh').disabled=busy;$('ef004Evaluate').disabled=busy;
  $('ef004Cancel').hidden=!busy||!worker;
  $('ef004Raw').textContent=JSON.stringify({latest:s.lastRun,evaluations,archiveCount:captures.length,
+  marketJournal:{frames:marketFrames.length,full_world_copied:false},
   provenance:captures.map(c=>({at:c.at,capture_sha256:c.capture_sha256}))},null,2);
  const rows=$('ef004Forecasts');rows.replaceChildren();
  for(const point of r?.trajectory?.[0]?.states??[]){
@@ -153,10 +179,11 @@ function render(){
 $('ef004Train').addEventListener('click',train);$('ef004Refresh').addEventListener('click',refreshArchive);
 $('ef004Evaluate').addEventListener('click',evaluate);$('ef004Export').addEventListener('click',exportData);
 $('ef004Cancel').addEventListener('click',()=>{for(const cancel of listeners)cancel()});
-(async()=>{
+initialization=(async()=>{
  try{
   const packed=window.LAPLACE_EF004_ARCHIVE?.captures??[];
   const saved=await stored();if(saved){captures=saved.captures??[];runs=saved.runs??[];evaluations=saved.evaluations??[];source=saved.source??source}
+  marketFrames=await stored(null,'market-c04')??[];
   captures=merge(packed);notify();
   if(captures.length){busy=true;notify();await execute('verify');busy=false;
    $('ef004Status').textContent='Motor original disponible. '+captures.length+' capturas completas verificadas. '+

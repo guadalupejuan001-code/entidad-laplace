@@ -7,6 +7,7 @@ import {createHash} from 'node:crypto';
 import {estadoDeCaptura} from '../demonio/series.mjs';
 import {CAPABILITY_CATALOG} from '../nucleo/registro-capacidades.mjs';
 import {prepararSerie} from './fusion-temporal.mjs';
+import {CRYPTO_CONTEXT_ASSETS} from '../universo/microestructura-medidas.mjs';
 import {prepararPanelF002,ajustarRidgeConjunto,predecirRidgeConjunto,
   medirRidgeConjunto} from './conjunta-f002.mjs';
 
@@ -140,7 +141,10 @@ export function ejecutarConjuntoC03(captures,{asOf=new Date().toISOString(),
     source_series:latest?.state.size??0,native_baseline_retained:true,
     native_lqt1000_result_available:native,
     central_price_modified:false,prospectively_validated:false,automatic_trading:false};
-  if(asset!=='BTC-USD')return {...base,reason:'asset_has_no_verified_c03_target_adapter'};
+  if(!CRYPTO_CONTEXT_ASSETS.includes(asset)||asset!=='BTC-USD'&&!targetCandles)
+    return {...base,reason:'asset_has_no_verified_c03_target_adapter'};
+  if(targetCandles)need((targetCandles.asset??(asset==='BTC-USD'?'BTC-USD':null))===asset,
+    'C03: las velas no corresponden al activo solicitado');
   if(list.length<2)return {...base,reason:'independent_world_history_unavailable'};
   const panel=targetCandles?candlePanel(list,targetCandles,horizonHours,asOf):
     prepararPanelF002(list.map(x=>x.raw),{horizonHours,toleranceHours});
@@ -216,4 +220,14 @@ export function ejecutarConjuntoC03(captures,{asOf=new Date().toISOString(),
     mode:'context_candidate_requires_paired_prospective_comparison_with_C02'};
   return {...report,status:'experimental_context_candidate',reason:null,
     forecast:{...body,forecast_sha256:hash(body)}};
+}
+export function verificarPronosticoC03(f){
+  need(f?.schema==='laplace-c03-context-forecast-v1'&&CRYPTO_CONTEXT_ASSETS.includes(f.asset),
+    'C03: pronóstico desconocido');
+  const {forecast_sha256,...body}=f;
+  need(forecast_sha256===hash(body),'C03: pronóstico alterado');
+  need([f.reference_price,f.estimated_price,f.lower,f.upper].every(x=>finite(x)&&x>0)&&
+    f.lower<=f.upper&&f.probability_up>0&&f.probability_up<1&&
+    Date.parse(f.target_at)>Date.parse(f.issued_at),'C03: salida o cronología inválida');
+  return true;
 }

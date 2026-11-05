@@ -1,0 +1,118 @@
+{
+  "schema": "laplace-market-delta-c04-v1",
+  "asset": "BTC-USD",
+  "captured_at": "2026-11-05T02:51:34.996Z",
+  "base_capture_sha256": "87b91efad07e76e4e0136e7cc700ac505f00dda04e3b35e65d8f6a80803b634a",
+  "base_captured_at": "2026-11-05T02:37:19.366Z",
+  "observations": [
+    {
+      "id": "c04-BTC-USD-BTC_USD_spot-1793847094821",
+      "domain": "cripto_global",
+      "variable": "BTC_USD_spot",
+      "observed_at": "2026-11-05T02:51:33.757Z",
+      "known_at": "2026-11-05T02:51:34.821Z",
+      "value": 80483.92,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_spread_bps-1793847094931",
+      "domain": "liquidez",
+      "variable": "BTC_spread_bps",
+      "observed_at": "2026-11-05T02:51:34.931Z",
+      "known_at": "2026-11-05T02:51:34.931Z",
+      "value": 0.21991729,
+      "unit": "bps",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_bid_depth_usd_top10-1793847094931",
+      "domain": "liquidez",
+      "variable": "BTC_bid_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:34.931Z",
+      "known_at": "2026-11-05T02:51:34.931Z",
+      "value": 58342.99997528,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_ask_depth_usd_top10-1793847094931",
+      "domain": "liquidez",
+      "variable": "BTC_ask_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:34.931Z",
+      "known_at": "2026-11-05T02:51:34.931Z",
+      "value": 38855.45065203,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_top10_notional_imbalance-1793847094931",
+      "domain": "liquidez",
+      "variable": "BTC_top10_notional_imbalance",
+      "observed_at": "2026-11-05T02:51:34.931Z",
+      "known_at": "2026-11-05T02:51:34.931Z",
+      "value": 0.20049239,
+      "unit": "ratio",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_observed_trade_count-1793847094995",
+      "domain": "flujo",
+      "variable": "BTC_observed_trade_count",
+      "observed_at": "2026-11-05T02:51:34.995Z",
+      "known_at": "2026-11-05T02:51:34.995Z",
+      "value": 1000,
+      "unit": "trades",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_maker_buy_notional_usd-1793847094995",
+      "domain": "flujo",
+      "variable": "BTC_maker_buy_notional_usd",
+      "observed_at": "2026-11-05T02:51:34.995Z",
+      "known_at": "2026-11-05T02:51:34.995Z",
+      "value": 490342.97268869,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    },
+    {
+      "id": "c04-BTC-USD-BTC_maker_sell_notional_usd-1793847094995",
+      "domain": "flujo",
+      "variable": "BTC_maker_sell_notional_usd",
+      "observed_at": "2026-11-05T02:51:34.995Z",
+      "known_at": "2026-11-05T02:51:34.995Z",
+      "value": 299503.25394681,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Coinbase-ticker",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/ticker",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:34.821Z",
+      "raw_sha256": "3d31f6c0c1d55f1d8e50f5a07a0e35f403f1d435ed708ab49ddacac9514deb37",
+      "coverage": "latest_trade_ticker"
+    },
+    {
+      "name": "Coinbase-book",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=2",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:34.931Z",
+      "raw_sha256": "af41019f6b0c17c477db3609a32cc5de9adfcaa4523ee05ffe22d7fb2e6473ef",
+      "coverage": "L2_snapshot_top10_not_executions"
+    },
+    {
+      "name": "Coinbase-trades",
+      "source_url": "https://api.exchange.coinbase.com/products/BTC-USD/trades",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:34.995Z",
+      "raw_sha256": "d9299de07a8830a42c1306b690f6469b1211a16e18e4d896a7625f382965307b",
+      "coverage": "recent_REST_sample_not_complete_flow"
+    }
+  ],
+  "provider_signature_verified": false,
+  "full_world_copied": false,
+  "frame_sha256": "bd2849824954479f9fa50381028303af5952cda9b529621679b5757422e436c2"
+}

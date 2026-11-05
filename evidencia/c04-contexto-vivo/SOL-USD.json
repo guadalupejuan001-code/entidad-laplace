@@ -1,0 +1,118 @@
+{
+  "schema": "laplace-market-delta-c04-v1",
+  "asset": "SOL-USD",
+  "captured_at": "2026-11-05T02:51:35.530Z",
+  "base_capture_sha256": "87b91efad07e76e4e0136e7cc700ac505f00dda04e3b35e65d8f6a80803b634a",
+  "base_captured_at": "2026-11-05T02:37:19.366Z",
+  "observations": [
+    {
+      "id": "c04-SOL-USD-SOL_USD_spot-1793847095350",
+      "domain": "cripto_global",
+      "variable": "SOL_USD_spot",
+      "observed_at": "2026-11-05T02:51:33.470Z",
+      "known_at": "2026-11-05T02:51:35.350Z",
+      "value": 96.2,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/ticker"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_spread_bps-1793847095432",
+      "domain": "liquidez",
+      "variable": "SOL_spread_bps",
+      "observed_at": "2026-11-05T02:51:35.432Z",
+      "known_at": "2026-11-05T02:51:35.432Z",
+      "value": 1.03955507,
+      "unit": "bps",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/book?level=2"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_bid_depth_usd_top10-1793847095432",
+      "domain": "liquidez",
+      "variable": "SOL_bid_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:35.432Z",
+      "known_at": "2026-11-05T02:51:35.432Z",
+      "value": 340869.64481139,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/book?level=2"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_ask_depth_usd_top10-1793847095432",
+      "domain": "liquidez",
+      "variable": "SOL_ask_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:35.432Z",
+      "known_at": "2026-11-05T02:51:35.432Z",
+      "value": 256581.39558014,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/book?level=2"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_top10_notional_imbalance-1793847095432",
+      "domain": "liquidez",
+      "variable": "SOL_top10_notional_imbalance",
+      "observed_at": "2026-11-05T02:51:35.432Z",
+      "known_at": "2026-11-05T02:51:35.432Z",
+      "value": 0.14107976,
+      "unit": "ratio",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/book?level=2"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_observed_trade_count-1793847095530",
+      "domain": "flujo",
+      "variable": "SOL_observed_trade_count",
+      "observed_at": "2026-11-05T02:51:35.530Z",
+      "known_at": "2026-11-05T02:51:35.530Z",
+      "value": 890,
+      "unit": "trades",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/trades"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_maker_buy_notional_usd-1793847095530",
+      "domain": "flujo",
+      "variable": "SOL_maker_buy_notional_usd",
+      "observed_at": "2026-11-05T02:51:35.530Z",
+      "known_at": "2026-11-05T02:51:35.530Z",
+      "value": 227206.59712487,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/trades"
+    },
+    {
+      "id": "c04-SOL-USD-SOL_maker_sell_notional_usd-1793847095530",
+      "domain": "flujo",
+      "variable": "SOL_maker_sell_notional_usd",
+      "observed_at": "2026-11-05T02:51:35.530Z",
+      "known_at": "2026-11-05T02:51:35.530Z",
+      "value": 279051.92807163,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/trades"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Coinbase-ticker",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/ticker",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.350Z",
+      "raw_sha256": "7e9f636467c4c12ef9ac909ba07574240b9470ab95c1b92a0048d9f30aa17463",
+      "coverage": "latest_trade_ticker"
+    },
+    {
+      "name": "Coinbase-book",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/book?level=2",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.432Z",
+      "raw_sha256": "9ddc23da9daca29900489e1bc5dc5f0b1f5934fb33d62dc3b350a0565b5000a5",
+      "coverage": "L2_snapshot_top10_not_executions"
+    },
+    {
+      "name": "Coinbase-trades",
+      "source_url": "https://api.exchange.coinbase.com/products/SOL-USD/trades",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.530Z",
+      "raw_sha256": "568a93215ef3f3422f196dd553bc51c5b1c5761dd4a1a1d2d391e261a7332e73",
+      "coverage": "recent_REST_sample_not_complete_flow"
+    }
+  ],
+  "provider_signature_verified": false,
+  "full_world_copied": false,
+  "frame_sha256": "cf660668fff0137a706dd2968f69b85ab93142f2aa5bb4be914aa534a32e0845"
+}

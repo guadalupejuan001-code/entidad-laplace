@@ -11,7 +11,9 @@ test('el worker C03 móvil reproduce la auditoría real de Node y cuenta los mis
  ctx.options=options;
  vm.runInContext('onmessage({data:{id:1,action:"joint",captures:archive.captures,options}})',ctx);
  assert.equal(ctx.reply.ok,true);
- assert.deepEqual(JSON.parse(JSON.stringify(ctx.reply.result)),expected);
+ const {context_journal,market_frame,...core}=JSON.parse(JSON.stringify(ctx.reply.result));
+ assert.deepEqual(core,expected);assert.equal(market_frame,null);
+ assert.equal(context_journal.frames_verified,0);
  assert.equal(expected.components.length,20);
  assert.equal(expected.prospectively_validated,false);
 });

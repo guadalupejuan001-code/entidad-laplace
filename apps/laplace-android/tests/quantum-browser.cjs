@@ -43,10 +43,32 @@ async function native(action,json){
   await page.addInitScript(({rows,clock})=>{
    window.__rows=rows;window.__clock=Number(localStorage.getItem('qa-lqt-clock'))||clock;const RealDate=Date;
    window.Date=class extends RealDate{constructor(...args){super(...(args.length?args:[window.__clock*1000]));}static now(){return window.__clock*1000;}};
+   // El examen usa un reloj histórico: conservar sólo capturas auténticas
+   // disponibles entonces, sin retrofechar las publicadas posteriormente.
+   let packedArchive;
+   Object.defineProperty(window,'LAPLACE_EF004_ARCHIVE',{configurable:true,get:()=>packedArchive,set(value){
+    const captures=value.captures.filter(c=>Date.parse(c.at)<=Date.now());
+    packedArchive={...value,captures,archive_count:captures.length,index:value.index.filter(x=>Date.parse(x.captured_at)<=Date.now())};
+   }});
    window.LaplaceBridge={
     fetchCandles(id,asset,g){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,granularity:g,candles:window.__rows}),5);},
     fetchQuote(id,asset){setTimeout(()=>window.LaplaceMobile.receive(id,{ok:true,quote:{asset,price:window.__rows.at(-1)[4],
      time:new Date().toISOString(),receivedAt:Date.now(),market:'crypto',source:'Archived Coinbase data / native UI test'}}),5);},
+    async fetchMarketContextC04(id,asset){
+     // Libro y operaciones son fixtures explícitos; el precio viene del OHLCV real archivado.
+     const price=window.__rows.at(-1)[4],at=new Date().toISOString();
+     const data={ticker:{price:price.toFixed(8),time:at},
+      book:{bids:Array.from({length:10},(_,i)=>[(price-1-i).toFixed(8),'1',1]),
+       asks:Array.from({length:10},(_,i)=>[(price+1+i).toFixed(8),'2',1])},
+      trades:[{trade_id:123,side:'buy',price:price.toFixed(8),size:'0.1',time:at}]};
+     const components={};for(const [name,value]of Object.entries(data)){
+      const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));
+      components[name]={status:'observed',data:value,received_at:at,
+       raw_sha256:Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join(''),
+       source_url:'https://api.exchange.coinbase.com/products/'+asset+'/'+(name==='book'?'book?level=2':name)};
+     }
+     window.LaplaceEF004Archive.receiveMarket(id,{ok:true,schema:'laplace-market-context-c04-v1',asset,captured_at:at,components});
+    },
     exportHistory(text){window.__exported=text;setTimeout(()=>window.LaplaceExportResult('Respaldo exportado en prueba.'),5);},
     importHistory(){setTimeout(()=>window.LaplaceImportResult({ok:true,text:window.__exported,name:'native-backup.json'}),5);}
    };
@@ -60,6 +82,9 @@ async function native(action,json){
   const first=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0]);
   assert.equal(first.training.updatedRotations,1000);assert.match(await page.locator('#lqtVolume').textContent(),/BTC/);
   assert.equal(first.algorithmVersion,3);
+  assert.equal(first.jointContext.market_capture.observations,8);
+  assert.equal(first.jointContext.market_capture.journal_saved,true);
+  assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),1);
   assert.match(await page.locator('#lqtValidation').textContent(),/subidas y .* bajadas/);
   await page.locator('#lqtRun').click();assert.equal(analyzeCalls,1,'same origin must preserve original forecast and checkpoint');
   now=all.at(-1)[0]+302;
@@ -68,6 +93,7 @@ async function native(action,json){
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===2,null,{timeout:30000});
   const second=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1]);
   assert.equal(second.training.onlineUpdates,first.campaign.pooledWeight>0?8:0);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
+  assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),2);
   await page.locator('[data-tab="tests"]').click();await page.locator('#lqtSync').click();
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records[0].status==='verified');
   const checked=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records);
@@ -84,10 +110,12 @@ async function native(action,json){
   assert.match(await page.locator('#lqtValidation').textContent(),/No mejoró|Mejoró/);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   const captures=path.join(root,'apps/laplace-android/build/ux-previews');fs.mkdirSync(captures,{recursive:true});
-  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.6-CAMPANA-NATIVA.png')});
+  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.7-CONTEXTO-NATIVO.png')});
   await page.reload();await page.waitForFunction(()=>window.LaplaceQuantumMobile?.state().records.length===2);
+  await page.waitForFunction(()=>window.LaplaceEF004Mobile?.state().marketFrames===2);
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0].status),'verified');
   assert.deepEqual(errors,[]);console.log(JSON.stringify({nativeXI:true,actualArchivedOHLCV:true,connected1000:true,
-   learningRetained:true,laterUpdates:8,immutableForecasts:true,threeObservedErrors:true,backupAndImport:true,fileOrigin:true,jsErrors:0}));
+   learningRetained:true,laterUpdates:8,immutableForecasts:true,threeObservedErrors:true,backupAndImport:true,
+   compactContextFramesRetained:2,contextOrderBookFixtures:true,fileOrigin:true,jsErrors:0}));
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1});

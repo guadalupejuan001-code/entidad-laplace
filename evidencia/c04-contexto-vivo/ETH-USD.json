@@ -1,0 +1,118 @@
+{
+  "schema": "laplace-market-delta-c04-v1",
+  "asset": "ETH-USD",
+  "captured_at": "2026-11-05T02:51:35.264Z",
+  "base_capture_sha256": "87b91efad07e76e4e0136e7cc700ac505f00dda04e3b35e65d8f6a80803b634a",
+  "base_captured_at": "2026-11-05T02:37:19.366Z",
+  "observations": [
+    {
+      "id": "c04-ETH-USD-ETH_USD_spot-1793847095070",
+      "domain": "cripto_global",
+      "variable": "ETH_USD_spot",
+      "observed_at": "2026-11-05T02:51:33.987Z",
+      "known_at": "2026-11-05T02:51:35.070Z",
+      "value": 2425.1,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/ticker"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_spread_bps-1793847095158",
+      "domain": "liquidez",
+      "variable": "ETH_spread_bps",
+      "observed_at": "2026-11-05T02:51:35.158Z",
+      "known_at": "2026-11-05T02:51:35.158Z",
+      "value": 0.82467085,
+      "unit": "bps",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/book?level=2"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_bid_depth_usd_top10-1793847095158",
+      "domain": "liquidez",
+      "variable": "ETH_bid_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:35.158Z",
+      "known_at": "2026-11-05T02:51:35.158Z",
+      "value": 71576.17928614,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/book?level=2"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_ask_depth_usd_top10-1793847095158",
+      "domain": "liquidez",
+      "variable": "ETH_ask_depth_usd_top10",
+      "observed_at": "2026-11-05T02:51:35.158Z",
+      "known_at": "2026-11-05T02:51:35.158Z",
+      "value": 64909.32387141,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/book?level=2"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_top10_notional_imbalance-1793847095158",
+      "domain": "liquidez",
+      "variable": "ETH_top10_notional_imbalance",
+      "observed_at": "2026-11-05T02:51:35.158Z",
+      "known_at": "2026-11-05T02:51:35.158Z",
+      "value": 0.04884662,
+      "unit": "ratio",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/book?level=2"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_observed_trade_count-1793847095263",
+      "domain": "flujo",
+      "variable": "ETH_observed_trade_count",
+      "observed_at": "2026-11-05T02:51:35.263Z",
+      "known_at": "2026-11-05T02:51:35.263Z",
+      "value": 1000,
+      "unit": "trades",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/trades"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_maker_buy_notional_usd-1793847095263",
+      "domain": "flujo",
+      "variable": "ETH_maker_buy_notional_usd",
+      "observed_at": "2026-11-05T02:51:35.263Z",
+      "known_at": "2026-11-05T02:51:35.263Z",
+      "value": 588121.75008631,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/trades"
+    },
+    {
+      "id": "c04-ETH-USD-ETH_maker_sell_notional_usd-1793847095263",
+      "domain": "flujo",
+      "variable": "ETH_maker_sell_notional_usd",
+      "observed_at": "2026-11-05T02:51:35.263Z",
+      "known_at": "2026-11-05T02:51:35.263Z",
+      "value": 429372.01523252,
+      "unit": "USD",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/trades"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Coinbase-ticker",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/ticker",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.070Z",
+      "raw_sha256": "e647661ac22a4059620609474214e594aec528823efb808214897964c6b5f99c",
+      "coverage": "latest_trade_ticker"
+    },
+    {
+      "name": "Coinbase-book",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/book?level=2",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.158Z",
+      "raw_sha256": "5b85bcf9b8b95ae8be63caae1499303d69e4fb62d50797e7bbdaa5e016cb3bce",
+      "coverage": "L2_snapshot_top10_not_executions"
+    },
+    {
+      "name": "Coinbase-trades",
+      "source_url": "https://api.exchange.coinbase.com/products/ETH-USD/trades",
+      "status": "observed",
+      "received_at": "2026-11-05T02:51:35.263Z",
+      "raw_sha256": "56c2d42f472c94a0361284e192988e3ffdac9f6eb130a3a222df1be230120676",
+      "coverage": "recent_REST_sample_not_complete_flow"
+    }
+  ],
+  "provider_signature_verified": false,
+  "full_world_copied": false,
+  "frame_sha256": "89b07b6068e81f0883b99ecf31bda69fa2c64afd1128efb5bfebf4c8d227293a"
+}

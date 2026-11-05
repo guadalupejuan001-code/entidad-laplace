@@ -3,6 +3,7 @@
 'use strict';
 const E=root.LaplaceMath??(typeof require==='function'?require('./engine.js'):null);
 const M=root.LaplaceMarkets??(typeof require==='function'?require('./market-universe.js'):null);
+const C=root.LaplaceComparacionC04??(typeof require==='function'?require('./comparison-c04.js'):null);
 const need=(ok,why)=>{if(!ok)throw Error(why);},finite=Number.isFinite;
 const names=['price','volatility','volume'];
 function validate(f,now=Date.now()/1000){
@@ -53,6 +54,7 @@ function validate(f,now=Date.now()/1000){
   f.measurement.every(x=>x&&finite(x.actual)&&x.actual>=0)&&f.measurement[0].actual>0&&
   finite(f.observedCloseAt)&&f.observedCloseAt>f.issuedAt&&f.observedCloseAt<=now&&
   (f.market==='equity'||f.observedCloseAt===f.targetCloseAt),'Resultados LQT inválidos.');
+ if(C)C.validarContextoC04(f.jointContext,f);
  return f;
 }
 function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
@@ -90,7 +92,8 @@ function evaluate(records,raw,{asset,granularity,now=Date.now()/1000}){
   const closeAt=bars[end].time+granularity;
   if(closeAt<=f.issuedAt||closeAt>now||(f.market==='crypto'&&closeAt!==f.targetCloseAt))return f;
   evaluated++;return {...f,status:'verified',observedCloseAt:closeAt,checkedAt:now,
-   measurement:measure(f,[bars[end].close,100*Math.sqrt(squared),volume])};
+   measurement:measure(f,[bars[end].close,100*Math.sqrt(squared),volume]),
+   comparison:C?.compararPronosticosC04(f,bars[end].close,closeAt)??null};
  });return {records:updated,evaluated};
 }
 function summarize(records,s){
@@ -113,7 +116,10 @@ function importEvidence(current,text,{now=Date.now()/1000}={}){
  for(const input of data.records){
   const f=JSON.parse(JSON.stringify(validate(input,now)));need(!incoming.has(f.id),'Identificador duplicado dentro del archivo.');incoming.add(f.id);
   if(ids.has(f.id)){duplicates++;continue;}
-  if(f.status==='verified')f.measurement=measure(f,f.measurement.map(x=>x.actual));
+  if(f.status==='verified'){
+   f.measurement=measure(f,f.measurement.map(x=>x.actual));
+   if(C)f.comparison=C.compararPronosticosC04(f,f.measurement[0].actual,f.observedCloseAt);
+  }
   f.importedFromFile=true;added.push(f);
  }
  return {records:[...current,...added],added:added.length,duplicates,model:data.model??null};
