@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <limits>
 #include <numeric>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -78,6 +79,13 @@ class TemporalCircuit {
   std::size_t edges()const{std::size_t out=0;for(const auto& v:neighbors_)out+=v.size();return out/2;}
   std::size_t payload_bytes()const{
    std::size_t out=backbone_.state_bytes();for(const auto& n:neighbors_)out+=n.size()*sizeof(std::size_t);return out;
+  }
+  void basis(const std::vector<double>& angles,std::vector<double>& a,std::vector<double>& b,bool quantum=true)const{
+   require(angles.size()==n_,"LQT: input dimensions");a.resize(n_);b.resize(n_);
+   for(std::size_t i=0;i<n_;i++){
+    require(std::isfinite(angles[i]),"LQT: nonfinite input");a[i]=std::cos(angles[i]);b[i]=std::sin(angles[i]);
+   }
+   if(quantum)for(std::size_t i=0;i<n_;i++)for(auto j:neighbors_[i])b[i]*=a[j];
   }
   void observe(const std::vector<double>& angles,const std::vector<double>& theta,
                std::vector<double>& values,std::vector<double>* derivatives=nullptr,bool quantum=true)const{
@@ -167,41 +175,74 @@ class Dataset {
 };
 struct Metrics {
  std::size_t cases=0,direction_correct=0;double brier=0;
+ std::size_t predicted_up=0,predicted_down=0,actual_up=0,probability_correct=0;
+ double probability_min=1,probability_max=0,normalized_price_sd=0;
  std::array<double,3> mae{},baseline_mae{},coverage{};
 };
 struct Model {
  std::string asset;int granularity=300,horizon=3,lag=0;bool equity=false,quantum=true;
  std::vector<double> theta=std::vector<double>(wires),weights=std::vector<double>(wires*heads);
+ // Training-only means of the two exact Heisenberg terms. Centering follows
+ // theta analytically, so changing a rotation cannot reintroduce a DC bias.
+ std::vector<double> mean_a=std::vector<double>(wires),mean_b=std::vector<double>(wires),scale=std::vector<double>(wires,1);
+ static constexpr std::size_t parameters=wires*(heads+1)+heads;
+ std::vector<double> adam_m=std::vector<double>(parameters),adam_v=std::vector<double>(parameters);
  std::array<double,heads> bias{};std::vector<std::uint64_t> changed=std::vector<std::uint64_t>(wires);
- std::array<double,3> lower{},upper{};double temperature=1,cursor=0,initial_through=0;
+ std::array<double,3> lower{},upper{};double temperature=1,cursor=0,initial_through=0,readout_scale=root_n;
  std::size_t updates=0,initial_updates=0,validation_cases=0,calibration_cases=0;Metrics test;
  Model(){
   std::uint64_t rng=10292026;
   auto random=[&](){rng=(rng*48271)%2147483647;return double(rng)/2147483647-.5;};
-  for(auto& x:theta)x=.25+.10*random();
+  for(auto& x:theta)x=.70+.20*random();
   for(auto& x:weights)x=.02*random();
+ }
+ void prepare_inputs(const TemporalCircuit& c,const std::vector<Example>& train){
+  require(!train.empty()&&updates==0,"LQT: normalization must precede learning");
+  std::vector<double> sum_a(wires),sum_b(wires),a,b;
+  std::fill(mean_a.begin(),mean_a.end(),0);std::fill(mean_b.begin(),mean_b.end(),0);
+  std::size_t count=0;
+  for(const auto& e:train){c.basis(e.angles,a,b,quantum);++count;
+   for(std::size_t i=0;i<wires;i++){
+    double da=a[i]-mean_a[i],db=b[i]-mean_b[i];mean_a[i]+=da/count;mean_b[i]+=db/count;
+    sum_a[i]+=da*(a[i]-mean_a[i]);sum_b[i]+=db*(b[i]-mean_b[i]);
+   }
+  }
+  std::size_t active=0;for(std::size_t i=0;i<wires;i++){
+   double variance=(sum_a[i]+sum_b[i])/count;scale[i]=variance<1e-16?1:std::max(.001,std::sqrt(variance));active+=variance>=1e-16;
+  }readout_scale=std::sqrt(double(std::max(std::size_t(1),active)));
  }
  std::array<double,heads> forward(const TemporalCircuit& c,const Example& e,
    std::vector<double>* observed=nullptr,std::vector<double>* derivative=nullptr)const{
-  std::vector<double> local;auto& z=observed?*observed:local;c.observe(e.angles,theta,z,derivative,quantum);
-  auto out=bias;for(std::size_t k=0;k<heads;k++)for(std::size_t i=0;i<wires;i++)out[k]+=weights[k*wires+i]*z[i]/root_n;
+  std::vector<double> local,a,b;auto& z=observed?*observed:local;c.basis(e.angles,a,b,quantum);
+  z.resize(wires);if(derivative)derivative->resize(wires);
+  for(std::size_t i=0;i<wires;i++){
+   const double ca=(a[i]-mean_a[i])/scale[i],sb=(b[i]-mean_b[i])/scale[i],ct=std::cos(theta[i]),st=std::sin(theta[i]);
+   z[i]=ct*ca-st*sb;if(derivative)(*derivative)[i]=-st*ca-ct*sb;
+  }
+  auto out=bias;for(std::size_t k=0;k<heads;k++)for(std::size_t i=0;i<wires;i++)out[k]+=weights[k*wires+i]*z[i]/readout_scale;
   return out;
  }
- void learn(const TemporalCircuit& c,const Example& e,double rate=.025){
+ void learn(const TemporalCircuit& c,const Example& e,double rate=1){
   std::vector<double> z,dz;auto prediction=forward(c,e,&z,&dz);std::array<double,heads> grad{};
   for(std::size_t k=0;k<3;k++)grad[k]=clip(prediction[k]-e.target[k],-1,1)/3;
   grad[3]=.25*(sigmoid(prediction[3])-e.target[3]);
-  // Apply circuit gradients using PRE-UPDATE readouts. Every rotation is live.
+  const double correction_m=1-std::pow(.9,double(updates+1)),correction_v=1-std::pow(.999,double(updates+1));
+  auto adjust=[&](std::size_t at,double& value,double gradient,double step,double decay){
+   gradient=clip(gradient,-1,1);adam_m[at]=.9*adam_m[at]+.1*gradient;adam_v[at]=.999*adam_v[at]+.001*gradient*gradient;
+   value-=rate*step*((adam_m[at]/correction_m)/(std::sqrt(adam_v[at]/correction_v)+1e-6)+decay*value);
+  };
+  // The circuit uses PRE-UPDATE readouts; separate adaptive rates prevent the
+  // small initial readout / sqrt(1000) from freezing every quantum rotation.
   for(std::size_t i=0;i<wires;i++){
-   double g=0;for(std::size_t k=0;k<heads;k++)g+=grad[k]*weights[k*wires+i]/root_n;
-   double data_gradient=g*dz[i],delta=rate*.4*(data_gradient+1e-5*(theta[i]-.25));
-   double next=clip(theta[i]-delta,-3.141592653589793,3.141592653589793);
+   double g=0;for(std::size_t k=0;k<heads;k++)g+=grad[k]*weights[k*wires+i]/readout_scale;
+   double data_gradient=g*dz[i],next=theta[i];adjust(i,next,data_gradient,.0025,0);
+   next=clip(next,-3.141592653589793,3.141592653589793);
    if(next!=theta[i]&&std::abs(data_gradient)>1e-15)changed[i]++;
    theta[i]=next;
   }
   for(std::size_t k=0;k<heads;k++){
-   for(std::size_t i=0;i<wires;i++)weights[k*wires+i]-=rate*(grad[k]*z[i]/root_n+1e-4*weights[k*wires+i]);
-   bias[k]-=rate*grad[k];
+   for(std::size_t i=0;i<wires;i++)adjust(wires+k*wires+i,weights[k*wires+i],grad[k]*z[i]/readout_scale,.01,.01);
+   adjust(wires*(heads+1)+k,bias[k],grad[k],.003,0);
   }updates++;
  }
  std::array<double,3> decode(const Example& e,const std::array<double,heads>& p)const{
@@ -217,39 +258,53 @@ struct Model {
  }
  Metrics evaluate(const TemporalCircuit& c,const std::vector<Example>& examples)const{
   Metrics m;m.cases=examples.size();require(m.cases>0,"LQT: empty evaluation");
+  double mean=0,squared=0;std::size_t count=0;
   for(const auto& e:examples){auto p=forward(c,e);auto y=decode(e,p);std::array<double,3> base={e.reference,e.volatility_base,e.volume_base};
    m.direction_correct+=((y[0]>e.reference)==(e.actual[0]>e.reference))&&y[0]!=e.reference&&e.actual[0]!=e.reference;
-   double b=sigmoid(p[3]/temperature)-e.target[3];m.brier+=b*b/m.cases;
+   double probability=sigmoid(p[3]/temperature),b=probability-e.target[3];m.brier+=b*b/m.cases;
+   m.predicted_up+=y[0]>e.reference;m.predicted_down+=y[0]<e.reference;m.actual_up+=e.target[3]>0;
+   m.probability_correct+=(probability>.5)==(e.target[3]>0);
+   m.probability_min=std::min(m.probability_min,probability);m.probability_max=std::max(m.probability_max,probability);
+   ++count;double delta=p[0]-mean;mean+=delta/count;squared+=delta*(p[0]-mean);
    for(std::size_t k=0;k<3;k++){
     m.mae[k]+=std::abs(y[k]-e.actual[k])/m.cases;m.baseline_mae[k]+=std::abs(base[k]-e.actual[k])/m.cases;
     m.coverage[k]+=(e.target[k]>=p[k]+lower[k]&&e.target[k]<=p[k]+upper[k])?1./m.cases:0;
    }
-  }return m;
+  }m.normalized_price_sd=std::sqrt(std::max(0.,squared/m.cases));return m;
  }
  std::string save()const{
-  std::ostringstream o;o<<std::setprecision(17)<<"LQT1 1 "<<asset<<' '<<granularity<<' '<<horizon<<' '<<equity<<' '<<quantum<<' '<<lag<<'\n';
-  o<<updates<<' '<<initial_updates<<' '<<validation_cases<<' '<<calibration_cases<<' '<<cursor<<' '<<initial_through<<' '<<temperature<<'\n';
+  std::ostringstream o;o<<std::setprecision(17)<<"LQT2 2 "<<asset<<' '<<granularity<<' '<<horizon<<' '<<equity<<' '<<quantum<<' '<<lag<<'\n';
+  o<<updates<<' '<<initial_updates<<' '<<validation_cases<<' '<<calibration_cases<<' '<<cursor<<' '<<initial_through<<' '<<temperature<<' '<<readout_scale<<'\n';
   auto array=[&](const auto& values){for(auto x:values)o<<x<<' ';o<<'\n';};
   array(theta);array(weights);array(bias);array(changed);array(lower);array(upper);
-  o<<test.cases<<' '<<test.direction_correct<<' '<<test.brier<<'\n';array(test.mae);array(test.baseline_mae);array(test.coverage);return o.str();
+  array(mean_a);array(mean_b);array(scale);array(adam_m);array(adam_v);
+  o<<test.cases<<' '<<test.direction_correct<<' '<<test.brier<<' '<<test.predicted_up<<' '<<test.predicted_down<<' '<<test.actual_up<<' '<<test.probability_correct<<' '<<test.probability_min<<' '<<test.probability_max<<' '<<test.normalized_price_sd<<'\n';
+  array(test.mae);array(test.baseline_mae);array(test.coverage);return o.str();
  }
  static Model restore(const std::string& saved,const Config& c,bool mode){
-  require(saved.size()<256*1024,"LQT: checkpoint exceeds limit");std::istringstream in(saved);Model m;std::string magic;int version,eq,q;
+  require(saved.size()<768*1024,"LQT: checkpoint exceeds limit");std::istringstream in(saved);Model m;std::string magic;int version,eq,q;
   in>>magic>>version>>m.asset>>m.granularity>>m.horizon>>eq>>q>>m.lag;
-  require(magic=="LQT1"&&version==1&&eq>=0&&eq<=1&&q>=0&&q<=1,"LQT: checkpoint version");m.equity=eq;m.quantum=q;
+  require(magic=="LQT2"&&version==2&&eq>=0&&eq<=1&&q>=0&&q<=1,"LQT: checkpoint version; original LQT1 learning is preserved separately");m.equity=eq;m.quantum=q;
   require(m.asset==c.asset&&m.granularity==c.granularity&&m.horizon==c.horizon&&m.equity==c.equity&&m.quantum==mode,"LQT: checkpoint context mismatch");
   require(m.lag==0||m.lag==3||m.lag==12,"LQT: checkpoint topology");
-  in>>m.updates>>m.initial_updates>>m.validation_cases>>m.calibration_cases>>m.cursor>>m.initial_through>>m.temperature;
+  in>>m.updates>>m.initial_updates>>m.validation_cases>>m.calibration_cases>>m.cursor>>m.initial_through>>m.temperature>>m.readout_scale;
   auto array=[&](auto& values){for(auto& x:values){in>>x;require(bool(in)&&std::isfinite(double(x)),"LQT: malformed checkpoint");}};
   array(m.theta);array(m.weights);array(m.bias);array(m.changed);array(m.lower);array(m.upper);
-  in>>m.test.cases>>m.test.direction_correct>>m.test.brier;array(m.test.mae);array(m.test.baseline_mae);array(m.test.coverage);
+  array(m.mean_a);array(m.mean_b);array(m.scale);array(m.adam_m);array(m.adam_v);
+  in>>m.test.cases>>m.test.direction_correct>>m.test.brier>>m.test.predicted_up>>m.test.predicted_down>>m.test.actual_up>>m.test.probability_correct>>m.test.probability_min>>m.test.probability_max>>m.test.normalized_price_sd;
+  array(m.test.mae);array(m.test.baseline_mae);array(m.test.coverage);
   std::string trailing;require(bool(in)&&!(in>>trailing),"LQT: trailing checkpoint content");
   require(m.updates>0&&m.updates<=10000000&&m.initial_updates<=m.updates&&m.validation_cases>=8&&m.calibration_cases>=12&&m.test.cases>=8&&m.test.cases<=64&&m.test.direction_correct<=m.test.cases,"LQT: checkpoint counts");
   require(std::isfinite(m.cursor)&&std::isfinite(m.initial_through)&&m.cursor>0&&m.initial_through>0&&m.initial_through<=c.asof&&m.cursor<c.asof&&m.temperature>=.5&&m.temperature<=4&&m.test.brier>=0&&m.test.brier<=1,"LQT: checkpoint time or calibration");
   for(auto x:m.theta)require(std::abs(x)<=3.141592653589794,"LQT: checkpoint rotation");
   for(auto x:m.weights)require(std::abs(x)<100,"LQT: checkpoint weight");
   for(auto x:m.bias)require(std::abs(x)<100,"LQT: checkpoint bias");
+  require(m.readout_scale>=1&&m.readout_scale<=root_n+.00000001,"LQT: checkpoint active input count");
   for(auto x:m.changed)require(x<=m.updates,"LQT: rotation update count");
+  for(std::size_t i=0;i<wires;i++)require(std::abs(m.mean_a[i])<=1&&std::abs(m.mean_b[i])<=1&&m.scale[i]>=.001&&m.scale[i]<=2,"LQT: checkpoint training normalization");
+  for(std::size_t i=0;i<parameters;i++)require(std::abs(m.adam_m[i])<=1.0000001&&m.adam_v[i]>=0&&m.adam_v[i]<=1.0000001,"LQT: checkpoint optimizer");
+  require(m.test.predicted_up<=m.test.cases&&m.test.predicted_down<=m.test.cases&&m.test.predicted_up+m.test.predicted_down<=m.test.cases&&m.test.actual_up<=m.test.cases&&m.test.probability_correct<=m.test.cases&&
+   std::isfinite(m.test.probability_min)&&std::isfinite(m.test.probability_max)&&m.test.probability_min>0&&m.test.probability_max<1&&m.test.probability_min<=m.test.probability_max&&std::isfinite(m.test.normalized_price_sd)&&m.test.normalized_price_sd>=0,"LQT: checkpoint response diagnostics");
   for(std::size_t k=0;k<3;k++)require(m.lower[k]<=m.upper[k]&&m.test.mae[k]>=0&&m.test.baseline_mae[k]>=0&&m.test.coverage[k]>=0&&m.test.coverage[k]<=1.000000001,"LQT: checkpoint metric");
   return m;
  }
@@ -259,12 +314,15 @@ inline Model fit_candidate(const Dataset& d,const TemporalCircuit& circuit,bool 
  const auto n=d.bars.size();auto train=d.collect(0,n*60/100,512),val=d.collect(n*60/100,n*75/100,64);
  require(train.size()>=64&&val.size()>=8,"LQT: insufficient mature train/validation cases for this horizon");
  Model current;current.asset=d.config.asset;current.granularity=d.config.granularity;current.horizon=d.config.horizon;current.equity=d.config.equity;current.quantum=quantum;current.lag=circuit.lag();
+ current.prepare_inputs(circuit,train);
  Model best=current;double best_loss=std::numeric_limits<double>::infinity();
  // All candidate epochs are fixed before the later calibration/test blocks.
- for(int epoch=0;epoch<4;epoch++){
-  for(const auto& e:train)current.learn(circuit,e);
+ std::vector<std::size_t> order(train.size());std::iota(order.begin(),order.end(),0);std::mt19937 shuffle(10292026);
+ int stale=0;for(int epoch=0;epoch<24;epoch++){
+  std::shuffle(order.begin(),order.end(),shuffle);for(auto i:order)current.learn(circuit,train[i]);
   const double loss=current.validation_loss(circuit,val);
-  if(loss<best_loss){best_loss=loss;best=current;}
+  if(loss<best_loss-1e-8){best_loss=loss;best=current;stale=0;}else stale++;
+  if(epoch>=3&&stale>=4)break;
  }
  double best_brier=std::numeric_limits<double>::infinity();
  for(double temperature:{.5,1.,2.,4.}){
@@ -291,12 +349,14 @@ inline std::size_t continue_learning(Model& m,const Dataset& d,const TemporalCir
  for(std::size_t i=history+24;i+d.config.horizon<d.bars.size();i++){
   if(d.bars[i].time<m.cursor+d.config.horizon*d.config.granularity||!d.valid(i,true))continue;
   require(d.bars[i].time+d.config.granularity>=m.initial_through,"LQT: held-out history cannot enter online learning");
-  m.learn(c,d.make(i),.01);m.cursor=d.bars[i].time;
+  m.learn(c,d.make(i),.25);m.cursor=d.bars[i].time;
  }
  return m.updates-before;
 }
 inline std::string metrics_json(const Metrics& m){
- std::ostringstream o;o<<std::setprecision(17)<<"{\"cases\":"<<m.cases<<",\"directionCorrect\":"<<m.direction_correct<<",\"brier\":"<<m.brier<<",\"outputs\":[";
+ std::ostringstream o;o<<std::setprecision(17)<<"{\"cases\":"<<m.cases<<",\"directionCorrect\":"<<m.direction_correct<<",\"brier\":"<<m.brier
+  <<",\"predictedUp\":"<<m.predicted_up<<",\"predictedDown\":"<<m.predicted_down<<",\"actualUp\":"<<m.actual_up<<",\"probabilityCorrect\":"<<m.probability_correct
+  <<",\"probabilityMin\":"<<m.probability_min<<",\"probabilityMax\":"<<m.probability_max<<",\"normalizedPriceSD\":"<<m.normalized_price_sd<<",\"outputs\":[";
  for(std::size_t k=0;k<3;k++){if(k)o<<',';o<<"{\"mae\":"<<m.mae[k]<<",\"baselineMAE\":"<<m.baseline_mae[k]<<",\"intervalCoverage\":"<<m.coverage[k]<<'}';}o<<"]}";return o.str();
 }
 
@@ -351,7 +411,7 @@ class TemporalXiRuntime {
    <<",\"targetCloseAt\":"<<(config.equity?"null":std::to_string(std::int64_t(last.time+config.granularity*(config.horizon+1))))
    <<",\"qubits\":1000,\"components\":"<<(quantum?1:1000)<<",\"graphEdges\":"<<(quantum?circuit.edges():0)<<",\"selectedTemporalLag\":"<<model.lag<<",\"trainableRotations\":1000,\"updatedRotations\":"<<trained
    <<",\"updates\":"<<model.updates<<",\"onlineUpdates\":"<<online<<",\"quantum\":"<<(quantum?"true":"false")
-   <<",\"nativeXI\":true,\"representation\":\"exact rotated-product graph / Heisenberg observables\",\"mps\":false,\"physicalQPU\":false"
+   <<",\"nativeXI\":true,\"algorithmVersion\":2,\"representation\":\"exact rotated-product graph / centered Heisenberg observables\",\"mps\":false,\"physicalQPU\":false"
    <<",\"circuitPayloadBytes\":"<<circuit.payload_bytes()+2*wires*sizeof(double)<<",\"nativeMilliseconds\":"<<elapsed
    <<",\"initialTestThrough\":"<<model.initial_through<<",\"initialUpdates\":"<<model.initial_updates
    <<",\"validationCases\":"<<model.validation_cases<<",\"calibrationCases\":"<<model.calibration_cases

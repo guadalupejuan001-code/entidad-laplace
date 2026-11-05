@@ -27,7 +27,7 @@ public class QuantumTemporalTest {
         QuantumTemporalStore store=new QuantumTemporalStore(temp.getRoot());
         // Opaque storage fixture, not a claim of a valid native trained model.
         // Full model structural validation is exercised by native tests/restore.
-        String opaque="LQT1 1 BTC-USD 300 3 0 1 0\nopaque-storage-fixture\n";
+        String opaque="LQT2 2 BTC-USD 300 3 0 1 0\nopaque-storage-fixture\n";
         JSONObject value=new JSONObject().put("schema","laplace-lqt-checkpoint-v1").put("asset","BTC-USD")
             .put("granularity",300).put("minutes",15).put("kernelSHA256",LQTBuild.KERNEL_SHA256)
             .put("checkpoint",opaque).put("checkpointSHA256",QuantumTemporalStore.sha256(opaque));
@@ -37,8 +37,16 @@ public class QuantumTemporalTest {
         JSONObject bad=new JSONObject(value.toString()).put("checkpoint",opaque+"tampered");
         try{store.write(key,bad);fail();}catch(IllegalArgumentException expected){}
         assertEquals(opaque,store.read(key).getString("checkpoint"));
-        String file=new java.io.File(temp.getRoot(),"lqt1000-v1/"+key+".json").toString();
+        String file=new java.io.File(temp.getRoot(),"lqt1000-v2/"+key+".json").toString();
         Files.write(java.nio.file.Path.of(file),(value.toString()+"bad").getBytes(StandardCharsets.UTF_8));
         try{store.read(key);fail();}catch(Exception expected){}
+    }
+    @Test public void theOldModelDirectoryIsPreserved()throws Exception{
+        java.io.File old=new java.io.File(temp.getRoot(),"lqt1000-v1");assertTrue(old.mkdir());
+        java.io.File original=new java.io.File(old,"BTC-USD-300-3.json");
+        byte[] previous="original v1 learning".getBytes(StandardCharsets.UTF_8);Files.write(original.toPath(),previous);
+        QuantumTemporalStore store=new QuantumTemporalStore(temp.getRoot());
+        assertNull(store.read(QuantumTemporalStore.key("BTC-USD",300,15)));
+        assertArrayEquals(previous,Files.readAllBytes(original.toPath()));
     }
 }

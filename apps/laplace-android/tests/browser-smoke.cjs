@@ -117,7 +117,7 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.4');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.5');
     await page.locator('#classicalReference > summary').click();
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);

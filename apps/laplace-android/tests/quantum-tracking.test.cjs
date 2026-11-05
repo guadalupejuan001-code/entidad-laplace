@@ -57,6 +57,16 @@ test('la evidencia LQT corresponde al algoritmo entregado y a los datos archivad
  for(const h of report.horizons){assert.equal(h.quantum.components,1);assert.equal(h.quantum.updatedRotations,1000);
   assert.equal(h.matchedClassical.quantum,false);assert.equal(h.matchedClassical.components,1000);}
 });
+test('la respuesta a datos queda registrada y los resultados de versiones distintas no se mezclan',()=>{
+ const {r,f,rows}=fixture();assert.equal(f.algorithmVersion,2);
+ assert.equal(f.training.test.predictedUp+r.test.predictedDown,r.test.cases);
+ const forged=structuredClone(f);forged.training.test.predictedUp=r.test.cases+1;
+ assert.throws(()=>T.validate(forged,f.issuedAt),/respuesta/);
+ const done=T.evaluate([f],rows,{asset:f.asset,granularity:300,now:f.targetCloseAt}).records[0];
+ const older={...structuredClone(done),id:'older',algorithmVersion:1};
+ assert.equal(T.summarize([done,older],{asset:f.asset,minutes:15,granularity:300,algorithmVersion:2}).cases,1);
+ assert.equal(T.summarize([done,older],{asset:f.asset,minutes:15,granularity:300}).cases,2);
+});
 test('la comparación anterior conserva los mismos objetivos y sus errores sin redondear',()=>{
  const comparison=JSON.parse(fs.readFileSync(path.join(root,'evidencia/lqt1000/comparacion-anterior.json')));
  assert.equal(comparison.algorithmSHA256,report.algorithmSHA256);assert.equal(comparison.sourceSHA256,report.sourceSHA256);
@@ -69,4 +79,19 @@ test('la comparación anterior conserva los mismos objetivos y sus errores sin r
    assert.ok(Math.abs(mae-h.legacy.mae[i])<1e-10);
   }
  }
+});
+test('C01 conserva el ensayo separado y prueba aporte del circuito sin proclamar ventaja financiera',()=>{
+ const response=JSON.parse(fs.readFileSync(path.join(root,'evidencia/lqt1000/respuesta-c01.json')));
+ assert.equal(response.algorithmSHA256,report.algorithmSHA256);
+ const source=fs.readFileSync(path.join(root,'apps/laplace-android/tests/lqt-learning.cpp'));
+ assert.equal(response.controlledTestSHA256,createHash('sha256').update(source).digest('hex'));
+ const c=response.controlledInteraction;
+ assert.equal(c.testSeed,20261104);assert.equal(c.unseenCases,256);
+ assert.equal(c.quantumUpdates,c.matchedNoCZUpdates);
+ assert.ok(c.quantumAccuracy>=.95&&c.matchedNoCZAccuracy<=.75);
+ assert.equal(c.optimizerNextStepIdentical,true);
+ assert.equal(response.protocol.forcedAlternatingDirections,false);
+ assert.equal(response.prospectivelyValidated,false);assert.equal(response.quantumSpeedupDemonstrated,false);
+ for(const h of response.reusedMarketBenchmark){assert.ok(h.test.predictedUp>0&&h.test.predictedDown>0);assert.ok(h.meanAbsoluteNormalizedPriceResponse>.001);}
+ assert.ok(response.additionalArchivedPeriod.lastClose<=report.firstOpen);
 });

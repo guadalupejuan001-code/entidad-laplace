@@ -1,27 +1,52 @@
 {
   "schema": "laplace-lqt1000-study-v1",
   "source": "evidencia/entrenamiento-x002-20261030/velas.json",
+  "algorithmVersion": 2,
   "sourceSHA256": "9239d6d29f9b415537d720e5aa87dc232d944352cae277c462fff1326e860713",
-  "algorithmSHA256": "138c579dbd70f97ae6b8d6dba8e63c064d43fb6e7a1f936b981c08c030079d9c",
+  "algorithmSHA256": "750b801936d15c62aa411806214a7afc51a1d56925d36a5495c2d65c3cf1518d",
   "rows": 4032,
   "firstOpen": 1792173900,
   "lastClose": 1793383500,
   "protocol": {
     "train": 0.6,
-    "selection": "validation only; initial test never enters online learning",
+    "selectionFraction": 0.15,
     "calibration": 0.1,
     "test": 0.15,
     "epochs": [
       1,
       2,
       3,
-      4
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
     ],
+    "earlyStoppingPatience": 4,
     "temporalLags": [
       0,
       3,
       12
     ],
+    "normalization": "exact Heisenberg terms; fit on train only; frozen thereafter",
+    "optimizer": "native Adam; moments retained; deterministic train-only shuffle",
+    "selection": "validation only; initial test never enters online learning",
     "nonoverlappingLabelsWithinEachSplit": true,
     "intervalNominalCoverage": 0.8,
     "matchedClassical": "same parameters and training; entangling CZ removed"
@@ -32,8 +57,8 @@
     "components": 1,
     "maxObservableError": 7.77156e-16,
     "maxGradientError": 2.46756e-11,
-    "unseenLossBefore": 0.361854,
-    "unseenLossAfter": 0.148571,
+    "unseenLossBefore": 0.362011,
+    "unseenLossAfter": 0.128021,
     "allRotationsLearned": true,
     "originalEtherParity": true
   },
@@ -66,64 +91,72 @@
         "targetCloseAt": 1793383800,
         "qubits": 1000,
         "components": 1,
-        "graphEdges": 1795,
-        "selectedTemporalLag": 0,
+        "graphEdges": 2735,
+        "selectedTemporalLag": 12,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
         "updates": 512,
         "onlineUpdates": 0,
         "quantum": true,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
-        "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 436.102543,
+        "circuitPayloadBytes": 316760,
+        "nativeMilliseconds": 1148.940365,
         "initialTestThrough": 1793383500,
         "initialUpdates": 512,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 36,
-          "brier": 0.25022311560136057,
+          "directionCorrect": 25,
+          "brier": 0.2540056153594327,
+          "predictedUp": 21,
+          "predictedDown": 43,
+          "actualUp": 36,
+          "probabilityCorrect": 29,
+          "probabilityMin": 0.37255678792796837,
+          "probabilityMax": 0.6002214367269634,
+          "normalizedPriceSD": 0.33468223432582994,
           "outputs": [
             {
-              "mae": 72.30856827996786,
+              "mae": 85.61006649470414,
               "baselineMAE": 72.7815625000012,
-              "intervalCoverage": 0.75
+              "intervalCoverage": 0.765625
             },
             {
-              "mae": 0.0618757344982087,
+              "mae": 0.06839530714909352,
               "baselineMAE": 0.08456739961656828,
-              "intervalCoverage": 0.625
+              "intervalCoverage": 0.640625
             },
             {
-              "mae": 22.441999725215407,
+              "mae": 20.50812249525125,
               "baselineMAE": 22.198979096647133,
-              "intervalCoverage": 0.859375
+              "intervalCoverage": 0.90625
             }
           ]
         },
-        "probabilityUp": 0.4982200963819035,
+        "probabilityUp": 0.43747420217206023,
         "outputs": [
           {
-            "predicted": 76851.66257577304,
+            "predicted": 76787.7092632236,
             "baseline": 76849.91,
-            "lower": 76723.8200571293,
-            "upper": 76948.92895915617
+            "lower": 76663.95897001044,
+            "upper": 76901.73135285225
           },
           {
-            "predicted": 0.06230546926554953,
+            "predicted": 0.0597162512270211,
             "baseline": 0.12117296585903194,
-            "lower": 0.021568646466932875,
-            "upper": 0.1761551107779033
+            "lower": 0.019593775887115517,
+            "upper": 0.15856819605477557
           },
           {
-            "predicted": 28.72967005898461,
+            "predicted": 32.93497403738634,
             "baseline": 37.18743858166667,
-            "lower": 9.123995486577389,
-            "upper": 88.61249215342998
+            "lower": 11.931487826195733,
+            "upper": 120.55183133685216
           }
         ],
         "automaticTrading": false,
@@ -150,62 +183,70 @@
         "onlineUpdates": 0,
         "quantum": false,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 480.085386,
+        "nativeMilliseconds": 1099.361939,
         "initialTestThrough": 1793383500,
         "initialUpdates": 512,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 36,
-          "brier": 0.2502128440969646,
+          "directionCorrect": 25,
+          "brier": 0.25905097584512365,
+          "predictedUp": 23,
+          "predictedDown": 41,
+          "actualUp": 36,
+          "probabilityCorrect": 28,
+          "probabilityMin": 0.3236841867059092,
+          "probabilityMax": 0.6058542756630406,
+          "normalizedPriceSD": 0.42896744428234995,
           "outputs": [
             {
-              "mae": 72.39067553679592,
+              "mae": 87.66117763407897,
               "baselineMAE": 72.7815625000012,
-              "intervalCoverage": 0.75
+              "intervalCoverage": 0.78125
             },
             {
-              "mae": 0.06192408478269257,
+              "mae": 0.07678073152356144,
               "baselineMAE": 0.08456739961656828,
-              "intervalCoverage": 0.625
+              "intervalCoverage": 0.671875
             },
             {
-              "mae": 22.432644564437933,
+              "mae": 24.069029251364896,
               "baselineMAE": 22.198979096647133,
-              "intervalCoverage": 0.859375
+              "intervalCoverage": 0.890625
             }
           ]
         },
-        "probabilityUp": 0.4983077760322848,
+        "probabilityUp": 0.3889583418558508,
         "outputs": [
           {
-            "predicted": 76851.33451514837,
+            "predicted": 76776.52057301663,
             "baseline": 76849.91,
-            "lower": 76723.80478614451,
-            "upper": 76948.91959808486
+            "lower": 76651.455791161,
+            "upper": 76887.18955940212
           },
           {
-            "predicted": 0.06262616258761856,
+            "predicted": 0.06621494495630913,
             "baseline": 0.12117296585903194,
-            "lower": 0.02159864499489628,
-            "upper": 0.17633444480213067
+            "lower": 0.021867793231448048,
+            "upper": 0.18473937187610004
           },
           {
-            "predicted": 28.773790257381812,
+            "predicted": 29.29117164206525,
             "baseline": 37.18743858166667,
-            "lower": 9.12734237503594,
-            "upper": 88.64061508984099
+            "lower": 10.744870008289555,
+            "upper": 99.0983885210621
           }
         ],
         "automaticTrading": false,
         "prospectivelyValidated": false
       },
-      "checkpointSHA256": "5f27b03f6ac9aaae55f0b74b81b9dacc5004433f441609658358a39eb7bc7846"
+      "checkpointSHA256": "3431a8c3155d0c36030b0f7f0a3e929e48d829a4be75f637a6f7246a5b434e7f"
     },
     {
       "minutes": 15,
@@ -226,60 +267,68 @@
         "selectedTemporalLag": 12,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 2048,
+        "updates": 512,
         "onlineUpdates": 0,
         "quantum": true,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 316760,
-        "nativeMilliseconds": 547.595955,
+        "nativeMilliseconds": 1035.026678,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 2048,
+        "initialUpdates": 512,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 33,
-          "brier": 0.25080753267301675,
+          "directionCorrect": 28,
+          "brier": 0.2550145130382957,
+          "predictedUp": 29,
+          "predictedDown": 35,
+          "actualUp": 31,
+          "probabilityCorrect": 27,
+          "probabilityMin": 0.44295568264046836,
+          "probabilityMax": 0.5461598793273255,
+          "normalizedPriceSD": 0.345622218497078,
           "outputs": [
             {
-              "mae": 121.44057496970186,
+              "mae": 136.4946607040181,
               "baselineMAE": 119.39453124999864,
-              "intervalCoverage": 0.78125
+              "intervalCoverage": 0.75
             },
             {
-              "mae": 0.08453930347971071,
+              "mae": 0.09079427861368758,
               "baselineMAE": 0.10814288918531378,
-              "intervalCoverage": 0.671875
+              "intervalCoverage": 0.75
             },
             {
-              "mae": 47.801702062975664,
+              "mae": 37.56047858211477,
               "baselineMAE": 50.192428796894525,
-              "intervalCoverage": 0.828125
+              "intervalCoverage": 0.84375
             }
           ]
         },
-        "probabilityUp": 0.4518318227691188,
+        "probabilityUp": 0.5444521805750587,
         "outputs": [
           {
-            "predicted": 76831.89331774395,
+            "predicted": 76950.6896396983,
             "baseline": 76849.91,
-            "lower": 76645.64771630353,
-            "upper": 76999.90919610078
+            "lower": 76762.41008355863,
+            "upper": 77122.14853665124
           },
           {
-            "predicted": 0.16829337290411528,
+            "predicted": 0.20316098650071043,
             "baseline": 0.20987773337165222,
-            "lower": 0.0863057691132212,
-            "upper": 0.30011939048788033
+            "lower": 0.08837045053915366,
+            "upper": 0.4203359957525786
           },
           {
-            "predicted": 95.2952943653385,
+            "predicted": 84.62886880879394,
             "baseline": 111.562315745,
-            "lower": 41.19879605085473,
-            "upper": 235.46780928751213
+            "lower": 39.50608899381876,
+            "upper": 200.42507655942083
           }
         ],
         "automaticTrading": false,
@@ -302,66 +351,74 @@
         "selectedTemporalLag": 0,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 2048,
+        "updates": 512,
         "onlineUpdates": 0,
         "quantum": false,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 485.727308,
+        "nativeMilliseconds": 957.100052,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 2048,
+        "initialUpdates": 512,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 33,
-          "brier": 0.2506975344483681,
+          "directionCorrect": 29,
+          "brier": 0.25874573667792505,
+          "predictedUp": 34,
+          "predictedDown": 30,
+          "actualUp": 31,
+          "probabilityCorrect": 26,
+          "probabilityMin": 0.4279867020741405,
+          "probabilityMax": 0.572404013046696,
+          "normalizedPriceSD": 0.40524125991665527,
           "outputs": [
             {
-              "mae": 121.20230230964012,
+              "mae": 147.6946555801669,
               "baselineMAE": 119.39453124999864,
+              "intervalCoverage": 0.703125
+            },
+            {
+              "mae": 0.09648904981186635,
+              "baselineMAE": 0.10814288918531378,
               "intervalCoverage": 0.78125
             },
             {
-              "mae": 0.08455562406131004,
-              "baselineMAE": 0.10814288918531378,
-              "intervalCoverage": 0.671875
-            },
-            {
-              "mae": 47.81135260057473,
+              "mae": 47.6620118283648,
               "baselineMAE": 50.192428796894525,
-              "intervalCoverage": 0.828125
+              "intervalCoverage": 0.8125
             }
           ]
         },
-        "probabilityUp": 0.45355552058972776,
+        "probabilityUp": 0.5467596633053929,
         "outputs": [
           {
-            "predicted": 76833.08680172461,
+            "predicted": 76987.22094616233,
             "baseline": 76849.91,
-            "lower": 76645.68245113139,
-            "upper": 76999.93504686329
+            "lower": 76802.73821263477,
+            "upper": 77157.81661588531
           },
           {
-            "predicted": 0.1682829584098495,
+            "predicted": 0.18762119834935417,
             "baseline": 0.20987773337165222,
-            "lower": 0.08632750344689236,
-            "upper": 0.3001522507574795
+            "lower": 0.08117230889216852,
+            "upper": 0.4073696034404236
           },
           {
-            "predicted": 95.57183856714019,
+            "predicted": 58.209610098728454,
             "baseline": 111.562315745,
-            "lower": 41.21416857359755,
-            "upper": 235.4568952990738
+            "lower": 26.253269019830103,
+            "upper": 136.0285221387577
           }
         ],
         "automaticTrading": false,
         "prospectivelyValidated": false
       },
-      "checkpointSHA256": "ae33f9685292fae2dbb4f526db78a0c3f3ab43f8576642bbf4acffd858a94b91"
+      "checkpointSHA256": "40e3be0866b91aaf5c217b95dfabe75335f8c207b3a0c57c34dc894200d1de78"
     },
     {
       "minutes": 30,
@@ -378,64 +435,72 @@
         "targetCloseAt": 1793385300,
         "qubits": 1000,
         "components": 1,
-        "graphEdges": 1795,
-        "selectedTemporalLag": 0,
+        "graphEdges": 2735,
+        "selectedTemporalLag": 12,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
         "updates": 365,
         "onlineUpdates": 0,
         "quantum": true,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
-        "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 407.856278,
+        "circuitPayloadBytes": 316760,
+        "nativeMilliseconds": 756.261616,
         "initialTestThrough": 1793383500,
         "initialUpdates": 365,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 39,
-          "brier": 0.24709230988109723,
+          "directionCorrect": 32,
+          "brier": 0.24771843110462935,
+          "predictedUp": 31,
+          "predictedDown": 33,
+          "actualUp": 25,
+          "probabilityCorrect": 35,
+          "probabilityMin": 0.45771114263431506,
+          "probabilityMax": 0.5436501820522696,
+          "normalizedPriceSD": 0.21278940581465144,
           "outputs": [
             {
-              "mae": 194.33218359436887,
+              "mae": 195.04258680309113,
               "baselineMAE": 194.9170312499989,
-              "intervalCoverage": 0.78125
+              "intervalCoverage": 0.71875
             },
             {
-              "mae": 0.11996040023957501,
+              "mae": 0.10801973261641391,
               "baselineMAE": 0.1370954078522489,
-              "intervalCoverage": 0.796875
+              "intervalCoverage": 0.859375
             },
             {
-              "mae": 85.49180675106102,
+              "mae": 75.00342380755373,
               "baselineMAE": 87.13760524882812,
-              "intervalCoverage": 0.828125
+              "intervalCoverage": 0.875
             }
           ]
         },
-        "probabilityUp": 0.48573282532105916,
+        "probabilityUp": 0.508873368919141,
         "outputs": [
           {
-            "predicted": 76847.37070901449,
+            "predicted": 76837.33829220315,
             "baseline": 76849.91,
-            "lower": 76605.34329421545,
-            "upper": 77226.16497240872
+            "lower": 76607.70359304902,
+            "upper": 77158.89268377781
           },
           {
-            "predicted": 0.2543922063942431,
+            "predicted": 0.1608626899190471,
             "baseline": 0.2968119369743149,
-            "lower": 0.12995186948011064,
-            "upper": 0.490145468225698
+            "lower": 0.07538375385018828,
+            "upper": 0.3136577641866503
           },
           {
-            "predicted": 197.53913977885276,
+            "predicted": 143.93898899662244,
             "baseline": 223.12463149,
-            "lower": 98.70874006004375,
-            "upper": 546.206428077732
+            "lower": 67.19284856437142,
+            "upper": 427.2685018919742
           }
         ],
         "automaticTrading": false,
@@ -462,62 +527,70 @@
         "onlineUpdates": 0,
         "quantum": false,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 358.116807,
+        "nativeMilliseconds": 755.579823,
         "initialTestThrough": 1793383500,
         "initialUpdates": 365,
         "validationCases": 64,
         "calibrationCases": 64,
         "test": {
           "cases": 64,
-          "directionCorrect": 39,
-          "brier": 0.24719512198634985,
+          "directionCorrect": 35,
+          "brier": 0.2494101460069708,
+          "predictedUp": 36,
+          "predictedDown": 28,
+          "actualUp": 25,
+          "probabilityCorrect": 28,
+          "probabilityMin": 0.4483025700909764,
+          "probabilityMax": 0.564149482093405,
+          "normalizedPriceSD": 0.31486801606953696,
           "outputs": [
             {
-              "mae": 194.2020634065068,
+              "mae": 215.86099626295754,
               "baselineMAE": 194.9170312499989,
+              "intervalCoverage": 0.6875
+            },
+            {
+              "mae": 0.12345190214490258,
+              "baselineMAE": 0.1370954078522489,
               "intervalCoverage": 0.78125
             },
             {
-              "mae": 0.12006007154607003,
-              "baselineMAE": 0.1370954078522489,
-              "intervalCoverage": 0.796875
-            },
-            {
-              "mae": 85.49536389557535,
+              "mae": 77.15482421763778,
               "baselineMAE": 87.13760524882812,
-              "intervalCoverage": 0.828125
+              "intervalCoverage": 0.84375
             }
           ]
         },
-        "probabilityUp": 0.48630787874723486,
+        "probabilityUp": 0.5109390870140803,
         "outputs": [
           {
-            "predicted": 76846.77458437439,
+            "predicted": 76878.75310966383,
             "baseline": 76849.91,
-            "lower": 76605.33238627164,
-            "upper": 77226.14780815273
+            "lower": 76659.38549181938,
+            "upper": 77205.12897245197
           },
           {
-            "predicted": 0.2548158489557619,
+            "predicted": 0.09366738717936647,
             "baseline": 0.2968119369743149,
-            "lower": 0.12997566360851528,
-            "upper": 0.49020801009105447
+            "lower": 0.0447481790810222,
+            "upper": 0.1755485428928628
           },
           {
-            "predicted": 197.91698608945845,
+            "predicted": 61.7183690929339,
             "baseline": 223.12463149,
-            "lower": 98.71194298188146,
-            "upper": 546.2141305509915
+            "lower": 25.69234915080424,
+            "upper": 162.36868570564855
           }
         ],
         "automaticTrading": false,
         "prospectivelyValidated": false
       },
-      "checkpointSHA256": "b8e175cd4d1c169c82e44716670c4283d0c140e5b53aca139673326587292528"
+      "checkpointSHA256": "e7f04f006832c58f7cd9d5ffc2a105e0f89b6570ed275c91c552269e63a48f5a"
     },
     {
       "minutes": 60,
@@ -538,60 +611,68 @@
         "selectedTemporalLag": 12,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 364,
+        "updates": 182,
         "onlineUpdates": 0,
         "quantum": true,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 316760,
-        "nativeMilliseconds": 207.436845,
+        "nativeMilliseconds": 477.361894,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 364,
+        "initialUpdates": 182,
         "validationCases": 50,
         "calibrationCases": 33,
         "test": {
           "cases": 50,
-          "directionCorrect": 29,
-          "brier": 0.2506776267812328,
+          "directionCorrect": 28,
+          "brier": 0.26983878542012396,
+          "predictedUp": 25,
+          "predictedDown": 25,
+          "actualUp": 21,
+          "probabilityCorrect": 24,
+          "probabilityMin": 0.3317510149005039,
+          "probabilityMax": 0.7130948132860789,
+          "normalizedPriceSD": 0.19775337320216607,
           "outputs": [
             {
-              "mae": 329.79880522659346,
+              "mae": 338.2211658698294,
               "baselineMAE": 330.7359999999994,
-              "intervalCoverage": 0.7200000000000003
+              "intervalCoverage": 0.6000000000000002
             },
             {
-              "mae": 0.18332453663811193,
+              "mae": 0.15721547459345406,
               "baselineMAE": 0.19561395275176857,
-              "intervalCoverage": 0.8400000000000004
+              "intervalCoverage": 0.9000000000000005
             },
             {
-              "mae": 192.61879635015106,
+              "mae": 149.61576632456973,
               "baselineMAE": 200.36614871789996,
-              "intervalCoverage": 0.8800000000000004
+              "intervalCoverage": 0.9200000000000005
             }
           ]
         },
-        "probabilityUp": 0.5041330632207088,
+        "probabilityUp": 0.4243246717144423,
         "outputs": [
           {
-            "predicted": 76843.88039438677,
+            "predicted": 76767.86122679188,
             "baseline": 76849.91,
-            "lower": 76588.56543414011,
-            "upper": 77303.89352232275
+            "lower": 76540.7357939453,
+            "upper": 77184.44915487272
           },
           {
-            "predicted": 0.39333556983753204,
+            "predicted": 0.35577263006261617,
             "baseline": 0.41975546674330444,
-            "lower": 0.21168188238262772,
-            "upper": 0.7914793339774638
+            "lower": 0.18139080581360606,
+            "upper": 0.6774431653307598
           },
           {
-            "predicted": 418.0911518235074,
+            "predicted": 435.53692722082616,
             "baseline": 446.24926298,
-            "lower": 197.48074119599818,
-            "upper": 1162.6823334425242
+            "lower": 184.4279785031757,
+            "upper": 1164.926209274569
           }
         ],
         "automaticTrading": false,
@@ -614,66 +695,74 @@
         "selectedTemporalLag": 0,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 364,
+        "updates": 182,
         "onlineUpdates": 0,
         "quantum": false,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 233.395216,
+        "nativeMilliseconds": 405.85895,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 364,
+        "initialUpdates": 182,
         "validationCases": 50,
         "calibrationCases": 33,
         "test": {
           "cases": 50,
-          "directionCorrect": 29,
-          "brier": 0.25063502088462636,
+          "directionCorrect": 28,
+          "brier": 0.32861505996925705,
+          "predictedUp": 21,
+          "predictedDown": 29,
+          "actualUp": 21,
+          "probabilityCorrect": 20,
+          "probabilityMin": 0.13631162398336139,
+          "probabilityMax": 0.8358657886757966,
+          "normalizedPriceSD": 0.39037899776611834,
           "outputs": [
             {
-              "mae": 329.8333314512033,
+              "mae": 373.5086690057298,
               "baselineMAE": 330.7359999999994,
+              "intervalCoverage": 0.5200000000000001
+            },
+            {
+              "mae": 0.17721108942216746,
+              "baselineMAE": 0.19561395275176857,
               "intervalCoverage": 0.7200000000000003
             },
             {
-              "mae": 0.18350218509238328,
-              "baselineMAE": 0.19561395275176857,
-              "intervalCoverage": 0.8400000000000004
-            },
-            {
-              "mae": 192.83527291898548,
+              "mae": 220.56619264690354,
               "baselineMAE": 200.36614871789996,
-              "intervalCoverage": 0.8800000000000004
+              "intervalCoverage": 0.8000000000000004
             }
           ]
         },
-        "probabilityUp": 0.5038875176704107,
+        "probabilityUp": 0.4155264820403098,
         "outputs": [
           {
-            "predicted": 76843.99156967127,
+            "predicted": 76700.51695188595,
             "baseline": 76849.91,
-            "lower": 76588.52600645492,
-            "upper": 77303.83630794997
+            "lower": 76497.98298146577,
+            "upper": 77125.95731120543
           },
           {
-            "predicted": 0.39370308131323106,
+            "predicted": 0.2711400804297024,
             "baseline": 0.41975546674330444,
-            "lower": 0.2117002465779655,
-            "upper": 0.7914607624501419
+            "lower": 0.145713656730639,
+            "upper": 0.4817093979935746
           },
           {
-            "predicted": 418.8606931777767,
+            "predicted": 227.52801945433166,
             "baseline": 446.24926298,
-            "lower": 197.44670887649283,
-            "upper": 1162.7187771435958
+            "lower": 96.5680434063313,
+            "upper": 524.1041805595636
           }
         ],
         "automaticTrading": false,
         "prospectivelyValidated": false
       },
-      "checkpointSHA256": "b699332772201fc4ea4a679f5281ffe0090cd1855e2ae91cefca1de53074edd0"
+      "checkpointSHA256": "d0d2c5a73471e0d630ae6cf4554c54a85564f69cb2688232363e6339e0a7839d"
     },
     {
       "minutes": 120,
@@ -690,64 +779,72 @@
         "targetCloseAt": 1793390700,
         "qubits": 1000,
         "components": 1,
-        "graphEdges": 2735,
-        "selectedTemporalLag": 12,
+        "graphEdges": 1795,
+        "selectedTemporalLag": 0,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 364,
+        "updates": 91,
         "onlineUpdates": 0,
         "quantum": true,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
-        "circuitPayloadBytes": 316760,
-        "nativeMilliseconds": 154.210589,
+        "circuitPayloadBytes": 301720,
+        "nativeMilliseconds": 275.822885,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 364,
+        "initialUpdates": 91,
         "validationCases": 25,
         "calibrationCases": 16,
         "test": {
           "cases": 25,
           "directionCorrect": 16,
-          "brier": 0.25015079415704167,
+          "brier": 0.2512118240650444,
+          "predictedUp": 10,
+          "predictedDown": 15,
+          "actualUp": 9,
+          "probabilityCorrect": 14,
+          "probabilityMin": 0.35865613785503137,
+          "probabilityMax": 0.6155464830343298,
+          "normalizedPriceSD": 0.16349149687435646,
           "outputs": [
             {
-              "mae": 578.8233733107876,
+              "mae": 564.0602270441967,
               "baselineMAE": 584.0751999999984,
               "intervalCoverage": 0.4799999999999999
             },
             {
-              "mae": 0.3127743894461105,
+              "mae": 0.2796944898919267,
               "baselineMAE": 0.3140399963545425,
-              "intervalCoverage": 0.7600000000000001
+              "intervalCoverage": 0.7200000000000001
             },
             {
-              "mae": 449.0793806529971,
+              "mae": 409.455830806873,
               "baselineMAE": 461.32429240000005,
-              "intervalCoverage": 0.8400000000000002
+              "intervalCoverage": 0.7600000000000001
             }
           ]
         },
-        "probabilityUp": 0.5005434883438749,
+        "probabilityUp": 0.37507210205805963,
         "outputs": [
           {
-            "predicted": 76833.94641693881,
+            "predicted": 76748.02129718884,
             "baseline": 76849.91,
-            "lower": 76553.30294796485,
-            "upper": 77480.75133751113
+            "lower": 76420.06538176181,
+            "upper": 77408.65428161241
           },
           {
-            "predicted": 0.5896976377915741,
+            "predicted": 0.596524914145484,
             "baseline": 0.5936238739486298,
-            "lower": 0.33631511655007473,
-            "upper": 1.4522265291811083
+            "lower": 0.38273413578545884,
+            "upper": 1.2060494791952034
           },
           {
-            "predicted": 860.1059721740663,
+            "predicted": 899.205493582067,
             "baseline": 892.49852596,
-            "lower": 394.80189264667274,
-            "upper": 2027.4584834374707
+            "lower": 427.09899471898547,
+            "upper": 1967.9416427579379
           }
         ],
         "automaticTrading": false,
@@ -770,70 +867,79 @@
         "selectedTemporalLag": 0,
         "trainableRotations": 1000,
         "updatedRotations": 1000,
-        "updates": 364,
+        "updates": 91,
         "onlineUpdates": 0,
         "quantum": false,
         "nativeXI": true,
-        "representation": "exact rotated-product graph / Heisenberg observables",
+        "algorithmVersion": 2,
+        "representation": "exact rotated-product graph / centered Heisenberg observables",
         "mps": false,
         "physicalQPU": false,
         "circuitPayloadBytes": 301720,
-        "nativeMilliseconds": 137.899869,
+        "nativeMilliseconds": 259.951593,
         "initialTestThrough": 1793383500,
-        "initialUpdates": 364,
+        "initialUpdates": 91,
         "validationCases": 25,
         "calibrationCases": 16,
         "test": {
           "cases": 25,
-          "directionCorrect": 16,
-          "brier": 0.25014987748630646,
+          "directionCorrect": 13,
+          "brier": 0.25433586289607846,
+          "predictedUp": 9,
+          "predictedDown": 16,
+          "actualUp": 9,
+          "probabilityCorrect": 11,
+          "probabilityMin": 0.26799386622453486,
+          "probabilityMax": 0.5876613157971761,
+          "normalizedPriceSD": 0.3196473878447369,
           "outputs": [
             {
-              "mae": 579.0259453613654,
+              "mae": 600.9834747167524,
               "baselineMAE": 584.0751999999984,
               "intervalCoverage": 0.4799999999999999
             },
             {
-              "mae": 0.3128609366453915,
+              "mae": 0.2701752287047086,
               "baselineMAE": 0.3140399963545425,
-              "intervalCoverage": 0.7600000000000001
+              "intervalCoverage": 0.7200000000000001
             },
             {
-              "mae": 449.4981409995665,
+              "mae": 432.66918954096786,
               "baselineMAE": 461.32429240000005,
-              "intervalCoverage": 0.8400000000000002
+              "intervalCoverage": 0.68
             }
           ]
         },
-        "probabilityUp": 0.5005470681887676,
+        "probabilityUp": 0.35567156126593213,
         "outputs": [
           {
-            "predicted": 76834.49427417981,
+            "predicted": 76612.66783585565,
             "baseline": 76849.91,
-            "lower": 76553.24543537533,
-            "upper": 77480.7321823952
+            "lower": 76255.08588986767,
+            "upper": 77254.11983389984
           },
           {
-            "predicted": 0.5898728404787427,
+            "predicted": 0.5620995257554134,
             "baseline": 0.5936238739486298,
-            "lower": 0.3362681754354168,
-            "upper": 1.4521632278715326
+            "lower": 0.35556050774842535,
+            "upper": 1.1291978712812507
           },
           {
-            "predicted": 861.2557523655005,
+            "predicted": 762.8036526982778,
             "baseline": 892.49852596,
-            "lower": 394.80074194825016,
-            "upper": 2027.252927287588
+            "lower": 371.24862764926297,
+            "upper": 1662.7813236526224
           }
         ],
         "automaticTrading": false,
         "prospectivelyValidated": false
       },
-      "checkpointSHA256": "2c70ef209d8e1d3cc117921527a0b7ef2baceed24bd1477fb6920cb1a4d9259f"
+      "checkpointSHA256": "b4b93aa505c3cea5d9146b96f1d25d4a43b190bcb6ca55c554a2a9d6b24558fa"
     }
   ],
   "prospectivelyValidated": false,
   "physicalQPU": false,
   "automaticTrading": false,
-  "scope": "one archived BTC period; host timings are not Android device timings"
+  "scope": "one archived BTC period; host timings are not Android device timings",
+  "interpretation": "This archive was used to diagnose v1. Its reused test block is a regression benchmark, not new independent evidence of market advantage."
 }

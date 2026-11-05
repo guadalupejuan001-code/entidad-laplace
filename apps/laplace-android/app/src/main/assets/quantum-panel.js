@@ -55,6 +55,13 @@ function render(f){
     fmt(score.intervalCoverage*100,1)+' % de sus resultados.','fineprint'));
   out.append(row);
  }
+ const te=f.training.test;
+ if(Number.isInteger(te.predictedUp)){
+  out.append(node('p','En la prueba histórica, el precio indicó '+te.predictedUp+' subidas y '+te.predictedDown+' bajadas en '+te.cases+' casos. '+
+   'Dirección del precio: '+te.directionCorrect+'/'+te.cases+'; clasificador de subida: '+te.probabilityCorrect+'/'+te.cases+'.','fineprint'));
+  if(te.predictedUp===te.cases||te.predictedDown===te.cases)
+   out.append(node('p','La dirección no varió en esa muestra. Su porcentaje de aciertos también debe compararse con repetir una sola dirección.','helper'));
+ }
  out.append(node('p','Aprendizaje guardado: '+f.training.updates+' actualizaciones · '+f.training.onlineUpdates+
   ' ejemplos nuevos. Los resultados e intervalos históricos corresponden al entrenamiento inicial, hasta '+
   when(f.training.initialTestThrough)+'. Tu registro comprueba las predicciones posteriores.','fineprint'));
@@ -67,7 +74,8 @@ async function run(){
   const rows=await D.history(s);if(token!==epoch)return;
   if(!rows.length||!D.freshness(s,rows.at(-1)).valid)throw Error('Actualiza las velas: el último cierre está desactualizado.');
   const checked=T.evaluate(records,rows,{...s,now:Date.now()/1000});if(checked.evaluated)commit(checked.records);
-  const existing=records.find(f=>f.asset===s.asset&&f.minutes===s.minutes&&f.granularity===s.granularity&&f.originTime===rows.at(-1).time);
+  const existing=records.find(f=>f.asset===s.asset&&f.minutes===s.minutes&&f.granularity===s.granularity&&f.originTime===rows.at(-1).time&&
+   (f.algorithmVersion??1)===(window.LAPLACE_LQT_RELEASE?.algorithmVersion??2));
   if(existing){render(existing);$('lqtStatus').textContent='Este cierre ya tenía un pronóstico; se conserva el original.';return;}
   const result=await request('analyze',{...s,rows:rows.map(b=>[b.time,b.low,b.high,b.open,b.close,b.volume])});
   if(token!==epoch)return;
@@ -80,7 +88,7 @@ function renderHistory(){
  const out=$('lqtHistory');out.replaceChildren();
  for(const f of records.slice().reverse().slice(0,limit)){
   const row=node('details','','history-entry'),head=node('summary',''),label=node('div','');
-  label.append(node('strong',f.asset+' · '+f.minutes+' min · LQT-1000'),
+  label.append(node('strong',f.asset+' · '+f.minutes+' min · LQT-1000 v'+(f.algorithmVersion??1)),
    node('small','Precio USD '+fmt(f.outputs[0].predicted,2)+' · volatilidad '+fmt(f.outputs[1].predicted,3)+' % · volumen '+fmt(f.outputs[2].predicted,4)+' '+unit(f)));
   head.append(label,node('span',f.status==='verified'?'Evaluado':'Pendiente','result-tag'));row.append(head);
   const facts=node('dl','','record-facts'),fields=[['Emitido',when(f.issuedAt)],['Cierre de referencia',when(f.sourceCloseAt)],
@@ -102,8 +110,8 @@ function renderHistory(){
  }
  if(!records.length)out.append(node('p','Genera tu primer pronóstico LQT en Analizar.','helper'));
  $('lqtMore').hidden=records.length<=limit;
- const s=D.selection(),summary=T.summarize(records,s);
- $('lqtSummary').textContent=s.asset+' · '+s.minutes+' min: '+summary.cases+' evaluados y '+summary.pending+' pendientes.'+
+ const s={...D.selection(),algorithmVersion:window.LAPLACE_LQT_RELEASE?.algorithmVersion??2},summary=T.summarize(records,s);
+ $('lqtSummary').textContent=s.asset+' · '+s.minutes+' min · LQT v'+s.algorithmVersion+': '+summary.cases+' evaluados y '+summary.pending+' pendientes.'+
   (summary.cases?' Error medio de precio: USD '+fmt(summary.mae[0],2)+'; referencia USD '+fmt(summary.baselineMAE[0],2)+
    '. Dirección: '+summary.directionCorrect+'/'+summary.directionCases+'. Brier: '+fmt(summary.brier,4)+'.':'');
 }

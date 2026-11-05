@@ -59,6 +59,8 @@ async function native(action,json){
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===1,null,{timeout:30000});
   const first=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0]);
   assert.equal(first.training.updatedRotations,1000);assert.match(await page.locator('#lqtVolume').textContent(),/BTC/);
+  assert.equal(first.algorithmVersion,2);
+  assert.match(await page.locator('#lqtValidation').textContent(),/subidas y .* bajadas/);
   await page.locator('#lqtRun').click();assert.equal(analyzeCalls,1,'same origin must preserve original forecast and checkpoint');
   now=all.at(-1)[0]+302;
   await page.evaluate(({rows,clock})=>{window.__rows=rows;window.__clock=clock;localStorage.setItem('qa-lqt-clock',String(clock));},{rows:all,clock:now});
@@ -74,7 +76,7 @@ async function native(action,json){
   await page.locator('#lqtExport').click();await page.waitForFunction(()=>window.__exported);
   const backup=await page.evaluate(()=>JSON.parse(window.__exported));
   assert.equal(backup.model.checkpointSHA256,second.checkpointSHA256);assert.equal(backup.records.length,2);
-  assert.ok(backup.model.checkpoint.startsWith('LQT1 1 BTC-USD 300 3 0 1'));
+  assert.ok(backup.model.checkpoint.startsWith('LQT2 2 BTC-USD 300 3 0 1'));
   await page.locator('#lqtImport').click();
   await page.waitForFunction(()=>document.querySelector('#lqtHistoryStatus').textContent.includes('2 ya existentes'));
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records.length),2);
