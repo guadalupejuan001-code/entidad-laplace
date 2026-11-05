@@ -47,3 +47,8 @@ select,input{width:100%;background:#11161d;border:1px solid #48505c;border-radiu
 .classical-reference{margin:20px 0;border:1px solid #343b44;border-radius:18px;padding:16px}
 .classical-reference>summary{cursor:pointer;color:#c3c5cb;font-weight:600;padding:4px}
 .classical-reference[open]>summary{margin-bottom:18px}
+
+/* Controles del escenario inverso: el porcentaje es una hipótesis editable. */
+#lqtInverse .inverse-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+#lqtInverse .inverse-controls label{display:grid;gap:6px;min-width:0}
+#lqtInverse .inverse-controls input,#lqtInverse .inverse-controls select{width:100%;min-width:0;box-sizing:border-box}

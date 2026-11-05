@@ -1,0 +1,792 @@
+{
+  "schema": "laplace-large-miss-regression-v1",
+  "sourceFileSHA256": "234f88024120161d2e3686f76cd7a4e1aad51f3acc29189672f26d3810a56bf8",
+  "exportedAt": "2026-11-05T16:16:09.058Z",
+  "developmentCase": true,
+  "prospectiveValidation": false,
+  "rawInputHistoryAvailable": false,
+  "nativeReplayAvailable": false,
+  "records": [
+    {
+      "schema": "laplace-lqt-record-v1",
+      "status": "verified",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 60,
+      "granularity": 300,
+      "algorithmVersion": 3,
+      "horizonBars": 12,
+      "originTime": 1793857500,
+      "sourceCloseAt": 1793857800,
+      "issuedAt": 1793857903.381,
+      "targetCloseAt": 1793861400,
+      "reference": 80353.66,
+      "outputs": [
+        {
+          "predicted": 80356.6702697281,
+          "baseline": 80353.66,
+          "lower": 80033.04792643986,
+          "upper": 80645.50115862691
+        },
+        {
+          "predicted": 0.4366703584421993,
+          "baseline": 0.29082454309670464,
+          "lower": 0.27756939247472834,
+          "upper": 0.7717306468553417
+        },
+        {
+          "predicted": 106.37636212244792,
+          "baseline": 115.56211812000001,
+          "lower": 62.88663269745665,
+          "upper": 282.5273122986749
+        }
+      ],
+      "probabilityUp": 0.5075850937339316,
+      "campaign": {
+        "candidates": 216,
+        "trainCases": 384,
+        "readoutFeatures": 52,
+        "regularization": 10,
+        "blend": 1,
+        "pooledWeight": 1,
+        "validationAccuracy": 0.63,
+        "referenceValidationAccuracy": 0.51,
+        "acceptedThreshold": 0.5,
+        "acceptedCases": 100,
+        "acceptedCorrect": 56,
+        "onlineLearning": "readout only; circuit frozen after initial campaign"
+      },
+      "referenceTest": {
+        "cases": 100,
+        "directionCorrect": 57,
+        "brier": 0.24985663509345524,
+        "predictedUp": 50,
+        "predictedDown": 50,
+        "actualUp": 55,
+        "probabilityCorrect": 57,
+        "probabilityMin": 0.46146335394285515,
+        "probabilityMax": 0.5301512248475481,
+        "normalizedPriceSD": 0.21006310999524955,
+        "outputs": [
+          {
+            "mae": 208.5886245825063,
+            "baselineMAE": 208.18239999999918,
+            "intervalCoverage": 0.8400000000000005
+          },
+          {
+            "mae": 0.10696457212759286,
+            "baselineMAE": 0.11430158890734314,
+            "intervalCoverage": 0.8200000000000005
+          },
+          {
+            "mae": 133.93699760881395,
+            "baselineMAE": 144.4615831598501,
+            "intervalCoverage": 0.8300000000000005
+          }
+        ]
+      },
+      "pretrainedLoaded": true,
+      "checkpointSHA256": "136e4dd934d9f3d05692f017f22b695cd14585af90effce26b1a295a0fb15d34",
+      "kernelSHA256": "150ac6e923d0a8c305a6daa9c5355746c57fda8d783b3d764dc20a716cbf12fc",
+      "training": {
+        "updates": 389,
+        "onlineUpdates": 5,
+        "selectedTemporalLag": 0,
+        "initialTestThrough": 1793838300,
+        "test": {
+          "cases": 100,
+          "directionCorrect": 56,
+          "brier": 0.24982058564479687,
+          "predictedUp": 55,
+          "predictedDown": 45,
+          "actualUp": 55,
+          "probabilityCorrect": 56,
+          "probabilityMin": 0.48276403037102594,
+          "probabilityMax": 0.5306238697403841,
+          "normalizedPriceSD": 0.01242674656544652,
+          "outputs": [
+            {
+              "mae": 208.3138025115509,
+              "baselineMAE": 208.18239999999918,
+              "intervalCoverage": 0.8500000000000005
+            },
+            {
+              "mae": 0.10696457212759286,
+              "baselineMAE": 0.11430158890734314,
+              "intervalCoverage": 0.8200000000000005
+            },
+            {
+              "mae": 133.93699760881395,
+              "baselineMAE": 144.4615831598501,
+              "intervalCoverage": 0.8300000000000005
+            }
+          ]
+        },
+        "nativeMilliseconds": 55.610192,
+        "updatedRotations": 1000,
+        "graphEdges": 1795,
+        "calibrationCases": 67
+      },
+      "jointContext": {
+        "schema": "laplace-joint-individual-series-c03-v1",
+        "asset": "BTC-USD",
+        "horizon_hours": 1,
+        "as_of": "2026-11-05T05:51:38.024Z",
+        "archive_count": 21,
+        "latest_capture_at": "2026-11-05T05:51:37.988Z",
+        "status": "abstained",
+        "model_ready": false,
+        "components": [
+          {
+            "id": "01",
+            "key": "XN01",
+            "title": "Dirección BTC 5m XI/Ether",
+            "role": "native_baseline",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "02",
+            "key": "XN01_RAW",
+            "title": "Máscara, prior, P(subida), soporte y registros XI",
+            "role": "native_provenance",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "03",
+            "key": "EQUITIES",
+            "title": "Dirección SPY/AAPL/NVDA",
+            "role": "individual_numeric_features",
+            "series": 249,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "04",
+            "key": "X002",
+            "title": "Entrenamiento/calibración temporal",
+            "role": "temporal_fit_and_calibration",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "05",
+            "key": "XG01",
+            "title": "Ablación local/global A/B con holdout",
+            "role": "heldout_sensitivity",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "06",
+            "key": "CAUSAL",
+            "title": "Trayectoria observacional BTC/eventos",
+            "role": "individual_numeric_features",
+            "series": 27,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "07",
+            "key": "M001_DIARY",
+            "title": "Pronóstico M001 y diario prospectivo",
+            "role": "prospective_scoring",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "08",
+            "key": "U002_XI",
+            "title": "Estados U002 y roundtrip XI",
+            "role": "native_execution",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "09",
+            "key": "WORLD",
+            "title": "U003/U004 observación mundial",
+            "role": "individual_numeric_features",
+            "series": 197,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "10",
+            "key": "ORDER_FLOW",
+            "title": "Libro de órdenes/operaciones",
+            "role": "individual_numeric_features",
+            "series": 11,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "11",
+            "key": "NOAA_EUR",
+            "title": "BTC/EUR, NOAA y contexto externo",
+            "role": "individual_numeric_features",
+            "series": 172,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "12",
+            "key": "C001",
+            "title": "ETF SEC N-PORT: flujos auténticos",
+            "role": "individual_numeric_features",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "13",
+            "key": "O001",
+            "title": "FINRA corto, ATS y Non-ATS",
+            "role": "individual_numeric_features",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "14",
+            "key": "D001_D002",
+            "title": "Derivados, funding, swaps OTC",
+            "role": "individual_numeric_features",
+            "series": 236,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "15",
+            "key": "B001",
+            "title": "Banca internacional BIS",
+            "role": "individual_numeric_features",
+            "series": 4,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "16",
+            "key": "K001",
+            "title": "Blockchain y DeFi público",
+            "role": "individual_numeric_features",
+            "series": 14,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "17",
+            "key": "EF001_EF005",
+            "title": "Archivo bitemporal persistente/escala",
+            "role": "verified_bitemporal_input",
+            "series": 0,
+            "status": "capture_hashes_and_cutoffs_checked"
+          },
+          {
+            "id": "18",
+            "key": "EF003",
+            "title": "Leyes y escenarios de transición",
+            "role": "conditional_scenarios",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "19",
+            "key": "EF004",
+            "title": "Aprendizaje conjunto multivariante",
+            "role": "separate_joint_evolution",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "20",
+            "key": "RAW_V001",
+            "title": "F001 crudo, trazas, ablación y evidencia V001",
+            "role": "unrounded_contribution_trace",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          }
+        ],
+        "source_series": 910,
+        "native_baseline_retained": true,
+        "native_lqt1000_result_available": true,
+        "central_price_modified": false,
+        "prospectively_validated": false,
+        "automatic_trading": false,
+        "reason": "insufficient_purged_independent_outcomes",
+        "counts": {
+          "matched_outcomes": 14,
+          "training": 7,
+          "validation": 2,
+          "calibration": 2,
+          "test": 3,
+          "required": {
+            "training": 24,
+            "validation": 8,
+            "calibration": 8,
+            "test": 8
+          }
+        },
+        "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+        "context_journal": {
+          "frames_verified": 3,
+          "frames_materialized": 3,
+          "unresolved": [],
+          "world_reference_at": "2026-11-05T03:06:53.442Z",
+          "latest_market_at": "2026-11-05T05:51:37.988Z",
+          "full_world_copied": false
+        },
+        "market_capture": {
+          "at": "2026-11-05T05:51:37.988Z",
+          "asset": "BTC-USD",
+          "frame_sha256": "59d1708e7b0c6c7859fd5f704d5e4b483870a6b0666ef3a3c031825dae6791fb",
+          "observations": 8,
+          "journal_saved": true
+        },
+        "market_error": null,
+        "contributionTotals": {}
+      },
+      "confidence": {
+        "schema": "laplace-empirical-confidence-c03-v1",
+        "as_of": 1793857903.381,
+        "estimated_probability_up": 0.5075850937339316,
+        "estimated_classifier_confidence": 0.5075850937339316,
+        "status": "insufficient_similar_prospective_outcomes",
+        "required_similar_cases": 30,
+        "nonoverlapping_cases": 0,
+        "similar_cases": 0,
+        "observed_up_rate": null,
+        "observed_up_rate_interval_95": null,
+        "interval_assumption": "Wilson_binomial_approximation_nonoverlap_does_not_prove_independence",
+        "classifier_accuracy": null,
+        "brier": null,
+        "calibration_error": null,
+        "probability_bucket": [
+          0.4,
+          0.6
+        ],
+        "forecasts_deduplicated": true,
+        "overlapping_targets_excluded": true,
+        "imported_records_excluded": true,
+        "historical_test_not_counted_as_prospective": true,
+        "confidence_is_not_a_guarantee": true
+      },
+      "observedCloseAt": 1793861400,
+      "checkedAt": 1793888322.033,
+      "measurement": [
+        {
+          "actual": 80601.52,
+          "error": 244.84973027190426,
+          "baselineError": 247.86000000000058,
+          "insideInterval": true
+        },
+        {
+          "actual": 0.2627840284454668,
+          "error": 0.17388632999673254,
+          "baselineError": 0.028040514651237858,
+          "insideInterval": false
+        },
+        {
+          "actual": 202.69979190000004,
+          "error": 96.32342977755212,
+          "baselineError": 87.13767378000003,
+          "insideInterval": true
+        }
+      ],
+      "comparison": {
+        "status": "context_forecast_not_issued"
+      },
+      "verification": {
+        "schema": "laplace-close-check-v1",
+        "reason": "verified",
+        "checkedAt": 1793888322.033,
+        "requestedFrom": 1793857500,
+        "requestedTo": 1793865000
+      },
+      "id": "regression-btc-1h-0"
+    },
+    {
+      "schema": "laplace-lqt-record-v1",
+      "status": "verified",
+      "asset": "BTC-USD",
+      "market": "crypto",
+      "minutes": 60,
+      "granularity": 300,
+      "algorithmVersion": 3,
+      "horizonBars": 12,
+      "originTime": 1793888100,
+      "sourceCloseAt": 1793888400,
+      "issuedAt": 1793888545.663,
+      "targetCloseAt": 1793892000,
+      "reference": 79313.98,
+      "outputs": [
+        {
+          "predicted": 79334.66734130758,
+          "baseline": 79313.98,
+          "lower": 78861.77115091619,
+          "upper": 79757.49947776538
+        },
+        {
+          "predicted": 0.4359820564321325,
+          "baseline": 0.4308626996888525,
+          "lower": 0.27713187291824326,
+          "upper": 0.7705142070007616
+        },
+        {
+          "predicted": 439.93130931890477,
+          "baseline": 505.90452171,
+          "lower": 260.07468431539746,
+          "upper": 1168.4232040431616
+        }
+      ],
+      "probabilityUp": 0.5356418139592403,
+      "campaign": {
+        "candidates": 216,
+        "trainCases": 384,
+        "readoutFeatures": 52,
+        "regularization": 10,
+        "blend": 1,
+        "pooledWeight": 1,
+        "validationAccuracy": 0.63,
+        "referenceValidationAccuracy": 0.51,
+        "acceptedThreshold": 0.5,
+        "acceptedCases": 100,
+        "acceptedCorrect": 56,
+        "onlineLearning": "readout only; circuit frozen after initial campaign"
+      },
+      "referenceTest": {
+        "cases": 100,
+        "directionCorrect": 57,
+        "brier": 0.24985663509345524,
+        "predictedUp": 50,
+        "predictedDown": 50,
+        "actualUp": 55,
+        "probabilityCorrect": 57,
+        "probabilityMin": 0.46146335394285515,
+        "probabilityMax": 0.5301512248475481,
+        "normalizedPriceSD": 0.21006310999524955,
+        "outputs": [
+          {
+            "mae": 208.5886245825063,
+            "baselineMAE": 208.18239999999918,
+            "intervalCoverage": 0.8400000000000005
+          },
+          {
+            "mae": 0.10696457212759286,
+            "baselineMAE": 0.11430158890734314,
+            "intervalCoverage": 0.8200000000000005
+          },
+          {
+            "mae": 133.93699760881395,
+            "baselineMAE": 144.4615831598501,
+            "intervalCoverage": 0.8300000000000005
+          }
+        ]
+      },
+      "pretrainedLoaded": false,
+      "checkpointSHA256": "ff88a669701bd65bcccef1d33d5a02d54da8f4b7b1e2f9a7db2a0ea5236eef38",
+      "kernelSHA256": "150ac6e923d0a8c305a6daa9c5355746c57fda8d783b3d764dc20a716cbf12fc",
+      "training": {
+        "updates": 397,
+        "onlineUpdates": 8,
+        "selectedTemporalLag": 0,
+        "initialTestThrough": 1793838300,
+        "test": {
+          "cases": 100,
+          "directionCorrect": 56,
+          "brier": 0.24982058564479687,
+          "predictedUp": 55,
+          "predictedDown": 45,
+          "actualUp": 55,
+          "probabilityCorrect": 56,
+          "probabilityMin": 0.48276403037102594,
+          "probabilityMax": 0.5306238697403841,
+          "normalizedPriceSD": 0.01242674656544652,
+          "outputs": [
+            {
+              "mae": 208.3138025115509,
+              "baselineMAE": 208.18239999999918,
+              "intervalCoverage": 0.8500000000000005
+            },
+            {
+              "mae": 0.10696457212759286,
+              "baselineMAE": 0.11430158890734314,
+              "intervalCoverage": 0.8200000000000005
+            },
+            {
+              "mae": 133.93699760881395,
+              "baselineMAE": 144.4615831598501,
+              "intervalCoverage": 0.8300000000000005
+            }
+          ]
+        },
+        "nativeMilliseconds": 57.073462,
+        "updatedRotations": 1000,
+        "graphEdges": 1795,
+        "calibrationCases": 67
+      },
+      "jointContext": {
+        "schema": "laplace-joint-individual-series-c03-v1",
+        "asset": "BTC-USD",
+        "horizon_hours": 1,
+        "as_of": "2026-11-05T14:22:19.477Z",
+        "archive_count": 27,
+        "latest_capture_at": "2026-11-05T14:22:19.430Z",
+        "status": "abstained",
+        "model_ready": false,
+        "components": [
+          {
+            "id": "01",
+            "key": "XN01",
+            "title": "Dirección BTC 5m XI/Ether",
+            "role": "native_baseline",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "02",
+            "key": "XN01_RAW",
+            "title": "Máscara, prior, P(subida), soporte y registros XI",
+            "role": "native_provenance",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "03",
+            "key": "EQUITIES",
+            "title": "Dirección SPY/AAPL/NVDA",
+            "role": "individual_numeric_features",
+            "series": 249,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "04",
+            "key": "X002",
+            "title": "Entrenamiento/calibración temporal",
+            "role": "temporal_fit_and_calibration",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "05",
+            "key": "XG01",
+            "title": "Ablación local/global A/B con holdout",
+            "role": "heldout_sensitivity",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "06",
+            "key": "CAUSAL",
+            "title": "Trayectoria observacional BTC/eventos",
+            "role": "individual_numeric_features",
+            "series": 27,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "07",
+            "key": "M001_DIARY",
+            "title": "Pronóstico M001 y diario prospectivo",
+            "role": "prospective_scoring",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "08",
+            "key": "U002_XI",
+            "title": "Estados U002 y roundtrip XI",
+            "role": "native_execution",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "09",
+            "key": "WORLD",
+            "title": "U003/U004 observación mundial",
+            "role": "individual_numeric_features",
+            "series": 197,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "10",
+            "key": "ORDER_FLOW",
+            "title": "Libro de órdenes/operaciones",
+            "role": "individual_numeric_features",
+            "series": 11,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "11",
+            "key": "NOAA_EUR",
+            "title": "BTC/EUR, NOAA y contexto externo",
+            "role": "individual_numeric_features",
+            "series": 172,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "12",
+            "key": "C001",
+            "title": "ETF SEC N-PORT: flujos auténticos",
+            "role": "individual_numeric_features",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "13",
+            "key": "O001",
+            "title": "FINRA corto, ATS y Non-ATS",
+            "role": "individual_numeric_features",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "14",
+            "key": "D001_D002",
+            "title": "Derivados, funding, swaps OTC",
+            "role": "individual_numeric_features",
+            "series": 236,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "15",
+            "key": "B001",
+            "title": "Banca internacional BIS",
+            "role": "individual_numeric_features",
+            "series": 4,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "16",
+            "key": "K001",
+            "title": "Blockchain y DeFi público",
+            "role": "individual_numeric_features",
+            "series": 14,
+            "status": "observed_waiting_for_outcomes"
+          },
+          {
+            "id": "17",
+            "key": "EF001_EF005",
+            "title": "Archivo bitemporal persistente/escala",
+            "role": "verified_bitemporal_input",
+            "series": 0,
+            "status": "capture_hashes_and_cutoffs_checked"
+          },
+          {
+            "id": "18",
+            "key": "EF003",
+            "title": "Leyes y escenarios de transición",
+            "role": "conditional_scenarios",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "19",
+            "key": "EF004",
+            "title": "Aprendizaje conjunto multivariante",
+            "role": "separate_joint_evolution",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          },
+          {
+            "id": "20",
+            "key": "RAW_V001",
+            "title": "F001 crudo, trazas, ablación y evidencia V001",
+            "role": "unrounded_contribution_trace",
+            "series": 0,
+            "status": "not_supplied_to_c03"
+          }
+        ],
+        "source_series": 910,
+        "native_baseline_retained": true,
+        "native_lqt1000_result_available": true,
+        "central_price_modified": false,
+        "prospectively_validated": false,
+        "automatic_trading": false,
+        "reason": "insufficient_purged_independent_outcomes",
+        "counts": {
+          "matched_outcomes": 15,
+          "training": 8,
+          "validation": 2,
+          "calibration": 2,
+          "test": 3,
+          "required": {
+            "training": 24,
+            "validation": 8,
+            "calibration": 8,
+            "test": 8
+          }
+        },
+        "label_kind": "retrospective_closed_OHLCV_not_prospective_or_vintage_certified",
+        "context_journal": {
+          "frames_verified": 9,
+          "frames_materialized": 9,
+          "unresolved": [],
+          "world_reference_at": "2026-11-05T03:06:53.442Z",
+          "latest_market_at": "2026-11-05T14:22:19.430Z",
+          "full_world_copied": false
+        },
+        "market_capture": {
+          "at": "2026-11-05T14:22:19.430Z",
+          "asset": "BTC-USD",
+          "frame_sha256": "7aa5802a20437cf07c5063d69899d2c936202bf373b69a0d257abcaaa2fc671a",
+          "observations": 8,
+          "journal_saved": true
+        },
+        "market_error": null,
+        "contributionTotals": {}
+      },
+      "confidence": {
+        "schema": "laplace-empirical-confidence-c03-v1",
+        "as_of": 1793888545.663,
+        "estimated_probability_up": 0.5356418139592403,
+        "estimated_classifier_confidence": 0.5356418139592403,
+        "status": "insufficient_similar_prospective_outcomes",
+        "required_similar_cases": 30,
+        "nonoverlapping_cases": 1,
+        "similar_cases": 1,
+        "observed_up_rate": 1,
+        "observed_up_rate_interval_95": [
+          0.20654931437723745,
+          1
+        ],
+        "interval_assumption": "Wilson_binomial_approximation_nonoverlap_does_not_prove_independence",
+        "classifier_accuracy": 1,
+        "brier": 0.24247243991302095,
+        "calibration_error": 0.49241490626606843,
+        "probability_bucket": [
+          0.4,
+          0.6
+        ],
+        "forecasts_deduplicated": true,
+        "overlapping_targets_excluded": true,
+        "imported_records_excluded": true,
+        "historical_test_not_counted_as_prospective": true,
+        "confidence_is_not_a_guarantee": true
+      },
+      "observedCloseAt": 1793892000,
+      "checkedAt": 1793895118.729,
+      "measurement": [
+        {
+          "actual": 77247.21,
+          "error": 2087.4573413075705,
+          "baselineError": 2066.7699999999895,
+          "insideInterval": false
+        },
+        {
+          "actual": 1.2897245710466516,
+          "error": 0.8537425146145191,
+          "baselineError": 0.8588618713577991,
+          "insideInterval": false
+        },
+        {
+          "actual": 1713.22765204,
+          "error": 1273.2963427210952,
+          "baselineError": 1207.3231303300001,
+          "insideInterval": false
+        }
+      ],
+      "comparison": {
+        "status": "context_forecast_not_issued"
+      },
+      "verification": {
+        "schema": "laplace-close-check-v1",
+        "reason": "verified",
+        "checkedAt": 1793895118.729,
+        "requestedFrom": 1793888100,
+        "requestedTo": 1793892000
+      },
+      "id": "regression-btc-1h-1"
+    }
+  ]
+}

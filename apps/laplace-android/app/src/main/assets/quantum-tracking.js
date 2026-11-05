@@ -4,6 +4,8 @@
 const E=root.LaplaceMath??(typeof require==='function'?require('./engine.js'):null);
 const M=root.LaplaceMarkets??(typeof require==='function'?require('./market-universe.js'):null);
 const C=root.LaplaceComparacionC04??(typeof require==='function'?require('./comparison-c04.js'):null);
+const R=root.LaplaceForecastRisk??(typeof require==='function'?require('./forecast-risk.js'):null);
+const I=root.LaplaceInverseLoss??(typeof require==='function'?require('./inverse-loss.js'):null);
 const need=(ok,why)=>{if(!ok)throw Error(why);},finite=Number.isFinite;
 const names=['price','volatility','volume'];
 function validate(f,now=Date.now()/1000){
@@ -55,6 +57,9 @@ function validate(f,now=Date.now()/1000){
   finite(f.observedCloseAt)&&f.observedCloseAt>f.issuedAt&&f.observedCloseAt<=now&&
   (f.market==='equity'||f.observedCloseAt===f.targetCloseAt),'Resultados LQT inválidos.');
  if(C)C.validarContextoC04(f.jointContext,f);
+ if(f.programSHA256!==undefined)need(typeof f.programSHA256==='string'&&/^[a-f0-9]{64}$/.test(f.programSHA256),'Huella del programa LQT inválida.');
+ if(f.riskDiagnostics)R.validate(f.riskDiagnostics,f);
+ if(f.inverseLoss)I.validate(f.inverseLoss,f);
  return f;
 }
 function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
@@ -70,6 +75,7 @@ function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
    initialTestThrough:result.initialTestThrough,test:result.test,nativeMilliseconds:result.nativeMilliseconds,
    updatedRotations:result.updatedRotations,graphEdges:result.graphEdges,calibrationCases:result.calibrationCases}};
  if(result.jointContext)f.jointContext=JSON.parse(JSON.stringify(result.jointContext));
+ if(result.programSHA256!==undefined)f.programSHA256=result.programSHA256;
  validate(f,issuedAt);return JSON.parse(JSON.stringify(f));
 }
 function measure(f,actual){return actual.map((value,i)=>({actual:value,error:Math.abs(f.outputs[i].predicted-value),
