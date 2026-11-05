@@ -3,7 +3,8 @@
 El icono de Android y el sello dentro de la app comparten un emblema original:
 piel oscura con escamas, ocho flechas del caos grabadas, triángulo de cobre
 envejecido y ojo de dragón ámbar con pupila vertical. La máscara adaptativa
-conserva el sello completo en los 64 dp centrales, sobre un fondo de escamas.
+conserva el sello completo en el 60 % central de su capa, sobre un fondo de
+escamas. El margen del 20 % es proporcional y se adapta al tamaño del lanzador.
 
 El tema recubre el observatorio con la misma piel, placas de esmalte oscuro,
 bordes de cobre, números claros y botones con relieve. El fondo es una textura

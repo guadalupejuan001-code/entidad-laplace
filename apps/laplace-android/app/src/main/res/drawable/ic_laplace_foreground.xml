@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- El sello completo cabe en los 64dp centrales de la máscara adaptativa. -->
+<!-- Margen proporcional: conserva el sello al cambiar tamaño o máscara. -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/laplace_dragon_seal" android:inset="22dp"/>
+    android:drawable="@drawable/laplace_dragon_seal" android:inset="20%"/>
