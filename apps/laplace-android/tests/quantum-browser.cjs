@@ -78,8 +78,10 @@ async function native(action,json){
   await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
   assert.equal(await page.locator('#classicalReference').getAttribute('open'),null);
   await page.locator('#lqtRun').click();
+  await page.waitForFunction(()=>document.documentElement.dataset.instrument==='calculating');
   await page.waitForFunction(()=>window.LaplaceQuantumMobile.state().records.length===1,null,{timeout:30000});
   const first=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0]);
+  assert.equal(await page.evaluate(()=>document.documentElement.dataset.instrument),'idle');
   assert.equal(first.training.updatedRotations,1000);assert.match(await page.locator('#lqtVolume').textContent(),/BTC/);
   assert.equal(first.algorithmVersion,3);
   assert.equal(first.jointContext.market_capture.observations,8);
@@ -110,7 +112,7 @@ async function native(action,json){
   assert.match(await page.locator('#lqtValidation').textContent(),/No mejoró|Mejoró/);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   const captures=path.join(root,'apps/laplace-android/build/ux-previews');fs.mkdirSync(captures,{recursive:true});
-  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.7-CONTEXTO-NATIVO.png')});
+  await page.locator('#lqtCard').screenshot({path:path.join(captures,'LAPLACE-4.8-SERPIENTE-NATIVO.png')});
   await page.reload();await page.waitForFunction(()=>window.LaplaceQuantumMobile?.state().records.length===2);
   await page.waitForFunction(()=>window.LaplaceEF004Mobile?.state().marketFrames===2);
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0].status),'verified');

@@ -23,6 +23,7 @@ function request(action,payload){
 }
 function availability(){
  const occupied=busy||syncing||importing||exporting;
+ window.dispatchEvent(new CustomEvent('laplace:instrument',{detail:{busy,syncing,importing,exporting}}));
  $('lqtRun').disabled=occupied||!window.LaplaceQuantumBridge?.request;
  $('lqtSync').disabled=occupied;
  $('lqtExport').disabled=occupied||!window.LaplaceQuantumBridge?.request;

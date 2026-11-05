@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101318"><title>LAPLACE 4.7 · LQT-1000</title>
+<meta name="theme-color" content="#151911"><title>LAPLACE 4.8 · Observatorio</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="serpent-theme.css">
 <script src="world.js" defer></script>
 <script src="market-universe.js" defer></script>
 <script src="marea.js" defer></script>
@@ -33,17 +34,25 @@
 <script src="decoration.js" defer></script>
 </head><body>
 <header class="topbar">
-  <div class="logo-lockup"><img class="mark" src="laplace-mark.svg" alt="">
-    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.7</small></div>
+  <div class="logo-lockup"><img class="mark" src="laplace-dragon-seal.webp" width="48" height="48" alt="">
+    <div><h1>LAPLACE</h1><small>APRENDIZAJE Y MERCADO · 4.8</small></div>
   </div>
   <div class="topright"><span class="dot"></span><span id="connection">EN ESPERA</span></div>
 </header>
 <main>
-  <div class="workspace-head">
-    <div><small>TU OBSERVATORIO</small>
+  <div class="workspace-head instrument-head">
+    <div class="instrument-copy"><small>TU OBSERVATORIO</small>
       <h2>Tu lectura de mercado.</h2>
-      <p>Elige un activo, calcula y comprueba el resultado.</p></div>
-    <span class="lab-chip">31 ACTIVOS · USD</span>
+      <p>Elige un activo, calcula y comprueba el resultado.</p>
+      <div class="instrument-readout"><span class="instrument-lamp" aria-hidden="true"></span><span id="instrumentMode" role="status">MOTOR EN REPOSO</span></div>
+      <div class="instrument-meter" aria-hidden="true"><span></span></div>
+    </div>
+    <div id="instrumentSeal" class="dragon-optic" aria-hidden="true">
+      <img src="laplace-dragon-seal.webp" width="128" height="128" alt="">
+      <span class="eye-warmth"></span><span class="eye-glint"></span>
+      <span class="eye-window"><span class="eye-lid upper"></span><span class="eye-lid lower"></span></span>
+    </div>
+    <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa" title="Pausar el movimiento">Ⅱ</button>
   </div>
   <nav class="tabs" aria-label="Navegación principal de Laplace">
     <button type="button" data-tab="panel" aria-current="page"><span class="tab-symbol" aria-hidden="true">◉</span>Analizar</button>
@@ -155,7 +164,6 @@
     <div class="hero portal-banner">
       <div class="portal-copy"><small class="eyebrow">LAPLACE / OBSERVA</small><strong>Del escenario<br>al resultado.</strong><span>Tu registro conserva ambos.</span></div>
       <video id="portalVideo" muted autoplay loop playsinline preload="none" poster="laplace-portal-poster.jpg" aria-hidden="true" tabindex="-1"><source data-src="laplace-portal.mp4" type="video/mp4"></video>
-      <button id="motionToggle" type="button" aria-pressed="false" aria-label="Pausar animación decorativa">Ⅱ</button>
     </div>
 
     <details class="classical-reference advanced-fold" id="classicalReference">

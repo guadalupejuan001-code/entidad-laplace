@@ -86,7 +86,7 @@ window.LaplaceBridge.fetchEF004Archive=function(id){setTimeout(()=>window.Laplac
 `;
 const http=require('node:http');
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css',
-  '.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml'};
+  '.mp4':'video/mp4','.jpg':'image/jpeg','.svg':'image/svg+xml','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{
   const name=req.url.split('?')[0]==='/'?'index.html':req.url.split('?')[0].slice(1);
   if(name==='favicon.ico'){res.writeHead(204);res.end();return}
@@ -117,7 +117,22 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     assert.ok(ready,'La app no alcanzó la inicialización: posible botón muerto');
     assert.equal(await page.locator('[data-tab]').count(),5);
     assert.equal(await page.locator('#asset option').count(),31);
-    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.7');
+    assert.equal(await page.evaluate(()=>window.LaplaceUIHealth.version),'4.8');
+    await page.waitForFunction(()=>document.querySelector('#instrumentSeal img').naturalWidth===512);
+    assert.match(await page.evaluate(()=>getComputedStyle(document.body).backgroundImage),/laplace-snakeskin/);
+    assert.equal(await page.locator('#motionToggle').count(),1);
+    await page.locator('#motionToggle').click();
+    assert.equal(await page.evaluate(()=>window.LaplaceDecoration.state().paused),true);
+    assert.equal(await page.evaluate(()=>document.documentElement.dataset.motion),'paused');
+    assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.eye-warmth')).animationPlayState),'paused');
+    await page.locator('#motionToggle').click();
+    assert.equal(await page.evaluate(()=>window.LaplaceDecoration.state().paused),false);
+    for(const width of [320,393,1080]){
+      await page.setViewportSize({width,height:852});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'desbordamiento con '+width+'px');
+    }
+    await page.setViewportSize({width:393,height:852});
+    await page.screenshot({path:path.resolve(__dirname,'../build/ux-previews/LAPLACE-4.8-SERPIENTE-INICIO.png')});
     await page.locator('#classicalReference > summary').click();
     assert.equal(await page.locator('#regimeStudy').count(),1);
     assert.equal(await page.locator('#asset optgroup').count(),3);
@@ -576,6 +591,8 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.waitForFunction(()=>document.querySelector('#portalVideo').paused&&document.querySelector('#motionToggle').disabled,null,{timeout:5000});
     assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
     assert.equal(await page.locator('#motionToggle').isDisabled(),true);
+    assert.equal(await page.evaluate(()=>window.LaplaceDecoration.state().motion),'paused');
+    assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.eye-lid.upper')).animationName),'none');
     await page.emulateMedia({reducedMotion:'no-preference'});
     await page.locator('[data-tab="world"]').click();
     assert.equal(await page.locator('#portalVideo').evaluate(v=>v.paused),true);
@@ -585,6 +602,10 @@ assert.ok(chrome,'Chromium/Chrome no está disponible: no saltar el test de UI')
     await page.evaluate(()=>window.scrollTo(0,0));
     const bounds=await page.locator('#lqtRun').boundingBox(),nav=await page.locator('.tabs').boundingBox();
     assert.ok(bounds.y+bounds.height<nav.y,'El pronóstico LQT debe ser accesible en la primera pantalla');
+    await page.locator('#motionToggle').click();
+    await page.reload({waitUntil:'networkidle'});
+    assert.equal(await page.evaluate(()=>window.LaplaceDecoration.state().paused),true,'la pausa debe conservarse al reiniciar');
+    assert.equal(await page.evaluate(()=>document.documentElement.dataset.motion),'paused');
     assert.deepEqual(errors,[],'La interfaz emitió errores Javascript');
     console.log(JSON.stringify({ok:true,price:true,forecast:true,analyze:true,
       test:true,evaluate:true,world:true,laplacePDE:true,laplaceGraph:true,
