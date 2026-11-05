@@ -79,6 +79,10 @@ async function native(action,json){
   },{rows:initial,clock:now});
   await page.goto(pathToFileURL(path.join(root,'apps/laplace-android/app/src/main/assets/index.html')).href);
   await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
+  await page.setViewportSize({width:360,height:780});
+  const runBounds=await page.locator('#lqtRun').boundingBox(),tabsBounds=await page.locator('.tabs').boundingBox();
+  assert.ok(runBounds.y+runBounds.height<tabsBounds.y,'El pronóstico debe caber también en un teléfono de 360×780');
+  await page.setViewportSize({width:393,height:852});
   assert.equal(await page.locator('#classicalReference').getAttribute('open'),null);
   await page.locator('#lqtRun').click();
   await page.waitForFunction(()=>document.documentElement.dataset.instrument==='calculating');
