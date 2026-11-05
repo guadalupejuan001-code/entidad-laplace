@@ -81,7 +81,9 @@ async function native(action,json){
   await page.waitForFunction(()=>window.LaplaceUIHealth?.initialized);
   await page.setViewportSize({width:360,height:780});
   const runBounds=await page.locator('#lqtRun').boundingBox(),tabsBounds=await page.locator('.tabs').boundingBox();
-  assert.ok(runBounds.y+runBounds.height<tabsBounds.y,'El pronóstico debe caber también en un teléfono de 360×780');
+  const shortLayoutOK=runBounds.y+runBounds.height<tabsBounds.y;
+  fs.mkdirSync(path.join(root,'apps/laplace-android/build/ux-previews'),{recursive:true});
+  await page.screenshot({path:path.join(root,'apps/laplace-android/build/ux-previews/LAPLACE-4.9-COMPACTO.png')});
   await page.setViewportSize({width:393,height:852});
   assert.equal(await page.locator('#classicalReference').getAttribute('open'),null);
   await page.locator('#lqtRun').click();
@@ -135,6 +137,7 @@ async function native(action,json){
   await page.reload();await page.waitForFunction(()=>window.LaplaceQuantumMobile?.state().records.length===2);
   await page.waitForFunction(()=>window.LaplaceEF004Mobile?.state().marketFrames===2);
   assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[0].status),'verified');
+  assert.ok(shortLayoutOK,'El pronóstico debe caber en 360×780: '+JSON.stringify({runBounds,tabsBounds}));
   assert.deepEqual(errors,[]);console.log(JSON.stringify({nativeXI:true,actualArchivedOHLCV:true,connected1000:true,
    learningRetained:true,laterUpdates:8,immutableForecasts:true,threeObservedErrors:true,backupAndImport:true,
    compactContextFramesRetained:2,contextOrderBookFixtures:true,automaticCloseVerification:true,exactRangeRecovery:true,unifiedLedger:true,fileOrigin:true,jsErrors:0}));
