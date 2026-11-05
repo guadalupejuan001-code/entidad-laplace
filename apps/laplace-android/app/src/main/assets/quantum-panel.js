@@ -3,7 +3,7 @@
 const T=window.LaplaceQuantumTracking,D=window.LaplaceCampaignData??window.LaplaceActivityData,$=id=>document.getElementById(id);
 const KEY='laplace-lqt-records-v1',requests=new Map(),fmt=(n,d=4)=>Number.isFinite(n)?
  new Intl.NumberFormat('es-MX',{maximumFractionDigits:d}).format(n):'—',when=n=>new Date(n*1000).toLocaleString('es-MX');
-let records=[],busy=false,syncing=false,importing=false,exporting=false,epoch=0,limit=20,last=null,lastSyncAt=0;
+let records=[],busy=false,syncing=false,importing=false,exporting=false,epoch=0,limit=20,last=null,lastSyncAt=0,inverseRows=[];
 try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(data)){
  for(const f of data)T.validate(f);records=data;
 }}catch(error){$('lqtHistoryStatus').textContent='No se pudo leer el registro LQT: '+error.message;}
@@ -28,15 +28,50 @@ function availability(){
  $('lqtSync').disabled=occupied;
  $('lqtExport').disabled=occupied||!window.LaplaceQuantumBridge?.request;
  $('lqtImport').disabled=occupied||!window.LaplaceQuantumBridge?.request;
+ $('lqtInverseRun').disabled=occupied||!last||!inverseRows.length;
 }
 function reset(){epoch++;last=null;for(const id of ['lqtPrice','lqtVolatility','lqtVolume','lqtDirection'])$(id).textContent='—';
  $('lqtRisk').hidden=true;$('lqtRisk').textContent='';
+ inverseRows=[];$('lqtInverseResult').textContent='Genera un pronóstico para explorar sus condiciones de pérdida.';
  $('lqtPeriod').textContent='';$('lqtValidation').replaceChildren();$('lqtRaw').textContent='Sin cálculo para esta selección.';
  $('lqtStatus').textContent=window.LaplaceQuantumBridge?.request?
   'Pulsa Predecir. El aprendizaje se conserva por activo y plazo.':'Instala la APK para ejecutar LQT en XI/Ether.';
  selection();renderHistory();availability();}
+function inverseTarget(){
+ const lossPct=Number($('lqtInversePct').value),direction=$('lqtInverseDirection').value;
+ if(!Number.isFinite(lossPct)||lossPct<=0||lossPct>=100||!['down','up'].includes(direction))
+  throw Error('Indica una magnitud mayor que 0 y menor que 100 %.');
+ return {lossPct,direction};
+}
+function renderInverse(a){
+ const out=$('lqtInverseResult');out.replaceChildren();
+ if(!a){out.append(node('p','Este pronóstico no guardó un análisis inverso. Puedes explorar el escenario con el historial disponible.','helper'));return;}
+ out.append(node('p',(a.mode==='retrospective'?'Exploración calculada después de la emisión. ':'Escenario guardado al emitir. ')+
+  (a.target.direction==='down'?'Caída':'Subida')+' de '+fmt(a.target.lossPct,2)+' %: precio objetivo USD '+fmt(a.target.price,2)+'.','helper'));
+ out.append(node('p','Para alcanzar ese cierre, la volatilidad realizada mínima entre cierres sería '+
+  fmt(a.target.minimumCloseToCloseRVPct,3)+' %. Es una condición matemática necesaria; no estima la probabilidad.','fineprint'));
+ if(a.reviewReasons.includes('scenario_outside_central_price_interval'))out.append(node('p',
+  'Esta pérdida queda fuera del intervalo central mostrado por el pronóstico.','helper'));
+ const b=a.history;
+ out.append(node('p',b.lossCases+' pérdidas semejantes en '+b.cases+' períodos históricos con objetivos sin solapamiento. '+
+  (a.status==='insufficient_event_history'||a.status==='insufficient_history'?
+   'Faltan suficientes pérdidas y períodos de comparación para estimar condiciones fiables.':
+   'Las condiciones asociadas requieren validación en nuevas emisiones.'),'helper'));
+ if(!a.currentWindowAvailable)out.append(node('p','Falta la ventana reciente de señales del cierre original.','helper'));
+ for(const d of a.drivers)out.append(node('p',d.title+': '+(d.currentPresent===null?'sin dato actual':d.currentPresent?'presente ahora':'ausente ahora')+
+  '. Apareció antes de '+d.eventsWithSignal+'/'+b.lossCases+' pérdidas y '+d.otherWithSignal+'/'+b.otherCases+' períodos restantes.','fineprint'));
+ for(const c of a.candidates)out.append(node('p','Antecedente: '+when(c.originCloseAt)+' → '+when(c.targetCloseAt)+
+  ', movimiento '+fmt(c.returnPct,2)+' %.','fineprint'));
+ out.append(node('p','Son condiciones observadas, con causalidad y probabilidad de pérdida todavía sin validar. El análisis considera el cierre del plazo.','fineprint'));
+}
+function exploreInverse(){
+ if(!last||busy||syncing||importing||exporting)return;
+ try{renderInverse(window.LaplaceInverseLoss.analyze(last,{...inverseTarget(),rows:inverseRows,mode:'retrospective'}));}
+ catch(error){$('lqtInverseResult').textContent=error.message;}
+}
 function render(f){
  last=f;const units=[' USD',' puntos porcentuales',' '+unit(f)];
+ renderInverse(f.inverseLoss);
  $('lqtPrice').textContent='USD '+fmt(f.outputs[0].predicted,2);
  $('lqtVolatility').textContent=fmt(f.outputs[1].predicted,3)+' %';
  $('lqtVolume').textContent=fmt(f.outputs[2].predicted,6)+' '+unit(f);
@@ -113,9 +148,11 @@ async function run(){
  if(busy||syncing||importing||exporting)return;busy=true;const token=++epoch,s=selection();availability();
  $('lqtStatus').textContent='Consultando velas cerradas y cargando el aprendizaje; si falta un modelo, se entrena y prueba localmente…';
  try{
+  const inverseOptions=inverseTarget();
   const rows=await D.history(s);if(token!==epoch)return;
   if(!rows.length||!D.freshness(s,rows.at(-1)).valid)throw Error('Actualiza las velas: el último cierre está desactualizado.');
   const checked=T.evaluate(records,rows,{...s,now:Date.now()/1000});if(checked.evaluated)commit(checked.records);
+  inverseRows=rows;
   const existing=records.find(f=>f.asset===s.asset&&f.minutes===s.minutes&&f.granularity===s.granularity&&f.originTime===rows.at(-1).time&&
    (f.algorithmVersion??1)===(window.LAPLACE_CAMPAIGN_RELEASE?.algorithmVersion??window.LAPLACE_LQT_RELEASE?.algorithmVersion??2));
   if(existing){render(existing);$('lqtStatus').textContent='Este cierre ya tenía un pronóstico; se conserva el original.';return;}
@@ -129,6 +166,7 @@ async function run(){
   const f=T.freeze(result);
   if(window.LaplaceIntegral?.medirConfianzaInterna)f.confidence=window.LaplaceIntegral.medirConfianzaInterna(records,f);
   f.riskDiagnostics=window.LaplaceForecastRisk.assess(f,{records,rows});
+  f.inverseLoss=window.LaplaceInverseLoss.analyze(f,{rows,...inverseOptions});
   T.validate(f);
   commit([...records,f]);render(f);
   $('lqtStatus').textContent='Precio, dirección, volatilidad y volumen guardados. El resultado se comprobará al cerrar el período.';
@@ -205,6 +243,7 @@ window.LaplaceQuantumMobile={
  consumeExport(message){if(!exporting)return false;exporting=false;availability();$('lqtHistoryStatus').textContent=String(message);return true;}
 };
 $('lqtRun').addEventListener('click',run);$('lqtSync').addEventListener('click',sync);$('lqtMore').addEventListener('click',()=>{limit+=20;renderHistory();});
+$('lqtInverseRun').addEventListener('click',exploreInverse);
 $('lqtExport').addEventListener('click',exportBackup);
 $('lqtImport').addEventListener('click',()=>{importing=true;availability();
  try{if(window.LaplaceBridge?.importHistory)window.LaplaceBridge.importHistory();else $('lqtImportFile').click();}

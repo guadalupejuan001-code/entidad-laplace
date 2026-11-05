@@ -60,6 +60,9 @@ function makeRow(entry,now,open){
  body.append(date);
  if(engine==='native'&&window.LaplaceForecastRisk)body.append(node('p',
   window.LaplaceForecastRisk.describe(f.riskDiagnostics),'helper'));
+ if(engine==='native'&&f.inverseLoss){const a=f.inverseLoss;
+  body.append(node('p','Inverso: '+(a.target.direction==='down'?'caída':'subida')+' del '+fmt(a.target.lossPct,2)+
+   ' % hasta USD '+fmt(a.target.price,2)+'. '+a.history.lossCases+' antecedentes entre '+a.history.cases+' períodos.','helper'));}
  for(const x of fields){const metric=node('div',undefined,'ledger-measure');metric.append(node('strong',x.name));
   const values=node('dl');for(const [name,value]of [['Previsto',x.predicted],['Observado',x.actual],['Error absoluto',x.error]]){
    if(!done&&name!=='Previsto')continue;values.append(node('dt',name),node('dd',fmt(value,6)+' '+(name==='Error absoluto'?x.errorUnit:x.unit)))}

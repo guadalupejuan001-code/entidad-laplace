@@ -25,6 +25,7 @@
 <script src="lqt-evidence.js" defer></script>
 <script src="comparison-c04.js" defer></script>
 <script src="forecast-risk.js" defer></script>
+<script src="inverse-loss.js" defer></script>
 <script src="quantum-tracking.js" defer></script>
 <script src="campaign-evidence.js" defer></script>
 <script src="campaign-data.js" defer></script>
@@ -159,6 +160,16 @@
       <p id="lqtProbability" class="helper"></p><p id="lqtPeriod" class="helper"></p>
       <p id="lqtRisk" class="helper" role="status" aria-live="polite" hidden></p>
       <p class="fineprint">La dirección se obtiene del precio previsto. La probabilidad de subida es otra salida del modelo y puede discrepar. Cada resultado se mide por separado.</p>
+      <details class="raw-details" id="lqtInverse"><summary>LAPLACE inverso · explorar una pérdida</summary>
+        <p class="helper">Parte de un movimiento adverso del precio al cierre del plazo y busca condiciones anteriores a pérdidas semejantes.</p>
+        <div class="inverse-controls">
+          <label for="lqtInverseDirection">Movimiento<select id="lqtInverseDirection"><option value="down">Caída</option><option value="up">Subida</option></select></label>
+          <label for="lqtInversePct">Magnitud (%)<input id="lqtInversePct" type="number" min="0.01" max="99.99" step="0.01" value="2" inputmode="decimal"></label>
+        </div>
+        <p class="fineprint">El 2 % es un escenario editable de ejemplo. Mide el cambio del precio del activo; no conoce tu posición ni la pérdida de tu cuenta.</p>
+        <button id="lqtInverseRun" type="button" class="smart-secondary" disabled>Explorar pérdida</button>
+        <div id="lqtInverseResult" class="activity-validation" aria-live="polite">Genera un pronóstico para explorar sus condiciones de pérdida.</div>
+      </details>
       <details class="raw-details"><summary>Intervalos, entrenamiento y prueba histórica</summary>
         <p class="helper">Incluye 33 modelos entrenados de BTC, ETH y SOL. Circuito temporal conectado de 1.000 qubits simulados en XI/Ether; después de la campaña, los resultados nuevos actualizan su lectura. Los intervalos se ajustan con un bloque histórico separado y su cobertura posterior se comprueba en tu registro.</p>
         <p class="fineprint">Campaña C02 frente a C01: más aciertos en 14 de 33 contextos, empate en 4 y menos aciertos en 15. Menor error de precio en 29. Resultados históricos; la mejora direccional general aún no está demostrada.</p>

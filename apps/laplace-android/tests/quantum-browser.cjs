@@ -97,6 +97,10 @@ async function native(action,json){
   assert.equal(first.riskDiagnostics.inputWindow.length,31);
   assert.equal(first.riskDiagnostics.inputProgramSHA256,first.programSHA256);
   assert.equal(first.riskDiagnostics.tailProbability,null);
+  assert.equal(first.inverseLoss.mode,'issued');
+  assert.equal(first.inverseLoss.target.lossPct,2);
+  assert.equal(first.inverseLoss.causalStatus,'not_identified');
+  assert.ok(first.inverseLoss.candidates.every(c=>c.targetCloseAt<=first.sourceCloseAt));
   assert.ok(first.riskDiagnostics.inputWindow.every(r=>r[0]+first.granularity<=first.sourceCloseAt));
   assert.equal(first.jointContext.market_capture.observations,8);
   assert.equal(first.jointContext.market_capture.journal_saved,true);
@@ -116,6 +120,12 @@ async function native(action,json){
   const second=await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1]);
   assert.equal(second.riskDiagnostics.comparison.sourceCloseAt,first.sourceCloseAt);
   assert.equal(await page.locator('#lqtRisk').isVisible(),second.riskDiagnostics.status==='activity_shift');
+  await page.locator('#lqtInverse').evaluate(e=>e.open=true);
+  await page.locator('#lqtInversePct').fill('3');await page.locator('#lqtInverseRun').click();
+  assert.match(await page.locator('#lqtInverseResult').textContent(),/después de la emisión/);
+  assert.match(await page.locator('#lqtInverseResult').textContent(),/3 %/);
+  assert.equal(await page.evaluate(()=>window.LaplaceQuantumMobile.state().records[1].inverseLoss.target.lossPct),2);
+  await page.locator('#lqtInverse').evaluate(e=>e.open=false);
   assert.equal(second.training.onlineUpdates,first.campaign.pooledWeight>0?8:0);assert.notEqual(second.checkpointSHA256,first.checkpointSHA256);
   assert.equal(await page.evaluate(()=>window.LaplaceEF004Mobile.state().marketFrames),2);
   await page.locator('[data-tab="tests"]').click();
@@ -133,6 +143,7 @@ async function native(action,json){
   const backup=await page.evaluate(()=>JSON.parse(window.__exported));
   assert.equal(backup.model.checkpointSHA256,second.checkpointSHA256);assert.equal(backup.records.length,2);
   assert.deepEqual(backup.records[1].riskDiagnostics,second.riskDiagnostics);
+  assert.deepEqual(backup.records[1].inverseLoss,second.inverseLoss);
   assert.ok(backup.model.checkpoint.startsWith('LQC3 3\n'));
   await page.locator('#lqtImport').click();
   await page.waitForFunction(()=>document.querySelector('#lqtHistoryStatus').textContent.includes('2 ya existentes'));
