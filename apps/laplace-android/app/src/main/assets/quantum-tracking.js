@@ -19,6 +19,7 @@ function validate(f,now=Date.now()/1000){
  need(typeof f.checkpointSHA256==='string'&&/^[a-f0-9]{64}$/.test(f.checkpointSHA256)&&
   typeof f.kernelSHA256==='string'&&/^[a-f0-9]{64}$/.test(f.kernelSHA256)&&
   finite(f.probabilityUp)&&f.probabilityUp>0&&f.probabilityUp<1,'Modelo LQT inválido.');
+ need([1,2].includes(f.algorithmVersion??1),'Versión del aprendizaje LQT inválida.');
  need(Array.isArray(f.outputs)&&f.outputs.length===3&&f.outputs.every(x=>x&&
   ['predicted','baseline','lower','upper'].every(k=>finite(x[k])&&x[k]>=0)&&x.lower<=x.upper),
   'Predicciones LQT inválidas.');
@@ -34,6 +35,11 @@ function validate(f,now=Date.now()/1000){
   finite(te.brier)&&te.brier>=0&&te.brier<=1&&Array.isArray(te.outputs)&&te.outputs.length===3&&te.outputs.every(x=>
    x&&finite(x.mae)&&x.mae>=0&&finite(x.baselineMAE)&&x.baselineMAE>=0&&finite(x.intervalCoverage)&&
    x.intervalCoverage>=0&&x.intervalCoverage<=1.000000001),'Entrenamiento LQT inválido.');
+ if(te.predictedUp!==undefined)need(
+  ['predictedUp','predictedDown','actualUp','probabilityCorrect'].every(k=>Number.isSafeInteger(te[k])&&te[k]>=0&&te[k]<=te.cases)&&
+  te.predictedUp+te.predictedDown<=te.cases&&finite(te.probabilityMin)&&finite(te.probabilityMax)&&te.probabilityMin>0&&
+  te.probabilityMin<=te.probabilityMax&&te.probabilityMax<1&&finite(te.normalizedPriceSD)&&te.normalizedPriceSD>=0,
+  'Diagnóstico de respuesta LQT inválido.');
  if(f.status==='verified')need(Array.isArray(f.measurement)&&f.measurement.length===3&&
   f.measurement.every(x=>x&&finite(x.actual)&&x.actual>=0)&&f.measurement[0].actual>0&&
   finite(f.observedCloseAt)&&f.observedCloseAt>f.issuedAt&&f.observedCloseAt<=now&&
@@ -45,7 +51,7 @@ function freeze(result,{issuedAt=Date.now()/1000,id=null}={}){
   result.components===1&&result.updatedRotations===1000&&result.checkpointSaved===true,
   'El núcleo no devolvió un aprendizaje LQT guardado y verificable.');
  const f={schema:'laplace-lqt-record-v1',id:id??root.crypto?.randomUUID?.()??String(Date.now()),status:'pending',
-  asset:result.asset,market:result.market,minutes:result.minutes,granularity:result.granularity,
+  asset:result.asset,market:result.market,minutes:result.minutes,granularity:result.granularity,algorithmVersion:result.algorithmVersion??1,
   horizonBars:result.horizonBars,originTime:result.originTime,sourceCloseAt:result.sourceCloseAt,
   issuedAt,targetCloseAt:result.targetCloseAt,reference:result.reference,outputs:result.outputs,
   probabilityUp:result.probabilityUp,checkpointSHA256:result.checkpointSHA256,kernelSHA256:result.kernelSHA256,
@@ -78,7 +84,8 @@ function evaluate(records,raw,{asset,granularity,now=Date.now()/1000}){
  });return {records:updated,evaluated};
 }
 function summarize(records,s){
- const cohort=records.filter(f=>f.asset===s.asset&&f.minutes===s.minutes&&f.granularity===s.granularity),
+ const cohort=records.filter(f=>f.asset===s.asset&&f.minutes===s.minutes&&f.granularity===s.granularity&&
+   (s.algorithmVersion===undefined||(f.algorithmVersion??1)===s.algorithmVersion)),
   done=cohort.filter(f=>f.status==='verified');
  return {cases:done.length,pending:cohort.length-done.length,
   mae:names.map((_,i)=>done.length?done.reduce((t,f)=>t+f.measurement[i].error/done.length,0):null),

@@ -1,0 +1,1014 @@
+{
+  "schema": "laplace-lqt-response-c01-v1",
+  "algorithmVersion": 2,
+  "algorithmSHA256": "750b801936d15c62aa411806214a7afc51a1d56925d36a5495c2d65c3cf1518d",
+  "sourceSHA256": "9239d6d29f9b415537d720e5aa87dc232d944352cae277c462fff1326e860713",
+  "controlledTestSHA256": "3536aa62d4b4af90b4c2382f9fdfa0bd3aa4f72edbf7cffee3034cc0a1aab305",
+  "controlledInteraction": {
+    "task": "held-out two-input XOR across CZ(3,4)",
+    "trainCases": 256,
+    "validationCases": 128,
+    "testSeed": 20261104,
+    "unseenCases": 256,
+    "quantumAccuracy": 1,
+    "matchedNoCZAccuracy": 0.60546875,
+    "quantumLoss": 0.19301562407642417,
+    "matchedNoCZLoss": 0.3958168971529003,
+    "resetThetaLoss": 0.7095446832838198,
+    "maxThetaChange": 1.0632848778850454,
+    "inputResponseLogit": 1.1659237339254411,
+    "centeredGradientMaxError": 9.120926236505511e-12,
+    "centeredObservableMaxError": 1.3322676295501878e-15,
+    "optimizerNextStepIdentical": true,
+    "quantumUpdates": 6144,
+    "matchedNoCZUpdates": 6144
+  },
+  "reusedMarketBenchmark": [
+    {
+      "minutes": 5,
+      "test": {
+        "cases": 64,
+        "directionCorrect": 25,
+        "brier": 0.2540056153594327,
+        "predictedUp": 21,
+        "predictedDown": 43,
+        "actualUp": 36,
+        "probabilityCorrect": 29,
+        "probabilityMin": 0.37255678792796837,
+        "probabilityMax": 0.6002214367269634,
+        "normalizedPriceSD": 0.33468223432582994,
+        "outputs": [
+          {
+            "mae": 85.61006649470414,
+            "baselineMAE": 72.7815625000012,
+            "intervalCoverage": 0.765625
+          },
+          {
+            "mae": 0.06839530714909352,
+            "baselineMAE": 0.08456739961656828,
+            "intervalCoverage": 0.640625
+          },
+          {
+            "mae": 20.50812249525125,
+            "baselineMAE": 22.198979096647133,
+            "intervalCoverage": 0.90625
+          }
+        ]
+      },
+      "resetTheta": {
+        "cases": 64,
+        "directionCorrect": 24,
+        "brier": 0.25411699120858444,
+        "predictedUp": 20,
+        "predictedDown": 44,
+        "actualUp": 36,
+        "probabilityCorrect": 29,
+        "probabilityMin": 0.3744635734252704,
+        "probabilityMax": 0.5983453304708292,
+        "normalizedPriceSD": 0.3320108749633524,
+        "outputs": [
+          {
+            "mae": 85.76163569292544,
+            "baselineMAE": 72.7815625000012,
+            "intervalCoverage": 0.765625
+          },
+          {
+            "mae": 0.06783839519488036,
+            "baselineMAE": 0.08456739961656828,
+            "intervalCoverage": 0.640625
+          },
+          {
+            "mae": 20.680968135248868,
+            "baselineMAE": 22.198979096647133,
+            "intervalCoverage": 0.90625
+          }
+        ]
+      },
+      "biasOnly": {
+        "cases": 64,
+        "directionCorrect": 28,
+        "brier": 0.25011296526094906,
+        "predictedUp": 0,
+        "predictedDown": 64,
+        "actualUp": 36,
+        "probabilityCorrect": 28,
+        "probabilityMin": 0.4991027188205288,
+        "probabilityMax": 0.4991027188205288,
+        "normalizedPriceSD": 0,
+        "outputs": [
+          {
+            "mae": 73.06992481138082,
+            "baselineMAE": 72.7815625000012,
+            "intervalCoverage": 0.78125
+          },
+          {
+            "mae": 0.06376199307392767,
+            "baselineMAE": 0.08456739961656828,
+            "intervalCoverage": 0.640625
+          },
+          {
+            "mae": 22.316177581268906,
+            "baselineMAE": 22.198979096647133,
+            "intervalCoverage": 0.890625
+          }
+        ]
+      },
+      "shuffledFeatures": {
+        "cases": 64,
+        "directionCorrect": 21,
+        "brier": 0.26369783867753627,
+        "predictedUp": 21,
+        "predictedDown": 43,
+        "actualUp": 36,
+        "probabilityCorrect": 23,
+        "probabilityMin": 0.37255678792796837,
+        "probabilityMax": 0.6002214367269634,
+        "normalizedPriceSD": 0.33468223432582983,
+        "outputs": [
+          {
+            "mae": 85.68196638490303,
+            "baselineMAE": 72.7815625000012,
+            "intervalCoverage": 0.71875
+          },
+          {
+            "mae": 0.06418628752462148,
+            "baselineMAE": 0.08456739961656828,
+            "intervalCoverage": 0.5625
+          },
+          {
+            "mae": 20.589582928590513,
+            "baselineMAE": 22.198979096647133,
+            "intervalCoverage": 0.875
+          }
+        ]
+      },
+      "meanAbsoluteNormalizedPriceResponse": 0.3256995968243449,
+      "meanAbsoluteProbabilityResponse": 0.04123479510544185,
+      "maxThetaChangeRadians": 0.3858042529261955,
+      "meanThetaChangeRadians": 0.056991365705261365
+    },
+    {
+      "minutes": 15,
+      "test": {
+        "cases": 64,
+        "directionCorrect": 28,
+        "brier": 0.2550145130382957,
+        "predictedUp": 29,
+        "predictedDown": 35,
+        "actualUp": 31,
+        "probabilityCorrect": 27,
+        "probabilityMin": 0.44295568264046836,
+        "probabilityMax": 0.5461598793273255,
+        "normalizedPriceSD": 0.345622218497078,
+        "outputs": [
+          {
+            "mae": 136.4946607040181,
+            "baselineMAE": 119.39453124999864,
+            "intervalCoverage": 0.75
+          },
+          {
+            "mae": 0.09079427861368758,
+            "baselineMAE": 0.10814288918531378,
+            "intervalCoverage": 0.75
+          },
+          {
+            "mae": 37.56047858211477,
+            "baselineMAE": 50.192428796894525,
+            "intervalCoverage": 0.84375
+          }
+        ]
+      },
+      "resetTheta": {
+        "cases": 64,
+        "directionCorrect": 29,
+        "brier": 0.25454887551900784,
+        "predictedUp": 30,
+        "predictedDown": 34,
+        "actualUp": 31,
+        "probabilityCorrect": 27,
+        "probabilityMin": 0.4436556870397433,
+        "probabilityMax": 0.5435428685660384,
+        "normalizedPriceSD": 0.3405162335469103,
+        "outputs": [
+          {
+            "mae": 134.86596785425058,
+            "baselineMAE": 119.39453124999864,
+            "intervalCoverage": 0.75
+          },
+          {
+            "mae": 0.0912098739397129,
+            "baselineMAE": 0.10814288918531378,
+            "intervalCoverage": 0.75
+          },
+          {
+            "mae": 38.60470256273898,
+            "baselineMAE": 50.192428796894525,
+            "intervalCoverage": 0.84375
+          }
+        ]
+      },
+      "biasOnly": {
+        "cases": 64,
+        "directionCorrect": 33,
+        "brier": 0.24985702693894146,
+        "predictedUp": 0,
+        "predictedDown": 64,
+        "actualUp": 31,
+        "probabilityCorrect": 33,
+        "probabilityMin": 0.49443320878395725,
+        "probabilityMax": 0.49443320878395725,
+        "normalizedPriceSD": 0,
+        "outputs": [
+          {
+            "mae": 119.48333386052627,
+            "baselineMAE": 119.39453124999864,
+            "intervalCoverage": 0.796875
+          },
+          {
+            "mae": 0.08424089261836873,
+            "baselineMAE": 0.10814288918531378,
+            "intervalCoverage": 0.796875
+          },
+          {
+            "mae": 47.96003466561538,
+            "baselineMAE": 50.192428796894525,
+            "intervalCoverage": 0.8125
+          }
+        ]
+      },
+      "shuffledFeatures": {
+        "cases": 64,
+        "directionCorrect": 26,
+        "brier": 0.24923995227900742,
+        "predictedUp": 29,
+        "predictedDown": 35,
+        "actualUp": 31,
+        "probabilityCorrect": 29,
+        "probabilityMin": 0.44295568264046836,
+        "probabilityMax": 0.5461598793273255,
+        "normalizedPriceSD": 0.345622218497078,
+        "outputs": [
+          {
+            "mae": 132.9617974071134,
+            "baselineMAE": 119.39453124999864,
+            "intervalCoverage": 0.765625
+          },
+          {
+            "mae": 0.10022895006454059,
+            "baselineMAE": 0.10814288918531378,
+            "intervalCoverage": 0.765625
+          },
+          {
+            "mae": 47.14623023791744,
+            "baselineMAE": 50.192428796894525,
+            "intervalCoverage": 0.765625
+          }
+        ]
+      },
+      "meanAbsoluteNormalizedPriceResponse": 0.36755964095363436,
+      "meanAbsoluteProbabilityResponse": 0.023674563974021713,
+      "maxThetaChangeRadians": 0.3002803349249309,
+      "meanThetaChangeRadians": 0.058404694223759
+    },
+    {
+      "minutes": 30,
+      "test": {
+        "cases": 64,
+        "directionCorrect": 32,
+        "brier": 0.24771843110462935,
+        "predictedUp": 31,
+        "predictedDown": 33,
+        "actualUp": 25,
+        "probabilityCorrect": 35,
+        "probabilityMin": 0.45771114263431506,
+        "probabilityMax": 0.5436501820522696,
+        "normalizedPriceSD": 0.21278940581465144,
+        "outputs": [
+          {
+            "mae": 195.04258680309113,
+            "baselineMAE": 194.9170312499989,
+            "intervalCoverage": 0.71875
+          },
+          {
+            "mae": 0.10801973261641391,
+            "baselineMAE": 0.1370954078522489,
+            "intervalCoverage": 0.859375
+          },
+          {
+            "mae": 75.00342380755373,
+            "baselineMAE": 87.13760524882812,
+            "intervalCoverage": 0.875
+          }
+        ]
+      },
+      "resetTheta": {
+        "cases": 64,
+        "directionCorrect": 32,
+        "brier": 0.24749567062674413,
+        "predictedUp": 29,
+        "predictedDown": 35,
+        "actualUp": 25,
+        "probabilityCorrect": 36,
+        "probabilityMin": 0.4583030931430484,
+        "probabilityMax": 0.5399243639442757,
+        "normalizedPriceSD": 0.20533133245132446,
+        "outputs": [
+          {
+            "mae": 193.59171591344057,
+            "baselineMAE": 194.9170312499989,
+            "intervalCoverage": 0.71875
+          },
+          {
+            "mae": 0.1093671576140341,
+            "baselineMAE": 0.1370954078522489,
+            "intervalCoverage": 0.859375
+          },
+          {
+            "mae": 74.43734013892717,
+            "baselineMAE": 87.13760524882812,
+            "intervalCoverage": 0.875
+          }
+        ]
+      },
+      "biasOnly": {
+        "cases": 64,
+        "directionCorrect": 39,
+        "brier": 0.2493492266291503,
+        "predictedUp": 0,
+        "predictedDown": 64,
+        "actualUp": 25,
+        "probabilityCorrect": 39,
+        "probabilityMin": 0.4969834376255598,
+        "probabilityMax": 0.4969834376255598,
+        "normalizedPriceSD": 0,
+        "outputs": [
+          {
+            "mae": 194.14253385332427,
+            "baselineMAE": 194.9170312499989,
+            "intervalCoverage": 0.75
+          },
+          {
+            "mae": 0.12055736976626996,
+            "baselineMAE": 0.1370954078522489,
+            "intervalCoverage": 0.796875
+          },
+          {
+            "mae": 85.54146093550472,
+            "baselineMAE": 87.13760524882812,
+            "intervalCoverage": 0.84375
+          }
+        ]
+      },
+      "shuffledFeatures": {
+        "cases": 64,
+        "directionCorrect": 30,
+        "brier": 0.24850915314969477,
+        "predictedUp": 31,
+        "predictedDown": 33,
+        "actualUp": 25,
+        "probabilityCorrect": 33,
+        "probabilityMin": 0.45771114263431506,
+        "probabilityMax": 0.5436501820522696,
+        "normalizedPriceSD": 0.21278940581465142,
+        "outputs": [
+          {
+            "mae": 204.5407056170991,
+            "baselineMAE": 194.9170312499989,
+            "intervalCoverage": 0.734375
+          },
+          {
+            "mae": 0.15537914489669144,
+            "baselineMAE": 0.1370954078522489,
+            "intervalCoverage": 0.703125
+          },
+          {
+            "mae": 102.01181308765149,
+            "baselineMAE": 87.13760524882812,
+            "intervalCoverage": 0.734375
+          }
+        ]
+      },
+      "meanAbsoluteNormalizedPriceResponse": 0.24130389924815643,
+      "meanAbsoluteProbabilityResponse": 0.01972128213755022,
+      "maxThetaChangeRadians": 0.2937465504116865,
+      "meanThetaChangeRadians": 0.050852397379166754
+    },
+    {
+      "minutes": 60,
+      "test": {
+        "cases": 50,
+        "directionCorrect": 28,
+        "brier": 0.26983878542012396,
+        "predictedUp": 25,
+        "predictedDown": 25,
+        "actualUp": 21,
+        "probabilityCorrect": 24,
+        "probabilityMin": 0.3317510149005039,
+        "probabilityMax": 0.7130948132860789,
+        "normalizedPriceSD": 0.19775337320216607,
+        "outputs": [
+          {
+            "mae": 338.2211658698294,
+            "baselineMAE": 330.7359999999994,
+            "intervalCoverage": 0.6000000000000002
+          },
+          {
+            "mae": 0.15721547459345406,
+            "baselineMAE": 0.19561395275176857,
+            "intervalCoverage": 0.9000000000000005
+          },
+          {
+            "mae": 149.61576632456973,
+            "baselineMAE": 200.36614871789996,
+            "intervalCoverage": 0.9200000000000005
+          }
+        ]
+      },
+      "resetTheta": {
+        "cases": 50,
+        "directionCorrect": 28,
+        "brier": 0.26879317613544895,
+        "predictedUp": 25,
+        "predictedDown": 25,
+        "actualUp": 21,
+        "probabilityCorrect": 25,
+        "probabilityMin": 0.3344830908048732,
+        "probabilityMax": 0.7083373347307144,
+        "normalizedPriceSD": 0.18915064006721286,
+        "outputs": [
+          {
+            "mae": 337.1994920708189,
+            "baselineMAE": 330.7359999999994,
+            "intervalCoverage": 0.6200000000000002
+          },
+          {
+            "mae": 0.15800710446145347,
+            "baselineMAE": 0.19561395275176857,
+            "intervalCoverage": 0.8800000000000004
+          },
+          {
+            "mae": 150.48137950224657,
+            "baselineMAE": 200.36614871789996,
+            "intervalCoverage": 0.9200000000000005
+          }
+        ]
+      },
+      "biasOnly": {
+        "cases": 50,
+        "directionCorrect": 29,
+        "brier": 0.251980636380633,
+        "predictedUp": 0,
+        "predictedDown": 50,
+        "actualUp": 21,
+        "probabilityCorrect": 21,
+        "probabilityMin": 0.5115458157461779,
+        "probabilityMax": 0.5115458157461779,
+        "normalizedPriceSD": 0,
+        "outputs": [
+          {
+            "mae": 330.21611985285267,
+            "baselineMAE": 330.7359999999994,
+            "intervalCoverage": 0.6800000000000003
+          },
+          {
+            "mae": 0.18375448580700887,
+            "baselineMAE": 0.19561395275176857,
+            "intervalCoverage": 0.8200000000000004
+          },
+          {
+            "mae": 194.7363558119573,
+            "baselineMAE": 200.36614871789996,
+            "intervalCoverage": 0.9000000000000005
+          }
+        ]
+      },
+      "shuffledFeatures": {
+        "cases": 50,
+        "directionCorrect": 26,
+        "brier": 0.2745153645196818,
+        "predictedUp": 25,
+        "predictedDown": 25,
+        "actualUp": 21,
+        "probabilityCorrect": 20,
+        "probabilityMin": 0.3317510149005039,
+        "probabilityMax": 0.7130948132860789,
+        "normalizedPriceSD": 0.1977533732021661,
+        "outputs": [
+          {
+            "mae": 332.2482647802417,
+            "baselineMAE": 330.7359999999994,
+            "intervalCoverage": 0.6400000000000002
+          },
+          {
+            "mae": 0.1917347143898952,
+            "baselineMAE": 0.19561395275176857,
+            "intervalCoverage": 0.8200000000000004
+          },
+          {
+            "mae": 194.71624580359764,
+            "baselineMAE": 200.36614871789996,
+            "intervalCoverage": 0.8800000000000004
+          }
+        ]
+      },
+      "meanAbsoluteNormalizedPriceResponse": 0.24227113138927112,
+      "meanAbsoluteProbabilityResponse": 0.12150529127819393,
+      "maxThetaChangeRadians": 0.18050932640124828,
+      "meanThetaChangeRadians": 0.03588503455774395
+    },
+    {
+      "minutes": 120,
+      "test": {
+        "cases": 25,
+        "directionCorrect": 16,
+        "brier": 0.2512118240650444,
+        "predictedUp": 10,
+        "predictedDown": 15,
+        "actualUp": 9,
+        "probabilityCorrect": 14,
+        "probabilityMin": 0.35865613785503137,
+        "probabilityMax": 0.6155464830343298,
+        "normalizedPriceSD": 0.16349149687435646,
+        "outputs": [
+          {
+            "mae": 564.0602270441967,
+            "baselineMAE": 584.0751999999984,
+            "intervalCoverage": 0.4799999999999999
+          },
+          {
+            "mae": 0.2796944898919267,
+            "baselineMAE": 0.3140399963545425,
+            "intervalCoverage": 0.7200000000000001
+          },
+          {
+            "mae": 409.455830806873,
+            "baselineMAE": 461.32429240000005,
+            "intervalCoverage": 0.7600000000000001
+          }
+        ]
+      },
+      "resetTheta": {
+        "cases": 25,
+        "directionCorrect": 16,
+        "brier": 0.25065137293722806,
+        "predictedUp": 10,
+        "predictedDown": 15,
+        "actualUp": 9,
+        "probabilityCorrect": 14,
+        "probabilityMin": 0.36140884979880294,
+        "probabilityMax": 0.6130965110296401,
+        "normalizedPriceSD": 0.16211945079256493,
+        "outputs": [
+          {
+            "mae": 564.357959787979,
+            "baselineMAE": 584.0751999999984,
+            "intervalCoverage": 0.4799999999999999
+          },
+          {
+            "mae": 0.2810791331628741,
+            "baselineMAE": 0.3140399963545425,
+            "intervalCoverage": 0.7200000000000001
+          },
+          {
+            "mae": 410.9681812553021,
+            "baselineMAE": 461.32429240000005,
+            "intervalCoverage": 0.7600000000000001
+          }
+        ]
+      },
+      "biasOnly": {
+        "cases": 25,
+        "directionCorrect": 9,
+        "brier": 0.25367874621613423,
+        "predictedUp": 25,
+        "predictedDown": 0,
+        "actualUp": 9,
+        "probabilityCorrect": 9,
+        "probabilityMin": 0.5125737402574057,
+        "probabilityMax": 0.5125737402574057,
+        "normalizedPriceSD": 0,
+        "outputs": [
+          {
+            "mae": 585.6115074847235,
+            "baselineMAE": 584.0751999999984,
+            "intervalCoverage": 0.5199999999999999
+          },
+          {
+            "mae": 0.3117302048390125,
+            "baselineMAE": 0.3140399963545425,
+            "intervalCoverage": 0.5599999999999999
+          },
+          {
+            "mae": 454.37014924838803,
+            "baselineMAE": 461.32429240000005,
+            "intervalCoverage": 0.8400000000000002
+          }
+        ]
+      },
+      "shuffledFeatures": {
+        "cases": 25,
+        "directionCorrect": 14,
+        "brier": 0.23651932637037137,
+        "predictedUp": 10,
+        "predictedDown": 15,
+        "actualUp": 9,
+        "probabilityCorrect": 16,
+        "probabilityMin": 0.35865613785503137,
+        "probabilityMax": 0.6155464830343298,
+        "normalizedPriceSD": 0.16349149687435646,
+        "outputs": [
+          {
+            "mae": 585.216159319419,
+            "baselineMAE": 584.0751999999984,
+            "intervalCoverage": 0.5599999999999999
+          },
+          {
+            "mae": 0.29279844143047234,
+            "baselineMAE": 0.3140399963545425,
+            "intervalCoverage": 0.7600000000000001
+          },
+          {
+            "mae": 410.15068103364047,
+            "baselineMAE": 461.32429240000005,
+            "intervalCoverage": 0.8400000000000002
+          }
+        ]
+      },
+      "meanAbsoluteNormalizedPriceResponse": 0.22197317227963106,
+      "meanAbsoluteProbabilityResponse": 0.08479563669707078,
+      "maxThetaChangeRadians": 0.09110617142951061,
+      "meanThetaChangeRadians": 0.023293851972141576
+    }
+  ],
+  "additionalArchivedPeriod": {
+    "rows": 3456,
+    "firstOpen": 1791137100,
+    "lastClose": 1792173900,
+    "horizons": [
+      {
+        "minutes": 5,
+        "quantum": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 41,
+            "brier": 0.24278185431665364,
+            "predictedUp": 39,
+            "predictedDown": 25,
+            "actualUp": 40,
+            "probabilityCorrect": 38,
+            "probabilityMin": 0.462501296293798,
+            "probabilityMax": 0.563273202136135,
+            "normalizedPriceSD": 0.31156108274640476,
+            "outputs": [
+              {
+                "mae": 66.98123424670189,
+                "baselineMAE": 66.80125000000089,
+                "intervalCoverage": 0.875
+              },
+              {
+                "mae": 0.06206421720406644,
+                "baselineMAE": 0.07375865762979363,
+                "intervalCoverage": 0.796875
+              },
+              {
+                "mae": 10.11997796457208,
+                "baselineMAE": 11.00406038225911,
+                "intervalCoverage": 0.734375
+              }
+            ]
+          },
+          "updates": 462,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 3
+        },
+        "classical": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 42,
+            "brier": 0.2409096893271861,
+            "predictedUp": 38,
+            "predictedDown": 26,
+            "actualUp": 40,
+            "probabilityCorrect": 41,
+            "probabilityMin": 0.4561947534545183,
+            "probabilityMax": 0.5787476296083937,
+            "normalizedPriceSD": 0.36259971331546664,
+            "outputs": [
+              {
+                "mae": 68.30746758914074,
+                "baselineMAE": 66.80125000000089,
+                "intervalCoverage": 0.890625
+              },
+              {
+                "mae": 0.06408304530941675,
+                "baselineMAE": 0.07375865762979363,
+                "intervalCoverage": 0.8125
+              },
+              {
+                "mae": 10.764148032276491,
+                "baselineMAE": 11.00406038225911,
+                "intervalCoverage": 0.6875
+              }
+            ]
+          },
+          "updates": 462,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        }
+      },
+      {
+        "minutes": 15,
+        "quantum": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 33,
+            "brier": 0.276258479653787,
+            "predictedUp": 44,
+            "predictedDown": 20,
+            "actualUp": 35,
+            "probabilityCorrect": 30,
+            "probabilityMin": 0.2539564982218309,
+            "probabilityMax": 0.8390295675860168,
+            "normalizedPriceSD": 0.2997552343685584,
+            "outputs": [
+              {
+                "mae": 140.8233226263676,
+                "baselineMAE": 146.02640624999935,
+                "intervalCoverage": 0.78125
+              },
+              {
+                "mae": 0.09554505872511145,
+                "baselineMAE": 0.10389837302931132,
+                "intervalCoverage": 0.734375
+              },
+              {
+                "mae": 31.118793888630112,
+                "baselineMAE": 32.89205089722657,
+                "intervalCoverage": 0.84375
+              }
+            ]
+          },
+          "updates": 512,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        },
+        "classical": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 35,
+            "brier": 0.29192709302416564,
+            "predictedUp": 44,
+            "predictedDown": 20,
+            "actualUp": 35,
+            "probabilityCorrect": 34,
+            "probabilityMin": 0.19317721178818875,
+            "probabilityMax": 0.9295196119510725,
+            "normalizedPriceSD": 0.3738905601176764,
+            "outputs": [
+              {
+                "mae": 141.54551188496134,
+                "baselineMAE": 146.02640624999935,
+                "intervalCoverage": 0.6875
+              },
+              {
+                "mae": 0.09708941838881964,
+                "baselineMAE": 0.10389837302931132,
+                "intervalCoverage": 0.59375
+              },
+              {
+                "mae": 36.76429482768219,
+                "baselineMAE": 32.89205089722657,
+                "intervalCoverage": 0.78125
+              }
+            ]
+          },
+          "updates": 512,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        }
+      },
+      {
+        "minutes": 30,
+        "quantum": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 30,
+            "brier": 0.2715058728262612,
+            "predictedUp": 41,
+            "predictedDown": 23,
+            "actualUp": 33,
+            "probabilityCorrect": 36,
+            "probabilityMin": 0.33739982684581954,
+            "probabilityMax": 0.8409957051046608,
+            "normalizedPriceSD": 0.22902486847756545,
+            "outputs": [
+              {
+                "mae": 236.0774094698295,
+                "baselineMAE": 224.49046875000067,
+                "intervalCoverage": 0.75
+              },
+              {
+                "mae": 0.1397259354790774,
+                "baselineMAE": 0.14194082459116597,
+                "intervalCoverage": 0.6875
+              },
+              {
+                "mae": 53.09062417249153,
+                "baselineMAE": 58.350859068125,
+                "intervalCoverage": 0.75
+              }
+            ]
+          },
+          "updates": 308,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        },
+        "classical": {
+          "test": {
+            "cases": 64,
+            "directionCorrect": 33,
+            "brier": 0.2909316047434358,
+            "predictedUp": 44,
+            "predictedDown": 20,
+            "actualUp": 33,
+            "probabilityCorrect": 36,
+            "probabilityMin": 0.31409795840831967,
+            "probabilityMax": 0.8941679789135991,
+            "normalizedPriceSD": 0.287429858034047,
+            "outputs": [
+              {
+                "mae": 231.24991593266645,
+                "baselineMAE": 224.49046875000067,
+                "intervalCoverage": 0.765625
+              },
+              {
+                "mae": 0.13754145456992495,
+                "baselineMAE": 0.14194082459116597,
+                "intervalCoverage": 0.78125
+              },
+              {
+                "mae": 59.245442525058124,
+                "baselineMAE": 58.350859068125,
+                "intervalCoverage": 0.671875
+              }
+            ]
+          },
+          "updates": 308,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        }
+      },
+      {
+        "minutes": 60,
+        "quantum": {
+          "test": {
+            "cases": 43,
+            "directionCorrect": 18,
+            "brier": 0.25101502474144594,
+            "predictedUp": 27,
+            "predictedDown": 16,
+            "actualUp": 20,
+            "probabilityCorrect": 20,
+            "probabilityMin": 0.46122358271725955,
+            "probabilityMax": 0.5325758107058413,
+            "normalizedPriceSD": 0.20091853849806926,
+            "outputs": [
+              {
+                "mae": 316.82156733505224,
+                "baselineMAE": 295.5469767441855,
+                "intervalCoverage": 0.7209302325581397
+              },
+              {
+                "mae": 0.1859464899621286,
+                "baselineMAE": 0.17681755784477415,
+                "intervalCoverage": 0.5348837209302324
+              },
+              {
+                "mae": 106.91887749506597,
+                "baselineMAE": 101.8137248127907,
+                "intervalCoverage": 0.790697674418605
+              }
+            ]
+          },
+          "updates": 154,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        },
+        "classical": {
+          "test": {
+            "cases": 43,
+            "directionCorrect": 18,
+            "brier": 0.25519696892631855,
+            "predictedUp": 25,
+            "predictedDown": 18,
+            "actualUp": 20,
+            "probabilityCorrect": 19,
+            "probabilityMin": 0.31191606327920224,
+            "probabilityMax": 0.645499991719543,
+            "normalizedPriceSD": 0.27004856542188976,
+            "outputs": [
+              {
+                "mae": 323.75653071793374,
+                "baselineMAE": 295.5469767441855,
+                "intervalCoverage": 0.7209302325581397
+              },
+              {
+                "mae": 0.17750734791385683,
+                "baselineMAE": 0.17681755784477415,
+                "intervalCoverage": 0.5813953488372092
+              },
+              {
+                "mae": 104.94708890084624,
+                "baselineMAE": 101.8137248127907,
+                "intervalCoverage": 0.6976744186046513
+              }
+            ]
+          },
+          "updates": 154,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        }
+      },
+      {
+        "minutes": 120,
+        "quantum": {
+          "test": {
+            "cases": 21,
+            "directionCorrect": 8,
+            "brier": 0.25122547958050123,
+            "predictedUp": 16,
+            "predictedDown": 5,
+            "actualUp": 9,
+            "probabilityCorrect": 10,
+            "probabilityMin": 0.3475459219341977,
+            "probabilityMax": 0.6302850348750209,
+            "normalizedPriceSD": 0.15304537276704502,
+            "outputs": [
+              {
+                "mae": 316.9179799990123,
+                "baselineMAE": 295.94333333333327,
+                "intervalCoverage": 0.9523809523809528
+              },
+              {
+                "mae": 0.2409447415772899,
+                "baselineMAE": 0.2374957789230601,
+                "intervalCoverage": 0.7142857142857144
+              },
+              {
+                "mae": 197.08199984326313,
+                "baselineMAE": 235.61082545142858,
+                "intervalCoverage": 0.7619047619047621
+              }
+            ]
+          },
+          "updates": 77,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        },
+        "classical": {
+          "test": {
+            "cases": 21,
+            "directionCorrect": 9,
+            "brier": 0.254648225896201,
+            "predictedUp": 15,
+            "predictedDown": 6,
+            "actualUp": 9,
+            "probabilityCorrect": 12,
+            "probabilityMin": 0.3774984060649519,
+            "probabilityMax": 0.7359310929401361,
+            "normalizedPriceSD": 0.20370995021718163,
+            "outputs": [
+              {
+                "mae": 321.4751704339938,
+                "baselineMAE": 295.94333333333327,
+                "intervalCoverage": 0.9047619047619051
+              },
+              {
+                "mae": 0.26230653170211155,
+                "baselineMAE": 0.2374957789230601,
+                "intervalCoverage": 0.6666666666666667
+              },
+              {
+                "mae": 206.52263423812587,
+                "baselineMAE": 235.61082545142858,
+                "intervalCoverage": 0.6666666666666667
+              }
+            ]
+          },
+          "updates": 77,
+          "updatedRotations": 1000,
+          "selectedTemporalLag": 0
+        }
+      }
+    ]
+  },
+  "protocol": {
+    "chosenWithoutMarketTestTuning": true,
+    "forcedAlternatingDirections": false,
+    "matchedNoCZTraining": "same parameter counts, optimizer, candidate budget and selection rules",
+    "reusedTestCaveat": "This archive was used to diagnose v1. Its reused test block is a regression benchmark, not new independent evidence of market advantage."
+  },
+  "prospectivelyValidated": false,
+  "quantumSpeedupDemonstrated": false,
+  "scope": "Controlled interaction demonstrates a useful circuit feature in this restricted family. BTC results are measured separately; no universal superiority claim."
+}

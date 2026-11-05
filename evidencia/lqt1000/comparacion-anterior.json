@@ -1,7 +1,7 @@
 {
   "schema": "laplace-lqt1000-legacy-comparison-v1",
   "sourceSHA256": "9239d6d29f9b415537d720e5aa87dc232d944352cae277c462fff1326e860713",
-  "algorithmSHA256": "138c579dbd70f97ae6b8d6dba8e63c064d43fb6e7a1f936b981c08c030079d9c",
+  "algorithmSHA256": "750b801936d15c62aa411806214a7afc51a1d56925d36a5495c2d65c3cf1518d",
   "protocol": "Identical closed-candle origins, targets and units. LQT frozen during initial test; M001/M005 re-evaluate known past at each origin, as in the app.",
   "legacySourceSHA256": {
     "engine.js": "7aa226bce6d4a063b40bd9d0f3d3240d163ca92a853557c0e719de335b34c83e",
@@ -14,45 +14,59 @@
       "minutes": 5,
       "quantum": {
         "cases": 64,
-        "directionCorrect": 36,
-        "brier": 0.25022311560136057,
+        "directionCorrect": 25,
+        "brier": 0.2540056153594327,
+        "predictedUp": 21,
+        "predictedDown": 43,
+        "actualUp": 36,
+        "probabilityCorrect": 29,
+        "probabilityMin": 0.37255678792796837,
+        "probabilityMax": 0.6002214367269634,
+        "normalizedPriceSD": 0.33468223432582994,
         "outputs": [
           {
-            "mae": 72.30856827996786,
+            "mae": 85.61006649470414,
             "baselineMAE": 72.7815625000012,
-            "intervalCoverage": 0.75
+            "intervalCoverage": 0.765625
           },
           {
-            "mae": 0.0618757344982087,
+            "mae": 0.06839530714909352,
             "baselineMAE": 0.08456739961656828,
-            "intervalCoverage": 0.625
+            "intervalCoverage": 0.640625
           },
           {
-            "mae": 22.441999725215407,
+            "mae": 20.50812249525125,
             "baselineMAE": 22.198979096647133,
-            "intervalCoverage": 0.859375
+            "intervalCoverage": 0.90625
           }
         ]
       },
       "matchedClassical": {
         "cases": 64,
-        "directionCorrect": 36,
-        "brier": 0.2502128440969646,
+        "directionCorrect": 25,
+        "brier": 0.25905097584512365,
+        "predictedUp": 23,
+        "predictedDown": 41,
+        "actualUp": 36,
+        "probabilityCorrect": 28,
+        "probabilityMin": 0.3236841867059092,
+        "probabilityMax": 0.6058542756630406,
+        "normalizedPriceSD": 0.42896744428234995,
         "outputs": [
           {
-            "mae": 72.39067553679592,
+            "mae": 87.66117763407897,
             "baselineMAE": 72.7815625000012,
-            "intervalCoverage": 0.75
+            "intervalCoverage": 0.78125
           },
           {
-            "mae": 0.06192408478269257,
+            "mae": 0.07678073152356144,
             "baselineMAE": 0.08456739961656828,
-            "intervalCoverage": 0.625
+            "intervalCoverage": 0.671875
           },
           {
-            "mae": 22.432644564437933,
+            "mae": 24.069029251364896,
             "baselineMAE": 22.198979096647133,
-            "intervalCoverage": 0.859375
+            "intervalCoverage": 0.890625
           }
         ]
       },
@@ -1480,45 +1494,59 @@
       "minutes": 15,
       "quantum": {
         "cases": 64,
-        "directionCorrect": 33,
-        "brier": 0.25080753267301675,
+        "directionCorrect": 28,
+        "brier": 0.2550145130382957,
+        "predictedUp": 29,
+        "predictedDown": 35,
+        "actualUp": 31,
+        "probabilityCorrect": 27,
+        "probabilityMin": 0.44295568264046836,
+        "probabilityMax": 0.5461598793273255,
+        "normalizedPriceSD": 0.345622218497078,
         "outputs": [
           {
-            "mae": 121.44057496970186,
+            "mae": 136.4946607040181,
             "baselineMAE": 119.39453124999864,
-            "intervalCoverage": 0.78125
+            "intervalCoverage": 0.75
           },
           {
-            "mae": 0.08453930347971071,
+            "mae": 0.09079427861368758,
             "baselineMAE": 0.10814288918531378,
-            "intervalCoverage": 0.671875
+            "intervalCoverage": 0.75
           },
           {
-            "mae": 47.801702062975664,
+            "mae": 37.56047858211477,
             "baselineMAE": 50.192428796894525,
-            "intervalCoverage": 0.828125
+            "intervalCoverage": 0.84375
           }
         ]
       },
       "matchedClassical": {
         "cases": 64,
-        "directionCorrect": 33,
-        "brier": 0.2506975344483681,
+        "directionCorrect": 29,
+        "brier": 0.25874573667792505,
+        "predictedUp": 34,
+        "predictedDown": 30,
+        "actualUp": 31,
+        "probabilityCorrect": 26,
+        "probabilityMin": 0.4279867020741405,
+        "probabilityMax": 0.572404013046696,
+        "normalizedPriceSD": 0.40524125991665527,
         "outputs": [
           {
-            "mae": 121.20230230964012,
+            "mae": 147.6946555801669,
             "baselineMAE": 119.39453124999864,
+            "intervalCoverage": 0.703125
+          },
+          {
+            "mae": 0.09648904981186635,
+            "baselineMAE": 0.10814288918531378,
             "intervalCoverage": 0.78125
           },
           {
-            "mae": 0.08455562406131004,
-            "baselineMAE": 0.10814288918531378,
-            "intervalCoverage": 0.671875
-          },
-          {
-            "mae": 47.81135260057473,
+            "mae": 47.6620118283648,
             "baselineMAE": 50.192428796894525,
-            "intervalCoverage": 0.828125
+            "intervalCoverage": 0.8125
           }
         ]
       },
@@ -2946,45 +2974,59 @@
       "minutes": 30,
       "quantum": {
         "cases": 64,
-        "directionCorrect": 39,
-        "brier": 0.24709230988109723,
+        "directionCorrect": 32,
+        "brier": 0.24771843110462935,
+        "predictedUp": 31,
+        "predictedDown": 33,
+        "actualUp": 25,
+        "probabilityCorrect": 35,
+        "probabilityMin": 0.45771114263431506,
+        "probabilityMax": 0.5436501820522696,
+        "normalizedPriceSD": 0.21278940581465144,
         "outputs": [
           {
-            "mae": 194.33218359436887,
+            "mae": 195.04258680309113,
             "baselineMAE": 194.9170312499989,
-            "intervalCoverage": 0.78125
+            "intervalCoverage": 0.71875
           },
           {
-            "mae": 0.11996040023957501,
+            "mae": 0.10801973261641391,
             "baselineMAE": 0.1370954078522489,
-            "intervalCoverage": 0.796875
+            "intervalCoverage": 0.859375
           },
           {
-            "mae": 85.49180675106102,
+            "mae": 75.00342380755373,
             "baselineMAE": 87.13760524882812,
-            "intervalCoverage": 0.828125
+            "intervalCoverage": 0.875
           }
         ]
       },
       "matchedClassical": {
         "cases": 64,
-        "directionCorrect": 39,
-        "brier": 0.24719512198634985,
+        "directionCorrect": 35,
+        "brier": 0.2494101460069708,
+        "predictedUp": 36,
+        "predictedDown": 28,
+        "actualUp": 25,
+        "probabilityCorrect": 28,
+        "probabilityMin": 0.4483025700909764,
+        "probabilityMax": 0.564149482093405,
+        "normalizedPriceSD": 0.31486801606953696,
         "outputs": [
           {
-            "mae": 194.2020634065068,
+            "mae": 215.86099626295754,
             "baselineMAE": 194.9170312499989,
+            "intervalCoverage": 0.6875
+          },
+          {
+            "mae": 0.12345190214490258,
+            "baselineMAE": 0.1370954078522489,
             "intervalCoverage": 0.78125
           },
           {
-            "mae": 0.12006007154607003,
-            "baselineMAE": 0.1370954078522489,
-            "intervalCoverage": 0.796875
-          },
-          {
-            "mae": 85.49536389557535,
+            "mae": 77.15482421763778,
             "baselineMAE": 87.13760524882812,
-            "intervalCoverage": 0.828125
+            "intervalCoverage": 0.84375
           }
         ]
       },
@@ -4412,45 +4454,59 @@
       "minutes": 60,
       "quantum": {
         "cases": 50,
-        "directionCorrect": 29,
-        "brier": 0.2506776267812328,
+        "directionCorrect": 28,
+        "brier": 0.26983878542012396,
+        "predictedUp": 25,
+        "predictedDown": 25,
+        "actualUp": 21,
+        "probabilityCorrect": 24,
+        "probabilityMin": 0.3317510149005039,
+        "probabilityMax": 0.7130948132860789,
+        "normalizedPriceSD": 0.19775337320216607,
         "outputs": [
           {
-            "mae": 329.79880522659346,
+            "mae": 338.2211658698294,
             "baselineMAE": 330.7359999999994,
-            "intervalCoverage": 0.7200000000000003
+            "intervalCoverage": 0.6000000000000002
           },
           {
-            "mae": 0.18332453663811193,
+            "mae": 0.15721547459345406,
             "baselineMAE": 0.19561395275176857,
-            "intervalCoverage": 0.8400000000000004
+            "intervalCoverage": 0.9000000000000005
           },
           {
-            "mae": 192.61879635015106,
+            "mae": 149.61576632456973,
             "baselineMAE": 200.36614871789996,
-            "intervalCoverage": 0.8800000000000004
+            "intervalCoverage": 0.9200000000000005
           }
         ]
       },
       "matchedClassical": {
         "cases": 50,
-        "directionCorrect": 29,
-        "brier": 0.25063502088462636,
+        "directionCorrect": 28,
+        "brier": 0.32861505996925705,
+        "predictedUp": 21,
+        "predictedDown": 29,
+        "actualUp": 21,
+        "probabilityCorrect": 20,
+        "probabilityMin": 0.13631162398336139,
+        "probabilityMax": 0.8358657886757966,
+        "normalizedPriceSD": 0.39037899776611834,
         "outputs": [
           {
-            "mae": 329.8333314512033,
+            "mae": 373.5086690057298,
             "baselineMAE": 330.7359999999994,
+            "intervalCoverage": 0.5200000000000001
+          },
+          {
+            "mae": 0.17721108942216746,
+            "baselineMAE": 0.19561395275176857,
             "intervalCoverage": 0.7200000000000003
           },
           {
-            "mae": 0.18350218509238328,
-            "baselineMAE": 0.19561395275176857,
-            "intervalCoverage": 0.8400000000000004
-          },
-          {
-            "mae": 192.83527291898548,
+            "mae": 220.56619264690354,
             "baselineMAE": 200.36614871789996,
-            "intervalCoverage": 0.8800000000000004
+            "intervalCoverage": 0.8000000000000004
           }
         ]
       },
@@ -5571,44 +5627,58 @@
       "quantum": {
         "cases": 25,
         "directionCorrect": 16,
-        "brier": 0.25015079415704167,
+        "brier": 0.2512118240650444,
+        "predictedUp": 10,
+        "predictedDown": 15,
+        "actualUp": 9,
+        "probabilityCorrect": 14,
+        "probabilityMin": 0.35865613785503137,
+        "probabilityMax": 0.6155464830343298,
+        "normalizedPriceSD": 0.16349149687435646,
         "outputs": [
           {
-            "mae": 578.8233733107876,
+            "mae": 564.0602270441967,
             "baselineMAE": 584.0751999999984,
             "intervalCoverage": 0.4799999999999999
           },
           {
-            "mae": 0.3127743894461105,
+            "mae": 0.2796944898919267,
             "baselineMAE": 0.3140399963545425,
-            "intervalCoverage": 0.7600000000000001
+            "intervalCoverage": 0.7200000000000001
           },
           {
-            "mae": 449.0793806529971,
+            "mae": 409.455830806873,
             "baselineMAE": 461.32429240000005,
-            "intervalCoverage": 0.8400000000000002
+            "intervalCoverage": 0.7600000000000001
           }
         ]
       },
       "matchedClassical": {
         "cases": 25,
-        "directionCorrect": 16,
-        "brier": 0.25014987748630646,
+        "directionCorrect": 13,
+        "brier": 0.25433586289607846,
+        "predictedUp": 9,
+        "predictedDown": 16,
+        "actualUp": 9,
+        "probabilityCorrect": 11,
+        "probabilityMin": 0.26799386622453486,
+        "probabilityMax": 0.5876613157971761,
+        "normalizedPriceSD": 0.3196473878447369,
         "outputs": [
           {
-            "mae": 579.0259453613654,
+            "mae": 600.9834747167524,
             "baselineMAE": 584.0751999999984,
             "intervalCoverage": 0.4799999999999999
           },
           {
-            "mae": 0.3128609366453915,
+            "mae": 0.2701752287047086,
             "baselineMAE": 0.3140399963545425,
-            "intervalCoverage": 0.7600000000000001
+            "intervalCoverage": 0.7200000000000001
           },
           {
-            "mae": 449.4981409995665,
+            "mae": 432.66918954096786,
             "baselineMAE": 461.32429240000005,
-            "intervalCoverage": 0.8400000000000002
+            "intervalCoverage": 0.68
           }
         ]
       },

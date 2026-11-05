@@ -1,7 +1,7 @@
-name: LAPLACE Android 4.4 - motor propio LQT1000
+name: LAPLACE Android 4.5 - aprendizaje LQT1000 con respuesta a datos
 on:
   push:
-    branches: [feature/laplace-lqt1000-20261104, main]
+    branches: [main]
     paths:
       - 'apps/laplace-android/**'
       - 'prediccion/conjunta-f002.mjs'
@@ -79,7 +79,10 @@ jobs:
           mkdir -p build
           g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-runner.cpp -o build/lqt-runner
           g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-native.cpp -o build/lqt-native
+          g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-learning.cpp -o build/lqt-learning
+          g++ -O2 -std=c++17 -Ideps/mundo-x/native/include -Iapps/laplace-android/app/src/main/cpp apps/laplace-android/tests/lqt-response.cpp -o build/lqt-response
           python3 apps/laplace-android/study-lqt1000.py --verify
+          python3 apps/laplace-android/study-lqt-response.py --verify
           node apps/laplace-android/compare-lqt1000.mjs --verify
       - name: Pruebas de modelo y contratos de la interfaz
         run: |
@@ -254,14 +257,14 @@ jobs:
           unzip -t "$APK" > /tmp/laplace-apk-validation.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/laplace-badging.txt
-          grep -F "package: name='com.entidadlaplace.mobile.learn44'" /tmp/laplace-badging.txt
+          grep -F "package: name='com.entidadlaplace.mobile.learn45'" /tmp/laplace-badging.txt
           grep -F "launchable-activity: name='com.entidadlaplace.mobile.MainActivity'" /tmp/laplace-badging.txt
-          grep -F "label='LAPLACE 4.4'" /tmp/laplace-badging.txt
+          grep -F "label='LAPLACE 4.5'" /tmp/laplace-badging.txt
           head -12 /tmp/laplace-badging.txt
           sha256sum "$APK"
       - uses: actions/upload-artifact@v4
         with:
-          name: LAPLACE-ANDROID-V4-4-LQT1000
+          name: LAPLACE-ANDROID-V4-5-LQT1000-RESPONSIVE
           path: apps/laplace-android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

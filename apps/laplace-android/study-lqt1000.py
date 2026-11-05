@@ -43,7 +43,9 @@ def execute(rows, horizon=3, mode='quantum', checkpoint=None, asof=None, expect_
 def parameters(checkpoint):
     # Header/time/metrics are deliberately excluded: these are circuit/readout
     # parameters and data-gradient participation counters, in native format.
-    return '\n'.join(checkpoint.splitlines()[2:6])
+    # Include training-only normalization and the complete optimizer state.
+    lines = checkpoint.splitlines()
+    return '\n'.join(lines[2:6] + lines[8:13])
 
 
 def main():
@@ -51,6 +53,9 @@ def main():
     # Initial historical fit at an earlier cutoff, followed by genuinely later
     # archived labels. It is a retrospective replay, not a prospective claim.
     rows = archived[-4032:]
+    checkpoints = ROOT / 'build/lqt-checkpoints'
+    checkpoints.mkdir(parents=True, exist_ok=True)
+    (checkpoints / 'bars.tsv').write_text(''.join(' '.join(map(str,r[:6]))+' 0\n' for r in rows))
     initial = execute(rows[:-24])
     restored = execute(rows[:-24], checkpoint=initial['checkpoint'])
     assert restored['checkpoint'] == initial['checkpoint']
@@ -92,6 +97,7 @@ def main():
         quantum = original if horizon == 3 else execute(rows, horizon=horizon)
         classical = execute(rows, horizon=horizon, mode='classical')
         state = quantum.pop('checkpoint')
+        (checkpoints / f'{horizon}.lqt').write_text(state)
         classical.pop('checkpoint')
         results.append({'minutes': horizon*5, 'quantum': quantum,
                         'matchedClassical': classical,
@@ -102,11 +108,14 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     report = {
         'schema':'laplace-lqt1000-study-v1','source':str(SOURCE.relative_to(ROOT)),
+        'algorithmVersion':2,
         'sourceSHA256':hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
         'algorithmSHA256':hashlib.sha256(CPP.read_bytes()).hexdigest(),
         'rows':len(rows),'firstOpen':rows[0][0],'lastClose':rows[-1][0]+300,
-        'protocol':{'train':.60,'selection':.15,'calibration':.10,'test':.15,
-                    'epochs':[1,2,3,4],'temporalLags':[0,3,12],
+        'protocol':{'train':.60,'selectionFraction':.15,'calibration':.10,'test':.15,
+                    'epochs':list(range(1,25)),'earlyStoppingPatience':4,'temporalLags':[0,3,12],
+                    'normalization':'exact Heisenberg terms; fit on train only; frozen thereafter',
+                    'optimizer':'native Adam; moments retained; deterministic train-only shuffle',
                     'selection':'validation only; initial test never enters online learning',
                     'nonoverlappingLabelsWithinEachSplit':True,
                     'intervalNominalCoverage':.80,
@@ -117,6 +126,7 @@ def main():
         'rejectedRequests':errors,'horizons':results,
         'prospectivelyValidated':False,'physicalQPU':False,'automaticTrading':False,
         'scope':'one archived BTC period; host timings are not Android device timings',
+        'interpretation':'This archive was used to diagnose v1. Its reused test block is a regression benchmark, not new independent evidence of market advantage.',
     }
     if '--verify' in sys.argv:
         frozen = json.loads((OUT/'resultados.json').read_text())

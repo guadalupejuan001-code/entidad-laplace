@@ -12,7 +12,9 @@ import java.util.Locale;
 public final class QuantumTemporalStore {
     private final File directory;
     public QuantumTemporalStore(File root)throws Exception{
-        directory=new File(root,"lqt1000-v1");
+        // The old directory remains intact; its uncentered LQT1 parameters
+        // cannot be interpreted as centered LQT2 parameters or optimizer state.
+        directory=new File(root,"lqt1000-v2");
         if(!directory.isDirectory()&&!directory.mkdirs())throw new java.io.IOException("No se pudo abrir el aprendizaje local");
     }
     public static String key(String asset,int g,int minutes){
@@ -28,7 +30,7 @@ public final class QuantumTemporalStore {
     }
     public synchronized JSONObject read(String key)throws Exception{
         File f=file(key);if(!f.exists())return null;
-        if(f.length()>384*1024)throw new IllegalStateException("Checkpoint LQT fuera del límite");
+        if(f.length()>1024*1024)throw new IllegalStateException("Checkpoint LQT fuera del límite");
         JSONTokener tokens=new JSONTokener(new String(Files.readAllBytes(f.toPath()),StandardCharsets.UTF_8));
         JSONObject value=new JSONObject(tokens);
         if(tokens.nextClean()!=0)throw new IllegalStateException("Checkpoint LQT con contenido adicional");
@@ -41,10 +43,10 @@ public final class QuantumTemporalStore {
         String asset=value.getString("asset");int g=value.getInt("granularity"),m=value.getInt("minutes");
         key(asset,g,m);
         String state=value.getString("checkpoint");
-        if(state.length()>256*1024||!sha256(state).equals(value.getString("checkpointSHA256")))
+        if(state.length()>768*1024||!sha256(state).equals(value.getString("checkpointSHA256")))
             throw new IllegalArgumentException("El aprendizaje no coincide con su huella");
         int h=QuantumTemporalCompiler.horizon(asset,g,m);
-        String prefix="LQT1 1 "+asset+" "+g+" "+h+" "+(MarketCatalog.isEquity(asset)?1:0)+" 1 ";
+        String prefix="LQT2 2 "+asset+" "+g+" "+h+" "+(MarketCatalog.isEquity(asset)?1:0)+" 1 ";
         if(!state.startsWith(prefix))throw new IllegalArgumentException("El aprendizaje no corresponde al activo o plazo");
     }
     public synchronized void write(String key,JSONObject value)throws Exception{
@@ -52,7 +54,7 @@ public final class QuantumTemporalStore {
         if(!key(value.getString("asset"),value.getInt("granularity"),value.getInt("minutes")).equals(key))
             throw new IllegalArgumentException("Contexto LQT contradictorio");
         byte[] bytes=value.toString().getBytes(StandardCharsets.UTF_8);
-        if(bytes.length>384*1024)throw new IllegalArgumentException("Checkpoint demasiado grande");
+        if(bytes.length>1024*1024)throw new IllegalArgumentException("Checkpoint demasiado grande");
         File temporary=File.createTempFile("lqt-write-",".tmp",directory);
         try{
             try(FileOutputStream stream=new FileOutputStream(temporary)){

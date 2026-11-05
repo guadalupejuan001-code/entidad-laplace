@@ -22,7 +22,7 @@ std::string bounded(JNIEnv* env,jstring input,jsize maximum){
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_entidadlaplace_mobile_NativeQuantumTemporal_executeProgram(JNIEnv* env,jclass,jstring program,jstring checkpoint){
   try{
-    auto source=bounded(env,program,2*1024*1024),saved=bounded(env,checkpoint,256*1024);
+    auto source=bounded(env,program,2*1024*1024),saved=bounded(env,checkpoint,768*1024);
     mundo_x::laplace::TemporalXiRuntime runtime;auto output=runtime.execute(source,saved);
     if(output.size()>1048576)throw std::length_error("LQT: native output exceeds limit");
     return env->NewStringUTF(output.c_str());
@@ -31,7 +31,7 @@ Java_com_entidadlaplace_mobile_NativeQuantumTemporal_executeProgram(JNIEnv* env,
 extern "C" JNIEXPORT void JNICALL
 Java_com_entidadlaplace_mobile_NativeQuantumTemporal_validateCheckpoint(JNIEnv* env,jclass,jstring checkpoint,jstring asset,jint g,jint minutes,jboolean equity,jlong asof){
   try{
-    auto saved=bounded(env,checkpoint,256*1024),symbol=bounded(env,asset,32);
+    auto saved=bounded(env,checkpoint,768*1024),symbol=bounded(env,asset,32);
     mundo_x::laplace::require(minutes>0&&minutes<=129600&&g>0&&minutes*60LL%g==0,"LQT: checkpoint resolution");
     mundo_x::laplace::Config c;c.asset=symbol;c.granularity=g;c.horizon=minutes*60/g;c.equity=equity;c.asof=double(asof);
     mundo_x::laplace::Model::restore(saved,c,true);
