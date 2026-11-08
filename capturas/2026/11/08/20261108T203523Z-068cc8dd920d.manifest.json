@@ -1,0 +1,408 @@
+{
+  "schema": "laplace-ef002-public-world-capture-v1",
+  "archive_format": "gzip-json",
+  "captured_at": "2026-11-08T20:35:23.499Z",
+  "relative_payload": "2026/11/08/20261108T203523Z-068cc8dd920d.json.gz",
+  "archive_sha256": "e73d356a5d30d762ac783ab730b41b371477e160a46e93ab244773b89742b0e3",
+  "original_bytes": 953718,
+  "compressed_bytes": 70342,
+  "capture_sha256": "068cc8dd920d125360898f7663f85169979a4ee3ec4ec092a4285fd7e47ad94b",
+  "snapshot_sha256": "9ab9e15e9be7a4b2f2d7099bcc4942a59428423364a3aad1b8458e7c34ca3c00",
+  "sources_observed": 118,
+  "states_observed": 1041,
+  "coverage_complete": false,
+  "contains_public_data_only": true,
+  "automatic_trading": false,
+  "summary": {
+    "schema": "laplace-ef002-public-world-capture-v1",
+    "captured_at": "2026-11-08T20:35:23.499Z",
+    "cutoff_at": "2026-11-08T20:35:23.499Z",
+    "capture_sha256": "068cc8dd920d125360898f7663f85169979a4ee3ec4ec092a4285fd7e47ad94b",
+    "snapshot_sha256": "9ab9e15e9be7a4b2f2d7099bcc4942a59428423364a3aad1b8458e7c34ca3c00",
+    "states_observed": 1041,
+    "domains": 32,
+    "source_summary": [
+      {
+        "group": "bis_banking_b001",
+        "observed_sources": 4,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 32,
+        "source_ids": [
+          "BIS-LBS_US_RESIDENCE_CROSS_BORDER_CLAIMS",
+          "BIS-LBS_US_NONBANK_FINANCIAL_USD",
+          "BIS-CBS_ALL_REPORTERS_TOTAL_CLAIMS",
+          "BIS-CBS_US_BORROWER_INTERNATIONAL_CLAIMS"
+        ]
+      },
+      {
+        "group": "blockchain_defi_k001",
+        "observed_sources": 4,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 16,
+        "source_ids": [
+          "Blockstream-Esplora-bitcoin-blocks",
+          "Ethereum-PublicNode-finalized",
+          "DefiLlama-chain-TVL",
+          "DefiLlama-stablecoin-supply"
+        ]
+      },
+      {
+        "group": "capital_u004",
+        "observed_sources": 6,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 120,
+        "source_ids": [
+          "CFTC-disaggregated",
+          "CFTC-financial",
+          "FRED-US-yield-curve",
+          "FRED-WALCL",
+          "FRED-WDTGAL",
+          "FRED-RRPONTSYD"
+        ]
+      },
+      {
+        "group": "commodity_futures",
+        "observed_sources": 9,
+        "failed_sources": 1,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 36,
+        "source_ids": [
+          "GC=F",
+          "SI=F",
+          "CL=F",
+          "NG=F",
+          "HG=F",
+          "ZC=F",
+          "ZW=F",
+          "ZS=F",
+          "KC=F",
+          "SB=F"
+        ]
+      },
+      {
+        "group": "dated_commodity_contracts",
+        "observed_sources": 1,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 12,
+        "source_ids": [
+          "MOEX-public-dated-commodities"
+        ]
+      },
+      {
+        "group": "derivatives_d001",
+        "observed_sources": 5,
+        "failed_sources": 6,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 14,
+        "source_ids": [
+          "Binance-USDm-BTCUSDT-mark",
+          "Binance-USDm-BTCUSDT-oi",
+          "Binance-USDm-BTCUSDT-settled",
+          "Binance-USDm-ETHUSDT-mark",
+          "Binance-USDm-ETHUSDT-oi",
+          "Binance-USDm-ETHUSDT-settled",
+          "Hyperliquid-metaAndAssetCtxs",
+          "Deribit-BTC-instruments",
+          "Deribit-BTC-summary",
+          "Deribit-ETH-instruments",
+          "Deribit-ETH-summary"
+        ]
+      },
+      {
+        "group": "direct_exchanges",
+        "observed_sources": 0,
+        "failed_sources": 0,
+        "restricted_sources": 3,
+        "not_reported_sources": 0,
+        "signal_count": 0,
+        "source_ids": [
+          "JPX-JQuants",
+          "B3-direct",
+          "Deutsche-Boerse-direct"
+        ]
+      },
+      {
+        "group": "electricity",
+        "observed_sources": 1,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 10,
+        "source_ids": [
+          "NESO-demand-update"
+        ]
+      },
+      {
+        "group": "employment_high_frequency",
+        "observed_sources": 3,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 3,
+        "source_ids": [
+          "FRED-ICSA",
+          "FRED-CCSA",
+          "FRED-DFF"
+        ]
+      },
+      {
+        "group": "employment_monthly",
+        "observed_sources": 1,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 3,
+        "source_ids": [
+          "BLS-public-api"
+        ]
+      },
+      {
+        "group": "geo_news",
+        "observed_sources": 3,
+        "failed_sources": 5,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 14,
+        "source_ids": [
+          "GDELT-conflict",
+          "GDELT-protest",
+          "GDELT-trade",
+          "GDELT-energy",
+          "GDELT-shipping",
+          "GDELT-cyber",
+          "GDELT-disaster",
+          "GDACS-official-alerts"
+        ]
+      },
+      {
+        "group": "macro_exact_vintages",
+        "observed_sources": 0,
+        "failed_sources": 0,
+        "restricted_sources": 1,
+        "not_reported_sources": 0,
+        "signal_count": 0,
+        "source_ids": [
+          "FRED-ALFRED-vintages"
+        ]
+      },
+      {
+        "group": "maritime",
+        "observed_sources": 1,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 5,
+        "source_ids": [
+          "IMF-PortWatch"
+        ]
+      },
+      {
+        "group": "official_central_banks",
+        "observed_sources": 3,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 3,
+        "source_ids": [
+          "Bank-of-Canada-V39079",
+          "BCB-SGS-432",
+          "ECB-deposit-facility"
+        ]
+      },
+      {
+        "group": "order_flow",
+        "observed_sources": 2,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 7,
+        "source_ids": [
+          "Coinbase-book",
+          "Coinbase-trades"
+        ]
+      },
+      {
+        "group": "policy_rates",
+        "observed_sources": 1,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 18,
+        "source_ids": [
+          "BIS-WS_CBPOL"
+        ]
+      },
+      {
+        "group": "public_direct_exchanges",
+        "observed_sources": 3,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 25,
+        "source_ids": [
+          "TWSE-public-daily",
+          "B3-public-movers",
+          "MOEX-public-index"
+        ]
+      },
+      {
+        "group": "regional_markets",
+        "observed_sources": 16,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 64,
+        "source_ids": [
+          "^N225",
+          "^HSI",
+          "000001.SS",
+          "^STOXX50E",
+          "^FTSE",
+          "^GDAXI",
+          "^FCHI",
+          "^IBEX",
+          "^BSESN",
+          "^BVSP",
+          "^MXX",
+          "^AXJO",
+          "^KS11",
+          "^TWII",
+          "^STI",
+          "^GSPTSE"
+        ]
+      },
+      {
+        "group": "swaps_otc_d002",
+        "observed_sources": 3,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 150,
+        "source_ids": [
+          "CFTC-gross_notional",
+          "CFTC-trade_dollars",
+          "CFTC-trade_tickets"
+        ]
+      },
+      {
+        "group": "u002_base",
+        "observed_sources": 52,
+        "failed_sources": 0,
+        "restricted_sources": 0,
+        "not_reported_sources": 0,
+        "signal_count": 368,
+        "source_ids": [
+          "SPY",
+          "QQQ",
+          "DIA",
+          "IWM",
+          "^VIX",
+          "EEM",
+          "VWO",
+          "EWJ",
+          "EWU",
+          "EWG",
+          "EWZ",
+          "FXI",
+          "INDA",
+          "EWA",
+          "EWC",
+          "EURUSD=X",
+          "GBPUSD=X",
+          "JPY=X",
+          "AUDUSD=X",
+          "CAD=X",
+          "CHF=X",
+          "DX-Y.NYB",
+          "TLT",
+          "IEF",
+          "SHY",
+          "HYG",
+          "LQD",
+          "GLD",
+          "SLV",
+          "USO",
+          "UNG",
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "AMZN",
+          "META",
+          "GOOGL",
+          "TSLA",
+          "JPM",
+          "XOM",
+          "BTC-USD",
+          "ETH-USD",
+          "SOL-USD",
+          "XRP-USD",
+          "ADA-USD",
+          "NY.GDP.MKTP.KD.ZG",
+          "FP.CPI.TOTL.ZG",
+          "SL.UEM.TOTL.ZS",
+          "BN.CAB.XOKA.GD.ZS",
+          "Open-Meteo-grid",
+          "USGS-earthquakes",
+          "NOAA-Kp"
+        ]
+      }
+    ],
+    "additional_financial_groups": [
+      {
+        "id": "derivatives_d001",
+        "attempted": true,
+        "observed_signals": 154,
+        "status": "observed"
+      },
+      {
+        "id": "swaps_otc_d002",
+        "attempted": true,
+        "observed_signals": 150,
+        "status": "observed"
+      },
+      {
+        "id": "etf_fund_flows_c001",
+        "attempted": false,
+        "observed_signals": 0,
+        "status": "not_attempted"
+      },
+      {
+        "id": "bis_banking_b001",
+        "attempted": true,
+        "observed_signals": 32,
+        "status": "observed"
+      },
+      {
+        "id": "blockchain_defi_k001",
+        "attempted": true,
+        "observed_signals": 16,
+        "status": "observed"
+      }
+    ],
+    "import_result": {
+      "capture_sha": "068cc8dd920d125360898f7663f85169979a4ee3ec4ec092a4285fd7e47ad94b",
+      "snapshot_sha": "9ab9e15e9be7a4b2f2d7099bcc4942a59428423364a3aad1b8458e7c34ca3c00",
+      "added_observations": 1041,
+      "covered_sources": 134,
+      "created_capture": true,
+      "total_observations": 1041,
+      "complete_world": false,
+      "prediction_activated": false,
+      "automatic_trading": false
+    },
+    "coverage_complete": false,
+    "provider_signatures_verified": false,
+    "world_predictive_advantage_demonstrated": false,
+    "automatic_trading": false
+  }
+}
